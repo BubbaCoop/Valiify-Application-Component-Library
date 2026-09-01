@@ -1,0 +1,234 @@
+/**
+ * Chip Component — Figma "Status" (79:275)
+ *
+ * Status indicator available as chip, dot, or badge to communicate semantic
+ * states. 54 variants across Type x Color x BG x Size, plus a Ring boolean.
+ *
+ * Usage:
+ *   <!-- Chip with optional dot -->
+ *   <span class="chip chip-warning">
+ *     <span class="chip-dot"></span>
+ *     <span>Warning</span>
+ *   </span>
+ *
+ *   <!-- Badge (circular number) -->
+ *   <span class="badge badge-critical">3</span>
+ *
+ *   <!-- Dot (indicator only) -->
+ *   <span class="dot dot-success"></span>
+ *
+ *   <!-- BG=no: the same colour, unfilled -->
+ *   <span class="chip chip-warning chip-bg-no">
+ *     <span class="chip-dot"></span>
+ *     <span>Warning</span>
+ *   </span>
+ *   <span class="badge badge-critical badge-bg-no">3</span>
+ *
+ * THE BG AXIS. Figma ships every colour both filled (`BG=yes`) and unfilled
+ * (`BG=no`). Only the fill changes — the text and dot keep the same colour
+ * token either way, and there is NO hairline or border in the unfilled form.
+ * Verified by sampling the Figma render: a warning chip is #faf4eb filled
+ * (Warning/Soft over white, exact) and #ffffff unfilled.
+ *
+ * `BG=yes` IS THE DEFAULT, so it needs no class and the pre-existing markup is
+ * unchanged. Read from the variant set rather than assumed: the three
+ * lowest-id variants (79:272, 79:273, 79:274 — one per Type) are all `BG=yes`,
+ * and the BG=yes group occupies the left half of the set frame with BG=no
+ * starting at x=515. The naming mirrors the `-bg-*` convention already used by
+ * Input, Textarea and DropdownField, where the default value takes no class and
+ * the other value is named after its Figma value.
+ *
+ * BG IS A NO-OP FOR `dot`, so no `.dot-bg-no` exists. Figma draws all 18 dot
+ * variants, but a dot IS its fill: sampling `BG=yes` and `BG=no` returns
+ * byte-identical pixels (#c9881f both). Nine of those variants are therefore
+ * redundant. On the designer list.
+ *
+ * `primary` EXISTS ONLY AT BG=no in Figma — there is no filled primary — which
+ * is why `.chip-primary` and `.badge-primary` are already transparent. Adding
+ * `.chip-bg-no` to a primary chip is harmless but redundant.
+ *
+ * CASING IS THE CALLER'S — CONFIRMED 2026-08-26. Figma renders the labels
+ * UPPERCASE (REVIEW, FLAGGED), and for a long time nothing distinguished a
+ * `text-transform` on the component from the casing of the sample strings. The
+ * designer has since bound a text style to the label — `Micro Text/Micro S -
+ * Bold` — and it applies NO text-case: the rendered variant emits `REVIEW` with
+ * no `uppercase`. So the caps are typed into the sample strings, and leaving
+ * casing alone was right. A label passed as "Review" stays "Review".
+ *
+ * There is still deliberately no `text-transform: none` assertion, because
+ * nothing sets one to guard against. Contrast Pill, where the same question was
+ * answered differently and the spec does pin it. Divider reached the same
+ * behaviour from the other direction, by dropping the `type-label-*` form.
+ */
+
+@layer components {
+  /* --- Chip (text with optional dot) --------------------------------- */
+
+  .chip {
+    /* Layout */
+    @apply inline-flex items-center gap-1;
+    @apply px-2.25 py-1.25; /* 9px x 5px from Figma */
+    @apply h-5; /* 20px — pinned, not derived from the 8px Auto line box */
+
+    /* Shape */
+    @apply rounded-pill; /* 9999px */
+
+    /* Type */
+    @apply text-micro-s-bold; /* 8px/600/normal/0.4% */
+  }
+
+  /* Chip dot indicator (optional child element) */
+  .chip-dot {
+    @apply size-[5px] rounded-pill;
+    @apply bg-current; /* Inherits text color from parent chip variant */
+  }
+
+  /* --- Chip Variants -------------------------------------------------- */
+
+  .chip-warning {
+    @apply bg-warning-soft text-warning;
+  }
+
+  .chip-critical {
+    @apply bg-critical-soft text-critical;
+  }
+
+  .chip-success {
+    @apply bg-approved-soft text-approved;
+  }
+
+  .chip-neutral {
+    @apply bg-neutral-soft text-neutral-strong;
+  }
+
+  .chip-primary {
+    @apply bg-transparent text-primary;
+  }
+
+  /* --- Badge (circular number indicator) ------------------------------ */
+
+  .badge {
+    /* Layout */
+    @apply inline-flex items-center justify-center;
+    @apply size-[15px] p-1; /* 15px x 15px, 4px padding */
+
+    /* Shape */
+    @apply rounded-pill; /* 9999px */
+
+    /* Type */
+    @apply text-data-micro-s font-mono; /* 8px/500/normal, JetBrains Mono */
+  }
+
+  /* --- Badge Variants ------------------------------------------------- */
+
+  .badge-warning {
+    @apply bg-warning-soft text-warning;
+  }
+
+  .badge-critical {
+    @apply bg-critical-soft text-critical;
+  }
+
+  .badge-success {
+    @apply bg-approved-soft text-approved;
+  }
+
+  .badge-neutral {
+    @apply bg-neutral-soft text-neutral-strong;
+  }
+
+  .badge-primary {
+    @apply bg-transparent text-primary;
+  }
+
+  /* --- Dot (indicator only) ------------------------------------------- */
+
+  .dot {
+    @apply inline-block size-[5px] rounded-pill;
+  }
+
+  /* --- Dot Variants --------------------------------------------------- */
+
+  .dot-warning {
+    @apply bg-warning;
+  }
+
+  .dot-critical {
+    @apply bg-critical;
+  }
+
+  .dot-success {
+    @apply bg-approved;
+  }
+
+  .dot-neutral {
+    @apply bg-neutral-strong;
+  }
+
+  .dot-primary {
+    @apply bg-primary;
+  }
+
+  /* --- Sizes ----------------------------------------------------------- */
+  /* Figma's Size property, added 2026-08-22. SM is the pre-existing default,
+     so bare .chip / .badge / .dot stay SM and nothing breaks.
+     What MD actually changes is narrower than you would guess:
+       chip  — gap 4->6 and type 8px->11px. Padding is IDENTICAL (9 / 5), and
+               the inner .chip-dot stays 5px at both sizes.
+       badge — box 15 -> 19px, padding 4 -> 6px, type 8px -> 11px.
+       dot   — size only, 5px -> 7px. */
+
+  .chip-sm {
+    @apply h-5 gap-1; /* 20px, 4px gap */
+    @apply text-micro-s-bold; /* 8px / 600 / 0.4% */
+  }
+
+  .chip-md {
+    @apply h-[23px] gap-1.5; /* 23px, 6px gap */
+    @apply text-micro-l-bold; /* 11px / 500, Inter Medium */
+  }
+
+  .badge-sm {
+    @apply text-data-micro-s font-mono; /* 8px / 500, JetBrains Mono */
+  }
+
+  .badge-md {
+    @apply size-[19px] p-1.5; /* 19px box, 6px padding */
+    @apply text-data-micro-l font-mono; /* 11px / 500, JetBrains Mono */
+  }
+
+  .dot-sm {
+    @apply size-[5px];
+  }
+
+  .dot-md {
+    @apply size-[7px];
+  }
+
+  /* --- BG (Figma's BG axis) -------------------------------------------- */
+
+  /* BG=yes is the default and lives on the colour variants above. This is the
+     opt-out: it removes the fill and nothing else — same text colour, same dot
+     colour, and deliberately NO border, which the Figma render confirms.
+
+     Written as a compound selector so it beats `.chip-warning` on specificity
+     rather than on source order, matching how `.chip.with-ring` is written
+     below. `dot` is absent on purpose — see the header. */
+  .chip.chip-bg-no,
+  .badge.badge-bg-no {
+    @apply bg-transparent;
+  }
+
+  /* --- States (with-ring variant) ------------------------------------- */
+
+  /* Figma's Ring layer is `inset: 0` with a 2px Primary/Main border — drawn
+     INSIDE the component's own bounds, at zero offset, in primary regardless
+     of the status colour. An earlier version used the variant's own colour and
+     pushed the ring 2px outward; both were wrong.
+     Ring is orthogonal to the BG property — it combines with either. */
+  .chip.with-ring,
+  .badge.with-ring,
+  .dot.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

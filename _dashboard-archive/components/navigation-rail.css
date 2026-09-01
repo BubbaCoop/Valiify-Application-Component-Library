@@ -1,0 +1,558 @@
+/**
+ * Navigation Rail — Figma Nav Items 723:18649, Nav Group Container 726:18779,
+ *                   Nav Badge 724:18701, Nav Title 727:18963
+ *
+ * The sidebar family. Four sub-components live in this one file because they are
+ * only ever composed together, the way input.css holds .input-container ›
+ * .input-field › .input:
+ *
+ *   .nav-title    46px header — logo tile, product name, switcher + search
+ *   .nav-group    26px group header — label, hover chevron; a rule when collapsed
+ *   .nav-item     32px row — icon, label, optional badge / count / status dot
+ *   .nav-badge    14px "Beta" pill, slots inside a nav item
+ *
+ *   .nav-rail     240px expanded / 60px collapsed container
+ *
+ * Collapsing is driven from the RAIL — put `.nav-rail-collapsed` on the
+ * container and every part follows. The per-part `-collapsed` modifiers still
+ * work for rendering a part on its own (Storybook, tests), and are the same
+ * declarations, not a second implementation.
+ *
+ * Structure:
+ *   <nav class="nav-rail">
+ *     <a class="nav-title">
+ *       <span class="nav-title-logo"><img …></span>
+ *       <span class="nav-title-details">
+ *         <span class="nav-title-name">Central Williamette</span>
+ *         <span class="nav-title-subtitle">Main st branch</span>
+ *       </span>
+ *       <span class="nav-title-action"><svg class="icon icon-size-14">…</svg></span>
+ *       <span class="nav-title-action"><svg class="icon icon-size-14">…</svg></span>
+ *     </a>
+ *
+ *     <button class="nav-group" aria-expanded="true" aria-controls="analyze">
+ *       <span class="nav-group-label">Analyze</span>
+ *       <svg class="nav-group-chevron icon icon-size-16"><use href="#chevron-down" /></svg>
+ *       <span class="nav-group-rule"></span>
+ *     </button>
+ *     <div class="nav-rail-items" id="analyze">
+ *       ...nav items the group controls...
+ *     </div>
+ *
+ *     <a class="nav-item" aria-current="page">
+ *       <svg class="nav-item-icon icon icon-size-16"><use href="#inbox" /></svg>
+ *       <span class="nav-item-label">Inbox</span>
+ *       <span class="nav-badge">Beta</span>
+ *       <span class="nav-item-count">41</span>
+ *     </a>
+ *   </nav>
+ *
+ * ─────────────────────────────────────────────────────────────────────────────
+ * FIGMA'S STATE NAMES ARE INVERTED FROM INTUITION. Read this before changing
+ * any state rule.
+ *
+ * The Nav Item set has states rest / Hover / Pressed / Active / Passive, and:
+ *
+ *   "Passive" is the BLUE, current-page look   — Primary/Soft bg, Primary/Main text
+ *   "Active"  is a NEUTRAL GREY highlight      — Action/Selected bg, Content/Primary
+ *
+ * So Figma's "Active" is not the active page and its "Passive" is not
+ * de-emphasised. Mapped here to the semantics they actually describe:
+ *
+ *   Figma Passive  -> [aria-current="page"]   the current page (blue)
+ *   Figma Active   -> .nav-item-active        an ancestor section of it (grey)
+ *   Figma Hover    -> :hover
+ *   Figma Pressed  -> :active
+ *
+ * That reading — blue for the page you are on, grey for the section containing
+ * it — is the only one that makes both states useful at once, but it IS a
+ * reading. Confirm with the designer before relying on `.nav-item-active`.
+ *
+ * The set also declares a `Beta` axis whose only drawn value is `no`. There is
+ * no Beta=yes variant; the Beta visual is delivered by the badge slot instead.
+ * Treated as a dead property and not modelled.
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * Heights are pinned with explicit `height`, per house style: several of these
+ * text styles use an Auto line height, so a content-driven box would be
+ * font-metric dependent.
+ */
+
+@layer components {
+  /* ================================================================== */
+  /* Nav Rail — Figma 728:20677, 2 variants (Expanded=yes/no)            */
+  /* ================================================================== */
+
+  /* THE RAIL HAS NO SURFACE OF ITS OWN. No fill, no border, no right divider,
+     no shadow, no radius — confirmed absent in both variants, and no
+     Surface/* variable resolves anywhere on the root. It is transparent and
+     inherits whatever it sits on. Do not add a background here to make
+     Storybook look tidier; that would invent a spec.
+
+     Padding is 8px horizontal and 0 vertical in BOTH states — collapsing
+     changes the content column width (224 -> 44), not the padding.
+
+     Height in Figma is a fixed 897px, which is a frame height standing in for
+     the viewport, not a constraint on the component. `h-full` is used instead
+     so the rail fills whatever it is put in.
+     
+     CONSUMERS MUST GIVE IT A HEIGHT. `h-full` is `height: 100%`, so in an
+     auto-height parent it resolves to the content height — measured at 64px for
+     a two-row rail — and `justify-between` then has no slack to distribute, so
+     the footer sits directly under the content instead of at the bottom.
+     Put the rail in something sized: a `h-screen` wrapper, a grid row, or a
+     flex parent with a height. Nothing breaks without it; the footer just
+     stops being bottom-pinned. */
+  .nav-rail {
+    @apply flex h-full w-60 flex-col items-start justify-between; /* 240px */
+    @apply px-2; /* 8px, both states */
+  }
+
+  .nav-rail-collapsed {
+    @apply w-15; /* 60px */
+  }
+
+  /* Sections wrapper. `justify-between` on the rail pushes the footer down —
+     in Figma the 149px of slack is absorbed that way, with no spacer node.
+
+     `overflow-y-auto` is NOT from Figma: neither root declares clipping, so
+     nothing in the file says which subtree scrolls. This is the only sensible
+     candidate (684px of content in an 897px frame) and a rail with more items
+     than fit has to scroll somewhere. Flagged as an engineering decision. */
+  .nav-rail-content {
+    @apply flex w-full flex-col gap-5 overflow-y-auto; /* 20px between sections */
+  }
+
+  /* One group of rows. Items butt directly against each other — the gap inside
+     a section is 0, and the breathing room comes from the 32px row height
+     against a 19.5px line box. Not every section has a header: the first
+     ("Apps") has none. */
+  .nav-rail-section {
+    @apply flex w-full flex-col gap-0;
+  }
+
+  /* Bottom-pinned. Holds ordinary nav items — Settings and Collapse are rows,
+     not a bespoke control, and the collapse toggle is a footer item rather than
+     the floating edge chevron this pattern usually gets. */
+  .nav-rail-footer {
+    @apply flex w-full flex-col gap-0;
+  }
+
+  /* ================================================================== */
+  /* Nav Title — Figma 727:18963, 4 variants (Hover x Expanded)          */
+  /* ================================================================== */
+
+  .nav-title {
+    /* Layout */
+    @apply flex items-center gap-2; /* 8px */
+    @apply px-2; /* 8px; no vertical padding — 46px height centres instead */
+    @apply h-11.5; /* 46px */
+
+    /* Shape */
+    @apply rounded-tight; /* Radius/XS 4px */
+
+    /* Reset, so the class works on a / button / div alike */
+    @apply appearance-none border-none bg-transparent text-left no-underline;
+
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* Figma's only hover delta on this component is the background. Text and
+     icon colours, width, padding and radius are all unchanged. */
+  .nav-title:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-hover;
+  }
+
+  .nav-title:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* 30px tile carrying the institution logo. The Figma logo is a raster crop
+     out of a larger image and cannot be reproduced faithfully, so this is a
+     slot: put an <img> or an <svg> inside it. */
+  .nav-title-logo {
+    @apply flex size-7.5 shrink-0 items-center justify-center; /* 30px */
+    @apply overflow-hidden rounded-control; /* Radius/SM 6px */
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+    @apply bg-surface-paper;
+  }
+
+  .nav-title-logo > img,
+  .nav-title-logo > svg {
+    @apply size-5 object-contain; /* 20px */
+  }
+
+  /* Fixed 119px in Figma, so long names wrap rather than widening the row.
+     Kept fixed to stay faithful — see the note in CLAUDE.md. */
+  .nav-title-details {
+    @apply flex w-[119px] shrink-0 flex-col items-start justify-center;
+    min-width: 0;
+  }
+
+  .nav-title-name {
+    @apply w-full truncate;
+    @apply text-body-1-bold text-content-primary; /* 13px / 19.5 / 500 */
+  }
+
+  .nav-title-subtitle {
+    @apply w-full truncate;
+    @apply text-micro-l text-content-secondary; /* 11px / normal / 400 */
+  }
+
+  /* 18px hit box around a 14px glyph. Figma also puts 6px padding on this
+     box, which with a 14px glyph would need 26px — the glyph overflows its own
+     padded frame in the file. Rendered as an 18px box centring a 14px glyph. */
+  .nav-title-action {
+    @apply flex size-4.5 shrink-0 items-center justify-center; /* 18px */
+    @apply rounded-control text-secondary; /* Radius/SM, Secondary/Main */
+    @apply cursor-pointer;
+  }
+
+  /* Collapsed rail: only the logo tile survives. Figma drops the details block
+     and both action icons entirely rather than hiding them.
+
+     Figma reports this frame as 44px wide while its own contents measure
+     8 + 30 + 8 = 46. Width is held at Figma's 44 and the padding tightened to
+     7px so the tile actually fits; the 2px is a file discrepancy, not a
+     deliberate overflow. */
+  .nav-title-collapsed,
+  .nav-rail-collapsed .nav-title {
+    @apply w-11 justify-center px-1.75; /* 44px, 7px */
+  }
+
+  /* The details block carries the institution name, which is `.nav-title`'s
+     accessible name — `sr-only` so the collapsed logo tile is still a labelled
+     link rather than an anonymous one. */
+  .nav-title-collapsed .nav-title-details,
+  .nav-rail-collapsed .nav-title-details {
+    @apply sr-only;
+  }
+
+  /* The two action icons are genuinely removed, not hidden: they are separate
+     controls (a switcher and a search), and Figma drops them. Keeping them in
+     the accessibility tree would announce controls that cannot be seen. */
+  .nav-title-collapsed .nav-title-action,
+  .nav-rail-collapsed .nav-title-action {
+    @apply hidden;
+  }
+
+  /* ================================================================== */
+  /* Nav Group — Figma 726:18779, 8 variants (Hover x Collapsed x Expanded) */
+  /* ================================================================== */
+
+  /* Two axes in Figma that both sound like "collapsed", and they are NOT the
+     same thing:
+       Expanded  = the whole RAIL is expanded vs icon-only  -> .nav-group-collapsed
+       Collapsed = THIS GROUP's own disclosure state        -> aria-expanded
+     Modelled with two different mechanisms so they cannot be confused. */
+
+  .nav-group {
+    /* Layout */
+    @apply flex items-center gap-0.75; /* 3px */
+    @apply px-2; /* 8px; no vertical padding — 26px height centres */
+    @apply h-6.5; /* 26px */
+    @apply w-full;
+
+    /* Shape */
+    @apply rounded-tight; /* Radius/XS 4px */
+
+    /* Reset — this is a <button> with aria-expanded, not a bare label */
+    @apply appearance-none border-none bg-transparent text-left;
+
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  .nav-group:hover:not(.nav-group-collapsed):not(:disabled):not(
+      [aria-disabled="true"]
+    ) {
+    @apply bg-action-hover;
+  }
+
+  .nav-group:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Style name is "Micro L - Bold" but the file resolves it to Medium / 500,
+     and the label is NOT uppercase — Figma renders "Analyze" in mixed case. */
+  .nav-group-label {
+    @apply text-micro-l-bold text-content-tertiary; /* 11px / normal / 500 */
+  }
+
+  /* FIGMA SHOWS THE CHEVRON ON HOVER ONLY — absent at rest.
+     
+     In the standalone component that makes the frame grow 58 -> 77px when the
+     pointer enters (3px gap + 16px icon). Inside the rail it does NOT grow, and
+     that is correct: the in-rail group is set to fill, so it is 224px either
+     way and the chevron simply appears within it. Measured both ways — 224 at
+     rest, 224 on hover. An earlier version of this comment claimed the width
+     change was reproduced; it is not, because the only place the component is
+     actually used never hugs.
+     
+     Consequence worth raising with the designer: at rest a collapsed group used
+     to be indistinguishable from an open one. That is much less true now the
+     rows actually hide (see Group disclosure below) — the row count is the
+     state indicator. Touch users still get no chevron; `:focus-visible` is
+     included below so keyboard users reach parity with mouse users, which is an
+     addition to the design rather than a reading of it. */
+  .nav-group-chevron {
+    @apply hidden shrink-0 text-content-tertiary;
+    @apply transition-transform duration-150;
+  }
+
+  .nav-group:hover:not(.nav-group-collapsed):not(:disabled):not(
+      [aria-disabled="true"]
+    )
+    .nav-group-chevron,
+  .nav-group:focus-visible .nav-group-chevron {
+    @apply block;
+  }
+
+  /* Collapsed group: the same chevron instance rotated, not a swapped glyph.
+     Down when open, pointing right when closed. */
+  .nav-group[aria-expanded="false"] .nav-group-chevron {
+    @apply -rotate-90;
+  }
+
+  /* --- Group disclosure ----------------------------------------------- */
+
+  /* A collapsed group HIDES THE ROWS BELOW IT. Figma draws the chevron
+     rotation and nothing else, so this behaviour is not in the file — but a
+     disclosure control whose disclosure does nothing is a bug, not fidelity.
+
+     Two markup shapes are supported, because a library cannot dictate one:
+
+       wrapped   .nav-group + .nav-rail-items   <- recommended
+       flat      .nav-group ~ .nav-item
+
+     Prefer wrapped. It is the only shape that lets you point `aria-controls`
+     at a real element, which is what makes this an actual ARIA disclosure
+     rather than a button that happens to hide things.
+
+     This library ships no JavaScript, so flipping `aria-expanded` is the
+     consumer's job — one line on click. The CSS is the whole contract. */
+  .nav-group[aria-expanded="false"] + .nav-rail-items,
+  .nav-group[aria-expanded="false"] ~ .nav-item {
+    @apply hidden;
+  }
+
+  /* ...except in a collapsed rail. Figma's Collapsed axis has no visual effect
+     when the rail is icon-only, and there the header renders as a bare rule
+     with no chevron — so honouring disclosure would strand those rows with no
+     affordance to bring them back. Rows stay visible; the state is remembered
+     and reapplies when the rail expands. */
+  .nav-rail-collapsed .nav-group[aria-expanded="false"] ~ .nav-item {
+    @apply flex;
+  }
+
+  .nav-rail-collapsed .nav-group[aria-expanded="false"] + .nav-rail-items {
+    @apply flex;
+  }
+
+  /* Optional wrapper for the rows a group controls. Give it an id and point the
+     header's `aria-controls` at it. */
+  .nav-rail-items {
+    @apply flex w-full flex-col gap-0;
+  }
+
+  /* Collapsed rail: the label and chevron are replaced by a short rule.
+     
+     The standalone component hugs to 38.5px (8 + a raw 22.5px rule + 8), and
+     that half pixel looked like an authoring artefact worth flagging. The rail
+     resolves it: INSIDE the rail all three group headers are set to fill, so
+     they render 44 x 26 like everything else in the column. 38.5 is the hug
+     width of a component nobody uses standalone, so no width is pinned here —
+     it fills, and the rule stays 22.5px centred within it.
+     
+     Not a control in this state — it is a divider, so the base hover rule
+     above excludes it rather than applying a background and cancelling it. */
+  .nav-group-collapsed,
+  .nav-rail-collapsed .nav-group {
+    @apply justify-center;
+    @apply cursor-default;
+  }
+
+  .nav-group-collapsed .nav-group-chevron,
+  .nav-rail-collapsed .nav-group-chevron {
+    @apply hidden;
+  }
+
+  /* `sr-only`, NOT `hidden`. Figma drops the label in the collapsed rail, but
+     `.nav-group` is a <button>, and a button whose only remaining child is a
+     decorative rule has no accessible name — axe `button-name`, and a keyboard
+     user lands on an unlabelled tab stop. Hiding it visually while leaving it
+     in the accessibility tree keeps Figma's appearance and the name both.
+     `sr-only` is absolutely positioned, so it takes no space in the row. */
+  .nav-group-collapsed .nav-group-label,
+  .nav-rail-collapsed .nav-group-label {
+    @apply sr-only;
+  }
+
+  .nav-group-rule {
+    @apply hidden h-0 w-[22.5px] shrink-0;
+    @apply border-t border-t-[length:var(--border-line)] border-stroke-divider;
+  }
+
+  .nav-group-collapsed .nav-group-rule,
+  .nav-rail-collapsed .nav-group-rule {
+    @apply block;
+  }
+
+  /* ================================================================== */
+  /* Nav Item — Figma 723:18649, 10 variants                             */
+  /* ================================================================== */
+
+  .nav-item {
+    /* Layout */
+    @apply relative flex items-center gap-3; /* 12px */
+    @apply px-2; /* 8px; no vertical padding — 32px height centres */
+    @apply h-8; /* 32px */
+    @apply w-full;
+
+    /* Shape */
+    @apply rounded-tight; /* Radius/XS 4px */
+
+    /* Reset, so the class works on a / button / div / li alike */
+    @apply appearance-none border-none bg-transparent text-left no-underline;
+
+    /* Rest — label and icon are DIFFERENT colours here, the only state where
+       they diverge. The icon takes its own colour below. */
+    @apply bg-transparent text-content-secondary;
+
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  .nav-item-icon {
+    @apply shrink-0 text-content-tertiary;
+  }
+
+  .nav-item-label {
+    @apply flex-1 truncate;
+    @apply text-body-1-bold; /* 13px / 19.5 / 500 */
+  }
+
+  /* Trailing count — mono, and keeps Content/Tertiary in every state */
+  .nav-item-count {
+    @apply shrink-0 whitespace-nowrap;
+    @apply text-data-xs font-mono text-content-tertiary; /* 12px / 16.5 / 400 */
+  }
+
+  /* 5px dot, positioned top-right of the centred icon in a collapsed 44x32 row.
+     
+     Collapsed-only in Figma — the expanded variant has no status layer at all,
+     which looks like an authoring gap given the component description mentions
+     a status indicator. Available in both here; it costs nothing and the
+     expanded rail is where a status is most legible.
+     
+     The rail uses THREE colours for it — Neutral/Main, Warning/Main and
+     Primary/Main — so the colour is a modifier rather than baked in. Neutral is
+     the base because an unqualified status dot is informational; the other two
+     say something. */
+  .nav-item-status {
+    @apply absolute size-1.25 rounded-pill bg-neutral; /* 5px, Neutral/Main */
+    top: 6px;
+    left: 27px;
+  }
+
+  .nav-item-status-warning {
+    @apply bg-warning; /* Warning/Main — Alerts */
+  }
+
+  .nav-item-status-primary {
+    @apply bg-primary; /* Primary/Main — Analytics, Email automation */
+  }
+
+  /* --- Nav Item states ------------------------------------------------ */
+
+  /* In every state but rest the label and icon share one colour, so the icon
+     simply follows the row instead of each state setting it twice. */
+  .nav-item:hover:not(:disabled):not([aria-disabled="true"]) .nav-item-icon,
+  .nav-item:active:not(:disabled):not([aria-disabled="true"]) .nav-item-icon,
+  .nav-item-active .nav-item-icon,
+  .nav-item[aria-current="page"] .nav-item-icon,
+  .nav-item:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-hover text-content-primary;
+  }
+
+  /* Figma "Pressed" — note it binds Action/Focused, not an Action/Pressed
+     token, which does not exist. */
+  .nav-item:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-focused text-content-primary;
+  }
+
+  .nav-item:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Figma "Active" — the neutral grey highlight. See the header: this is NOT
+     the current page. */
+  .nav-item-active {
+    @apply bg-action-selected text-content-primary;
+  }
+
+  /* Figma "Passive" — the blue current-page look. See the header. */
+  .nav-item[aria-current="page"] {
+    @apply bg-primary-soft text-primary;
+  }
+
+  .nav-item:disabled,
+  .nav-item[aria-disabled="true"] {
+    @apply cursor-not-allowed text-content-faint;
+  }
+
+  /* Collapsed rail: 44px, icon centred. Figma REMOVES the label rather than
+     hiding it, so the gap and padding stop mattering — `justify-center` is what
+     positions the icon, not the 8px padding, which Figma still declares. */
+  .nav-item-collapsed,
+  .nav-rail-collapsed .nav-item {
+    @apply justify-center;
+  }
+
+  /* `sr-only`, NOT `hidden` — same reason as the group label. `.nav-item` is an
+     <a>/<button>, and its label is its only text: `display:none` takes it out
+     of the accessibility tree and leaves an unnamed control in the tab order.
+     Measured with axe and Playwright's ariaSnapshot BEFORE this fix: 16 of 21
+     focusable nodes in the collapsed rail had no accessible name at all, which
+     made the icon-only rail unusable with a screen reader.
+     
+     The count goes the same way rather than being dropped: it is real
+     information ("Inbox, 41"), and keeping it means the collapsed rail
+     announces exactly what the expanded one does. */
+  .nav-item-collapsed .nav-item-label,
+  .nav-item-collapsed .nav-item-count,
+  .nav-rail-collapsed .nav-item-label,
+  .nav-rail-collapsed .nav-item-count {
+    @apply sr-only;
+  }
+
+  /* The badge IS dropped — Figma drops it in the collapsed rail, and it is
+     decorative duplication next to a 44px icon. It also has to go: left
+     visible it rendered 30.4px inside a 44px row, overflowing by 7px
+     (scrollWidth 51 vs width 44). */
+  .nav-item-collapsed .nav-badge,
+  .nav-rail-collapsed .nav-badge {
+    @apply hidden;
+  }
+
+  /* ================================================================== */
+  /* Nav Badge — Figma 724:18701, 2 variants                             */
+  /* ================================================================== */
+
+  /* Figma declares a Size axis of micro / md. The two variants are identical in
+     every extracted property and render pixel-for-pixel the same — same 29x14
+     box, same padding, same radius, same text style. No size modifiers are
+     defined here, because shipping .nav-badge-micro and .nav-badge-md as
+     synonyms would encode a distinction the design system does not make.
+     Raised with the designer; add them if the sizes diverge.
+     
+     The resting border binds Primary/Disabled, which is an odd token for a
+     non-disabled element, but it is what the file specifies. */
+  .nav-badge {
+    @apply inline-flex shrink-0 items-center justify-center;
+    @apply h-3.5 px-1; /* 14px, 4px */
+    @apply rounded-micro; /* Radius/Micro 2px */
+    @apply border border-[length:var(--border-thin)] border-primary-disabled;
+    @apply bg-primary-soft text-primary-dark;
+    @apply text-data-micro-m font-mono; /* 8.5px / normal / 500, JetBrains Mono */
+    @apply whitespace-nowrap;
+  }
+}

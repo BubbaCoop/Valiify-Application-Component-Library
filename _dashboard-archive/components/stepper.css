@@ -1,0 +1,93 @@
+/**
+ * Stepper Component
+ *
+ * A row of Steps joined by progress connectors. Extracted from Figma Stepper
+ * (1032:2013) — a single symbol with a Stepper Title boolean.
+ *
+ * Usage:
+ *   <div class="stepper">
+ *     <p class="stepper-title">Stepped progression flow</p>
+ *     <div class="stepper-steps">
+ *       <div class="step"><span class="step-marker">…</span><span class="step-label">Intake</span></div>
+ *       <span class="stepper-connector stepper-connector-complete"></span>
+ *       <div class="step"><span class="step-marker">…</span><span class="step-label">Verify</span></div>
+ *       <span class="stepper-connector stepper-connector-complete"></span>
+ *       <div class="step step-active"><span class="step-marker">3</span><span class="step-label">Review</span></div>
+ *       <span class="stepper-connector"></span>
+ *       <div class="step step-upcoming"><span class="step-marker">4</span><span class="step-label">Decision</span></div>
+ *     </div>
+ *   </div>
+ *
+ * THE CONNECTORS CARRY THE PROGRESS, not the steps. Each is `flex-1`, so it
+ * absorbs whatever space the steps leave — which is why Figma's step instances
+ * are 38 / 38 / 41 / 51px wide (their labels) while every connector is the same
+ * 70.67px. Its colour says whether that SEGMENT is behind you:
+ *
+ *   default                 `Stroke/Border`   not yet reached
+ *   `-complete`             `Primary/Main`    passed
+ *
+ * Incomplete is the default deliberately, even though Figma's first two
+ * instances are filled — an empty stepper should not imply progress it has not
+ * made.
+ *
+ * THE ROW HAS 10px OF SIDE PADDING, which is what stops the first and last
+ * markers sitting flush against the container edge. It is also why Figma's step
+ * instances start at x=10 rather than 0.
+ *
+ * THE ROOT'S WHITE FILL AND 8px RADIUS ARE NOT REPRODUCED. Figma sets both on a
+ * frame with no padding, no border and no shadow, so the fill hugs the content
+ * exactly and the radius clips nothing — the white would simply be wrong on any
+ * surface that is not already white. Treated as vestigial, the same call as
+ * Progress Bar's root radius. On the designer list.
+ *
+ * THE TITLE IS `Content/Secondary` HERE where Progress Bar's otherwise identical
+ * 11px uppercase title is `Content/Primary`. Both are raw — neither binds a text
+ * style — so the difference may be unintentional. Reproduced as drawn.
+ *
+ * THE CONNECTORS SIT BELOW THE MARKER CENTRES, by 9px, and that is faithful
+ * rather than a bug here: the row is `items-center` over a 42px step (24px
+ * marker + 6px gap + 12px label), so a 2px line centres at y=21 while the
+ * marker centres at y=12. Figma places its lines at exactly y=20 for the same
+ * reason. Most steppers align the connector with the marker centre, so this may
+ * not be intended — but it is what the file draws, confirmed against the render.
+ *
+ * FIGMA'S OWN INSTANCES SHOW THE WRONG NUMBERS: both the active and upcoming
+ * markers read "1", because those Step instances kept the component's default
+ * label instead of being overridden to 3 and 4. The number is a text slot, so
+ * nothing in the CSS is affected — but do not copy the numbering from the
+ * design file.
+ *
+ * The connector's 1px radius is exactly half its 2px height, so `rounded-pill`
+ * renders it identically and is used instead of a raw value.
+ */
+
+@layer components {
+  .stepper {
+    @apply flex w-full flex-col items-start gap-4; /* 16px */
+  }
+
+  .stepper-title {
+    @apply w-full;
+    @apply text-[11px] font-medium leading-[normal];
+    @apply uppercase tracking-[0.5px];
+    @apply text-content-secondary;
+  }
+
+  /* 10px of side padding keeps the end markers off the container edge. */
+  .stepper-steps {
+    @apply flex w-full items-center overflow-hidden;
+    @apply px-2.5; /* 10px */
+  }
+
+  /* Fills the space between two steps, so the row distributes itself however
+     wide the labels turn out to be. */
+  .stepper-connector {
+    @apply h-0.5 min-w-px flex-1; /* 2px tall */
+    @apply rounded-pill; /* 1px in Figma = half the height, so identical */
+    @apply bg-stroke-border;
+  }
+
+  .stepper-connector-complete {
+    @apply bg-primary;
+  }
+}

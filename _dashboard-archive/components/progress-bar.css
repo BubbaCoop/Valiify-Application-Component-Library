@@ -1,0 +1,157 @@
+/**
+ * Progress Bar Component
+ *
+ * Extracted from Figma Progress Bar (1032:1991) — 2 variants, plus Top Content
+ * and Bottom Content booleans and two text properties.
+ *
+ * Usage:
+ *   <div class="progress-bar">
+ *     <div class="progress-bar-header">
+ *       <span class="progress-bar-title">Review completion</span>
+ *       <span class="progress-bar-value">68%</span>
+ *     </div>
+ *
+ *     <div class="progress-bar-track" role="progressbar"
+ *          aria-valuenow="68" aria-valuemin="0" aria-valuemax="100">
+ *       <div class="progress-bar-fill" style="width: 68%"></div>
+ *     </div>
+ *
+ *     <div class="progress-bar-legend">
+ *       <span class="progress-bar-legend-item">
+ *         <span class="progress-bar-legend-swatch"></span>
+ *         <span class="progress-bar-legend-label">68% verified</span>
+ *       </span>
+ *       <span class="progress-bar-legend-item">
+ *         <span class="progress-bar-legend-swatch progress-bar-legend-swatch-neutral"></span>
+ *         <span class="progress-bar-legend-label">32% unaccounted</span>
+ *       </span>
+ *     </div>
+ *   </div>
+ *
+ * FIGMA'S VARIANT PROPERTY IS MISNAMED. The axis is called `Has Legend`, but it
+ * does not control the legend: BOTH variants render the legend row, which is
+ * gated by a separate `Bottom Content` boolean that is true in each. What the
+ * property actually swaps is the COLOUR SCHEME — `Has Legend=false` is
+ * Primary/Main throughout, `true` is the Approved ramp — plus the sample copy.
+ * It is therefore implemented as a colour modifier and renamed, because
+ * shipping a class called `has-legend` that changes colour would be worse than
+ * the original mistake. On the designer list.
+ *
+ *   scheme            value text        fill + first swatch
+ *   base (default)    Primary/Main      Primary/Main
+ *   `-success`        Approved/CONTENT  Approved/Main
+ *
+ * Note the success scheme uses two different Approved tokens: `Approved/Content`
+ * for the value text and `Approved/Main` for the fill. The same split Modal's
+ * positive variant has.
+ *
+ * THE `false` VARIANT CONTRADICTS ITSELF THREE WAYS, which is worth knowing
+ * before treating its numbers as a spec: its value label reads 92%, its fill is
+ * 260 of 360 (72%), and its legend says 68%. The `true` variant is internally
+ * consistent at 92 / 92 / 92, so the blue one looks like an un-updated
+ * duplicate. Also on the designer list. The story uses 68% throughout for the
+ * base scheme, since the legend is the only number that appears twice.
+ *
+ * THE TRACK IS FULL WIDTH HERE, where Figma fixes it at 360px inside a 400px
+ * frame while the label and legend rows are both full width — so the bar stops
+ * 40px short of everything above and below it, with no padding on the root to
+ * explain it. That reads as an authoring slip rather than an inset, and a
+ * progress track that does not span its container is not shippable. Same
+ * judgement as Alert's 828px.
+ *
+ * THE ROOT'S 8px RADIUS IS VESTIGIAL and is not reproduced: Figma sets it on a
+ * frame with no fill and no border, so it clips nothing and paints nothing.
+ *
+ * THE TYPE IS RAW — Figma binds no text style to any of the three. The value's
+ * 13px Inter Medium happens to equal `--text-action-l` exactly, but that is a
+ * Button & Actions token and coupling a progress readout to it would mean a
+ * button change silently moved this. Written directly instead.
+ */
+
+@layer components {
+  .progress-bar {
+    @apply flex w-full flex-col items-start gap-3; /* 12px */
+  }
+
+  /* --- Label row (Figma's Top Content boolean) ---------------------------- */
+
+  .progress-bar-header {
+    @apply flex w-full items-center justify-between;
+  }
+
+  .progress-bar-title {
+    @apply shrink-0;
+    @apply text-[11px] font-medium uppercase;
+    @apply leading-[normal] tracking-[0.5px];
+    @apply text-content-primary;
+  }
+
+  /* Colour comes from the scheme — see the bottom of the file. */
+  .progress-bar-value {
+    @apply shrink-0;
+    @apply text-[13px] font-medium;
+    @apply leading-[normal];
+    @apply text-primary;
+  }
+
+  /* --- Track and fill ------------------------------------------------------ */
+
+  /* Full width by choice; Figma's 360 is a slip. See the header. */
+  .progress-bar-track {
+    @apply flex w-full items-start overflow-hidden;
+    @apply h-[5px];
+    @apply rounded-pill;
+    @apply bg-stroke-divider;
+  }
+
+  /* The consumer sets the width — `style="width: 68%"` or a utility. */
+  .progress-bar-fill {
+    @apply h-full shrink-0;
+    @apply rounded-pill;
+    @apply bg-primary;
+  }
+
+  /* --- Legend row (Figma's Bottom Content boolean) ------------------------- */
+
+  .progress-bar-legend {
+    @apply flex w-full items-start gap-4; /* 16px */
+  }
+
+  .progress-bar-legend-item {
+    @apply inline-flex shrink-0 items-center gap-1.5; /* 6px */
+  }
+
+  .progress-bar-legend-swatch {
+    @apply size-2 shrink-0; /* 8px */
+    @apply rounded-micro; /* 2px */
+    @apply bg-primary;
+  }
+
+  /* The unaccounted remainder is Neutral/Main in both schemes. */
+  .progress-bar-legend-swatch-neutral {
+    @apply bg-neutral;
+  }
+
+  .progress-bar-legend-label {
+    @apply text-[12px] font-normal;
+    @apply leading-[normal];
+    @apply text-content-secondary;
+  }
+
+  /* --- Scheme = success ---------------------------------------------------- */
+
+  /* Compound selectors so the scheme beats the base on specificity rather than
+     on source order, and so the neutral swatch is never recoloured. */
+  .progress-bar-success .progress-bar-value {
+    @apply text-approved-content;
+  }
+
+  .progress-bar-success .progress-bar-fill {
+    @apply bg-approved;
+  }
+
+  .progress-bar-success
+    .progress-bar-legend-swatch:not(.progress-bar-legend-swatch-neutral) {
+    @apply bg-approved;
+  }
+}

@@ -1,0 +1,28 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Design Tokens" />
+
+# Design Tokens
+
+**Pending extraction.** The Short App design tokens have not been pulled from
+Figma yet — `tokens/figma-tokens.json` is a placeholder and this page will be
+rebuilt as the token showcase once extraction lands.
+
+Tokens live in a Tailwind `@theme` block in `src/themes/valiify.css`, which is
+**generated** from `tokens/figma-tokens.json` by `scripts/build-theme.mjs`.
+Regenerate with `npm run build:theme`.
+
+When tokens are extracted this page should be rebuilt to be compared side by
+side with the Figma variables panel — every swatch and specimen should match.
+The dashboard library's version of this page is preserved at
+`_dashboard-archive/Foundations.mdx` as the reference for the format: colour
+palettes per group (`ColorPalette` / `ColorItem` with the original Figma hex),
+typography specimens (`Typeset`), radii, border widths, and shadows.
+
+Two extraction rules worth restating here because they cost real debugging
+time on the dashboard library:
+
+- `get_variable_defs` returns only variables actually **applied to a layer** —
+  audit token-group completeness with `search_design_system` instead.
+- Colors are stored as OKLCh; the generator asserts every conversion
+  round-trips back to its source hex within 1/255 per channel.

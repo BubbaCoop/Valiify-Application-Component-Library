@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Pinned to the version these gates are green on locally (931/931).
+      # Bump deliberately, not by inheriting whatever the runner ships.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.14.0"
+          cache: npm
+
+      - run: npm ci
+
+      # Cheap gates first, so a typo fails in seconds rather than after the
+      # 11MB Storybook build.
+      - name: typecheck
+        run: npm run typecheck
+
+      - name: build
+        run: npm run build
+
+      # Reads dist, so it has to follow build. Guards the cascade-layer
+      # statement that the whole consumer-override contract depends on.
+      - name: verify:layers
+        run: npm run verify:layers
+
+      - name: audit
+        run: npm run audit
+
+      # verify-component takes positional component names and has no --all
+      # flag, so the loop is deliberate glue rather than a missing feature.
+      # index.css and _template.css are not components.
+      - name: verify:component (every component)
+        run: |
+          set -euo pipefail
+          for f in src/components/*.css; do
+            n=$(basename "$f" .css)
+            case "$n" in index|_template) continue;; esac
+            name=$(printf '%s' "$n" | awk -F- '{for (i=1;i<=NF;i++) printf toupper(substr($i,1,1)) substr($i,2)}')
+            npm run --silent verify:component "$name"
+          done
+
+      # verify:visual drives a real browser and reads ${BASE_URL}/index.json —
+      # it needs Storybook over HTTP. It has no file:// path, so a static build
+      # alone is not enough; it must be served. Proven locally at 931/931
+      # against the static output on port 6007.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: build-storybook
+        run: npm run build-storybook
+
+      - name: Serve static Storybook
+        run: npx --yes http-server storybook-static -p 6007 --silent &
+
+      - name: Wait for Storybook
+        run: npx --yes wait-on -t 60000 http://127.0.0.1:6007/index.json
+
+      - name: verify:visual
+        run: npm run verify:visual -- --url http://127.0.0.1:6007
+
+# Deliberately not here yet: `prettier --check`, which fails on 35 prose files
+# (docs/*.md, CLAUDE.md, SKILL.md). Adding it now would ship CI red. Separate
+# cleanup — see the audit's section 4.

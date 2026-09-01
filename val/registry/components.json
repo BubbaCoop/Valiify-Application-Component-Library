@@ -1,0 +1,944 @@
+{
+  "Alert": {
+    "path": "src/components/alert.css",
+    "story": "components-alert--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "critical",
+        "warning",
+        "success",
+        "info",
+        "neutral"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "type",
+      "icon",
+      "actionButton",
+      "dismiss",
+      "title",
+      "message"
+    ],
+    "tokens": []
+  },
+  "Avatar": {
+    "path": "src/components/avatar.css",
+    "story": "components-avatar--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "size": [
+        "xs",
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "initials",
+      "size",
+      "disabled",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "Breadcrumbs": {
+    "path": "src/components/breadcrumbs.css",
+    "story": "components-breadcrumbs--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "separator": [
+        "chevron",
+        "slash"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "separator"
+    ],
+    "tokens": []
+  },
+  "Button": {
+    "path": "src/components/button.css",
+    "story": "components-button--default",
+    "figmaNodeIds": [
+      "73:180"
+    ],
+    "variants": {
+      "variant": [
+        "default",
+        "primary",
+        "outline",
+        "empty",
+        "critical"
+      ],
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "iconName": [
+        "save",
+        "download",
+        "upload",
+        "search",
+        "filter",
+        "edit-3",
+        "settings",
+        "plus",
+        "x",
+        "check",
+        "arrow-left",
+        "arrow-right",
+        "chevron-down",
+        "chevron-up",
+        "more-horizontal",
+        "trash-2",
+        "copy"
+      ]
+    },
+    "behaviors": [
+      "hand-added: aria-selected drives selected styling"
+    ],
+    "props": [
+      "label",
+      "variant",
+      "size",
+      "disabled",
+      "selected",
+      "leftIcon",
+      "rightIcon",
+      "iconName"
+    ],
+    "tokens": [
+      "--color-primary"
+    ]
+  },
+  "Card": {
+    "path": "src/components/card.css",
+    "story": "components-card--default",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "title",
+      "body",
+      "compact",
+      "bordered",
+      "hover"
+    ],
+    "tokens": []
+  },
+  "Checkbox": {
+    "path": "src/components/checkbox.css",
+    "story": "components-checkbox--interactive",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "label",
+      "checked",
+      "disabled",
+      "subtitle",
+      "icon"
+    ],
+    "tokens": []
+  },
+  "Chip": {
+    "path": "src/components/chip.css",
+    "story": "components-chip--default",
+    "figmaNodeIds": [],
+    "variants": {
+      "variant": [
+        "warning",
+        "critical",
+        "success",
+        "neutral",
+        "primary"
+      ],
+      "type": [
+        "chip",
+        "badge",
+        "dot"
+      ],
+      "size": [
+        "sm",
+        "md"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "text",
+      "variant",
+      "type",
+      "size",
+      "withDot",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "DataRow": {
+    "path": "src/components/data-row.css",
+    "story": "components-datarow--interactive",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "dataField",
+      "data",
+      "icon",
+      "help",
+      "comment"
+    ],
+    "tokens": []
+  },
+  "Divider": {
+    "path": "src/components/divider.css",
+    "story": "components-divider--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "simple",
+        "labeled",
+        "metadata"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "type",
+      "label"
+    ],
+    "tokens": []
+  },
+  "DropdownField": {
+    "path": "src/components/dropdown-field.css",
+    "story": "components-dropdownfield--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "leftIcon": [
+        ", ",
+        ", ",
+        ", ",
+        ", ",
+        ", "
+      ],
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "bgVariant": [
+        "white",
+        "neutral"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "label",
+      "showLabel",
+      "showHelp",
+      "placeholder",
+      "value",
+      "leftIcon",
+      "avatar",
+      "size",
+      "bgVariant",
+      "error",
+      "errorMessage",
+      "disabled",
+      "open"
+    ],
+    "tokens": []
+  },
+  "DropdownMenu": {
+    "path": "src/components/dropdown-menu.css",
+    "story": "components-dropdownmenu--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "size",
+      "selectedIndex",
+      "showCheck",
+      "showDivider",
+      "width"
+    ],
+    "tokens": []
+  },
+  "FieldVerification": {
+    "path": "src/components/field-verification.css",
+    "story": "components-fieldverification--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "state": [
+        "verified",
+        "pending",
+        "none",
+        "mismatch",
+        "mismatchDetails"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "state",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "FilterSegment": {
+    "path": "src/components/filter-segment.css",
+    "story": "components-filtersegment--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "position": [
+        "first",
+        "middle",
+        "last"
+      ],
+      "size": [
+        "sm",
+        "md"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "position",
+      "size",
+      "selected",
+      "label"
+    ],
+    "tokens": []
+  },
+  "Icon": {
+    "path": "src/components/icon.css",
+    "story": "components-icon--default",
+    "figmaNodeIds": [],
+    "variants": {
+      "size": [
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "18",
+        "20",
+        "22",
+        "24"
+      ],
+      "iconType": [
+        "chevron",
+        "check",
+        "x",
+        "star",
+        "heart"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "size",
+      "ring",
+      "iconType"
+    ],
+    "tokens": []
+  },
+  "IconButton": {
+    "path": "src/components/icon-button.css",
+    "story": "components-iconbutton--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "icon": [
+        "x",
+        "plus",
+        "minus",
+        "settings",
+        "custom-help",
+        "info",
+        "chevron-down",
+        "chevron-up",
+        "chevron-left",
+        "chevron-right",
+        "more-horizontal",
+        "more-vertical"
+      ],
+      "size": [
+        "xs",
+        "md",
+        "lg"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "icon",
+      "size",
+      "disabled",
+      "ariaLabel"
+    ],
+    "tokens": []
+  },
+  "Input": {
+    "path": "src/components/input.css",
+    "story": "components-input--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "text",
+        "email",
+        "password",
+        "number",
+        "url",
+        "search"
+      ],
+      "leftIcon": [
+        ",\n        ",
+        ",\n        ",
+        ",\n        ",
+        ",\n        ",
+        ",\n        ",
+        ",\n        ",
+        ",\n        "
+      ],
+      "rightIcon": [
+        ",\n        ",
+        ",\n        ",
+        ",\n        ",
+        ",\n        ",
+        ",\n        ",
+        ",\n        "
+      ],
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "bgVariant": [
+        "white",
+        "neutral"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "type",
+      "placeholder",
+      "value",
+      "disabled",
+      "error",
+      "errorMessage",
+      "label",
+      "showLabel",
+      "showHelp",
+      "leftIcon",
+      "rightIcon",
+      "size",
+      "bgVariant"
+    ],
+    "tokens": []
+  },
+  "Link": {
+    "path": "src/components/link.css",
+    "story": "components-link--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "style": [
+        "strong",
+        "quiet",
+        "monospace",
+        "critical"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "style",
+      "label"
+    ],
+    "tokens": []
+  },
+  "LoadingIndicator": {
+    "path": "src/components/loading-indicator.css",
+    "story": "components-loadingindicator--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "circle",
+        "dots"
+      ],
+      "size": [
+        "xs",
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "type",
+      "size"
+    ],
+    "tokens": []
+  },
+  "LoadingInline": {
+    "path": "src/components/loading-inline.css",
+    "story": "components-loadinginline--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "size": [
+        "xs",
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "size",
+      "label"
+    ],
+    "tokens": []
+  },
+  "MenuItem": {
+    "path": "src/components/menu-item.css",
+    "story": "components-menuitem--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "leftIcon": [
+        ", ",
+        ", ",
+        ", ",
+        ", ",
+        ", ",
+        ", ",
+        ", "
+      ],
+      "rightIcon": [
+        ", ",
+        ", ",
+        ", ",
+        ", "
+      ],
+      "badgeIcon": [
+        ", ",
+        ", ",
+        ", ",
+        ", "
+      ],
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "title",
+      "subtitle",
+      "showSubtitle",
+      "leftIcon",
+      "rightIcon",
+      "rightText",
+      "avatar",
+      "badgeIcon",
+      "size",
+      "combined",
+      "selected",
+      "disabled"
+    ],
+    "tokens": []
+  },
+  "Modal": {
+    "path": "src/components/modal.css",
+    "story": "decline-this-application?--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "action": [
+        "destructive",
+        "positive",
+        "neutral"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "action",
+      "leadingIcon",
+      "contextWindow"
+    ],
+    "tokens": []
+  },
+  "NavigationRail": {
+    "path": "src/components/navigation-rail.css",
+    "story": "components-navigationrail--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "state": [
+        "rest",
+        "current",
+        "active",
+        "disabled"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "label",
+      "iconName",
+      "state",
+      "collapsed",
+      "badge",
+      "count",
+      "status"
+    ],
+    "tokens": []
+  },
+  "Pagination": {
+    "path": "src/components/pagination.css",
+    "story": "components-pagination--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "numbered",
+        "simple"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "type"
+    ],
+    "tokens": []
+  },
+  "PaginationItem": {
+    "path": "src/components/pagination-item.css",
+    "story": "components-paginationitem--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "kind": [
+        "default",
+        "active",
+        "ellipsis",
+        "nav"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "kind",
+      "label",
+      "disabled"
+    ],
+    "tokens": []
+  },
+  "Pill": {
+    "path": "src/components/pill.css",
+    "story": "components-pill--interactive",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "label",
+      "dropdown",
+      "active",
+      "disabled",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "ProgressBar": {
+    "path": "src/components/progress-bar.css",
+    "story": "components-progressbar--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "scheme": [
+        "base",
+        "success"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "scheme",
+      "percent",
+      "title",
+      "topContent",
+      "bottomContent"
+    ],
+    "tokens": []
+  },
+  "RadioSelect": {
+    "path": "src/components/radio-select.css",
+    "story": "components-radioselect--default",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [
+      "Hover: Secondary/Main border",
+      "Focus: 2px Primary/Main focus ring (keyboard navigation)"
+    ],
+    "props": [
+      "label",
+      "name",
+      "checked",
+      "disabled"
+    ],
+    "tokens": []
+  },
+  "SectionMarker": {
+    "path": "src/components/section-marker.css",
+    "story": "components-sectionmarker--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "status": [
+        "approve",
+        "mismatch",
+        "unverified",
+        "na"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "status",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "SegmentSelector": {
+    "path": "src/components/segment-selector.css",
+    "story": "components-segmentselector--interactive",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "options",
+      "selected",
+      "fill",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "SensitiveData": {
+    "path": "src/components/sensitive-data.css",
+    "story": "components-sensitivedata--interactive",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "obscured",
+      "masked",
+      "plain"
+    ],
+    "tokens": []
+  },
+  "Skeleton": {
+    "path": "src/components/skeleton.css",
+    "story": "components-skeleton--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "shape": [
+        "line",
+        "heading",
+        "circle",
+        "rectangle",
+        "button"
+      ],
+      "size": [
+        "sm",
+        "md",
+        "lg"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "shape",
+      "size"
+    ],
+    "tokens": []
+  },
+  "Step": {
+    "path": "src/components/step.css",
+    "story": "components-step--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "state": [
+        "completed",
+        "active",
+        "upcoming"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "state",
+      "label",
+      "stepNumber",
+      "stepTitle"
+    ],
+    "tokens": []
+  },
+  "Stepper": {
+    "path": "src/components/stepper.css",
+    "story": "components-stepper--interactive",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "activeIndex",
+      "stepperTitle"
+    ],
+    "tokens": []
+  },
+  "Switch": {
+    "path": "src/components/switch.css",
+    "story": "components-switch--default",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [
+      "Toggle switch for binary on/off settings with hover, disabled, and focus states. Token-exact implementation from Figma.",
+      "Smooth slide animation on state change",
+      "Off (default): Action/Focused background",
+      "Off hover: Content/Faint background",
+      "On hover: Primary/Dark background",
+      "Focus: 2px Primary/Main focus ring (keyboard navigation)"
+    ],
+    "props": [
+      "checked",
+      "disabled"
+    ],
+    "tokens": []
+  },
+  "Tabs": {
+    "path": "src/components/tabs.css",
+    "story": "components-tabs--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "underline",
+        "chip",
+        "segment"
+      ],
+      "size": [
+        "lg",
+        "sm"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "type",
+      "size",
+      "label",
+      "subtitle",
+      "badge",
+      "active",
+      "disabled"
+    ],
+    "tokens": []
+  },
+  "Tag": {
+    "path": "src/components/tag.css",
+    "story": "components-tag--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "size": [
+        "sm",
+        "md"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "label",
+      "size",
+      "avatar",
+      "count",
+      "statusDot",
+      "active",
+      "disabled",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "TextButton": {
+    "path": "src/components/text-button.css",
+    "story": "components-textbutton--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "cell",
+        "text",
+        "primary"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "label",
+      "type",
+      "icon",
+      "active",
+      "disabled",
+      "withRing"
+    ],
+    "tokens": []
+  },
+  "Textarea": {
+    "path": "src/components/textarea.css",
+    "story": "components-textarea--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "bgVariant": [
+        "white",
+        "neutral"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "placeholder",
+      "value",
+      "disabled",
+      "error",
+      "errorMessage",
+      "label",
+      "showLabel",
+      "showHelp",
+      "showCounter",
+      "maxLength",
+      "rows",
+      "bgVariant"
+    ],
+    "tokens": []
+  },
+  "Toast": {
+    "path": "src/components/toast.css",
+    "story": "document-request-sent--interactive",
+    "figmaNodeIds": [],
+    "variants": {
+      "type": [
+        "success",
+        "error",
+        "info"
+      ],
+      "style": [
+        "full",
+        "simple"
+      ]
+    },
+    "behaviors": [],
+    "props": [
+      "type",
+      "style",
+      "action"
+    ],
+    "tokens": []
+  },
+  "Tooltip": {
+    "path": "src/components/tooltip.css",
+    "story": "components-tooltip--interactive",
+    "figmaNodeIds": [],
+    "variants": {},
+    "behaviors": [],
+    "props": [
+      "title",
+      "content",
+      "subtext"
+    ],
+    "tokens": []
+  }
+}

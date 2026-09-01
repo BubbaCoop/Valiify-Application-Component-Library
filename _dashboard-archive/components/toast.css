@@ -1,0 +1,182 @@
+/**
+ * Toast Component
+ *
+ * Transient floating notification for brief status feedback. Extracted from
+ * Figma Toast (880:31121) — Type (success / error / info) x Style (Full /
+ * Simple).
+ *
+ * Usage — Full:
+ *   <div class="toast toast-success" role="status">
+ *     <div class="toast-header">
+ *       <div class="toast-main">
+ *         <svg class="toast-icon icon icon-size-18" aria-hidden="true">
+ *           <use href="#circle-check" />
+ *         </svg>
+ *         <div class="toast-text">
+ *           <p class="toast-title">Document request sent</p>
+ *           <p class="toast-message">Client has been notified to upload their W-9.</p>
+ *         </div>
+ *       </div>
+ *       <button class="icon-button icon-button-md" aria-label="Dismiss">
+ *         <svg class="icon icon-size-14" aria-hidden="true"><use href="#x" /></svg>
+ *       </button>
+ *     </div>
+ *     <div class="toast-footer">
+ *       <span class="toast-timestamp">just now</span>
+ *       <button class="text-button text-button-primary">Retry</button>
+ *     </div>
+ *   </div>
+ *
+ * Usage — Simple:
+ *   <div class="toast toast-simple" role="status">
+ *     <svg class="icon icon-size-15" aria-hidden="true"><use href="#check" /></svg>
+ *     Template Saved
+ *   </div>
+ *
+ * THE TWO STYLES SHARE ALMOST NOTHING. Figma models them as one component, but
+ * Full is a 356px white card and Simple is a 280px dark pill — different
+ * background, radius, padding, direction, width, shadow and text colour. `.toast`
+ * carries Full, which is Figma's default Style and its only populated axis;
+ * `.toast-simple` overrides essentially all of it.
+ *
+ * THE ACTION AND CLOSE ARE EXISTING COMPONENTS, not new parts. Figma's "Retry"
+ * is a literal Text Button instance (Type=Primary) and its close is an Icon
+ * Button, so they use `.text-button text-button-primary` and
+ * `.icon-button icon-button-md`. Nothing new is defined for either.
+ *
+ * THE ICON IS A SLOT. Type only sets its colour; the glyph is the consumer's.
+ * What Figma draws:
+ *   success  #circle-check    Approved/Main
+ *   error    #triangle-alert  Critical/Main
+ *   info     #refresh-cw      Primary/Main
+ *   simple   #check           Content/Contrast (inherits)
+ *
+ * THREE FIGMA GAPS, reported rather than papered over:
+ *   - Simple exists ONLY for Type=info. There is no success or error Simple, so
+ *     `.toast-simple` ignores the type classes rather than invent two variants.
+ *   - That single Simple variant is typed `info` but draws a success check.
+ *   - Its Figma description reads "Dark contextual popover for hover
+ *     explanations… Maps to DaisyUI tooltip" — copied from Tooltip.
+ * All three are on the designer list.
+ *
+ * TWO SHADOWS, DELIBERATELY. Full uses a local effect, tokenised here as
+ * `--shadow-toast`; Simple uses the named General Drop Shadow, which is already
+ * `--shadow-panel`. They are not interchangeable.
+ *
+ * SIMPLE'S 35px HEIGHT IS PINNED, and must be. Figma draws strokes without
+ * adding to the frame, so its 10 + 15 + 10 = 35 ignores the 1px border; under
+ * border-box the same values derive 37. The pin restores Figma's rendered size
+ * and flex centring keeps the 15px icon centred. Same trap button.css and
+ * pill.css document — a bordered box must be sized, never derived.
+ *
+ * DIVERGENCE: Figma pins Full's text group to 280px inside the 356px card,
+ * leaving a fixed 26px gutter before the close button. It flexes here instead,
+ * so a widened toast still uses its space. No visible difference at Figma's own
+ * content; it only shows if the toast is resized.
+ */
+
+@layer components {
+  .toast {
+    /* Layout — Full */
+    @apply flex w-89 flex-col items-start gap-3; /* 356px, 12px */
+    @apply p-4; /* 16px */
+
+    /* Shape */
+    @apply rounded-surface; /* 8px */
+    @apply border border-[length:var(--border-line)] border-stroke-divider;
+
+    /* Colors */
+    @apply bg-surface-paper text-content-primary;
+
+    /* Elevation — local effect, NOT --shadow-panel. See the header. */
+    @apply shadow-toast;
+  }
+
+  /* --- Full parts --------------------------------------------------------- */
+
+  .toast-header {
+    @apply flex w-full items-start justify-between;
+  }
+
+  .toast-main {
+    @apply flex flex-1 items-start gap-3; /* 12px */
+    min-width: 0;
+  }
+
+  /* 18px. Colour comes from the type class; the glyph is the consumer's. */
+  .toast-icon {
+    @apply shrink-0;
+  }
+
+  .toast-text {
+    @apply flex flex-1 flex-col items-start gap-1; /* 4px */
+    min-width: 0;
+  }
+
+  /* 12.5px with a 12.5px line-height — the line box is exactly the cap height,
+     which is intentional in Figma and keeps the two lines tight. */
+  .toast-title {
+    @apply text-body-2-bold; /* 12.5px / 12.5px / 500 */
+    @apply text-content-primary;
+  }
+
+  .toast-message {
+    @apply text-caption; /* 12px / 18px / 400 */
+    @apply text-content-secondary;
+  }
+
+  .toast-footer {
+    @apply flex w-full items-center justify-between;
+  }
+
+  /* Data/Data xs needs font-mono — --text-* carries no family. See CLAUDE.md. */
+  .toast-timestamp {
+    @apply text-data-xs font-mono; /* 12px / 16.5px / 400, JetBrains Mono */
+    @apply text-content-faint;
+  }
+
+  /* --- Types -------------------------------------------------------------- */
+
+  /* Type sets the icon colour and nothing else. Unlike Modal, all three follow
+     the same pattern — no exceptions to reproduce. */
+  .toast-success .toast-icon {
+    @apply text-approved;
+  }
+
+  .toast-error .toast-icon {
+    @apply text-critical;
+  }
+
+  .toast-info .toast-icon {
+    @apply text-primary;
+  }
+
+  /* --- Style = Simple ----------------------------------------------------- */
+
+  /* A different shape wearing the same name — see the header. Every property
+     Full sets and Simple contradicts has to be restated, so this block is
+     exhaustive on purpose rather than relying on what happens to cascade. */
+  .toast-simple {
+    @apply inline-flex w-70 flex-row items-center justify-center gap-2.25; /* 280px, 9px */
+    @apply px-4 py-2.5; /* 16px / 10px */
+    @apply h-[35px]; /* pinned — see the header */
+
+    @apply rounded-pill;
+    @apply border border-[length:var(--border-line)] border-stroke-divider;
+
+    /* The dark surface, as with Tooltip. */
+    @apply bg-content-primary text-content-contrast;
+
+    @apply text-body-2; /* 12.5px / 12.5px / 400 — Regular, not the Bold above */
+
+    /* The NAMED General Drop Shadow, where Full uses its own local effect. */
+    @apply shadow-panel;
+  }
+
+  /* Simple has no type variants in Figma, so a stray type class must not tint
+     its icon — it is Content/Contrast like the rest of the pill. */
+  .toast-simple .toast-icon,
+  .toast-simple .icon {
+    @apply shrink-0 text-content-contrast;
+  }
+}

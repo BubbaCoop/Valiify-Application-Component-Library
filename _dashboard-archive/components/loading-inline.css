@@ -1,0 +1,75 @@
+/**
+ * Loading Inline Component
+ *
+ * A loading indicator paired with a label. Extracted from Figma Loading Inline
+ * (1028:2013) — 4 variants on a single `Size` axis.
+ *
+ * Usage:
+ *   <span class="loading-inline" role="status">
+ *     <span class="loading-indicator"></span>
+ *     Loading...
+ *   </span>
+ *
+ *   <span class="loading-inline loading-inline-lg" role="status">
+ *     <span class="loading-indicator"></span>
+ *     Loading...
+ *   </span>
+ *
+ * THE INDICATOR IS 12px AT EVERY SIZE. That is not an oversight in this
+ * implementation — Figma embeds a `Size=XS` Loading Indicator instance in all
+ * four variants while the gap and label scale around it, which is clearly
+ * visible in the rendered frames as a constant spinner beside growing text. It
+ * is reproduced faithfully, and it means the nested `.loading-indicator` needs
+ * no size class: its own default is already 12px. Flagged for the designer,
+ * because at LG the spinner reads small against 16px text.
+ *
+ * What actually scales:
+ *
+ *   size  gap   label      leading   frame
+ *   XS    6     11px       17px      69x17
+ *   SM    8     12px       18px      76x18
+ *   MD    10    14px       21px      87x21
+ *   LG    12    16px       24px      98x24
+ *
+ * XS IS THE DEFAULT, matching Figma's first variant.
+ *
+ * ONLY SM MAPS TO A TOKEN. Its 12px/18px is exactly `--text-caption`; the other
+ * three are raw — 11/17, 14/21 and 16/24 have no equivalent in the type scale,
+ * and `--text-subtitle` is the nearest 14px but carries 19.6px leading and
+ * Medium weight. Sizes are therefore written directly rather than force-fitted,
+ * and SM uses the raw pair too so the four read consistently. On the designer
+ * list: this component deserves real text styles.
+ *
+ * The label colour is `Content/Secondary` at every size, and it is set on the
+ * container so the text can be a bare child rather than needing its own class.
+ */
+
+@layer components {
+  .loading-inline {
+    @apply inline-flex items-center;
+    gap: 6px; /* XS */
+
+    /* Label — raw type; see the header. */
+    @apply text-[11px] font-normal;
+    line-height: 17px;
+    @apply text-content-secondary;
+  }
+
+  .loading-inline-sm {
+    gap: 8px;
+    @apply text-[12px];
+    line-height: 18px;
+  }
+
+  .loading-inline-md {
+    gap: 10px;
+    @apply text-[14px];
+    line-height: 21px;
+  }
+
+  .loading-inline-lg {
+    gap: 12px;
+    @apply text-[16px];
+    line-height: 24px;
+  }
+}

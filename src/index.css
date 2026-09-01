@@ -1,0 +1,35 @@
+/**
+ * Valiify Short App UI — build entry for the prebuilt dist/index.css.
+ *
+ * This file is NOT the consumer entry point. It wraps src/library.css with
+ * Tailwind so the result is a self-contained compiled stylesheet.
+ *
+ *   src/library.css  -> `@valiify/shortapp-ui/source`  (consumers + their Tailwind)
+ *   src/index.css    -> `dist/index.css`                (prebuilt)
+ *
+ * NO font import here, on purpose. CSS requires every `@import` to precede all
+ * other rules, so a font import baked into the bundle is fine only while the
+ * bundle is used standalone — the moment a consumer does
+ * `@import "@valiify/shortapp-ui"` it lands mid-file and the browser discards
+ * it. Verified against a real packed install: it ended up after 44 rules.
+ * Fonts are opt-in via `@valiify/shortapp-ui/fonts` (see src/fonts.css).
+ */
+
+/*
+ * Tailwind first, so its layers are established before ours.
+ *
+ * source(none) disables automatic content detection. Without it Tailwind scans
+ * the whole repo — including CLAUDE.md and this file's own comments — and emits
+ * a real utility class for every class-shaped string it finds, so documentation
+ * prose leaks into the published artifact.
+ *
+ * The library ships tokens plus component classes only. @apply inside our
+ * components still resolves normally; it does not depend on source detection.
+ * Storybook re-adds sources explicitly in .storybook/preview.css.
+ *
+ * Verified: source(none) is scoped to this import and does NOT disable content
+ * detection for consumers who import src/library.css into their own build.
+ */
+@import "tailwindcss" source(none);
+
+@import "./library.css";

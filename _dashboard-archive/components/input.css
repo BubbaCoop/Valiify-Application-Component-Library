@@ -1,0 +1,180 @@
+/**
+ * Input Component
+ *
+ * Complete form input system with labels, help text, icons, and error messages.
+ * Extracted from Figma Text Input Container (854:24665) — 96 variants
+ * (state × error × filled × size × BG).
+ *
+ * Sizes are 35 / 29 / 25px (lg / md / sm), aligned with DropdownField after
+ * the 2026-08-22 design update. Each size carries its own padding AND type:
+ * lg and md are Body 1 (13px) at different padding, sm drops to Micro L (11px).
+ *
+ * Heights are pinned with an explicit `height`, not `min-height`: the sm line
+ * box comes from an Auto line height (font-dependent), and Chrome rounds the
+ * 0.5px `--border-thin` hairline up to a full 1px, which would otherwise push
+ * every field 1-2px past its Figma frame. Figma draws its stroke inside the
+ * frame, so the border must not add height. Same precedent as button.css.
+ *
+ * Structure:
+ *   <div class="input-container">
+ *     <div class="input-label">...</div>           <!-- Optional -->
+ *     <div class="input-field">...</div>           <!-- Required -->
+ *     <div class="input-error-message">...</div>   <!-- Optional -->
+ *   </div>
+ *
+ * Usage:
+ *   <div class="input-container">
+ *     <div class="input-field">
+ *       <input type="text" class="input" placeholder="Enter text..." />
+ *     </div>
+ *   </div>
+ */
+
+@layer components {
+  /* --- Container ---------------------------------------------------- */
+
+  .input-container {
+    @apply flex flex-col items-start w-full;
+  }
+
+  /* --- Label ------------------------------------------------------- */
+
+  .input-label {
+    @apply flex items-center w-full pb-1.5; /* 6px bottom padding */
+    @apply text-[10px] font-semibold uppercase tracking-[1px] leading-[12px];
+    @apply text-content-tertiary;
+  }
+
+  .input-label > span {
+    @apply flex-1;
+  }
+
+  /* Note: Help button uses .icon-button .icon-button-xs from icon-button.css */
+
+  /* --- Input Field ------------------------------------------------- */
+
+  .input-field {
+    /* Layout */
+    @apply flex items-center gap-2 w-full; /* 8px gap, every size */
+
+    /* Default size: Large — 12px / 7px padding, 35px tall */
+    @apply px-3 py-1.75;
+    @apply h-[35px];
+
+    /* Shape */
+    @apply rounded-control; /* 6px */
+
+    /* Border */
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+
+    /* Background - default: white */
+    @apply bg-surface-paper;
+
+    /* Interaction */
+    @apply transition-colors duration-150;
+  }
+
+  /* --- Actual Input Element ---------------------------------------- */
+
+  .input {
+    /* Layout */
+    @apply flex-1;
+    min-width: 0;
+
+    /* Remove default styling */
+    @apply appearance-none bg-transparent border-none outline-none;
+    @apply p-0 m-0;
+
+    /* Typography */
+    @apply text-body-1; /* 13px / 19.5px / 400 */
+    @apply text-content-primary;
+
+    /* Placeholder — Figma's Filled=no variants use Content/Tertiary.
+       Note DropdownField's placeholder is Content/Faint; the two field types
+       genuinely differ in the design file. */
+    &::placeholder {
+      @apply text-content-tertiary;
+    }
+  }
+
+  /* --- Icon Wrappers ----------------------------------------------- */
+
+  .input-icon-left,
+  .input-icon-right {
+    @apply shrink-0;
+    @apply text-content-secondary; /* Icon color */
+  }
+
+  /* --- Size Variants ----------------------------------------------- */
+
+  .input-sm {
+    @apply px-2 py-[5.5px]; /* 8px / 5.5px */
+    @apply h-[25px];
+    @apply text-micro-l; /* 11px / normal / 400 */
+  }
+
+  .input-md {
+    @apply px-2.5 py-1; /* 10px / 4px */
+    @apply h-[29px];
+    @apply text-body-1; /* 13px / 19.5px / 400 */
+  }
+
+  .input-lg {
+    @apply px-3 py-1.75; /* 12px / 7px — same as default */
+    @apply h-[35px];
+    @apply text-body-1;
+  }
+
+  /* The input inherits the row's type so the size variants reach it */
+  .input-sm .input,
+  .input-md .input,
+  .input-lg .input {
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  /* --- Background Variants ----------------------------------------- */
+
+  .input-bg-neutral {
+    @apply bg-surface-card; /* Figma BG=Neutral is Surface/Card #fafafb */
+  }
+
+  /* --- States ------------------------------------------------------ */
+
+  /* Hover */
+  .input-field:hover:not(:has(:disabled)):not(.input-disabled) {
+    @apply border-stroke-border;
+  }
+
+  /* Focus */
+  .input-field:focus-within {
+    @apply focus-ring;
+  }
+
+  /* Error */
+  .input-field.input-error {
+    @apply border-critical;
+  }
+
+  /* Disabled */
+  .input-field:has(:disabled),
+  .input-field.input-disabled {
+    @apply bg-action-subtle border-stroke-divider cursor-not-allowed;
+  }
+
+  .input:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  /* --- Error Message ----------------------------------------------- */
+
+  .input-error-message {
+    @apply flex items-center w-full pt-1.5; /* 6px top padding */
+    @apply text-[11px] leading-[normal] font-normal;
+    @apply text-critical-strong;
+  }
+
+  /* Multi-line entry is the Textarea component (textarea.css), not a variant
+     of .input. The old `textarea.input` shim is gone — it pinned an 80px
+     min-height that fought the field's own sizing. */
+}

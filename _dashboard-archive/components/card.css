@@ -1,0 +1,63 @@
+/**
+ * Card Component — PLACEHOLDER, NOT PART OF THE REAL LIBRARY
+ *
+ * This is leftover scaffolding from the Phase 1 proof of concept. It was never
+ * extracted from a Figma component and has not yet been replaced by one.
+ *
+ * Its padding, radius and structure are invented. Do NOT treat it as a
+ * reference, do not copy its patterns into new components, and do not build
+ * product UI on it. It is excluded from the visual verification suite for the
+ * same reason — checking it would only assert that a placeholder still matches
+ * itself.
+ *
+ * When the real Card lands in Figma, this file should be rewritten from
+ * scratch rather than adjusted.
+ *
+ * Usage (provisional):
+ *   <div class="card">
+ *     <h2 class="card-title">Title</h2>
+ *     <p class="card-body">Content</p>
+ *   </div>
+ */
+
+@layer components {
+  .card {
+    @apply p-4; /* Figma Spacing/16 */
+
+    /* Shape */
+    @apply rounded-surface; /* Figma Radius/MD */
+    @apply border border-[length:var(--border-thin)]; /* Figma Stroke/Thin */
+
+    @apply border-stroke-divider bg-surface-paper;
+  }
+
+  .card-title {
+    @apply mb-2; /* Figma Spacing/8 */
+    @apply text-h2; /* Figma Body Content/H2 */
+    @apply text-content-primary;
+  }
+
+  .card-body {
+    @apply text-body-1; /* Figma Body Content/Body 1 */
+    @apply text-content-secondary;
+  }
+
+  /* Compact variant */
+  .card-compact {
+    @apply p-3; /* Figma Spacing/12 */
+  }
+
+  /* Bordered variant — full-pixel border instead of the hairline default */
+  .card-bordered {
+    @apply border-[length:var(--border-line)] border-stroke-border; /* Figma Stroke/Line */
+  }
+
+  /* Hoverable card */
+  .card-hover {
+    @apply cursor-pointer transition-shadow duration-200;
+  }
+
+  .card-hover:hover {
+    @apply shadow-panel; /* Figma General Drop Shadow */
+  }
+}

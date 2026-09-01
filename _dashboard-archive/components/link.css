@@ -1,0 +1,183 @@
+/**
+ * Link Component
+ *
+ * Hyperlink styles for navigation and inline references. Extracted from Figma
+ * Link (880:31368) — 15 variants across Style x State (default / hover /
+ * pressed).
+ *
+ * Usage:
+ *   <a class="link" href="/report">Open full report →</a>
+ *   <a class="link link-quiet" href="/log">View activity log</a>
+ *   <a class="link link-monospace" href="/case">#BA-204417</a>
+ *   <a class="link link-critical" href="/fix">
+ *     <svg class="icon icon-size-12" aria-hidden="true"><use href="#alert-triangle" /></svg>
+ *     Resolve mismatch
+ *   </a>
+ *
+ *   <p class="link-inline">
+ *     Valiify utilizes <a href="/middesk">Middesk</a> for instant screenings.
+ *   </p>
+ *
+ * FOUR STANDALONE STYLES PLUS ONE THAT IS NOT A LINK AT ALL. `strong`, `quiet`,
+ * `monospace` and `critical` are `<a>` classes; `inline` is a PARAGRAPH whose
+ * anchors are styled as descendants, because Figma draws it as body copy with
+ * links inside rather than as a link with a body. It therefore does not take
+ * `.link` — see the block at the foot of the file.
+ *
+ * STRONG IS THE BASE, being Figma's default variant, and it is the only style
+ * with NO underline at rest — it gains one on hover and pressed. The other
+ * three are underlined throughout. That is the single most surprising thing
+ * here: "underlined" is a per-style constant everywhere except strong, where it
+ * is a state.
+ *
+ *   style       type                        rest              hover             pressed
+ *   strong      Inter SemiBold 14           Primary/Main      Primary/Dark      Primary/Pressed
+ *   quiet       Inter Regular 14            Content/Secondary Primary/Main      Primary/Dark
+ *   monospace   JetBrains Mono Medium 13    Content/Primary   Primary/Main      Primary/Dark
+ *   critical    Inter Medium 14 + 12px icon Critical/Main     Critical/Strong   Critical/Content
+ *   inline      Inter Regular 12 (Caption)  Primary/Main      Primary/Dark      Primary/Pressed
+ *
+ * NOTE THE RAMPS DIFFER IN LENGTH. strong and inline run Main -> Dark ->
+ * Pressed; quiet and monospace only reach Dark, because they START outside the
+ * primary ramp. Do not "regularise" them.
+ *
+ * `Critical/Content` DID NOT EXIST IN OUR THEME until this component needed it.
+ * It is a real Figma variable in Collection 1 — confirmed with
+ * `search_design_system` — and was missing for the same reason `Surface/Card`
+ * was: `get_variable_defs` only reports variables actually applied to a layer,
+ * and nothing had used it. It is now in tokens/figma-tokens.json. Second time
+ * this blind spot has bitten; the colour group still has not been swept
+ * end-to-end.
+ *
+ * THE TYPE IS RAW. Figma binds no text style to any of the four standalone
+ * styles — only `inline` carries one (`Body Content/Caption`, which maps to
+ * `--text-caption`). The nearest token to 14px Inter is `--text-subtitle`, but
+ * it is Medium/500 with a 19.6px line-height where these are Auto in a 17px
+ * box, so two of its three properties would need overriding. Sizes and weights
+ * are therefore written directly rather than force-fitted to a token that
+ * carries the wrong leading. On the designer list: these five styles deserve
+ * real text styles.
+ *
+ * The gap differs between the two styles that have one: strong sits in a 4px
+ * flex row, critical in a 6px one. Only critical actually draws an icon.
+ */
+
+@layer components {
+  .link {
+    /* Layout — strong's container; critical widens the gap below. */
+    @apply inline-flex items-center gap-1; /* 4px */
+
+    /* Type — strong. Raw, not a token; see the header. */
+    @apply text-[14px] font-semibold;
+    @apply leading-[normal]; /* Figma Auto — NOT Tailwind's leading-normal (1.5) */
+
+    /* Colors — strong, the only style with no underline at rest */
+    @apply text-primary no-underline;
+
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- Styles ------------------------------------------------------------- */
+
+  /* Explicit form of the base. */
+  .link-strong {
+    @apply text-[14px] font-semibold;
+    @apply text-primary no-underline;
+  }
+
+  .link-quiet {
+    @apply text-[14px] font-normal;
+    @apply text-content-secondary underline;
+  }
+
+  .link-monospace {
+    @apply font-mono text-[13px] font-medium;
+    @apply text-content-primary underline;
+  }
+
+  /* The only style Figma draws with an icon — a 12px alert-triangle at a 6px
+     gap. The glyph is a slot, as everywhere else in the library. */
+  .link-critical {
+    @apply gap-1.5; /* 6px */
+    @apply text-[14px] font-medium;
+    @apply text-critical underline;
+  }
+
+  /* --- States ------------------------------------------------------------- */
+
+  /* Each style owns its whole ramp, and they are excluded from one another by
+     name rather than by source order — equal-specificity ordering is the
+     fragility the library audit found in seven components. */
+
+  .link:not(.link-quiet):not(.link-monospace):not(.link-critical):hover:not(
+      :disabled
+    ):not([aria-disabled="true"]) {
+    @apply text-primary-dark underline;
+  }
+
+  .link:not(.link-quiet):not(.link-monospace):not(.link-critical):active:not(
+      :disabled
+    ):not([aria-disabled="true"]) {
+    @apply text-primary-pressed underline;
+  }
+
+  /* quiet and monospace share a ramp: they start outside the primary scale, so
+     hover only reaches Main and pressed only reaches Dark. */
+  .link-quiet:hover:not(:disabled):not([aria-disabled="true"]),
+  .link-monospace:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-primary;
+  }
+
+  .link-quiet:active:not(:disabled):not([aria-disabled="true"]),
+  .link-monospace:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-primary-dark;
+  }
+
+  .link-critical:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-critical-strong;
+  }
+
+  .link-critical:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-critical-content;
+  }
+
+  .link:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Not in Figma — house convention. An <a> cannot be :disabled, so
+     aria-disabled is the real guard here; :disabled is carried alongside it so
+     the class also behaves on a <button>. Every state rule above excludes both. */
+  .link:disabled,
+  .link[aria-disabled="true"] {
+    @apply cursor-not-allowed text-content-faint no-underline;
+  }
+
+  /* --- Style = inline ----------------------------------------------------- */
+
+  /* A PARAGRAPH, not a link. Figma models this as body copy carrying anchors,
+     so the class goes on the block and the anchors are styled as descendants.
+     Deliberately does NOT take `.link`. This is the one style with a real Figma
+     text style behind it. */
+  .link-inline {
+    @apply text-caption; /* 12px / 18px / 400 — Body Content/Caption */
+    @apply text-content-primary;
+  }
+
+  .link-inline a {
+    @apply text-primary underline;
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  .link-inline a:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-primary-dark;
+  }
+
+  .link-inline a:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-primary-pressed;
+  }
+
+  .link-inline a:focus-visible {
+    @apply focus-ring;
+  }
+}

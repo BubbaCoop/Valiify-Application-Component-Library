@@ -1,0 +1,20 @@
+/* Fonts first — @import must precede all other rules to be valid. */
+@import "../src/fonts.css";
+
+/**
+ * Storybook-only CSS entry.
+ *
+ * The published library (dist/index.css) is deliberately components-only — a
+ * component library should not ship an app's utility classes. But stories and
+ * examples DO use Tailwind utilities for layout, so Storybook needs them
+ * generated. The @source globs below tell Tailwind where to scan.
+ *
+ * If a utility works in Storybook but not in a consuming app, that is expected:
+ * the consumer's own Tailwind build generates its utilities.
+ */
+
+@import "../src/index.css";
+
+@source "../stories";
+@source "../examples";
+@source "."; /* preview.ts's decorator wrapper uses utilities too */

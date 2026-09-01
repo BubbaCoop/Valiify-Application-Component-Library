@@ -1,0 +1,730 @@
+import {
+  Meta,
+  ColorPalette,
+  ColorItem,
+  Typeset,
+} from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Design Tokens" />
+
+# Design Tokens
+
+Extracted from Figma `Valiify-Dashboard-Component-Library` via the Figma MCP
+`get_variable_defs` tool. This page exists to be compared side by side with the
+Figma variables panel — every swatch and specimen below should match.
+
+Tokens live in a Tailwind `@theme` block in `src/themes/valiify.css`, which is
+**generated** from `tokens/figma-tokens.json` by `scripts/build-theme.mjs`.
+Regenerate with `npm run build:theme`.
+
+Colors are stored as OKLCh; the hex shown here is the original Figma value. The
+generator asserts every conversion round-trips back to its source hex within
+1/255 per channel, so the two are equivalent.
+
+<div
+  style={{
+    padding: "12px 16px",
+    marginBottom: 24,
+    borderRadius: 8,
+    background: "var(--color-warning-soft)",
+    border: "1px solid var(--color-warning-main, var(--color-warning))",
+  }}
+>
+  <strong>Known gap.</strong> <code>get_variable_defs</code> returns only
+  variables actually <em>applied to a layer</em>, so a colour or number token
+  defined in Figma but not yet used could still be missing here. Typography is
+  exhaustive — it comes from the dedicated Text Preview section rather than from
+  component sweeps.
+</div>
+
+## Brand
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="Figma Primary/*"
+    colors={{
+      Main: "#1e4d8c",
+      Dark: "#163a6b",
+      Pressed: "#003358",
+      Soft: "#1e4d8c14",
+      Disabled: "#1e4d8c66",
+    }}
+  />
+  <ColorItem
+    title="Secondary"
+    subtitle="Figma Secondary/*"
+    colors={{
+      Main: "#5b5b68",
+      Strong: "#4e4e59",
+      Soft: "#8a8a9517",
+      Disabled: "#8a8a9566",
+    }}
+  />
+</ColorPalette>
+
+## Content
+
+Text and icon colors, darkest to lightest.
+
+<ColorPalette>
+  <ColorItem
+    title="Content"
+    subtitle="Figma Content/*"
+    colors={{
+      Primary: "#16161a",
+      Secondary: "#5b5b68",
+      Tertiary: "#727280",
+      Faint: "#c4c4ce",
+      Contrast: "#ffffff",
+    }}
+  />
+</ColorPalette>
+
+## Surface
+
+The surface stack, back to front. Note there is **no `Card` surface** in Figma —
+cards render on `Paper`.
+
+<ColorPalette>
+  <ColorItem
+    title="Surface"
+    subtitle="Figma Surface/*"
+    colors={{
+      Frame: "#f0f3f7",
+      Neutral: "#f1f1f4",
+      Paper: "#ffffff",
+    }}
+  />
+</ColorPalette>
+
+## Stroke &amp; Action
+
+Both groups are near-black at low alpha, so they read as subtle greys over a
+light surface. `Stroke/*` here is the _color_; stroke _widths_ are below.
+
+<ColorPalette>
+  <ColorItem
+    title="Stroke"
+    subtitle="Figma Stroke/* (colors)"
+    colors={{
+      Divider: "#14142814",
+      Border: "#14142821",
+      Disabled: "#1414280a",
+    }}
+  />
+  <ColorItem
+    title="Action"
+    subtitle="Figma Action/* — interaction overlays"
+    colors={{
+      Subtle: "#14142808",
+      Hover: "#1414280f",
+      Selected: "#14142814",
+      Focused: "#14142821",
+    }}
+  />
+</ColorPalette>
+
+## Status
+
+<ColorPalette>
+  <ColorItem
+    title="Approved"
+    subtitle="Figma Approved/*"
+    colors={{
+      Main: "#157d61",
+      Soft: "#1a9b7817",
+      Strong: "#168567",
+      Content: "#137459",
+    }}
+  />
+  <ColorItem
+    title="Critical"
+    subtitle="Figma Critical/*"
+    colors={{ Main: "#c5303c", Soft: "#d8434f17", Strong: "#ba3a44" }}
+  />
+  <ColorItem
+    title="Warning"
+    subtitle="Figma Warning/*"
+    colors={{ Main: "#c9881f", Soft: "#c9881f17" }}
+  />
+  <ColorItem
+    title="Neutral"
+    subtitle="Figma Neutral/*"
+    colors={{
+      Main: "#9999a6",
+      Strong: "#4e4e59",
+      Soft: "#9999a617",
+      Content: "#65656e",
+    }}
+  />
+  <ColorItem
+    title="Misc"
+    subtitle="Figma misc/Purple — ungrouped one-off"
+    colors={{ Purple: "#7b5ea7" }}
+  />
+</ColorPalette>
+
+## Radii
+
+Named by **role**, not by Figma's t-shirt size, because Tailwind v4 already
+ships `--radius-xs`/`-sm`/`-md` and redefining those would silently change
+`rounded-xs`/`-sm`/`-md` for consumers.
+
+<div
+  style={{ display: "flex", gap: 24, flexWrap: "wrap", margin: "16px 0 32px" }}
+>
+  {[
+    ["rounded-micro", "var(--radius-micro)", "Radius/Micro", "2px"],
+    ["rounded-tight", "var(--radius-tight)", "Radius/XS", "4px"],
+    ["rounded-control", "var(--radius-control)", "Radius/SM", "6px"],
+    ["rounded-surface", "var(--radius-surface)", "Radius/MD", "8px"],
+    ["rounded-pill", "var(--radius-pill)", "Radius/Rounded", "9999px"],
+  ].map(([cls, v, figma, px]) => (
+    <div key={cls} style={{ textAlign: "center", fontSize: 12 }}>
+      <div
+        style={{
+          width: 88,
+          height: 64,
+          borderRadius: v,
+          background: "var(--color-primary-soft)",
+          border: "1px solid var(--color-stroke-border)",
+          marginBottom: 8,
+        }}
+      />
+      <code style={{ fontSize: 11 }}>{cls}</code>
+      <div style={{ color: "var(--color-content-tertiary)", marginTop: 4 }}>
+        {px}
+      </div>
+      <div style={{ color: "var(--color-content-faint)", fontSize: 10 }}>
+        {figma}
+      </div>
+    </div>
+  ))}
+</div>
+
+## Stroke widths
+
+No Tailwind namespace generates utilities from these, so they are applied as
+`border-[length:var(--border-thin)]`.
+
+<div style={{ margin: "16px 0 32px" }}>
+  {[
+    ["--border-thin", "Stroke/Thin", "0.5px"],
+    ["--border-line", "Stroke/Line", "1px"],
+    ["--border-micro", "Stroke/Micro", "2px"],
+  ].map(([v, figma, px]) => (
+    <div
+      key={v}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        marginBottom: 12,
+      }}
+    >
+      <code style={{ fontSize: 11, width: 130 }}>{v}</code>
+      <div
+        style={{
+          width: 60,
+          fontSize: 12,
+          color: "var(--color-content-tertiary)",
+        }}
+      >
+        {px}
+      </div>
+      <div
+        style={{
+          flex: 1,
+          maxWidth: 320,
+          borderTop: `var(${v}) solid var(--color-content-primary)`,
+        }}
+      />
+      <div style={{ fontSize: 10, color: "var(--color-content-faint)" }}>
+        {figma}
+      </div>
+    </div>
+  ))}
+</div>
+
+## Elevation
+
+<div style={{ margin: "16px 0 40px" }}>
+  <div
+    style={{
+      width: 240,
+      height: 88,
+      borderRadius: "var(--radius-surface)",
+      background: "var(--color-surface-paper)",
+      boxShadow: "var(--shadow-panel)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontSize: 12,
+      color: "var(--color-content-secondary)",
+    }}
+  >
+    shadow-panel
+  </div>
+  <div
+    style={{ fontSize: 10, color: "var(--color-content-faint)", marginTop: 8 }}
+  >
+    Figma General Drop Shadow — 0 12px 34px -12px #00000040
+  </div>
+</div>
+
+## Focus ring
+
+The shared affordance for tabbing between interactive elements, from Figma
+**Menu Item → Ring**. Applied via the `focus-ring` utility on `:focus-visible`,
+so it appears for keyboard navigation but not on mouse clicks.
+
+The ring's outer edge aligns with the component's **own** outer edge rather than
+sitting outside it — in Figma it is a full-size overlay frame, reproduced here
+with a negative `outline-offset`. Because `outline` follows `border-radius`, the
+ring needs no radius of its own and picks up whatever the component sets.
+
+<div
+  style={{
+    display: "flex",
+    gap: 28,
+    alignItems: "flex-start",
+    flexWrap: "wrap",
+    margin: "16px 0 12px",
+  }}
+>
+  {[
+    ["rounded-control", "var(--radius-control)", "buttons, inputs"],
+    ["rounded-surface", "var(--radius-surface)", "cards, panels"],
+    ["rounded-pill", "var(--radius-pill)", "pills, avatars"],
+  ].map(([label, r, use]) => (
+    <div key={label} style={{ textAlign: "center", fontSize: 11 }}>
+      <div
+        style={{
+          width: 148,
+          height: 40,
+          borderRadius: r,
+          background: "var(--color-surface-paper)",
+          outline: "var(--ring-focus-width) solid var(--ring-focus-color)",
+          outlineOffset: "calc(-1 * var(--ring-focus-width))",
+          marginBottom: 8,
+        }}
+      />
+      <code style={{ fontSize: 10 }}>{label}</code>
+      <div style={{ color: "var(--color-content-tertiary)", marginTop: 2 }}>
+        {use}
+      </div>
+    </div>
+  ))}
+</div>
+
+| Token                | Value     | Figma                                       |
+| -------------------- | --------- | ------------------------------------------- |
+| `--ring-focus-width` | 2px       | raw value on the Ring frame, not a variable |
+| `--ring-focus-color` | `#1e4d8c` | `Primary/Main`                              |
+
+The 2px width is a **raw value** in Figma rather than a bound variable, so it
+carries its own token here instead of borrowing `--border-micro` — which happens
+to share the value but has no stated relationship to it.
+
+## Typography
+
+**37 text styles.** The composite `--text-*` tokens carry font size, line height,
+weight, and letter spacing in a single utility.
+
+Two things they can **not** carry, both of which bite silently:
+
+- **`font-family`** — the JetBrains Mono styles must be paired with `font-mono`,
+  or they render in Inter.
+- **`text-transform`** — the Label styles are uppercase in Figma, so use the
+  generated `type-label-*` utilities, which bundle casing (and the mono family)
+  into one class.
+
+### Reading the specs
+
+`line-height: normal` is Figma's **"Auto"** — the font's own metrics, roughly
+1.21x for Inter. The Figma API reports Auto as the sentinel `100`, which does
+_not_ mean 100%; treating it as `1` makes those styles noticeably too tight.
+
+Letter spacing is in `em` because every Figma letter-spacing value is a
+**percentage** of font size, not px. `10%` becomes `0.1em`.
+
+## Inter
+
+Body, headings, controls, and micro text.
+
+<div style={{ margin: "8px 0 32px" }}>
+  {[
+    [
+      "text-display",
+      "Body Content/Display",
+      "46 / 39px / 300",
+      "Valiify Dashboard",
+    ],
+    ["text-h1", "Body Content/H1", "19 / 21.8px / 600", "Valiify Dashboard"],
+    ["text-h2", "Body Content/H2", "17 / 19.5px / 600", "Valiify Dashboard"],
+    [
+      "text-subtitle",
+      "Body Content/Subtitle",
+      "14 / 19.6px / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-body-1",
+      "Body Content/Body 1",
+      "13 / 19.5px / 400",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-body-1-bold",
+      "Body Content/Body 1 - Bold",
+      "13 / 19.5px / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-body-2",
+      "Body Content/Body 2",
+      "12.5 / 12.5px / 400",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-body-2-bold",
+      "Body Content/Body 2 - Bold",
+      "12.5 / 12.5px / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-caption",
+      "Body Content/Caption",
+      "12 / 18px / 400",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-caption-bold",
+      "Body Content/Caption - Bold",
+      "12 / 18px / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-action-l",
+      "Button & Actions/Action L",
+      "13 / normal / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-action-l-bold",
+      "Button & Actions/Action L - bold",
+      "13 / normal / 600",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-action-m",
+      "Button & Actions/Action M",
+      "12.5 / 14px / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-action-m-bold",
+      "Button & Actions/Action M - Bold",
+      "12.5 / 14px / 600",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-action-s",
+      "Button & Actions/Action S",
+      "12 / 14px / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-action-s-bold",
+      "Button & Actions/Action S - Bold",
+      "12 / 14px / 600",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-micro-l",
+      "Micro Text/Micro L",
+      "11 / normal / 400",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-micro-l-bold",
+      "Micro Text/Micro L - Bold",
+      "11 / normal / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-micro-m",
+      "Micro Text/Micro M",
+      "8.5 / normal / 400",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-micro-m-bold",
+      "Micro Text/Micro M - Bold",
+      "8.5 / normal / 500",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-micro-s",
+      "Micro Text/Micro S",
+      "8 / normal / 400",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-micro-s-bold",
+      "Micro Text/Micro S - Bold",
+      "8 / normal / 600 / 0.4%",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-statecap",
+      "Micro Text/Statecap",
+      "9.5 / normal / 600",
+      "Valiify Dashboard",
+    ],
+    [
+      "text-help-caption",
+      "Body & Supporting/Help & Caption",
+      "12 / 14px / 400",
+      "Valiify Dashboard",
+    ],
+  ].map(([cls, figma, spec, sample]) => (
+    <div
+      key={cls}
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        gap: 16,
+        padding: "8px 0",
+        borderBottom: "var(--border-thin) solid var(--color-stroke-divider)",
+      }}
+    >
+      <code style={{ fontSize: 11, width: 176, flexShrink: 0 }}>{cls}</code>
+      <div
+        className={cls}
+        style={{ flex: 1, color: "var(--color-content-primary)" }}
+      >
+        {sample}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "var(--color-content-tertiary)",
+          width: 150,
+          flexShrink: 0,
+        }}
+      >
+        {spec}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "var(--color-content-faint)",
+          width: 210,
+          flexShrink: 0,
+        }}
+      >
+        {figma}
+      </div>
+    </div>
+  ))}
+</div>
+
+## JetBrains Mono
+
+Data and numeric values. Shown here with `font-mono` applied, which these styles require.
+
+<div style={{ margin: "8px 0 32px" }}>
+  {[
+    [
+      "text-data-l font-mono",
+      "Data/Data L",
+      "18 / 21.6px / 500",
+      "1,234,567.89 USD",
+    ],
+    [
+      "text-data-m font-mono",
+      "Data/Data M",
+      "14 / 21px / 500",
+      "1,234,567.89 USD",
+    ],
+    [
+      "text-data-s font-mono",
+      "Data/Data S",
+      "13 / 19.5px / 400",
+      "1,234,567.89 USD",
+    ],
+    [
+      "text-data-xs font-mono",
+      "Data/Data xs",
+      "12 / 16.5px / 400",
+      "1,234,567.89 USD",
+    ],
+    [
+      "text-data-micro-l font-mono",
+      "Micro Text/Micro Data L",
+      "11 / normal / 500",
+      "1,234,567.89 USD",
+    ],
+    [
+      "text-data-micro-m font-mono",
+      "Micro Text/Micro Data M",
+      "8.5 / normal / 500",
+      "1,234,567.89 USD",
+    ],
+    [
+      "text-data-micro-s font-mono",
+      "Micro Text/Micro Data S",
+      "8 / normal / 500",
+      "1,234,567.89 USD",
+    ],
+  ].map(([cls, figma, spec, sample]) => (
+    <div
+      key={cls}
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        gap: 16,
+        padding: "8px 0",
+        borderBottom: "var(--border-thin) solid var(--color-stroke-divider)",
+      }}
+    >
+      <code style={{ fontSize: 11, width: 176, flexShrink: 0 }}>{cls}</code>
+      <div
+        className={cls}
+        style={{ flex: 1, color: "var(--color-content-primary)" }}
+      >
+        {sample}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "var(--color-content-tertiary)",
+          width: 150,
+          flexShrink: 0,
+        }}
+      >
+        {spec}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "var(--color-content-faint)",
+          width: 210,
+          flexShrink: 0,
+        }}
+      >
+        {figma}
+      </div>
+    </div>
+  ))}
+</div>
+
+## Labels
+
+All six Label styles are uppercase with 10% tracking. Shown via the `type-label-*` utilities, which bundle the casing so it cannot be forgotten.
+
+<div style={{ margin: "8px 0 32px" }}>
+  {[
+    [
+      "type-label-l",
+      "Label/Label L Sans",
+      "10.5 / 19.6px / 400 / 10%",
+      "Label text preview",
+    ],
+    [
+      "type-label-l-bold",
+      "Label/Label L Sans - Bold",
+      "10.5 / 19.6px / 600 / 10%",
+      "Label text preview",
+    ],
+    [
+      "type-label-l-mono",
+      "Label/Label L Mono",
+      "10.5 / 12.6px / 500 / 10%",
+      "Label text preview",
+    ],
+    [
+      "type-label-s",
+      "Label/Label S Sans",
+      "10 / 12px / 400 / 10%",
+      "Label text preview",
+    ],
+    [
+      "type-label-s-bold",
+      "Label/Label S Sans - Bold",
+      "10 / 12px / 600 / 10%",
+      "Label text preview",
+    ],
+    [
+      "type-label-s-mono",
+      "Label/Label S Mono",
+      "10 / 12px / 700 / 10%",
+      "Label text preview",
+    ],
+  ].map(([cls, figma, spec, sample]) => (
+    <div
+      key={cls}
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        gap: 16,
+        padding: "8px 0",
+        borderBottom: "var(--border-thin) solid var(--color-stroke-divider)",
+      }}
+    >
+      <code style={{ fontSize: 11, width: 176, flexShrink: 0 }}>{cls}</code>
+      <div
+        className={cls}
+        style={{ flex: 1, color: "var(--color-content-primary)" }}
+      >
+        {sample}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "var(--color-content-tertiary)",
+          width: 150,
+          flexShrink: 0,
+        }}
+      >
+        {spec}
+      </div>
+      <div
+        style={{
+          fontSize: 10,
+          color: "var(--color-content-faint)",
+          width: 210,
+          flexShrink: 0,
+        }}
+      >
+        {figma}
+      </div>
+    </div>
+  ))}
+</div>
+
+## Spacing
+
+**No spacing tokens are defined.** Tailwind v4's spacing scale is a multiplier of
+`--spacing` (0.25rem), so Figma's whole-pixel values all map to standard steps.
+Defining `--spacing-8: 8px` would make `p-8` mean 8px instead of 32px.
+
+The multiplier must be a multiple of 0.25 (= 1px steps), so Tailwind can express
+any whole pixel but no half-pixel. Figma's two fractional tokens therefore need
+arbitrary values rather than a step.
+
+| Figma       | px  | Tailwind    | Figma        | px   | Tailwind     |
+| ----------- | --- | ----------- | ------------ | ---- | ------------ |
+| Spacing/1   | 1   | `p-0.25`    | Spacing/11   | 11   | `p-2.75`     |
+| Spacing/2   | 2   | `p-0.5`     | Spacing/12   | 12   | `p-3`        |
+| Spacing/3   | 3   | `p-0.75`    | Spacing/12-5 | 12.5 | `p-[12.5px]` |
+| Spacing/4   | 4   | `p-1`       | Spacing/14   | 14   | `p-3.5`      |
+| Spacing/5   | 5   | `p-1.25`    | Spacing/16   | 16   | `p-4`        |
+| Spacing/6   | 6   | `p-1.5`     | Spacing/20   | 20   | `p-5`        |
+| Spacing/7   | 7   | `p-1.75`    | Spacing/22   | 22   | `p-5.5`      |
+| Spacing/7-5 | 7.5 | `p-[7.5px]` | Spacing/24   | 24   | `p-6`        |
+| Spacing/8   | 8   | `p-2`       | Spacing/28   | 28   | `p-7`        |
+| Spacing/9   | 9   | `p-2.25`    | Spacing/32   | 32   | `p-8`        |
+| Spacing/10  | 10  | `p-2.5`     |              |      |              |

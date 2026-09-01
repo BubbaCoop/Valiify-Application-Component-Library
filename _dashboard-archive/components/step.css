@@ -1,0 +1,106 @@
+/**
+ * Step Component
+ *
+ * A single marker in a stepped progression. Extracted from Figma Step
+ * (1032:2012) — 3 variants on a `State` axis, plus a Step Title boolean.
+ *
+ * Usage:
+ *   <div class="step">
+ *     <span class="step-marker">
+ *       <svg class="icon icon-size-12" aria-hidden="true"><use href="#check" /></svg>
+ *     </span>
+ *     <span class="step-label">Intake</span>
+ *   </div>
+ *
+ *   <div class="step step-active" aria-current="step">
+ *     <span class="step-marker">3</span>
+ *     <span class="step-label">Review</span>
+ *   </div>
+ *
+ * COMPLETED IS THE BASE, being Figma's default variant. A bare `.step` is a
+ * finished step, which reads oddly in isolation but is what the design file
+ * specifies — mark the others explicitly.
+ *
+ * WHAT EACH STATE DRAWS. The marker is always a 24px circle and the label always
+ * 10px uppercase at 0.5px tracking; everything else moves:
+ *
+ *   state       marker fill    marker border        content    label
+ *   completed   Primary/Main   none                 12px check Content/Tertiary, Medium
+ *   -active     Surface/Paper  2px Primary/Main     number     Primary/Main, Medium
+ *   -upcoming   Surface/Paper  1px Content/Faint    number     Neutral/Strong, Regular
+ *
+ * THE LABEL RAMP IS INVERTED AND THAT IS NOT A TRANSCRIPTION ERROR. A completed
+ * step's label is `Content/Tertiary` (#727280) while an upcoming one is
+ * `Neutral/Strong` (#4e4e59) — so the step you have already finished is drawn
+ * LIGHTER than the one you have not reached. The weights disagree in the other
+ * direction: completed and active are Medium, upcoming is Regular. Reproduced
+ * faithfully; on the designer list, because either the colour or the weight
+ * looks like it was meant to go the other way.
+ *
+ * THE BORDER WIDTHS ARE DIFFERENT TOKENS, not one value at two sizes — active
+ * binds `Stroke/Micro` (2px) and upcoming `Stroke/Line` (1px). Completed draws
+ * none at all; a transparent border keeps all three boxes at 24px under
+ * border-box, so they line up in a row.
+ *
+ * Figma writes the marker fill as a literal white rather than binding
+ * `Surface/Paper`. The value is identical, so it is mapped to the token here.
+ */
+
+@layer components {
+  .step {
+    @apply inline-flex shrink-0 flex-col items-center gap-1.5; /* 6px */
+  }
+
+  /* --- Marker --------------------------------------------------------- */
+
+  /* Completed: a filled circle. The transparent border keeps the outer box at
+     24px so all three states align on a shared baseline. */
+  .step-marker {
+    @apply inline-flex size-6 shrink-0 items-center justify-center overflow-hidden;
+    @apply rounded-pill;
+
+    border-style: solid;
+    @apply border-transparent;
+    border-width: var(--border-micro); /* 2px, matching the active ring */
+
+    @apply bg-primary text-content-contrast;
+
+    /* The number the other two states show; completed swaps in a 12px icon. */
+    @apply text-[11px] font-medium leading-[normal];
+  }
+
+  .step-label {
+    @apply text-[10px] font-medium leading-[normal];
+    @apply text-center uppercase tracking-[0.5px];
+    @apply text-content-tertiary;
+  }
+
+  /* --- State = active --------------------------------------------------- */
+
+  .step-active .step-marker {
+    @apply bg-surface-paper text-primary;
+    border-width: var(--border-micro); /* 2px — Stroke/Micro */
+    @apply border-primary;
+  }
+
+  .step-active .step-label {
+    @apply text-primary;
+  }
+
+  /* --- State = upcoming -------------------------------------------------- */
+
+  .step-upcoming .step-marker {
+    @apply bg-surface-paper text-neutral-strong;
+    border-width: var(
+      --border-line
+    ); /* 1px — Stroke/Line, NOT the active 2px */
+    @apply border-content-faint;
+  }
+
+  /* Regular, where completed and active are Medium — and DARKER than
+     completed's label. See the header. */
+  .step-upcoming .step-label {
+    @apply font-normal;
+    @apply text-neutral-strong;
+  }
+}

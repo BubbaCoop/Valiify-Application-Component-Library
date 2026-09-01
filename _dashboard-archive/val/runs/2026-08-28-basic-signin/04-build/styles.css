@@ -1,0 +1,183 @@
+/**
+ * Val build — 2026-08-28-basic-signin — page-level styles.
+ *
+ * Library components (.btn, .btn-primary, .btn-outline, .btn-sm, .link,
+ * .input) come from ../../../../dist/index.css and are NOT restated here;
+ * this file carries only call-site layout and the one-off (val:gap) pieces.
+ *
+ * TOKENS READ FRESH from src/themes/valiify.css (generated, 2026-08-28) —
+ * every color/radius/type value below references these custom properties,
+ * which dist/index.css defines at :root. No hardcoded hex anywhere.
+ *
+ *   --color-surface-frame:      oklch(0.963 0.0062 255.48)        (#f0f3f7)  page background
+ *   --color-surface-paper:      oklch(1 0 0)                      (#ffffff)  card fill
+ *   --color-stroke-divider:     oklch(0.2027 0.0395 282.3 / 0.078)(#14142814) card hairline
+ *   --color-content-primary:    oklch(0.202 0.0079 285.67)        (#16161a)  title, field labels
+ *   --color-content-secondary:  oklch(0.4759 0.0208 285.58)       (#5b5b68)  subtitle, remember-me label
+ *   --color-content-tertiary:   oklch(0.5569 0.0215 285.68)       (#727280)  placeholder (via library .input)
+ *   --color-primary:            oklch(0.4234 0.1163 256.9)        (#1e4d8c)  via .btn-primary / .link
+ *   --radius-control:           6px                                card radius as drawn (requester answer 5)
+ *   --border-thin:              0.5px                              hairline; Chrome renders it 1px, matching
+ *                                                                  the measured 1px stroke
+ *   --ring-focus-width:         2px                                keyboard focus ring (QA S6.1/S6.2 fix)
+ *   --ring-focus-color:         oklch(0.4234 0.1163 256.9)        (#1e4d8c)  = Primary/Main
+ *   --text-subtitle:            14px, --text-subtitle--font-weight: 500      field labels
+ *   --text-body-1:              13px / 19.5px / 400                subtitle (+ input text via .input)
+ *   --text-h2--line-height:     19.5px                             title line box (see .signin-title)
+ *   --font-sans:                Inter, system-ui, ...              inherited from the library's html rule
+ *
+ * Spacing values are raw px on purpose — the design system ships no spacing
+ * custom properties (see CLAUDE.md: Figma Spacing/N maps to whole pixels).
+ * Each is annotated with its Figma spacing name and the measured source.
+ */
+
+/* ---- page ---------------------------------------------------------------
+   Region 1: full-bleed Surface/Frame background; the card is centered on
+   both axes (measured card at x440,y222 in the 1280x800 frame = dead
+   center). min-height:100vh flex centering per the run's target geometry. */
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px; /* Spacing/32 — breathing room on short viewports */
+  background-color: var(--color-surface-frame);
+}
+
+/* ---- sign-in card (val:gap — bespoke surface) ---------------------------
+   Requester answer 5: reproduce as drawn — white, 1px hairline, ~6px
+   radius, NO shadow. Composed from tokens; deliberately not the placeholder
+   .card class (CLAUDE.md: do not build on it). Width 400px fixed, height
+   content-driven (measured 356). */
+.signin-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 16px; /* Spacing/16 — measured card content padding */
+  background-color: var(--color-surface-paper);
+  border: var(--border-thin) solid var(--color-stroke-divider);
+  border-radius: var(--radius-control); /* 6px as drawn */
+}
+
+/* ---- card header (val:gap — no matching component or type token) --------
+   Title: 24px/600 sits in the type-scale gap between H1 (19px) and Display
+   (46px) — raw size per the component map. The 19.5px line box is
+   --text-h2--line-height, which is what the measured render's title box
+   resolves to; it reproduces the measured ink geometry (title ink at
+   y239.5, subtitle ink 14.5px below). Weight 600: the extraction's 700 is
+   flagged estimated ±1 step; 600 matches the drawn glyphs (verified against
+   the design export tile diff). */
+.signin-title {
+  font-size: 24px; /* raw — no token; flagged for the designer in the map */
+  line-height: var(--text-h2--line-height); /* 19.5px title line box */
+  font-weight: 600;
+  color: var(--color-content-primary);
+  margin-bottom: 8px; /* Spacing/8 */
+}
+
+/* Subtitle: exact double token match per the map — Body 1 + Content/Secondary. */
+.signin-subtitle {
+  font-size: var(--text-body-1); /* 13px */
+  line-height: var(--text-body-1--line-height); /* 19.5px */
+  font-weight: var(--text-body-1--font-weight); /* 400 */
+  color: var(--color-content-secondary);
+  margin-bottom: 24px; /* Spacing/24 — measured subtitle -> form gap */
+}
+
+/* ---- form stack ---------------------------------------------------------- */
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Spacing/16 — measured inter-group rhythm */
+}
+
+/* Field label — requester answer 2: chrome-less fields as drawn, so the
+   label is the drawn treatment (14px/500 mixed-case Content/Primary), not
+   the library's 10px uppercase .input-label. 14px/500 = --text-subtitle
+   size/weight; the line box stays the inherited 1.5 (21px), which the
+   measured geometry requires (label ink at y315.5 / y380.5). */
+.signin-field-label {
+  display: block;
+  margin-bottom: 4px; /* Spacing/4 — label -> input gap */
+  font-size: var(--text-subtitle); /* 14px */
+  font-weight: var(--text-subtitle--font-weight); /* 500 */
+  color: var(--color-content-primary);
+}
+
+/* The inputs themselves are the library's .input element class (Body 1 text
+   in Content/Primary, Content/Tertiary placeholder) with NO .input-field
+   box — requester answer 2. Width is a call-site choice; .input's flex:1
+   is inert inside a block wrapper. */
+.signin-field .input {
+  width: 100%;
+}
+
+/* Keyboard focus — QA S6.1/S6.2 fix. The library's visible focus ring lives
+   on the .input-field wrapper's :focus-within (input.css line 150), which
+   the requester-mandated chrome-less treatment omits, while the .input
+   element reset (outline-none) suppresses the browser's own ring — so Tab
+   landed with no visible indication (WCAG 2.4.7). Restate the library's
+   focus-ring utility (src/utilities/index.css line 32) at the call site,
+   declaration for declaration, from the same two ring tokens: a 2px
+   Primary/Main outline, negatively offset so its outer edge sits on the
+   element's own edge (the prebuilt dist entry ships component classes only,
+   no utility classes, so the utility itself is not available to apply).
+   :focus-visible only — pointer focus stays ringless like the library
+   field, and the rest-state rendering is untouched. Deliberately NOT a
+   reintroduction of the .input-field chrome. */
+.signin-field .input:focus-visible {
+  outline: var(--ring-focus-width) solid var(--ring-focus-color);
+  outline-offset: calc(-1 * var(--ring-focus-width));
+}
+
+/* ---- remember-me row (val:gap — native checkbox per requester answer 3) -- */
+.signin-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Spacing/8 — measured box -> label gap */
+}
+
+/* Native 16x16 checkbox, exactly as drawn — deliberately NOT the library
+   Checkbox markup (requester answer 3). No border/background overrides, so
+   Chromium draws its default control; its #767676 border is the browser's,
+   not an authored color. */
+.signin-checkbox {
+  width: 16px;
+  height: 16px;
+}
+
+.signin-remember-label {
+  font-size: var(--text-subtitle); /* 14px */
+  color: var(--color-content-secondary);
+  cursor: pointer;
+}
+
+/* ---- actions row ---------------------------------------------------------
+   Sign In takes the remaining row width (writeup rule; measured 291 + 8 +
+   67 = full 366px content width); Cancel hugs its label per the library
+   default. */
+.signin-actions {
+  display: flex;
+  gap: 8px; /* Spacing/8 — measured button gap */
+  margin-top: 8px; /* Spacing/8 — on top of the 16px stack gap */
+}
+
+.signin-submit {
+  flex: 1; /* call-site width, per the component map's deviation note */
+}
+
+/* ---- forgot-password row --------------------------------------------------
+   Centered in the card (measured link center x = 640 = card center). The
+   row's 24px line box comes from the inherited root font-size strut, which
+   the measured geometry requires (link ink at y544.5). */
+.signin-forgot {
+  text-align: center;
+  margin-top: 8px; /* Spacing/8 — on top of the 16px stack gap */
+}
+
+/* ---- fixed utility corner -------------------------------------------------
+   Writeup: pinned to the viewport, bottom-right; measured ~20px insets. */
+.view-demo {
+  position: fixed;
+  right: 20px; /* Spacing/20 */
+  bottom: 20px; /* Spacing/20 */
+}

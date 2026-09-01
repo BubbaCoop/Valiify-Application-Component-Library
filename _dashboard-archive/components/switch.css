@@ -1,0 +1,99 @@
+/**
+ * Switch Component
+ *
+ * Toggle switch for binary on/off settings with hover, disabled, and focus states.
+ * Token-exact implementation from Figma.
+ *
+ * Specifications:
+ * - Track: 32px × 18px, pill-shaped
+ * - Knob: 14px diameter circle with shadow
+ * - Padding: 2px
+ * - States: off (default), on (:checked), hover, disabled, focus
+ *
+ * Usage:
+ *   <label class="switch">
+ *     <input type="checkbox" class="switch-input" />
+ *   </label>
+ */
+
+@layer components {
+  .switch {
+    /* Layout */
+    @apply inline-flex items-center;
+    @apply relative;
+    @apply w-8 h-[18px]; /* 32px × 18px exact */
+
+    /* Shape */
+    @apply rounded-pill;
+
+    /* Colors - off state default */
+    @apply bg-action-focused;
+
+    /* Interaction */
+    @apply cursor-pointer;
+    @apply transition-colors duration-150;
+
+    /* Padding for knob positioning */
+    @apply p-0.5; /* 2px */
+  }
+
+  /* The actual checkbox input - visually hidden but accessible */
+  .switch-input {
+    @apply sr-only;
+  }
+
+  /* Knob - implemented as ::before pseudo-element */
+  .switch::before {
+    content: "";
+    @apply block;
+    @apply w-[14px] h-[14px]; /* Exact 14px knob */
+    @apply rounded-pill;
+    @apply bg-surface-paper;
+
+    /* Knob shadow from Figma */
+    box-shadow: var(--shadow-knob);
+
+    /* Smooth slide animation */
+    @apply transition-transform duration-150;
+    transform: translateX(0);
+  }
+
+  /* --- States --------------------------------------------------------- */
+
+  /* Hover - off state */
+  .switch:has(.switch-input:hover:not(:disabled):not(:checked)) {
+    @apply bg-content-faint;
+  }
+
+  /* Disabled - off state */
+  .switch:has(.switch-input:disabled:not(:checked)) {
+    @apply bg-secondary-soft;
+    @apply cursor-not-allowed;
+  }
+
+  /* Checked (on) - default */
+  .switch:has(.switch-input:checked) {
+    @apply bg-primary;
+  }
+
+  /* Checked (on) - hover */
+  .switch:has(.switch-input:checked:hover:not(:disabled)) {
+    @apply bg-primary-dark;
+  }
+
+  /* Checked (on) - disabled */
+  .switch:has(.switch-input:checked:disabled) {
+    @apply bg-primary-disabled;
+    @apply cursor-not-allowed;
+  }
+
+  /* Knob position when checked - slide to end */
+  .switch:has(.switch-input:checked)::before {
+    transform: translateX(14px); /* Slide exactly one knob width */
+  }
+
+  /* Focus ring - keyboard navigation */
+  .switch:has(.switch-input:focus-visible) {
+    @apply focus-ring;
+  }
+}

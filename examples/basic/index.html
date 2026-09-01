@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valiify Short App UI - Basic Example</title>
+
+    <!--
+    Loads only the built library. dist/index.css is self-contained: it carries
+    the design tokens and every component class.
+
+    Two things this example deliberately does NOT do:
+      * No Tailwind CDN. The CDN ships v3, this library is built with v4, and
+        mixing them produces conflicting output.
+      * No Tailwind utility classes for layout. dist/index.css intentionally
+        ships no utilities (see CLAUDE.md), so layout below uses plain inline
+        styles. A real app generates utilities from its own Tailwind build.
+
+    Run `npm run build` first, or this page will be unstyled.
+
+    NOTE: The Short App component set has not been extracted from Figma yet,
+    so this page is a setup check rather than a component showcase. Component
+    examples will replace it as components land.
+  -->
+    <!-- Fonts are not bundled into dist/index.css; load them yourself. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="../../dist/index.css" />
+
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        font-family: Inter, system-ui, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="max-width: 480px; width: 100%">
+      <h1 style="font-size: 24px; font-weight: 600; margin-bottom: 8px">
+        Valiify Short App UI
+      </h1>
+      <p style="font-size: 14px; color: #5b5b68; margin-bottom: 24px">
+        If this page renders with Inter and the box below shows a value, the
+        built stylesheet is loading. Token and component examples will appear
+        here once the Short App set is extracted from Figma.
+      </p>
+      <div
+        style="
+          padding: 16px;
+          border: 1px solid #e1e1e3;
+          border-radius: 8px;
+          font-size: 13px;
+        "
+      >
+        <code id="token-check">checking…</code>
+      </div>
+    </div>
+    <script>
+      const v = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-primary")
+        .trim();
+      document.getElementById("token-check").textContent = v
+        ? "--color-primary: " + v
+        : "--color-primary is empty — expected until Short App tokens are extracted.";
+    </script>
+  </body>
+</html>

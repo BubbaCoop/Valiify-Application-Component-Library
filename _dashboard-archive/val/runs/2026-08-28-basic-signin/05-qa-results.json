@@ -1,0 +1,243 @@
+{
+  "summary": {
+    "total": 29,
+    "pass": 24,
+    "fail": 0,
+    "na": 5,
+    "requestFailures": []
+  },
+  "results": [
+    {
+      "id": "F0",
+      "name": "Default state: email prefilled, password empty w/ placeholder, checkbox unchecked",
+      "status": "pass",
+      "selector": "#email / #password / #remember",
+      "expected": "email=\"user@valiify.com\", password=\"\" + placeholder \"Enter your password\", checkbox unchecked",
+      "actual": "email=\"user@valiify.com\", password=\"\", placeholder=\"Enter your password\", checked=false"
+    },
+    {
+      "id": "F1",
+      "name": "Sign In click → alert \"Sign in clicked\", no navigation",
+      "status": "pass",
+      "selector": "#sign-in",
+      "expected": "alert dialog with message \"Sign in clicked\"; URL unchanged",
+      "actual": "alert: \"Sign in clicked\"; URL unchanged"
+    },
+    {
+      "id": "F2",
+      "name": "Cancel click → alert \"Cancel clicked\", no navigation",
+      "status": "pass",
+      "selector": "#cancel",
+      "expected": "alert dialog with message \"Cancel clicked\"; URL unchanged",
+      "actual": "alert: \"Cancel clicked\"; URL unchanged"
+    },
+    {
+      "id": "F3",
+      "name": "Forgot password? → anchor with href (destination out of scope)",
+      "status": "pass",
+      "selector": "#forgot",
+      "expected": "<a> element with an href attribute, label \"Forgot password?\"",
+      "actual": "<a href=\"#\"> \"Forgot password?\""
+    },
+    {
+      "id": "F3b",
+      "name": "Forgot password? click stays in-page (no dialog, no document change)",
+      "status": "pass",
+      "selector": "#forgot",
+      "expected": "no dialog; same document",
+      "actual": "URL now file:///Users/nicholascooper/Desktop/valiify-dashboard-ui/val/runs/2026-08-28-basic-signin/04-build/index.html#"
+    },
+    {
+      "id": "F4",
+      "name": "View Demo Info click → informational alert, no navigation",
+      "status": "pass",
+      "selector": "#view-demo",
+      "expected": "alert dialog with non-empty informational message; URL unchanged",
+      "actual": "alert: \"This is a demo!\"; URL unchanged"
+    },
+    {
+      "id": "S1.1",
+      "name": "Hover changes state — Sign In (.btn-primary)",
+      "status": "pass",
+      "selector": "#sign-in",
+      "expected": "computed style delta on hover (authored library hover ramp)",
+      "actual": "style changed on hover"
+    },
+    {
+      "id": "S1.2",
+      "name": "Hover changes state — Cancel (.btn-outline)",
+      "status": "pass",
+      "selector": "#cancel",
+      "expected": "computed style delta on hover (authored library hover ramp)",
+      "actual": "style changed on hover"
+    },
+    {
+      "id": "S1.3",
+      "name": "Hover changes state — Forgot password? (.link)",
+      "status": "pass",
+      "selector": "#forgot",
+      "expected": "computed style delta on hover (authored library hover ramp)",
+      "actual": "style changed on hover"
+    },
+    {
+      "id": "S1.4",
+      "name": "Hover changes state — View Demo Info (.btn-outline.btn-sm)",
+      "status": "pass",
+      "selector": "#view-demo",
+      "expected": "computed style delta on hover (authored library hover ramp)",
+      "actual": "style changed on hover"
+    },
+    {
+      "id": "S1.5",
+      "name": "Hover changes state — Email input (chrome-less .input)",
+      "status": "n/a",
+      "selector": "#email",
+      "expected": "no authored hover in source (requester answers 2–3); recorded for completeness",
+      "actual": "no computed-style change on hover"
+    },
+    {
+      "id": "S1.6",
+      "name": "Hover changes state — Password input (chrome-less .input)",
+      "status": "n/a",
+      "selector": "#password",
+      "expected": "no authored hover in source (requester answers 2–3); recorded for completeness",
+      "actual": "no computed-style change on hover"
+    },
+    {
+      "id": "S1.7",
+      "name": "Hover changes state — Remember me (native checkbox)",
+      "status": "n/a",
+      "selector": "#remember",
+      "expected": "no authored hover in source (requester answers 2–3); recorded for completeness",
+      "actual": "no computed-style change on hover"
+    },
+    {
+      "id": "S2",
+      "name": "Expand/collapse cycles both directions",
+      "status": "n/a",
+      "selector": "—",
+      "expected": "n/a — the page has no expandable/collapsible elements",
+      "actual": "no expand/collapse controls present"
+    },
+    {
+      "id": "S3",
+      "name": "Remember me toggles both directions (incl. via label)",
+      "status": "pass",
+      "selector": "#remember / .signin-remember-label",
+      "expected": "unchecked → checked → unchecked via box; checked → unchecked via label",
+      "actual": "sequence: [false, true, false, true, false]"
+    },
+    {
+      "id": "S4",
+      "name": "Scroll: sticky header pinned / progress track updates",
+      "status": "n/a",
+      "selector": "—",
+      "expected": "n/a — no sticky header and no progress track on this page",
+      "actual": "no such elements (probe: false); page scrollHeight 800 vs viewport 800 (no overflow to scroll)"
+    },
+    {
+      "id": "S4b",
+      "name": "View Demo Info pinned to viewport bottom-right (position:fixed, ~20px insets)",
+      "status": "pass",
+      "selector": "#view-demo",
+      "expected": "position:fixed; right/bottom insets ≈ 20px",
+      "actual": "position:fixed; right inset 20.0px, bottom inset 20.0px"
+    },
+    {
+      "id": "S5.1",
+      "name": "Resize 1440x900: no horizontal overflow, layout intact",
+      "status": "pass",
+      "selector": "html / .signin-card / .signin-actions / #view-demo",
+      "expected": "scrollWidth <= clientWidth; card within viewport; Sign In & Cancel on one row; demo button pinned 20px from corner",
+      "actual": "overflow doc 1440/1440, body 1440/1440; card x 520..920; buttons Δy 0.0px; demo insets r=20.0 b=20.0"
+    },
+    {
+      "id": "S5.2",
+      "name": "Resize 1280x800: no horizontal overflow, layout intact",
+      "status": "pass",
+      "selector": "html / .signin-card / .signin-actions / #view-demo",
+      "expected": "scrollWidth <= clientWidth; card within viewport; Sign In & Cancel on one row; demo button pinned 20px from corner",
+      "actual": "overflow doc 1280/1280, body 1280/1280; card x 440..840; buttons Δy 0.0px; demo insets r=20.0 b=20.0"
+    },
+    {
+      "id": "S5.3",
+      "name": "Resize 1024x768: no horizontal overflow, layout intact",
+      "status": "pass",
+      "selector": "html / .signin-card / .signin-actions / #view-demo",
+      "expected": "scrollWidth <= clientWidth; card within viewport; Sign In & Cancel on one row; demo button pinned 20px from corner",
+      "actual": "overflow doc 1024/1024, body 1024/1024; card x 312..712; buttons Δy 0.0px; demo insets r=20.0 b=20.0"
+    },
+    {
+      "id": "S6.1",
+      "name": "Tab reaches #email with visible focus",
+      "status": "pass",
+      "selector": "#email",
+      "expected": "element receives keyboard focus AND shows a visible focus indicator",
+      "actual": "focused; outline: solid 2px oklch(0.4234 0.1163 256.9); box-shadow: none"
+    },
+    {
+      "id": "S6.2",
+      "name": "Tab reaches #password with visible focus",
+      "status": "pass",
+      "selector": "#password",
+      "expected": "element receives keyboard focus AND shows a visible focus indicator",
+      "actual": "focused; outline: solid 2px oklch(0.4234 0.1163 256.9); box-shadow: none"
+    },
+    {
+      "id": "S6.3",
+      "name": "Tab reaches #remember with visible focus",
+      "status": "pass",
+      "selector": "#remember",
+      "expected": "element receives keyboard focus AND shows a visible focus indicator",
+      "actual": "focused; outline: auto 1px rgb(0, 95, 204); box-shadow: none"
+    },
+    {
+      "id": "S6.4",
+      "name": "Tab reaches #sign-in with visible focus",
+      "status": "pass",
+      "selector": "#sign-in",
+      "expected": "element receives keyboard focus AND shows a visible focus indicator",
+      "actual": "focused; outline: solid 2px oklch(0.4234 0.1163 256.9); box-shadow: none"
+    },
+    {
+      "id": "S6.5",
+      "name": "Tab reaches #cancel with visible focus",
+      "status": "pass",
+      "selector": "#cancel",
+      "expected": "element receives keyboard focus AND shows a visible focus indicator",
+      "actual": "focused; outline: solid 2px oklch(0.4234 0.1163 256.9); box-shadow: none"
+    },
+    {
+      "id": "S6.6",
+      "name": "Tab reaches #forgot with visible focus",
+      "status": "pass",
+      "selector": "#forgot",
+      "expected": "element receives keyboard focus AND shows a visible focus indicator",
+      "actual": "focused; outline: solid 2px oklch(0.4234 0.1163 256.9); box-shadow: none"
+    },
+    {
+      "id": "S6.7",
+      "name": "Tab reaches #view-demo with visible focus",
+      "status": "pass",
+      "selector": "#view-demo",
+      "expected": "element receives keyboard focus AND shows a visible focus indicator",
+      "actual": "focused; outline: solid 2px oklch(0.4234 0.1163 256.9); box-shadow: none"
+    },
+    {
+      "id": "S6.8",
+      "name": "Tab order follows document order",
+      "status": "pass",
+      "selector": "document",
+      "expected": "email → password → remember → sign-in → cancel → forgot → view-demo",
+      "actual": "email → password → remember → sign-in → cancel → forgot → view-demo"
+    },
+    {
+      "id": "S7",
+      "name": "Zero console errors across all tests",
+      "status": "pass",
+      "selector": "page console",
+      "expected": "0 console errors, 0 page errors, 0 unexpected dialogs",
+      "actual": "0 errors"
+    }
+  ]
+}

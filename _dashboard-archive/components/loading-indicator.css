@@ -1,0 +1,184 @@
+/**
+ * Loading Indicator Component
+ *
+ * Extracted from Figma Loading Indicator (1028:1992) — 8 variants across
+ * Type (Circle / Dots) x Size (XS / SM / MD / LG).
+ *
+ * Usage — circle:
+ *   <span class="loading-indicator" role="status" aria-label="Loading"></span>
+ *   <span class="loading-indicator loading-indicator-lg" role="status" aria-label="Loading"></span>
+ *
+ * Usage — dots:
+ *   <span class="loading-indicator loading-indicator-dots" role="status" aria-label="Loading">
+ *     <span class="loading-indicator-dot"></span>
+ *     <span class="loading-indicator-dot"></span>
+ *     <span class="loading-indicator-dot"></span>
+ *   </span>
+ *
+ * XS IS THE DEFAULT — Figma's first variant is `Type=Circle, Size=XS`, and the
+ * Loading Inline component embeds a 12px indicator at every one of its sizes,
+ * so 12px really is the norm rather than a small option.
+ *
+ * BOTH TYPES WERE FLATTENED TO SVG in Figma — `get_design_context` returns an
+ * `<img>` and no variables at all — so every value below was read out of the
+ * exported asset and cross-checked against the rendered PNG.
+ *
+ * THE CIRCLE IS A TRACK RING PLUS A 90 DEGREE ARC:
+ *
+ *   size  box  ring    track            arc
+ *   XS    12   1.5     Stroke/Divider   Primary/Main
+ *   SM    16   2       Stroke/Divider   Primary/Main
+ *   MD    24   2.52    Stroke/Divider   Primary/Main
+ *   LG    32   3.04    Stroke/Divider   Primary/Main
+ *
+ * Those are the annulus thicknesses in the exported Track paths (XS outer r=6
+ * inner r=4.5; MD 12/9.48; LG 16/12.96) and they are what Figma renders —
+ * tracing its 1x PNG by pixel COVERAGE, rather than by a binary is-it-white
+ * test, gives 1.56 / 2.00 / 2.50 / 3.11.
+ *
+ * IT IS A MASKED CONIC-GRADIENT, NOT A BORDER, and that is the whole reason the
+ * authored values can be carried exactly. Chrome FLOORS fractional
+ * `border-width` — measured at 1x and 2x, 1.5px computes to 1px and 2.5px to
+ * 2px — so a bordered ring cannot express 1.5 or 2.52 at all. An earlier
+ * revision shipped integers (2/2/3/3) to compensate, justified by a claim that
+ * Figma's PNG rendered 2/2/3/3; that trace was wrong, and the result was an XS
+ * ring a third thicker than the design, on the default size and the one
+ * embedded in every Loading Inline variant. A mask has no such rounding.
+ *
+ * One coloured quarter of a conic-gradient is the same 90-degree arc a single
+ * coloured border side used to draw, with square ends in both cases.
+ *
+ * It is built from a border rather than an SVG: one coloured side of a round
+ * border IS a quarter arc, which is what Figma draws. The only difference is
+ * that the border's ends are mitred at 45 degrees where the SVG's are radial —
+ * invisible at 12-32px, and it spins, so the start angle does not matter.
+ *
+ * THE DOTS ARE THREE CIRCLES WHOSE DIAMETER AND GAP ARE THE SAME NUMBER, which
+ * is why the frames are exactly 5x their height: 2/3/4/5px dots at 2/3/4/5px
+ * gaps give 10x2, 15x3, 20x4, 25x5. Fill is `Secondary/Main`, not the primary
+ * used by the circle's arc. Sized through a custom property so one value drives
+ * both the dot and the gap.
+ *
+ * THE ANIMATION IS NOT IN FIGMA. Both types are static vectors there — no
+ * prototype, no timing, no easing. A loading indicator that does not move is
+ * useless, so the motion below is a library decision: 0.8s linear for the spin,
+ * and a 1.4s staggered opacity pulse for the dots. Both are conventional
+ * defaults rather than anything the design file specifies, and both are on the
+ * designer list.
+ *
+ * REDUCED MOTION IS RESPECTED. Under `prefers-reduced-motion: reduce` the
+ * animations stop. The indicator then conveys nothing on its own, which is why
+ * every usage needs `role="status"` and a label — or a visible one, as Loading
+ * Inline provides.
+ */
+
+@layer components {
+  .loading-indicator {
+    @apply inline-flex shrink-0 items-center;
+  }
+
+  /* --- Type = Circle (the default) ---------------------------------------- */
+
+  /* Excluded from the dots type by name rather than by source order.
+
+     A conic-gradient masked to a ring, NOT a border — see the header. The arc
+     runs 0-90deg, which is 12 to 3 o'clock, exactly where Figma draws it. */
+  .loading-indicator:not(.loading-indicator-dots) {
+    --loading-ring: 1.5px; /* XS */
+    @apply size-3; /* 12px */
+    @apply rounded-pill;
+
+    background: conic-gradient(
+      from 0deg,
+      var(--color-primary) 0deg 90deg,
+      var(--color-stroke-divider) 90deg 360deg
+    );
+    mask: radial-gradient(
+      farthest-side,
+      transparent calc(100% - var(--loading-ring)),
+      black calc(100% - var(--loading-ring))
+    );
+
+    animation: valiify-loading-spin 0.8s linear infinite;
+  }
+
+  .loading-indicator-sm:not(.loading-indicator-dots) {
+    --loading-ring: 2px;
+    @apply size-4; /* 16px */
+  }
+
+  .loading-indicator-md:not(.loading-indicator-dots) {
+    --loading-ring: 2.52px;
+    @apply size-6; /* 24px */
+  }
+
+  .loading-indicator-lg:not(.loading-indicator-dots) {
+    --loading-ring: 3.04px;
+    @apply size-8; /* 32px */
+  }
+
+  /* --- Type = Dots -------------------------------------------------------- */
+
+  /* One custom property drives both the dot diameter and the gap, because in
+     Figma they are always the same number. */
+  .loading-indicator-dots {
+    --loading-dot: 2px; /* XS */
+    gap: var(--loading-dot);
+  }
+
+  .loading-indicator-dots.loading-indicator-sm {
+    --loading-dot: 3px;
+  }
+
+  .loading-indicator-dots.loading-indicator-md {
+    --loading-dot: 4px;
+  }
+
+  .loading-indicator-dots.loading-indicator-lg {
+    --loading-dot: 5px;
+  }
+
+  /* Secondary/Main, NOT the Primary the circle's arc uses. */
+  .loading-indicator-dot {
+    @apply block shrink-0 rounded-pill;
+    width: var(--loading-dot);
+    height: var(--loading-dot);
+    @apply bg-secondary;
+
+    animation: valiify-loading-pulse 1.4s ease-in-out infinite;
+  }
+
+  .loading-indicator-dot:nth-child(2) {
+    animation-delay: 0.16s;
+  }
+
+  .loading-indicator-dot:nth-child(3) {
+    animation-delay: 0.32s;
+  }
+}
+
+/* Keyframes sit outside @layer components so nothing can cascade them away.
+   Prefixed to avoid colliding with a consumer's own `spin`. */
+@keyframes valiify-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes valiify-loading-pulse {
+  0%,
+  80%,
+  100% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-indicator:not(.loading-indicator-dots),
+  .loading-indicator-dot {
+    animation: none;
+  }
+}

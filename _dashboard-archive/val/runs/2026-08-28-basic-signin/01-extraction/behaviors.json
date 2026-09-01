@@ -1,0 +1,13 @@
+{
+  "note": "source-limited: the input for this run is a screenshot (manifest input.figmaUrl is null); prototype reactions and variant interactions cannot be read from pixels, so zero behaviors were extracted. The requester's writeup (00-input/writeup.md) DESCRIBES intended behaviors — Sign In and Cancel each show a confirmation alert, View Demo Info shows an informational alert, Forgot password? links to a page outside this build — but those are requirements text, not extracted prototype data. Interactive-looking nodes are listed below with reactions: [] so their absence in the source is explicit.",
+  "behaviors": [],
+  "interactiveNodesWithNoExtractableReactions": [
+    { "node": "est-email-value", "componentKey": null, "reactions": [] },
+    { "node": "est-password-placeholder", "componentKey": null, "reactions": [] },
+    { "node": "est-checkbox", "componentKey": null, "reactions": [] },
+    { "node": "est-btn-primary", "componentKey": null, "reactions": [] },
+    { "node": "est-btn-cancel", "componentKey": null, "reactions": [] },
+    { "node": "est-link", "componentKey": null, "reactions": [] },
+    { "node": "est-btn-view-demo", "componentKey": null, "reactions": [] }
+  ]
+}

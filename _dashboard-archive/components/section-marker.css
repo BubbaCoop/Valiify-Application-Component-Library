@@ -1,0 +1,96 @@
+/**
+ * Section Marker Component
+ *
+ * Visual marker indicating the verification status of a document section.
+ * Extracted from Figma Section Marker (141:1071) — 4 variants on a single
+ * `Status` axis, plus a Ring boolean.
+ *
+ * Usage:
+ *   <span class="section-marker section-marker-approve" role="img" aria-label="Approved">
+ *     <svg class="icon icon-size-14" aria-hidden="true"><use href="#check" /></svg>
+ *   </span>
+ *
+ *   <span class="section-marker section-marker-mismatch" role="img" aria-label="Mismatch">
+ *     <span class="section-marker-dot"></span>
+ *   </span>
+ *
+ * A 16x16 box in every status. What goes inside it is NOT uniform, which is the
+ * one thing to know before using this:
+ *
+ *   approve     a 14px #check glyph        Approved/Main
+ *   mismatch    an 8px filled dot          Critical/Main
+ *   unverified  a 14px #circle glyph       Secondary/Main
+ *   na          nothing at all             —
+ *
+ * Two of the four are icon glyphs and one is a shape, so this component styles
+ * the box and the colour and leaves the mark itself a slot, as Alert and Toast
+ * do. `.section-marker-dot` exists because mismatch's mark is a filled circle
+ * that no icon in the sprite provides.
+ *
+ * MEASURED, NOT ASSUMED. Figma renders these as flattened vectors, so the
+ * geometry was read by tracing the exported PNG: approve's ink is 12x8, the
+ * mismatch dot is exactly 8x8 centred with a 4px inset (matching its
+ * `Spacing/4` binding), unverified's ring fills 14x14, and na's 16x16 box is
+ * uniformly blank.
+ *
+ * `Status=na` DRAWS NOTHING. Not a dash, not a hollow box — the variant is
+ * empty. It still occupies its 16px so a column of markers stays aligned, which
+ * is presumably the intent, but it is equally consistent with an unfinished
+ * variant. On the designer list. There is deliberately no `.section-marker-na`
+ * class: with no colour to set it would be an empty rule, so `na` is a bare
+ * `.section-marker` with no child.
+ *
+ * THE RING IS SQUARE HERE. Every other `.with-ring` in the library sits on a
+ * rounded element and inherits its radius; this box has no radius, so the ring
+ * is a 2px square. That falls out of the shared implementation and matches
+ * Figma, which draws `inset-0` with no corner rounding.
+ *
+ * ACCESSIBILITY: the marker carries meaning, so it needs an accessible name.
+ * Give the container `role="img"` and an `aria-label`, and leave the inner
+ * glyph `aria-hidden`. `na` needs one too, or a reader announces nothing.
+ */
+
+@layer components {
+  .section-marker {
+    /* A fixed 16x16 box in every status, so a column of markers aligns. */
+    @apply inline-flex size-4 shrink-0 items-center justify-center;
+  }
+
+  /* --- Parts -------------------------------------------------------------- */
+
+  /* mismatch's mark. A filled 8px circle — not an icon, and not `.dot`, whose
+     Figma sizes are 5px and 7px. Colour comes from the status class. */
+  .section-marker-dot {
+    @apply size-2; /* 8px, leaving Figma's 4px inset in the 16px box */
+    @apply rounded-pill;
+    @apply bg-current;
+  }
+
+  /* --- Statuses ----------------------------------------------------------- */
+
+  /* Each sets only a colour; icons inherit it through currentColor, and
+     `.section-marker-dot` picks it up via bg-current. */
+
+  .section-marker-approve {
+    @apply text-approved;
+  }
+
+  .section-marker-mismatch {
+    @apply text-critical;
+  }
+
+  /* Secondary/Main, not Content/Secondary — they resolve to the same #5b5b68,
+     but Figma binds the Secondary ramp here. */
+  .section-marker-unverified {
+    @apply text-secondary;
+  }
+
+  /* --- States ------------------------------------------------------------- */
+
+  /* Figma boolean, hidden by default. Same 2px inset Primary/Main treatment as
+     Chip, Avatar, Pill, Tag and TextButton — square here, since the box has no
+     radius. */
+  .section-marker.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

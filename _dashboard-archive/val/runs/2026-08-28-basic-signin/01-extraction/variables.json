@@ -1,0 +1,4 @@
+{
+  "note": "source-limited: the input for this run is a screenshot (manifest input.figmaUrl is null), and Figma variables cannot be read from pixels. This file is empty by necessity, not because the design uses no tokens. Sampled hex values that coincide exactly with Valiify library token values are recorded as observations in structure.md ('Color observations') — they are measurements, not extracted variables.",
+  "variables": []
+}

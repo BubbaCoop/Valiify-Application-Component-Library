@@ -1,0 +1,185 @@
+/**
+ * Dropdown Field Component
+ *
+ * Dropdown select field for choosing from a list of options. Supports avatar
+ * and left icon, with interaction states across 3 sizes.
+ * Extracted from Figma Dropdown Field Container (854:24966) — 36 variants
+ * (state × filled × size × error).
+ *
+ * Structure — mirrors the Input component:
+ *   <div class="dropdown-field-container">
+ *     <div class="dropdown-field-label">…</div>            <!-- Optional -->
+ *     <div class="dropdown">                               <!-- Positioning -->
+ *       <button class="dropdown-field" aria-expanded="false" aria-haspopup="listbox">
+ *         <span class="avatar avatar-sm">NC</span>                    <!-- Optional -->
+ *         <svg class="dropdown-field-icon icon icon-size-14">…</svg>   <!-- Optional -->
+ *         <span class="dropdown-field-placeholder">Select</span>
+ *         <svg class="dropdown-field-chevron icon icon-size-14">
+ *           <use href="#chevron-down" />
+ *         </svg>
+ *       </button>
+ *       <div class="dropdown-panel" hidden>
+ *         <div class="dropdown-menu" role="listbox">…</div>
+ *       </div>
+ *     </div>
+ *     <div class="dropdown-field-error-message">…</div>    <!-- Optional -->
+ *   </div>
+ *
+ * `.dropdown` / `.dropdown-panel` live in dropdown-menu.css.
+ *
+ * Open state is driven by `aria-expanded="true"` on the trigger: it takes the
+ * focus ring and rotates the chevron 180°. Toggling the attribute (and the
+ * panel's `hidden`) is the consumer's job — this library ships no JavaScript.
+ *
+ * Heights are 35 / 29 / 25px (lg / md / sm), matching Input exactly so the two
+ * field types line up in a form row.
+ *
+ * They are pinned with an explicit `height`, not `min-height`, for two reasons:
+ * the sm line box comes from an Auto line height (font-dependent — see
+ * CLAUDE.md), and Chrome rounds the 0.5px `--border-thin` hairline up to a
+ * full 1px, which would otherwise push every field 1-2px past its Figma frame.
+ * Figma draws its stroke inside the frame, so the border must not add height.
+ * This follows the same precedent as button.css.
+ */
+
+@layer components {
+  /* --- Container ------------------------------------------------------ */
+
+  .dropdown-field-container {
+    @apply flex w-full flex-col items-start;
+  }
+
+  /* --- Label ---------------------------------------------------------- */
+
+  .dropdown-field-label {
+    @apply flex w-full items-center pb-1.5; /* 6px */
+    @apply text-[10px] font-semibold uppercase leading-[12px] tracking-[1px];
+    @apply text-content-tertiary;
+  }
+
+  .dropdown-field-label > span {
+    @apply flex-1;
+  }
+
+  /* Note: help button uses .icon-button .icon-button-xs from icon-button.css */
+
+  /* --- Trigger (defaults to lg) --------------------------------------- */
+
+  .dropdown-field {
+    /* Layout */
+    @apply flex w-full items-center gap-2; /* 8px */
+    @apply px-3 py-1.75; /* 12px / 7px */
+    @apply h-[35px];
+
+    /* Shape */
+    @apply rounded-control; /* 6px */
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+
+    /* Reset so the class works on button / div alike */
+    @apply appearance-none text-left;
+
+    /* Colors */
+    @apply bg-surface-paper;
+
+    /* Type */
+    @apply text-body-1; /* 13px / 19.5px / 400 */
+
+    /* Interaction */
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- Parts ---------------------------------------------------------- */
+
+  /* Chosen value */
+  .dropdown-field-value {
+    @apply flex-1 truncate text-content-primary;
+    min-width: 0;
+  }
+
+  /* Nothing chosen yet */
+  .dropdown-field-placeholder {
+    @apply flex-1 truncate text-content-faint;
+    min-width: 0;
+  }
+
+  /* Leading icon and trailing chevron — 14px at every size */
+  .dropdown-field-icon,
+  .dropdown-field-chevron {
+    @apply shrink-0 text-content-secondary;
+  }
+
+  .dropdown-field-chevron {
+    @apply transition-transform duration-150;
+  }
+
+  /* --- Sizes ----------------------------------------------------------- */
+
+  .dropdown-field-sm {
+    @apply gap-1.5 px-2 py-1.25; /* 6px / 8px / 5px */
+    @apply h-[25px];
+    @apply text-micro-l; /* 11px / normal / 400 */
+  }
+
+  .dropdown-field-md {
+    @apply gap-2 px-3 py-1.75; /* 8px / 12px / 7px */
+    @apply h-[29px];
+    @apply text-body-2; /* 12.5px / 12.5px / 400 */
+  }
+
+  .dropdown-field-lg {
+    @apply gap-2 px-3 py-1.75; /* same as default */
+    @apply h-[35px];
+    @apply text-body-1;
+  }
+
+  /* --- Background Variants ---------------------------------------------- */
+  /* Matches Input and Textarea. The Dropdown Field Container in Figma has no
+     BG property yet — this mirrors the Text Input Container's White/Neutral
+     pair so the three field types stay interchangeable in a form. */
+
+  .dropdown-field-bg-neutral {
+    @apply bg-surface-card; /* Surface/Card #fafafb */
+  }
+
+  /* --- States ---------------------------------------------------------- */
+
+  .dropdown-field:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply border-stroke-border;
+  }
+
+  .dropdown-field:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Error — red hairline. The open ring deliberately wins over it, matching
+     the active + error variants in Figma. */
+  .dropdown-field.dropdown-field-error {
+    @apply border-critical;
+  }
+
+  /* Open */
+  .dropdown-field[aria-expanded="true"] {
+    @apply focus-ring;
+  }
+
+  .dropdown-field[aria-expanded="true"] .dropdown-field-chevron {
+    @apply rotate-180;
+  }
+
+  /* Only the fill changes — the border is left alone so a disabled field in
+     error still shows its crimson hairline, as Figma's disabled + error
+     variants do. Hover is already excluded via :not(:disabled) above, so no
+     border reset is needed here. */
+  .dropdown-field:disabled,
+  .dropdown-field[aria-disabled="true"] {
+    @apply cursor-not-allowed bg-action-subtle;
+  }
+
+  /* --- Error Message ---------------------------------------------------- */
+
+  .dropdown-field-error-message {
+    @apply flex w-full items-center pt-1.5; /* 6px */
+    @apply text-[11px] font-normal leading-[normal];
+    @apply text-critical-strong;
+  }
+}

@@ -1,0 +1,77 @@
+/**
+ * SensitiveData Component
+ *
+ * A masked value with a toggle that reveals it — an SSN, an account number, a
+ * date of birth. Extracted from Figma Sensitive Data (296:5303) — 2 variants on
+ * a `Checked` boolean, plus `obscuredData` / `unobscuredData` text properties
+ * and the usual hidden Ring boolean.
+ *
+ * Usage:
+ *   <span class="sensitive-data">
+ *     <span class="sensitive-data-value">***-**-1234</span>
+ *     <button class="icon-button icon-button-md" aria-pressed="true"
+ *             aria-label="Show full value">
+ *       <svg class="icon icon-size-14" aria-hidden="true"><use href="#eye-off" /></svg>
+ *     </button>
+ *   </span>
+ *
+ * THE TOGGLE IS AN ICON BUTTON, NOT A NEW PART. Figma nests an 18x18 box around
+ * a 14px glyph, which is `.icon-button icon-button-md` down to the pixel —
+ * including the 6px radius (`Radius/SM`) and the `Secondary/Main` glyph. Alert,
+ * Modal and Toast reuse Icon Button the same way for their dismiss controls.
+ *
+ * STATE IS `aria-pressed`, AND THIS FILE DELIBERATELY HAS NO STATE RULE.
+ * The two Figma variants are visually IDENTICAL — same box, same colours, same
+ * type. Only the value string and the glyph change, and both are the consumer's
+ * to supply. So there is nothing for CSS to select on, and inventing an
+ * `[aria-pressed]` rule to justify the attribute would be styling that Figma
+ * does not draw.
+ *
+ * The attribute still matters: it is what tells assistive tech the control is a
+ * toggle and which way it is set. Pill, Tag and Tabs use the same convention.
+ *
+ * `Checked` IS NOT USED AS A CLASS NAME, on purpose. In Figma `Checked=yes`
+ * means the data is HIDDEN, which reads backwards — a `.sensitive-data-checked`
+ * class would be actively misleading. Pair `aria-pressed="true"` with `#eye-off`
+ * and the obscured string; `false` with `#eye` and the plain one.
+ *
+ * FOUR THINGS IN THE FIGMA NODE ARE NOT REPRODUCED, and none is a judgement call
+ * about styling — they are authoring artefacts:
+ *
+ *   - The component description is a CHECKBOX's ("Visual indicator for checkbox
+ *     checked/unchecked state... internal building block within checkbox
+ *     components"). This component is a masked-data toggle. Same class of error
+ *     as Toast carrying Tooltip's description. On the designer list.
+ *   - `Radius/XS` (4px) is bound in the variant set but appears nowhere in the
+ *     rendered structure — the same phantom binding as FilterSegment's, which is
+ *     already an open designer question.
+ *   - The toggle's `Spacing/6` padding cannot contain its own glyph: 18 - (6*2)
+ *     leaves 6px for a 14px icon. `.icon-button-md`'s 2px fits exactly, so
+ *     Figma's value is treated as vestigial.
+ *   - `Spacing/10` is set as a gap on the toggle, which has one child.
+ *
+ * NO HOVER, FOCUS OR DISABLED VARIANTS ARE MODELLED for this component — the
+ * axis is `Checked` alone. All four arrive from Icon Button, which carries its
+ * own hover, active, disabled and (as of this change) `:focus-visible`. The row
+ * itself is not interactive and needs none.
+ */
+
+@layer components {
+  .sensitive-data {
+    /* Layout — 4px (Spacing/4) between the value and its toggle. */
+    @apply inline-flex items-center gap-1;
+  }
+
+  /* Body Content/Caption, 12px / 18px / 400. */
+  .sensitive-data-value {
+    @apply text-caption text-content-primary;
+  }
+
+  /* --- States --------------------------------------------------------- */
+
+  /* Figma's Ring boolean, hidden by default — 2px Primary/Main drawn inside the
+     row's own bounds, matching Chip, Avatar and Tag. */
+  .sensitive-data.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

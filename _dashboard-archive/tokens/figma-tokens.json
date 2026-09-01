@@ -1,0 +1,472 @@
+{
+  "$meta": {
+    "description": "Raw design token extraction from Figma. Source of truth for scripts/build-theme.mjs, which generates src/themes/valiify.css from this file.",
+    "figmaFile": "Valiify-Dashboard-Component-Library",
+    "fileKey": "FdcEV83HPv44bzLPAQU1hR",
+    "extractedVia": "Figma MCP get_variable_defs",
+    "extractedFrom": [
+      {
+        "nodeId": "929:28132",
+        "name": "Text Preview (section) — AUTHORITATIVE for typography"
+      },
+      {
+        "nodeId": "67:3409",
+        "name": "Basic components (section)"
+      },
+      {
+        "nodeId": "854:24664",
+        "name": "Fields (section)"
+      },
+      {
+        "nodeId": "190:5961",
+        "name": "Business - Prototype (section)"
+      }
+    ],
+    "limitations": [
+      "get_variable_defs returns only variables APPLIED to a layer in the queried subtree. Tokens defined in Figma but not yet used anywhere will be absent. The Text Preview section (929:28132) exists to make the typography set exhaustive; the colour/number groups are still subject to this limit. THIS HAS NOW BITTEN ONCE: Surface/Card (#fafafb) was absent from every extraction because no layer used it, which led CLAUDE.md to assert the surface stack was only Frame/Neutral/Paper. The 2026-08-22 Text Input Container update introduced a BG=Neutral variant that applies it, and search_design_system confirmed it as a real variable in Collection 1. Prefer search_design_system over get_variable_defs when auditing whether a token group is complete.",
+      "DUPLICATE NAMES SILENTLY DROP STYLES. The response is a keyed object, so two Figma styles sharing a name collapse into one. This happened: two frames were both named 'Label S Sans', and only the JetBrains Mono one survived — so the Inter style was invisible AND the surviving entry's values were attributed to the wrong style. The designer renamed the mono one to 'Label S Mono'. If a style looks wrong, check for a name collision first.",
+      "Body & Supporting/Help & Caption is applied to component layers but is absent from the Text Preview section. Retained here rather than dropped; confirm whether it is still current.",
+      "The Icon page (66:17) uses no variables and is intentionally not represented here.",
+      "Numbers/* duplicates Radius/* and Stroke/* exactly and is treated as a legacy alias set — recorded for provenance, skipped by the generator."
+    ],
+    "resolved": [
+      "lineHeight: the API returns the sentinel 100 for Figma's \"Auto\". It does NOT mean 100%. Verified against the Text Preview section's own meta line, which reads 'Line height: Auto'. Recorded here as the string \"AUTO\" and emitted as CSS line-height: normal, which uses the font's intrinsic metrics (~1.21x for Inter). An earlier extraction wrongly emitted line-height: 1, which was too tight.",
+      "letterSpacing: EVERY value this API returns is a PERCENTAGE, not px. Verified from the same meta line ('Letter spacing: 0.4%'). Stored as letterSpacingPercent and emitted as em: 10 -> 0.1em, 0.4 -> 0.004em. An earlier extraction wrongly emitted 0.4px.",
+      "textTransform: the six Label styles are marked UPPER in the section. Tailwind's --text-* cannot carry text-transform (or font-family), so the generator emits paired type-label-* utilities that bundle the casing."
+    ]
+  },
+  "color": {
+    "Primary/Main": "#1e4d8c",
+    "Primary/Dark": "#163a6b",
+    "Primary/Pressed": "#003358",
+    "Primary/Soft": "#1e4d8c14",
+    "Primary/Disabled": "#1e4d8c66",
+    "Secondary/Main": "#5b5b68",
+    "Secondary/Strong": "#4e4e59",
+    "Secondary/Soft": "#8a8a9517",
+    "Secondary/Disabled": "#8a8a9566",
+    "Content/Primary": "#16161a",
+    "Content/Secondary": "#5b5b68",
+    "Content/Tertiary": "#727280",
+    "Content/Faint": "#c4c4ce",
+    "Content/Contrast": "#ffffff",
+    "Surface/Frame": "#f0f3f7",
+    "Surface/Neutral": "#f1f1f4",
+    "Surface/Card": "#fafafb",
+    "Surface/Paper": "#ffffff",
+    "Stroke/Divider": "#14142814",
+    "Stroke/Border": "#14142821",
+    "Stroke/Disabled": "#1414280a",
+    "Action/Subtle": "#14142808",
+    "Action/Hover": "#1414280f",
+    "Action/Selected": "#14142814",
+    "Action/Focused": "#14142821",
+    "Approved/Main": "#157d61",
+    "Approved/Soft": "#1a9b7817",
+    "Approved/Strong": "#168567",
+    "Approved/Content": "#137459",
+    "Critical/Main": "#c5303c",
+    "Critical/Soft": "#d8434f17",
+    "Critical/Strong": "#ba3a44",
+    "Critical/Content": "#b73943",
+    "Warning/Main": "#c9881f",
+    "Warning/Soft": "#c9881f17",
+    "Neutral/Main": "#9999a6",
+    "Neutral/Strong": "#4e4e59",
+    "Neutral/Soft": "#9999a617",
+    "Neutral/Content": "#65656e",
+    "misc/Purple": "#7b5ea7"
+  },
+  "radius": {
+    "Radius/Micro": 2,
+    "Radius/XS": 4,
+    "Radius/SM": 6,
+    "Radius/MD": 8,
+    "Radius/Rounded": 9999
+  },
+  "strokeWidth": {
+    "Stroke/Thin": 0.5,
+    "Stroke/Line": 1,
+    "Stroke/Micro": 2
+  },
+  "spacing": {
+    "Spacing/1": 1,
+    "Spacing/2": 2,
+    "Spacing/3": 3,
+    "Spacing/4": 4,
+    "Spacing/5": 5,
+    "Spacing/6": 6,
+    "Spacing/7": 7,
+    "Spacing/7-5": 7.5,
+    "Spacing/8": 8,
+    "Spacing/9": 9,
+    "Spacing/10": 10,
+    "Spacing/11": 11,
+    "Spacing/12": 12,
+    "Spacing/12-5": 12.5,
+    "Spacing/14": 14,
+    "Spacing/16": 16,
+    "Spacing/20": 20,
+    "Spacing/22": 22,
+    "Spacing/24": 24,
+    "Spacing/28": 28,
+    "Spacing/32": 32
+  },
+  "typography": {
+    "Body Content/Display": {
+      "family": "Inter",
+      "style": "Light",
+      "size": 46,
+      "weight": 300,
+      "lineHeight": 39,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/H1": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 19,
+      "weight": 600,
+      "lineHeight": 21.8,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/H2": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 17,
+      "weight": 600,
+      "lineHeight": 19.5,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/Subtitle": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 14,
+      "weight": 500,
+      "lineHeight": 19.6,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/Body 1": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 13,
+      "weight": 400,
+      "lineHeight": 19.5,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/Body 1 - Bold": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 13,
+      "weight": 500,
+      "lineHeight": 19.5,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/Body 2": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 12.5,
+      "weight": 400,
+      "lineHeight": 12.5,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/Body 2 - Bold": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 12.5,
+      "weight": 500,
+      "lineHeight": 12.5,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/Caption": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 12,
+      "weight": 400,
+      "lineHeight": 18,
+      "letterSpacingPercent": 0
+    },
+    "Body Content/Caption - Bold": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 12,
+      "weight": 500,
+      "lineHeight": 18,
+      "letterSpacingPercent": 0
+    },
+    "Label/Label L Sans": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 10.5,
+      "weight": 400,
+      "lineHeight": 19.6,
+      "letterSpacingPercent": 10,
+      "textTransform": "uppercase"
+    },
+    "Label/Label L Sans - Bold": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 10.5,
+      "weight": 600,
+      "lineHeight": 19.6,
+      "letterSpacingPercent": 10,
+      "textTransform": "uppercase"
+    },
+    "Label/Label L Mono": {
+      "family": "JetBrains Mono",
+      "style": "Medium",
+      "size": 10.5,
+      "weight": 500,
+      "lineHeight": 12.6,
+      "letterSpacingPercent": 10,
+      "textTransform": "uppercase"
+    },
+    "Label/Label S Sans": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 10,
+      "weight": 400,
+      "lineHeight": 12,
+      "letterSpacingPercent": 10,
+      "textTransform": "uppercase"
+    },
+    "Label/Label S Sans - Bold": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 10,
+      "weight": 600,
+      "lineHeight": 12,
+      "letterSpacingPercent": 10,
+      "textTransform": "uppercase"
+    },
+    "Label/Label S Mono": {
+      "family": "JetBrains Mono",
+      "style": "Bold",
+      "size": 10,
+      "weight": 700,
+      "lineHeight": 12,
+      "letterSpacingPercent": 10,
+      "textTransform": "uppercase"
+    },
+    "Data/Data L": {
+      "family": "JetBrains Mono",
+      "style": "Medium",
+      "size": 18,
+      "weight": 500,
+      "lineHeight": 21.6,
+      "letterSpacingPercent": 0
+    },
+    "Data/Data M": {
+      "family": "JetBrains Mono",
+      "style": "Medium",
+      "size": 14,
+      "weight": 500,
+      "lineHeight": 21,
+      "letterSpacingPercent": 0
+    },
+    "Data/Data S": {
+      "family": "JetBrains Mono",
+      "style": "Regular",
+      "size": 13,
+      "weight": 400,
+      "lineHeight": 19.5,
+      "letterSpacingPercent": 0
+    },
+    "Data/Data xs": {
+      "family": "JetBrains Mono",
+      "style": "Regular",
+      "size": 12,
+      "weight": 400,
+      "lineHeight": 16.5,
+      "letterSpacingPercent": 0
+    },
+    "Button & Actions/Action L": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 13,
+      "weight": 500,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Button & Actions/Action L - bold": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 13,
+      "weight": 600,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Button & Actions/Action M": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 12.5,
+      "weight": 500,
+      "lineHeight": 14,
+      "letterSpacingPercent": 0
+    },
+    "Button & Actions/Action M - Bold": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 12.5,
+      "weight": 600,
+      "lineHeight": 14,
+      "letterSpacingPercent": 0
+    },
+    "Button & Actions/Action S": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 12,
+      "weight": 500,
+      "lineHeight": 14,
+      "letterSpacingPercent": 0
+    },
+    "Button & Actions/Action S - Bold": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 12,
+      "weight": 600,
+      "lineHeight": 14,
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro L": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 11,
+      "weight": 400,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro L - Bold": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 11,
+      "weight": 500,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro M": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 8.5,
+      "weight": 400,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro M - Bold": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 8.5,
+      "weight": 500,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro S": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 8,
+      "weight": 400,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro S - Bold": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 8,
+      "weight": 600,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0.4
+    },
+    "Micro Text/Micro Data L": {
+      "family": "JetBrains Mono",
+      "style": "Medium",
+      "size": 11,
+      "weight": 500,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro Data M": {
+      "family": "JetBrains Mono",
+      "style": "Medium",
+      "size": 8.5,
+      "weight": 500,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Micro Data S": {
+      "family": "JetBrains Mono",
+      "style": "Medium",
+      "size": 8,
+      "weight": 500,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Micro Text/Statecap": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 9.5,
+      "weight": 600,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Body & Supporting/Help & Caption": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 12,
+      "weight": 400,
+      "lineHeight": 14,
+      "letterSpacingPercent": 0
+    }
+  },
+  "effect": {
+    "General Drop Shadow": {
+      "type": "DROP_SHADOW",
+      "color": "#00000040",
+      "offsetX": 0,
+      "offsetY": 12,
+      "blur": 34,
+      "spread": -12
+    },
+    "Switch Knob Shadow": {
+      "type": "DROP_SHADOW",
+      "color": "#14142840",
+      "offsetX": 0,
+      "offsetY": 1,
+      "blur": 2,
+      "spread": 0
+    },
+    "Modal Drop Shadow": {
+      "type": "DROP_SHADOW",
+      "color": "#1414281f",
+      "offsetX": 0,
+      "offsetY": 12,
+      "blur": 16,
+      "spread": 0,
+      "$note": "Local effect on Modal 908:1580, NOT a named Figma effect style — recorded here for the same reason as Switch Knob Shadow. Distinct from General Drop Shadow (34px blur, -12px spread)."
+    },
+    "Toast Drop Shadow": {
+      "type": "DROP_SHADOW",
+      "color": "#14142812",
+      "offsetX": 0,
+      "offsetY": 4,
+      "blur": 6,
+      "spread": 0,
+      "$note": "Local effect on Toast Style=Full (880:31093), not a named Figma effect style. Style=Simple uses General Drop Shadow instead."
+    }
+  },
+  "focusRing": {
+    "$source": "Menu Item > Ring — node I923:25890;851:22778",
+    "$note": "The keyboard-focus ring shared across interactive components. In Figma it is a full-size overlay frame (size-full over the parent's bounds) with a 2px border, so its OUTER edge aligns with the component's own outer edge rather than sitting outside it. Reproduced in CSS with a negative outline-offset equal to the ring width.",
+    "$widthIsRawValue": "The 2px width is a raw value in Figma, not bound to a variable — get_variable_defs on this node returns no stroke-width token. It therefore gets its own token here rather than reusing Stroke/Micro, which happens to share the value but carries no stated relationship.",
+    "width": 2,
+    "color": "#1e4d8c",
+    "colorFigmaToken": "Primary/Main",
+    "radius": "inherits the component's own radius (Radius/SM on the source node)"
+  },
+  "_legacyAliases": {
+    "$note": "Exact duplicates of radius/strokeWidth entries above. Recorded for provenance; skipped by the generator.",
+    "Numbers/Micro": 2,
+    "Numbers/Thin": 0.5,
+    "Numbers/SM": 6,
+    "Numbers/MD": 8,
+    "Numbers/Rounded": 9999
+  }
+}

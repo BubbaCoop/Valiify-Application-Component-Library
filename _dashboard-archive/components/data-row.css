@@ -1,0 +1,142 @@
+/**
+ * DataRow Component
+ *
+ * One labelled field in a review panel: the field name, its value, and its
+ * verification status, with actions that appear on hover. Extracted from Figma
+ * Data Row (165:678) — 4 variants across `Hover` x `Icon`, plus `comment`,
+ * `help` and `ring` booleans and `dataField` / `data` text properties.
+ *
+ * Usage:
+ *   <div class="data-row">
+ *     <span class="data-row-field">First Name</span>
+ *     <span class="data-row-value">John</span>
+ *     <span class="field-verification field-verification-verified data-row-status">
+ *       <span class="section-marker section-marker-approve">
+ *         <svg class="icon icon-size-14" aria-hidden="true"><use href="#check" /></svg>
+ *       </span>
+ *       <span class="field-verification-label">Matches Plaid KYC</span>
+ *     </span>
+ *     <button class="icon-button icon-button-md data-row-action" aria-label="Field help">
+ *       <svg class="icon icon-size-14" aria-hidden="true"><use href="#circle-question-mark" /></svg>
+ *     </button>
+ *   </div>
+ *
+ * THIS COMPONENT IS MOSTLY COMPOSITION. Figma builds it from three components we
+ * already ship, and so does this file — nothing is rebuilt:
+ *
+ *   Verification status  ->  `.field-verification field-verification-verified`
+ *                            (7px gap, 16px Section Marker, 14px #check in
+ *                            Approved/Main, Caption label — an exact match)
+ *   Value, when Icon=yes ->  `.sensitive-data` (a literal instance of 296:5303)
+ *   Trailing actions     ->  `.icon-button icon-button-md`
+ *
+ * Only four classes are new, and three of them carry nothing but the row's own
+ * column geometry.
+ *
+ * `.data-row-status` IS AN ADDITIVE CLASS, NOT A WRAPPER. Figma stretches its
+ * Field Verification instance to `flex-1`, which `.field-verification` does not
+ * do on its own (it is `inline-flex`). Rather than a descendant selector reaching
+ * into another component — the mistake DropdownField's avatar sizing made and
+ * had retired — this ships as a modifier you add alongside, the same shape as
+ * `.segment-selector-fill`.
+ *
+ * THE SENSITIVE DATA TYPE OVERRIDE IS REAL, AND IS DATA ROW'S, NOT THE CALLER'S.
+ * Standalone, Sensitive Data's value is `Body Content/Caption` (12 / 18). Inside
+ * a Data Row Figma overrides it to `Body Content/Body 2` (12.5 / 12.5) so it
+ * lines up with the field label beside it. That is a fixed fact of this
+ * composition rather than a per-instance choice, so it is scoped here — and it
+ * has to be, because a utility at the call site would not exist for consumers on
+ * the prebuilt entry.
+ *
+ * ACTIONS ARE REVEALED BY HOVER **AND FOCUS**. Figma draws the rest-state action
+ * at `opacity: 0`, laid out but invisible. Reproduced — except that a button
+ * which is invisible and still focusable is a keyboard trap in all but name, so
+ * `:focus-within` reveals it too. That is a superset of what Figma draws: the
+ * hover appearance is identical, and a keyboard user can now see what they have
+ * tabbed to. Every action needs an `aria-label`; they have no visible text.
+ *
+ * NO FOCUS, DISABLED OR SELECTED STATE IS MODELLED for the row. The axis is
+ * `Hover` alone. The row itself is not interactive — only its actions are, and
+ * those bring Icon Button's own hover, active, disabled and `:focus-visible`.
+ *
+ * THREE FIGMA ARTEFACTS ARE NOTED, NOT COPIED:
+ *
+ *   - The description says "optional leading icon". The `Icon` axis does not add
+ *     a leading icon; it swaps the value cell for a Sensitive Data with a
+ *     TRAILING eye toggle. Inaccurate rather than pasted from elsewhere.
+ *   - `Neutral/Main` (#9999a6) is bound in the variant set but appears nowhere
+ *     in the rendered structure — the same phantom binding as `Radius/XS` on
+ *     Sensitive Data and FilterSegment.
+ *   - The 12.5px vertical padding cannot contain the row's own contents: 38 -
+ *     (12.5 * 2) leaves 13px for an 18px Icon Button. Both are reproduced because
+ *     `items-center` makes the overflow symmetrical and the rendered height is
+ *     what matters, but the vertical padding is effectively vestigial. Third
+ *     component in a row with this shape.
+ *
+ * The 932px frame width is NOT reproduced — it is the artboard's content width,
+ * with the slack absorbed by the `flex-1` status column, the same call as
+ * Alert's 828 and Pagination's 1208. A data row spans its table.
+ */
+
+@layer components {
+  .data-row {
+    /* Layout — 16px (Spacing/16) between columns. */
+    @apply flex w-full items-center gap-4;
+    @apply h-[38px] px-1 py-[12.5px]; /* 4px / 12.5px — see the header */
+
+    /* Shape */
+    @apply rounded-tight; /* 4px — Radius/XS */
+  }
+
+  /* Figma's Hover axis. The only state the row itself has. */
+  .data-row:hover {
+    @apply bg-action-subtle;
+  }
+
+  /* --- Columns --------------------------------------------------------- */
+
+  /* Body 2, truncating — Figma fixes the label column and clips overflow. */
+  .data-row-field {
+    @apply w-[200px] shrink-0 truncate;
+    @apply text-body-2 text-content-tertiary;
+  }
+
+  .data-row-value {
+    @apply w-[400px] shrink-0;
+    @apply text-body-2 text-content-primary;
+  }
+
+  /* Data Row overrides Sensitive Data's Caption to Body 2 so the masked value
+     sits on the same baseline as the field label. See the header. */
+  .data-row-value .sensitive-data-value {
+    @apply text-body-2;
+  }
+
+  /* Additive, for the Field Verification slot — Figma stretches it. */
+  .data-row-status {
+    @apply flex-1;
+    min-width: 0;
+  }
+
+  /* --- Actions --------------------------------------------------------- */
+
+  /* Laid out but invisible at rest, exactly as Figma draws it. Revealed by
+     hover AND focus, so a keyboard user can see the control they reached. */
+  .data-row-action {
+    @apply shrink-0 opacity-0;
+    @apply transition-opacity duration-150;
+  }
+
+  .data-row:hover .data-row-action,
+  .data-row:focus-within .data-row-action {
+    @apply opacity-100;
+  }
+
+  /* --- States ---------------------------------------------------------- */
+
+  /* Figma's Ring boolean, hidden by default — 2px Primary/Main, and the only
+     ring in the library that follows a radius, since the row has one. */
+  .data-row.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

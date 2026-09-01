@@ -1,0 +1,21 @@
+/**
+ * Base Styles
+ *
+ * Document-level defaults. Kept deliberately small — anything reusable belongs
+ * in a component or as a theme token.
+ *
+ * Fonts are NOT loaded here. The @font-face import lives at the top of
+ * src/index.css because CSS requires every @import to precede all other rules;
+ * an @import nested in a @layer block is discarded by the browser.
+ *
+ * Font families themselves come from --font-sans / --font-mono in
+ * themes/valiify.css. Tailwind's preflight wires those into html and
+ * code/pre automatically, so there is no need to restate them.
+ */
+
+@layer base {
+  html {
+    color: var(--color-content-primary);
+    background-color: var(--color-surface-frame);
+  }
+}

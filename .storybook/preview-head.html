@@ -1,0 +1,29 @@
+<script>
+  // Load icon sprite globally for all stories
+  (function() {
+    if (typeof document === 'undefined') return;
+
+    const spriteUrl = '/sprite.svg';
+
+    fetch(spriteUrl)
+      .then(res => {
+        if (!res.ok) {
+          console.error('Failed to load sprite:', res.status, res.statusText);
+          return null;
+        }
+        return res.text();
+      })
+      .then(svg => {
+        if (!svg) return;
+        const div = document.createElement('div');
+        div.id = 'icon-sprite';
+        div.style.display = 'none';
+        div.innerHTML = svg;
+        document.body.insertBefore(div, document.body.firstChild);
+        console.log('Icon sprite loaded successfully');
+      })
+      .catch(err => {
+        console.error('Error loading sprite:', err);
+      });
+  })();
+</script>

@@ -1,0 +1,184 @@
+/**
+ * Skeleton Component
+ *
+ * A placeholder that mimics the shape and size of content while it loads,
+ * previewing the page structure and preventing layout shift. Extracted from
+ * Figma Skeleton (1063:24034) — 15 variants across `Shape` x `Size` — with the
+ * usage spec at 1081:1986.
+ *
+ * Usage — a skeleton is decorative; the CONTAINER announces the loading state:
+ *   <div role="status" aria-busy="true" aria-label="Loading profile">
+ *     <span class="skeleton skeleton-circle skeleton-lg" aria-hidden="true"></span>
+ *     <span class="skeleton skeleton-heading skeleton-lg" aria-hidden="true"></span>
+ *     <span class="skeleton skeleton-line skeleton-md" aria-hidden="true"></span>
+ *   </div>
+ *
+ * BOTH A SHAPE AND A SIZE CLASS ARE REQUIRED. Neither axis has a default in
+ * Figma, and the dimensions are a 5x3 matrix rather than one box with three
+ * scales — a Line SM is 120x12 while a Circle SM is 32x32. Baking a default
+ * into `.skeleton` would mean every other combination overriding two
+ * properties, which is the `:not()`-chain specificity trap Tabs already walked
+ * into. A bare `.skeleton` therefore has fill and motion but no size, which
+ * reads as the authoring error it is.
+ *
+ * SHAPE CARRIES THE RADIUS, and it is a different token per shape — this is the
+ * only component in the library that uses four of the five:
+ *
+ *   Line, Heading   4px   Radius/XS   -> rounded-tight
+ *   Button          6px   Radius/SM   -> rounded-control
+ *   Rectangle       8px   Radius/MD   -> rounded-surface
+ *   Circle          full  Radius/Rounded -> rounded-pill
+ *
+ * SIZE CARRIES THE DIMENSIONS, which is why the size classes are compound
+ * (`.skeleton-line.skeleton-sm`) rather than standalone. Every one of the 15
+ * pairs maps to a standard Tailwind step — 120px is `w-30`, 180px is `h-45` —
+ * so none needs arbitrary syntax.
+ *
+ * THE DEFAULTS ARE STARTING POINTS, NOT A SPEC. The usage node is explicit:
+ * "stretch instances with fill in auto-layout to match real content widths",
+ * while "heights should generally stay close to defaults to match the replaced
+ * element". A consumer utility beats a component class under our layer order,
+ * so `class="skeleton skeleton-line skeleton-md w-full"` just works.
+ *
+ * THE ANIMATION IS A PULSE, AND FIGMA SPECIFIES IT PRECISELY — unusually, since
+ * it draws no motion itself ("Animation is handled in code, not in Figma"):
+ * 2s per cycle, ease-in-out, opacity 1.0 -> 0.4 -> 1.0.
+ *
+ * IT IS NOT TAILWIND'S `animate-pulse`, THOUGH THE FIGMA NODE SUGGESTS IT.
+ * The usage spec offers `class="animate-pulse"` as a shortcut, but Tailwind's
+ * built-in keyframe is `50% { opacity: 0.5 }` on a `cubic-bezier(0.4, 0, 0.6, 1)`
+ * curve — neither the 0.4 floor nor the ease-in-out the same document specifies
+ * four bullets later. Custom keyframes are the only way to honour the written
+ * spec, so the shortcut is deliberately not used.
+ *
+ * INSTANCES PULSE IN SYNC, and that falls out for free rather than needing
+ * work. Figma asks that "all skeleton instances within a single container
+ * should pulse in sync (same animation start time) to avoid a scattered,
+ * chaotic feel". Identical animations on elements rendered together share a
+ * start time, so they do. The thing to avoid is the opposite instinct — do NOT
+ * add per-element `animation-delay` to stagger them; that is the effect the
+ * spec rules out.
+ *
+ * REDUCED MOTION IS GUARDED FROM THE START, and the guard sits INSIDE
+ * `@layer components`. That placement is deliberate: `loading-indicator.css`
+ * puts its `prefers-reduced-motion` block outside the layer, which makes it the
+ * one rule in `dist` that outranks a consumer's utilities — the single place
+ * the overlay contract breaks. This file does not repeat that. The keyframes
+ * themselves stay outside the layer, as they do there, because `@keyframes` is
+ * name-scoped rather than cascaded and nothing should be able to drop it.
+ *
+ * ACCESSIBILITY: THE SKELETON IS DECORATIVE. Figma specifies nothing here, so
+ * this is a library decision. A screen reader announcing five grey boxes is
+ * worse than silence, so each `.skeleton` takes `aria-hidden="true"` and the
+ * CONTAINER carries `role="status"` with `aria-busy="true"` and a label — one
+ * clear "Loading…" instead of N meaningless nodes. That differs from Loading
+ * Indicator, where the spinner IS the announcement and carries `role="status"`
+ * itself; here there are many elements and only the region is meaningful.
+ * Markup is the consumer's, so this cannot be enforced in CSS — see the story
+ * and CLAUDE.md.
+ */
+
+@layer components {
+  .skeleton {
+    @apply block shrink-0;
+    @apply bg-surface-neutral; /* Surface/Neutral #f1f1f4 — the only bound token */
+
+    /* 2s / ease-in-out / 1.0 -> 0.4, per the usage node. */
+    animation: valiify-skeleton-pulse 2s ease-in-out infinite;
+  }
+
+  /* --- Shape: radius only ---------------------------------------------- */
+
+  .skeleton-line,
+  .skeleton-heading {
+    @apply rounded-tight; /* 4px — Radius/XS */
+  }
+
+  .skeleton-button {
+    @apply rounded-control; /* 6px — Radius/SM */
+  }
+
+  .skeleton-rectangle {
+    @apply rounded-surface; /* 8px — Radius/MD */
+  }
+
+  .skeleton-circle {
+    @apply rounded-pill; /* Radius/Rounded */
+  }
+
+  /* --- Shape x Size: dimensions ---------------------------------------- */
+  /* Defaults, not a spec — override the width with a utility. See the header. */
+
+  .skeleton-line.skeleton-sm {
+    @apply h-3 w-30; /* 120 x 12 */
+  }
+  .skeleton-line.skeleton-md {
+    @apply h-4 w-50; /* 200 x 16 */
+  }
+  .skeleton-line.skeleton-lg {
+    @apply h-5 w-80; /* 320 x 20 */
+  }
+
+  .skeleton-heading.skeleton-sm {
+    @apply h-5 w-40; /* 160 x 20 */
+  }
+  .skeleton-heading.skeleton-md {
+    @apply h-6 w-60; /* 240 x 24 */
+  }
+  .skeleton-heading.skeleton-lg {
+    @apply h-8 w-90; /* 360 x 32 */
+  }
+
+  .skeleton-circle.skeleton-sm {
+    @apply size-8; /* 32 */
+  }
+  .skeleton-circle.skeleton-md {
+    @apply size-10; /* 40 */
+  }
+  .skeleton-circle.skeleton-lg {
+    @apply size-14; /* 56 */
+  }
+
+  .skeleton-rectangle.skeleton-sm {
+    @apply h-20 w-30; /* 120 x 80 */
+  }
+  .skeleton-rectangle.skeleton-md {
+    @apply h-30 w-50; /* 200 x 120 */
+  }
+  .skeleton-rectangle.skeleton-lg {
+    @apply h-45 w-80; /* 320 x 180 */
+  }
+
+  .skeleton-button.skeleton-sm {
+    @apply h-8 w-16; /* 64 x 32 */
+  }
+  .skeleton-button.skeleton-md {
+    @apply h-9 w-24; /* 96 x 36 */
+  }
+  .skeleton-button.skeleton-lg {
+    @apply h-10 w-32; /* 128 x 40 */
+  }
+
+  /* --- Reduced motion --------------------------------------------------- */
+
+  /* INSIDE the layer, unlike loading-indicator.css — see the header. A static
+     placeholder still communicates "loading" through the container's
+     role="status"; the pulse is decoration, so it is safe to drop entirely. */
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton {
+      animation: none;
+    }
+  }
+}
+
+/* Outside @layer, matching loading-indicator.css: @keyframes is name-scoped
+   rather than cascaded, so nothing should be able to drop it. */
+@keyframes valiify-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}

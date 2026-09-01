@@ -1,0 +1,35 @@
+/**
+ * Custom utilities.
+ *
+ * Declared with `@utility`, not `@layer utilities`. Only `@utility` registers a
+ * real Tailwind utility, which is what makes it usable both as a class in
+ * markup AND via `@apply` inside components. A plain class in
+ * `@layer utilities` cannot be @applied.
+ */
+
+/**
+ * Keyboard focus ring — Figma Menu Item > Ring (I923:25890;851:22778).
+ *
+ * The shared affordance for tabbing between interactive elements. Apply on
+ * :focus-visible (not :focus) so it appears for keyboard navigation but not on
+ * mouse clicks:
+ *
+ *   .btn:focus-visible { @apply focus-ring; }
+ *
+ * Two details worth knowing:
+ *
+ * 1. The negative outline-offset is deliberate. In Figma the ring is a
+ *    full-size overlay frame, so its outer edge aligns with the component's own
+ *    outer edge rather than sitting outside it. A negative offset equal to the
+ *    ring width reproduces that. Offset 0 or positive would grow the element's
+ *    visual bounds.
+ *
+ * 2. `outline` follows the element's own border-radius, so the ring needs no
+ *    radius of its own — it picks up rounded-control, rounded-surface, or
+ *    whatever the component already sets. This matches Figma, where the Ring
+ *    frame's radius tracks its parent.
+ */
+@utility focus-ring {
+  outline: var(--ring-focus-width) solid var(--ring-focus-color);
+  outline-offset: calc(-1 * var(--ring-focus-width));
+}

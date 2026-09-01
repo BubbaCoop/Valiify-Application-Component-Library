@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -)",
+      "Bash(npm run *)",
+      "Bash(rm src/components/test-widget.css stories/components/TestWidget.stories.ts)",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}

@@ -1,0 +1,53 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction" />
+
+# Valiify Short App UI
+
+A Tailwind CSS component library for the Valiify Short App — the online
+application where applicants apply for accounts.
+
+## Status
+
+🚧 **Infrastructure Setup** — bootstrapped from the Valiify Dashboard UI
+library's build and verification infrastructure. The Short App component set
+and design tokens are pending extraction from the Short App Figma file, so the
+Components section is empty for now. Components appear here as they land, each
+verified against Figma by the visual harness.
+
+This library provides semantic, reusable UI components built on top of
+Tailwind CSS. Components are CSS-only, so they work with any framework.
+
+## Installation
+
+```bash
+npm install @valiify/shortapp-ui tailwindcss
+```
+
+Requires Tailwind CSS v4.
+
+## Usage
+
+### 1. Import the library in your CSS
+
+CSS-only — there is no Tailwind plugin to register:
+
+```css
+@import "tailwindcss";
+@import "@valiify/shortapp-ui";
+```
+
+Design tokens are declared in Tailwind's `@theme`, so they also generate
+utilities once extracted: `bg-primary`, `text-content-secondary`, and so on.
+
+### 2. Use components
+
+Component class reference will be documented in CLAUDE.md and demonstrated in
+the Components section here as each component is extracted from Figma.
+
+## Architecture
+
+- **CSS-only** - Zero JavaScript dependencies, no Tailwind plugin to register
+- **Tailwind v4 `@theme`** - Design tokens generate utilities automatically
+- **Framework-agnostic** - Works with React, Vue, Svelte, vanilla HTML
+- **Verified** - Every component carries a visual spec asserted against Figma

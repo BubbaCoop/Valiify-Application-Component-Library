@@ -1,0 +1,163 @@
+/**
+ * Filter Segment Component
+ *
+ * Individual segment within a segmented filter control. Extracted from Figma
+ * Filter Segment (678:21020) — 18 variants across Position x Hover x Selected
+ * x Size, plus Text, Icon and Ring booleans.
+ *
+ * Usage:
+ *   <div class="filter-segments">
+ *     <button class="filter-segment filter-segment-first">Product</button>
+ *     <button class="filter-segment">Is any of</button>
+ *     <button class="filter-segment">Deposit Account</button>
+ *     <span class="filter-segment filter-segment-last">
+ *       <button class="icon-button icon-button-md" aria-label="Remove filter">
+ *         <svg class="icon icon-size-14" aria-hidden="true"><use href="#x" /></svg>
+ *       </button>
+ *     </span>
+ *   </div>
+ *
+ * SEGMENTS SHARE THEIR EDGES, which is the whole point of the position axis.
+ * Each segment draws top, right and bottom only, so the right border of one is
+ * the divider to the next and no pair ever doubles up. `first` adds the left
+ * border — the group's left edge — and `last` needs nothing extra because the
+ * group's right edge is its own right border.
+ *
+ *   middle (base)  t / r / b        no radius
+ *   first          t / r / b / l    rounded left
+ *   last           t / r / b        rounded right
+ *
+ * MIDDLE IS THE BASE because it is Figma's default variant (678:21019, the
+ * set's top-left). A lone segment therefore renders square and open on the
+ * left, which is correct for the model but rarely what you want — mark the ends
+ * explicitly.
+ *
+ * POSITION IS THREE BOOLEANS IN FIGMA, not one enum: `First`, `Middle` and
+ * `Last` are separate yes/no properties and exactly one is ever `yes`. That is
+ * an authoring choice rather than a meaningful distinction, so it collapses to
+ * two modifier classes here. On the designer list.
+ *
+ * HEIGHTS ARE PINNED at 21 / 28px. Figma fixes both, and the 0.5px hairlines
+ * would otherwise add 2px apiece under border-box — the trap button.css and
+ * pill.css already document. Note the two sizes share their padding, gap and
+ * type entirely: md is purely a taller box, so its extra height is slack rather
+ * than anything derived.
+ *
+ * HOVER AND SELECTED REPLACE THE FILL rather than tinting it. Rest is the
+ * opaque `Surface/Card`; both other states drop to a translucent Action token,
+ * so what shows through is the page, not the card. Figma draws no
+ * hover-and-selected combination.
+ *
+ * EVERY SEGMENT IS A CONTROL, including the one carrying the remove icon. Use a
+ * `<button>` (or `<a>`) for each so the whole group is keyboard-reachable and
+ * each segment can take its own action — a filter row where only some segments
+ * tab is worse than one where none do. An earlier revision described the icon
+ * segment as "a container rather than a control" and its usage snippet used a
+ * `<div>`, which silently dropped the first and third segments out of the tab
+ * order; only the middle segment and the icon button were reachable.
+ *
+ * THE ICON SLOT IS AN ICON BUTTON INSTANCE — 18px box, 14px glyph — so it is
+ * `.icon-button icon-button-md`, not a new part. Note that nesting it inside a
+ * `<button>` segment is invalid HTML, so that one segment stays a non-button
+ * element wrapping the icon button, which is itself focusable. Whether the icon
+ * should take over the segment's own action is deliberately left open.
+ *
+ * NOT ENCODED — the Figma example (1018:33960) expresses "label vs value"
+ * through instance overrides on the text, not through the component's states:
+ * its operator reads `Content/Secondary` while its values read `Content/Primary`
+ * and the chosen one steps to `Micro L - Bold`. All three keep the REST
+ * background. That is a usage pattern, so it lives in the story rather than in
+ * a class.
+ */
+
+@layer components {
+  .filter-segment {
+    /* Layout */
+    @apply inline-flex shrink-0 items-center justify-center gap-2.5; /* 10px */
+    @apply px-2 py-1; /* 8px / 4px */
+    @apply h-[21px]; /* sm — pinned, see the header */
+
+    /* Borders. Side-specific widths need the side-specific length utility, or
+       `border-[length:…]` silently sets all four — see CLAUDE.md. Left is
+       omitted so neighbours share an edge. */
+    @apply border-t border-t-[length:var(--border-thin)] border-t-stroke-divider;
+    @apply border-r border-r-[length:var(--border-thin)] border-r-stroke-divider;
+    @apply border-b border-b-[length:var(--border-thin)] border-b-stroke-divider;
+
+    /* Reset so the class works on button / div / a alike */
+    @apply appearance-none text-left no-underline;
+
+    /* Colors — rest */
+    @apply bg-surface-card text-content-secondary;
+
+    /* Type */
+    @apply text-micro-l; /* 11px / 400 / Auto */
+
+    /* Interaction */
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- Position ----------------------------------------------------------- */
+
+  /* The group's left edge — the only segment that draws a left border. */
+  .filter-segment-first {
+    @apply border-l border-l-[length:var(--border-thin)] border-l-stroke-divider;
+    @apply rounded-l-control; /* 6px */
+  }
+
+  /* Its own right border already closes the group. */
+  .filter-segment-last {
+    @apply rounded-r-control; /* 6px */
+  }
+
+  /* --- Size --------------------------------------------------------------- */
+
+  /* Padding, gap and type are identical to sm — md is only a taller box. */
+  .filter-segment-md {
+    @apply h-[28px];
+  }
+
+  /* --- States ------------------------------------------------------------- */
+
+  /* Both states swap the opaque card fill for a translucent Action token, so
+     the page shows through rather than the card. Selected is excluded from
+     hover by name rather than by source order. */
+  .filter-segment:not([aria-pressed="true"]):not(
+      [aria-selected="true"]
+    ):hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-hover text-content-primary;
+  }
+
+  .filter-segment[aria-pressed="true"],
+  .filter-segment[aria-selected="true"] {
+    @apply bg-action-selected text-content-primary;
+  }
+
+  .filter-segment:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Not in Figma — house convention, so a disabled segment is not silently
+     clickable. Tokens rather than a blanket opacity, per the IconButton fix. */
+  .filter-segment:disabled,
+  .filter-segment[aria-disabled="true"] {
+    @apply cursor-not-allowed text-content-faint;
+  }
+
+  /* Figma boolean, hidden by default. Its inset is asymmetric there (-0.5px on
+     three sides, 0 on the left) to sit over the borders each position actually
+     draws; a plain inset ring is within half a pixel and cannot overflow the
+     layout, the same normalisation Avatar documents. */
+  .filter-segment.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+
+  /* --- Group -------------------------------------------------------------- */
+
+  /* Figma's example composition is exactly this and nothing more: a bare row
+     with no gap, no padding and no fill of its own. The segments' shared edges
+     do all the work. */
+  .filter-segments {
+    @apply inline-flex items-center;
+  }
+}

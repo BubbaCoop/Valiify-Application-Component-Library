@@ -1,0 +1,22 @@
+/**
+ * IMPORTANT: Import from CSS, never from JavaScript
+ *
+ * Importing @valiify/shortapp-ui from a .js/.ts file breaks silently.
+ * Always import it here in your CSS file.
+ */
+
+/* Optional: Load Google Fonts (or self-host for better performance) */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* Required: Tailwind CSS */
+@import "tailwindcss";
+
+/* Required: Valiify Short App UI (use /source for token utilities) */
+@import "@valiify/shortapp-ui/source";
+
+/* Your custom styles go here */
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--color-surface-frame);
+  padding: 2rem;
+}

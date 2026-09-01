@@ -1,0 +1,80 @@
+/**
+ * Dropdown Menu Component
+ *
+ * Dropdown menu panel containing a vertical list of menu rows. Use as the
+ * overlay panel for dropdown triggers.
+ * Extracted from Figma Dropdown Menu (139:798).
+ *
+ * Pairs with the Menu Item component — rows stretch to the panel width on
+ * their own, so no extra width class is needed on each row.
+ *
+ * Structure:
+ *   <div class="dropdown-menu" role="menu">
+ *     <button class="menu-item" role="menuitem">…</button>
+ *     <div class="dropdown-menu-divider"></div>
+ *     <button class="menu-item" role="menuitem">…</button>
+ *   </div>
+ *
+ * Positioning is the consumer's job — this component only styles the panel.
+ */
+
+@layer components {
+  .dropdown-menu {
+    /* Layout */
+    @apply flex flex-col items-start;
+    @apply p-1; /* 4px */
+    @apply min-w-[200px];
+
+    /* Shape */
+    @apply rounded-surface; /* 8px */
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+
+    /* Colors */
+    @apply bg-surface-paper;
+
+    /* Elevation */
+    @apply shadow-panel;
+  }
+
+  /* --- Parts ---------------------------------------------------------- */
+
+  /* NOT in Figma yet — composed from existing tokens for grouped menus.
+     Confirm the treatment with the designer before relying on it. */
+  /* `border-[length:…]` sets ALL four sides, so it cannot be combined with
+     `border-t` — the side-specific `border-t-[length:…]` is required here. */
+  .dropdown-menu-divider {
+    @apply my-1 w-full;
+    @apply border-t border-t-[length:var(--border-thin)] border-stroke-divider;
+  }
+
+  /* --- Positioning helpers --------------------------------------------- */
+  /* Wrap a trigger (Button, DropdownField, …) and a panel to anchor the menu
+     below the trigger. The library ships no JavaScript — open and close by
+     toggling `hidden` on .dropdown-panel and `aria-expanded` on the trigger. */
+
+  .dropdown {
+    @apply relative w-full;
+  }
+
+  /* No `display` is declared here on purpose, so the native `hidden`
+     attribute keeps working. The explicit guard below survives resets and
+     any consumer utility that would otherwise re-introduce a display value. */
+  .dropdown-panel {
+    @apply absolute left-0 right-0 top-full z-50 mt-1;
+  }
+
+  .dropdown-panel[hidden] {
+    display: none;
+  }
+
+  /* Panel stretches to the trigger, but never below the menu's own minimum */
+  .dropdown-panel > .dropdown-menu {
+    @apply w-full;
+  }
+
+  /* --- States ---------------------------------------------------------- */
+
+  .dropdown-menu:focus-visible {
+    @apply focus-ring;
+  }
+}

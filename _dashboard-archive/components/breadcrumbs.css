@@ -1,0 +1,158 @@
+/**
+ * Breadcrumbs Component
+ *
+ * Hierarchical navigation path showing the current location. Rebuilt on
+ * 2026-08-25 against a RESTRUCTURED Figma design, which now splits the
+ * component across three nodes:
+ *
+ *   Breadcrumb Item       1046:22649   State (Default/Hover/Focus) x isCurrent
+ *   Breadcrumb Separator  1046:22654   Type (chevron / slash)
+ *   Breadcrumbs           880:31218    the row that composes them
+ *
+ * Usage:
+ *   <nav class="breadcrumbs" aria-label="Breadcrumb">
+ *     <svg class="breadcrumb-home icon icon-size-14" aria-hidden="true">
+ *       <use href="#home" />
+ *     </svg>
+ *     <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+ *     <a class="breadcrumb" href="/applications">Applications</a>
+ *     <span class="breadcrumb-separator" aria-hidden="true">&gt;</span>
+ *     <span class="breadcrumb breadcrumb-current" aria-current="page">#BA-204417</span>
+ *   </nav>
+ *
+ * THE CRUMB IS NOW A BOX, NOT A BARE TEXT NODE. Figma gives it 2px/4px padding
+ * and a 4px radius (`Radius/XS`), which is what gives the focus ring something
+ * to draw around — previously there was nothing but the glyphs.
+ *
+ * THE TYPE IS NOW BOUND TO TEXT STYLES, where the previous revision documented
+ * it as "raw throughout". Both map exactly onto tokens we already ship:
+ *
+ *   not current   Body Content/Body 1        13 / 19.5 / 400   -> text-body-1
+ *   current       Body Content/Body 1 - Bold 13 / 19.5 / 500   -> text-body-1-bold
+ *
+ * So the current crumb now steps its WEIGHT as well as its colour. The old
+ * `leading: normal` is gone — 19.5px is authored, and the visual spec used to
+ * assert the exact opposite ("leading is Auto not 19.5").
+ *
+ * HOVER IS A 0.5px RULE IN `currentColor`. Figma draws it as a vector line
+ * under the label, coloured to match that label — `#5b5b68` on an ancestor and
+ * `#16161a` on a current item — so `currentColor` reproduces both with one
+ * declaration. It spans the label, not the padded box.
+ *
+ * IT IS PAINTED AS A GRADIENT BAND RATHER THAN `text-decoration`, and that is
+ * forced: Chrome renders `text-decoration-thickness: 0.5px` as a full 1px.
+ * Measured by rendering an isolated underline at 1x and 2x — 0.5px and 1px came
+ * out byte-identical (0.985 and 0.993 CSS px). A background gradient is
+ * antialiased and has no such rounding, so it carries the authored 0.5 exactly.
+ * This is the same trap, and the same fix, as the Loading Indicator ring.
+ *
+ * FOCUS IS THE SHARED RING. Figma draws a 2px `Primary/Main` border inside the
+ * box; `focus-ring` is a 2px `Primary/Main` outline at a -2px offset, which is
+ * the same width, colour and position. Using the ring rather than a real border
+ * also keeps focus from reflowing the row — a border would add 4px to a box
+ * whose height is content-driven.
+ *
+ * THE SEPARATORS ARE NOW UNIFORM: both chevron and slash are 12px Inter Regular
+ * in `Content/Tertiary`. The previous revision documented three inconsistent
+ * treatments (13 Regular / 12 Regular / 13 Bold) and reproduced them as
+ * deliberate optical corrections. The designer has since regularised them, so
+ * that whole note is gone.
+ *
+ * They are still TEXT CHARACTERS, not icons — including the one Figma calls
+ * "chevron", which is a literal `>`. The glyph is the consumer's to write.
+ *
+ * SEPARATORS MUST CARRY `aria-hidden="true"`. They are decorative; without it a
+ * screen reader announces "greater than" / "slash" / "middot" between every
+ * crumb. `select-none` keeps them out of a copied path.
+ *
+ * THE MIDDOT IS NOT PART OF THE SEPARATOR COMPONENT. In the slash variant Figma
+ * draws it as a loose text node at 13px Inter Regular — a different size from
+ * the 12px separators, and Regular where the old revision had it Bold. It joins
+ * two facets of one location rather than two levels of hierarchy.
+ *
+ * COLOUR AND WEIGHT MARK DEPTH, NOT POSITION. In the slash variant BOTH trailing
+ * items are current, because the ID and the business name are two halves of one
+ * location — so `-current` is not "the last child".
+ *
+ * THE HOME ICON IS `Content/Tertiary`, a step lighter than the crumbs beside it.
+ * Previously inferred from a render; now confirmed by sampling the restructured
+ * container at full opacity.
+ *
+ * REMOVED IN THIS REBUILD: `.breadcrumb-mono`. The redesign renders `#BA-204417`
+ * as an ordinary current item in Inter Medium, so the JetBrains Mono 700
+ * treatment no longer has any basis in Figma. See CHANGELOG.md — this is a
+ * breaking change.
+ */
+
+@layer components {
+  .breadcrumbs {
+    @apply flex w-full items-center gap-2; /* 8px */
+  }
+
+  /* --- Crumbs -------------------------------------------------------------- */
+
+  /* A padded, rounded box as of the 2026-08-25 restructure. Height is
+     content-driven (2 + 19.5 + 2 = 23.5 against Figma's 24px frame, which is
+     its own rounding); there is no border, so the hairline trap that forces
+     explicit heights elsewhere does not apply here. */
+  .breadcrumb {
+    @apply shrink-0;
+    @apply px-1 py-0.5; /* 4px / 2px */
+    @apply rounded-tight; /* 4px — Radius/XS */
+    @apply text-body-1; /* 13 / 19.5 / 400 */
+    @apply text-content-secondary no-underline;
+  }
+
+  /* Figma State=Hover: a 0.5px rule under the label, in the label's own colour.
+     A gradient band, not text-decoration — Chrome floors the latter to 1px.
+     `content-box` origin makes it span the label rather than the padding. */
+  .breadcrumb:hover {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    background-size: 100% 0.5px;
+    background-position: 0 100%;
+  }
+
+  /* Figma State=Focus: 2px Primary/Main. See the header for why this is the
+     outline utility rather than the border Figma draws. */
+  .breadcrumb:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* The current location. In the slash variant this covers TWO adjacent items,
+     so it is a depth marker rather than "the last one". Now steps the weight
+     to 500 as well as the colour. */
+  .breadcrumb-current {
+    @apply text-body-1-bold; /* 13 / 19.5 / 500 */
+    @apply text-content-primary;
+  }
+
+  /* Drawn a step lighter than the crumbs, matching the separators. */
+  .breadcrumb-home {
+    @apply shrink-0;
+    @apply text-content-tertiary;
+  }
+
+  /* --- Separators ---------------------------------------------------------- */
+
+  /* Both types are identical now. Always pair with aria-hidden="true". */
+  .breadcrumb-separator {
+    @apply shrink-0 select-none;
+    @apply text-[12px] font-normal leading-[normal];
+    @apply text-content-tertiary;
+  }
+
+  /* Retained for compatibility only. The chevron and slash separators were 12px
+     and 13px in the previous design; they are both 12px now, so this modifier
+     restates the base rather than changing it. Safe to drop from markup. */
+  .breadcrumb-separator-chevron {
+    @apply text-[12px];
+  }
+
+  /* The loose middot from the slash variant — 13px where the separators are 12,
+     and Regular where this used to be Bold. Not a Separator instance in Figma. */
+  .breadcrumb-separator-dot {
+    @apply text-[13px] font-normal;
+  }
+}

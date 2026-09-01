@@ -1,0 +1,177 @@
+/**
+ * Button Component — Figma 73:180
+ *
+ * Interactive button for actions throughout the dashboard. 42 variants across
+ * Size (sm/md/lg) x State (rest/hover/selected/active/disabled) x Display
+ * (primary/outline/empty). Primary has no `active`, which is why it is 12
+ * variants where the other two are 15.
+ *
+ * Usage:
+ *   <button class="btn btn-primary">Primary Button</button>
+ *   <button class="btn btn-outline btn-sm">Small Outline</button>
+ *   <button class="btn btn-lg" disabled>Disabled Large</button>
+ *
+ * THERE IS NO "DEFAULT" DISPLAY VALUE. Figma's axis is primary / outline /
+ * empty, full stop. A bare `.btn` is Display=outline — the set's rest default —
+ * and that is all "default" ever meant here.
+ *
+ * Until 2026-08-24 the base class took outline's REST APPEARANCE but none of
+ * its states, because the interaction rules lived inside `.btn-outline`. A bare
+ * `.btn` therefore looked like an outline button and responded to nothing:
+ * identical at rest, inert on hover and on `aria-selected`. The ramp now lives
+ * on the base, so `.btn` behaves, and `.btn-outline` is an explicit alias for
+ * the same thing.
+ *
+ * OUTLINE AND EMPTY SHARE ONE INTERACTION RAMP in Figma — hover `Action/Subtle`,
+ * selected `Action/Hover`, active `Primary/Soft` + `Primary/Main` — differing
+ * only in the rest border and in whether active draws one. Putting the ramp on
+ * the base serves outline, empty and the bare class at once, and closes the two
+ * states `.btn-empty` was missing.
+ *
+ * The two FILLED displays run their own ramps and override all of it. The base
+ * ramp's `:active` sets both a border colour and `Primary/Main` text, so each
+ * filled variant resets `border-transparent` AND `Content/Contrast` in its own
+ * active rule — otherwise a pressed primary renders a blue label on a blue fill.
+ */
+
+@layer components {
+  .btn {
+    /* Layout */
+    @apply inline-flex items-center justify-center gap-1.25;
+    @apply h-7 px-3; /* Medium (28px) - default size, 5px gap */
+
+    /* Shape */
+    @apply rounded-control; /* 6px from Figma */
+
+    /* Type — each size has its OWN Figma text style, they are not shared:
+       sm = Action S (12px/14), md = Action M (12.5px/14), lg = Action L (13px/auto) */
+    @apply text-action-m; /* Medium default */
+
+    /* Interaction */
+    @apply cursor-pointer;
+    @apply transition-colors duration-150;
+
+    /* Display=outline — the base, not a separate "default". See the header. */
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+    @apply bg-transparent text-content-primary;
+  }
+
+  /* --- Base interaction ramp (Display=outline, shared with empty) ------ */
+
+  /* Declared before the variants so the filled displays, whose nested rules
+     compile to the same specificity, win on source order as they always have. */
+
+  .btn:hover:not(:disabled) {
+    @apply bg-action-subtle;
+  }
+
+  .btn:active:not(:disabled) {
+    @apply bg-primary-soft text-primary border-primary;
+  }
+
+  .btn[aria-selected="true"] {
+    @apply bg-action-hover;
+  }
+
+  /* --- Variants ------------------------------------------------------- */
+
+  .btn-primary {
+    @apply border-transparent bg-primary text-content-contrast;
+
+    &:hover:not(:disabled) {
+      @apply bg-primary-dark;
+    }
+
+    &:active:not(:disabled) {
+      @apply border-transparent bg-primary-pressed text-content-contrast;
+    }
+
+    &[aria-selected="true"] {
+      @apply bg-primary-pressed;
+    }
+
+    &:disabled {
+      @apply bg-primary-disabled;
+    }
+  }
+
+  /* Identical to the bare base by design — Figma's outline IS the default
+     Display, so this class exists to say so at the call site rather than to
+     add anything. Its states come from the base ramp above. */
+  .btn-outline {
+    @apply border-[length:var(--border-thin)] border-stroke-divider;
+    @apply bg-transparent text-content-primary;
+  }
+
+  /* NOT IN BUTTON'S FIGMA VARIANT SET (73:180), which is primary / outline /
+     empty only. It comes from Modal (908:1580), where the destructive variant
+     renders its confirm button with a Critical/Main fill as an instance
+     override. Defined here rather than scoped to the modal footer, because a
+     destructive confirm is not modal-specific — the next one elsewhere would
+     otherwise reinvent it.
+
+     Figma specifies the rest state and nothing else. Hover steps to
+     Critical/Strong, which is the only darker critical token; there is no
+     critical-pressed, so :active is left to match hover rather than invent a
+     third colour. Revisit if the designer adds a real destructive Button. */
+  .btn-critical {
+    @apply border-transparent bg-critical text-content-contrast;
+
+    &:hover:not(:disabled) {
+      @apply bg-critical-strong;
+    }
+
+    &:active:not(:disabled) {
+      @apply border-transparent bg-critical-strong text-content-contrast;
+    }
+
+    /* Not in Figma either — but without it the base ramp would grey out a
+       selected critical button. Matches its own pressed value. */
+    &[aria-selected="true"] {
+      @apply bg-critical-strong;
+    }
+
+    &:disabled {
+      @apply bg-critical-soft text-content-tertiary;
+    }
+  }
+
+  /* Hover (Action/Subtle) and selected (Action/Hover) come from the base ramp,
+     which is exactly what Figma draws for empty — they were missing entirely
+     before 2026-08-24. Only the active border differs: empty never draws one. */
+  .btn-empty {
+    @apply border-transparent bg-transparent text-content-primary;
+
+    &:active:not(:disabled) {
+      @apply border-transparent bg-primary-soft text-primary;
+    }
+  }
+
+  /* --- Sizes ---------------------------------------------------------- */
+
+  .btn-sm {
+    @apply h-6 px-2 gap-1.25; /* 24px, 8px padding, 5px gap */
+    @apply text-action-s; /* 12px / 14px / 500 */
+  }
+
+  .btn-lg {
+    @apply h-8 px-4 gap-1.5; /* 32px, 16px padding, 6px gap */
+    @apply text-action-l; /* 13px / normal / 500 */
+  }
+
+  /* --- States --------------------------------------------------------- */
+
+  .btn:focus-visible {
+    @apply focus-ring;
+  }
+
+  .btn:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  /* Figma dims the label on the non-filled variants. Primary keeps its
+     contrast text, since its fill already drops to Primary/Disabled. */
+  .btn:disabled:not(.btn-primary) {
+    @apply text-content-tertiary;
+  }
+}

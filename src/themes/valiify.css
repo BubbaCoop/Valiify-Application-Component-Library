@@ -1,0 +1,89 @@
+/**
+ * Valiify Short App Theme — REAL design tokens from Figma.
+ *
+ * GENERATED FILE — do not edit by hand.
+ * Source:    tokens/figma-tokens.json
+ * Generator: scripts/build-theme.mjs  (npm run build:theme)
+ *
+ * Figma: Valiify-ShortApp-Component-Library (TBD)
+ *
+ * Declared in Tailwind's `@theme` so every token generates utilities:
+ *   --color-primary  -> bg-primary, text-primary, border-primary
+ *   --radius-control -> rounded-control
+ *   --text-body-1    -> text-body-1 (size + line-height + weight + tracking)
+ *
+ * Prefer those utilities over hand-written var().
+ *
+ * Colors are OKLCh; the source hex follows each line so values stay
+ * diffable against Figma. See scripts/build-theme.mjs for the round-trip
+ * assertion that guards the conversion.
+ *
+ * V1 is a single light theme, so tokens live at the root with no
+ * [data-theme] wrapper.
+ */
+
+@theme static {
+  /*
+   * Radii — named by ROLE, not by Figma's t-shirt size. Tailwind v4 ships
+   * --radius-xs/-sm/-md itself; redefining those would silently change
+   * rounded-xs/-sm/-md for consumers.
+   */
+
+  /* Border widths — no Tailwind namespace, so used via border-[length:var(...)] */
+
+  /* Font families */
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code',
+    'Roboto Mono', Consolas, 'Courier New', monospace;
+
+  /*
+   * Text styles — composite tokens, so one utility carries size,
+   * line-height, weight and tracking.
+   *
+   * `line-height: normal` is Figma's "Auto": the font's own metrics
+   * (~1.21x for Inter). The API reports Auto as the sentinel 100, which does
+   * NOT mean 100% — emitting `1` for it makes the style too tight.
+   *
+   * letter-spacing is in em because every letterSpacing value the API
+   * returns is a percentage of font size, not px.
+   *
+   * IMPORTANT: the --text-* composite carries size, line-height, weight and
+   * tracking but NOT font-family and NOT text-transform. Two consequences:
+   *
+   *   JetBrains Mono styles must be paired with font-mono, or they render
+   *   in Inter:  @apply text-data-m font-mono;
+   *
+   *   Label styles are uppercase in Figma, so use the generated
+   *   type-label-* utilities below, which bundle the casing.
+   */
+
+  /* Effects */
+
+  /*
+   * NOTE: no --spacing-* tokens on purpose. Tailwind v4's spacing scale is a
+   * multiplier of --spacing (0.25rem), so Figma's whole-pixel values all map
+   * to standard steps: Spacing/8 -> p-2, Spacing/7 -> p-1.75.
+   *
+   * The multiplier must be a multiple of 0.25 (= 1px steps), so Tailwind can
+   * express any whole pixel but no half-pixel. Figma's two fractional tokens
+   * need arbitrary values instead: Spacing/7-5 -> p-[7.5px] and
+   * Spacing/12-5 -> p-[12.5px]. The multiplier forms p-1.875 / p-3.125 do
+   * not compile.
+   *
+   * Defining --spacing-8: 8px would make p-8 mean 8px instead of 32px and
+   * break existing usage. See CLAUDE.md for the full mapping table.
+   */
+}
+
+/**
+ * Label type utilities.
+ *
+ * Figma marks every Label style UPPER, but Tailwind's --text-* composite
+ * cannot carry text-transform or font-family. These bundle the whole style so
+ * the casing — and the mono family, where it applies — cannot be forgotten:
+ *
+ *   <span class="type-label-l">Section heading</span>
+ *
+ * Prefer these over the bare text-label-* tokens.
+ */

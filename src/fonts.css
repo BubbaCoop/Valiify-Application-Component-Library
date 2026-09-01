@@ -1,0 +1,23 @@
+/**
+ * Valiify Short App UI — webfonts (optional).
+ *
+ * Exposed as `@valiify/shortapp-ui/fonts`.
+ *
+ * The design system assumes Inter (UI) and JetBrains Mono (data). This file is
+ * kept separate, and deliberately NOT bundled into dist/index.css, because CSS
+ * requires every `@import` to precede all other rules — a font import inside the
+ * compiled bundle lands mid-file the moment a consumer imports that bundle, and
+ * the browser silently discards it.
+ *
+ * So import this FIRST in your own stylesheet, before anything else:
+ *
+ *   @import "@valiify/shortapp-ui/fonts";
+ *   @import "tailwindcss";
+ *   @import "@valiify/shortapp-ui/source";
+ *
+ * Or skip it entirely and self-host the two families, which is usually better
+ * for performance and privacy. The library only needs `--font-sans` and
+ * `--font-mono` to resolve to something real.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");

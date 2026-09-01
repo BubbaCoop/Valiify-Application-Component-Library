@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valiify Short App UI - PostCSS Starter</title>
+    <link rel="stylesheet" href="dist/styles.css" />
+  </head>
+  <body>
+    <div
+      style="
+        max-width: 640px;
+        margin: 48px auto;
+        font-family: Inter, system-ui, sans-serif;
+      "
+    >
+      <h1 style="font-size: 28px; font-weight: 600; margin-bottom: 8px">
+        PostCSS Setup Working
+      </h1>
+      <p style="font-size: 14px; color: #5b5b68; margin-bottom: 24px">
+        If this page renders and the box below shows a value, your PostCSS +
+        Tailwind v4 pipeline is compiling the library. The Short App component
+        set has not been extracted from Figma yet — component examples will
+        replace this as they land.
+      </p>
+
+      <div
+        style="
+          padding: 16px;
+          border: 1px solid #e1e1e3;
+          border-radius: 8px;
+          font-size: 13px;
+          margin-bottom: 24px;
+        "
+      >
+        <code id="token-check">checking…</code>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          gap: 12px;
+          align-items: center;
+          color: #5b5b68;
+          font-size: 12px;
+        "
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <use href="#check" />
+        </svg>
+        <span>icon sprite symbol rendering</span>
+      </div>
+    </div>
+
+    <!-- Load sprite (inline it for production) -->
+    <div style="display: none" id="sprite-container"></div>
+    <script type="module">
+      // In production, you'd inline this or use a bundler
+      fetch("../../src/icons/sprite.svg")
+        .then((r) => r.text())
+        .then((svg) => {
+          document.getElementById("sprite-container").innerHTML = svg;
+        });
+
+      const v = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-primary")
+        .trim();
+      document.getElementById("token-check").textContent = v
+        ? "--color-primary: " + v
+        : "--color-primary is empty — expected until Short App tokens are extracted.";
+    </script>
+  </body>
+</html>

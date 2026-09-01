@@ -1,0 +1,156 @@
+/**
+ * Field Verification Component
+ *
+ * Inline field-level verification indicator. Extracted from Figma Field
+ * Verification (142:350) — 5 variants on a single `State` axis, plus a Ring
+ * boolean.
+ *
+ * Usage — an inline row:
+ *   <span class="field-verification field-verification-verified">
+ *     <span class="section-marker section-marker-approve">
+ *       <svg class="icon icon-size-14" aria-hidden="true"><use href="#check" /></svg>
+ *     </span>
+ *     <span class="field-verification-label">Matches X</span>
+ *   </span>
+ *
+ * Usage — the expanded mismatch:
+ *   <span class="field-verification field-verification-mismatch">
+ *     <svg class="field-verification-icon icon icon-size-15" aria-hidden="true">
+ *       <use href="#triangle-alert" />
+ *     </svg>
+ *     <span class="field-verification-details">
+ *       <span class="field-verification-label">Does not match KYC</span>
+ *       <span class="field-verification-detail">Reported: 04/12/1988</span>
+ *       <span class="field-verification-action">
+ *         Review discrepancy
+ *         <svg class="icon icon-size-15" aria-hidden="true"><use href="#arrow-right" /></svg>
+ *       </span>
+ *     </span>
+ *   </span>
+ *
+ * FIVE STATES, FOUR OF WHICH ARE ONE-LINE ROWS and one of which is a stacked
+ * panel. What each draws, all measured from the Figma render rather than
+ * assumed, because Figma flattens the glyphs to vectors:
+ *
+ *   verified            Section Marker, 14px #check   Approved/Main icon,
+ *                                                     Content/Tertiary label
+ *   pending             Section Marker, 14px #circle  Content/Tertiary throughout
+ *   none                Section Marker, 14px #minus   Content/Tertiary, no label
+ *   mismatch (preview)  bare 15px #triangle-alert     Critical/Main throughout
+ *   mismatch (details)  same icon + a stacked block   Critical/Main + one mono line
+ *
+ * THREE OF THE FIVE ICONS ARE SECTION MARKER INSTANCES. Figma nests a 16x16
+ * instance at y=1 for verified, pending AND none — confirmed from the node
+ * metadata, where each is an `<instance>` rather than a drawn shape, and
+ * pending's label starts at x=23 (16 + the 7px gap). Only mismatch uses a bare
+ * 15px glyph, in a 15x18 frame.
+ *
+ * That 16px box is load-bearing: dropping it for a bare 14px icon shifts the
+ * label 2px left and misaligns pending and none against verified in a column.
+ *
+ * Only the COLOUR differs — pending and none bind `Content/Tertiary` where
+ * Section Marker's own `unverified` binds `Secondary/Main`, so the status
+ * classes here override it. Same structure, different token.
+ *
+ * `State=none` IS A #minus GLYPH, not a rule and not a hyphen character. An
+ * earlier revision built it as a 10x1px bar, reasoning from the `Spacing/10`
+ * and `Spacing/1` bindings — but `Spacing/10` appears in pending and mismatch
+ * too, so it was never none-specific. The node is an instance, and a pixel
+ * trace of the render gives 9.0 x 1px, which is a 14px Lucide `minus`
+ * (9.33 x 1.17), not a 10px rect.
+ *
+ * THE EXPANDED STATE ALIGNS TO THE TOP while the rows align to the middle. That
+ * is one declaration, driven off the presence of the details block with `:has()`
+ * rather than an extra modifier class the caller has to remember.
+ *
+ * THE OUTER WIDTHS ARE NOT PINNED — Figma's 83 / 111 / 16 / 159px are its
+ * sample strings and this sits inline beside a field value, so it hugs.
+ *
+ * THE 137px DETAILS COLUMN IS DIFFERENT, and is a known departure: Figma
+ * authors it as a fixed width, which is why its mono line wraps to two rows
+ * (137x33). Left unpinned here so the block adapts to its container, at the
+ * cost of that line running on where Figma wraps it.
+ *
+ * The mismatch action row is NOT a Text Button. It looks like one, but Figma
+ * draws plain text plus an arrow rather than an instance, and its colour is
+ * Critical/Main where every Text Button type is Content or Primary. Reproduced
+ * as its own part; raised with the designer.
+ */
+
+@layer components {
+  .field-verification {
+    @apply inline-flex items-center gap-1.75; /* 7px */
+  }
+
+  /* The stacked variant tops-aligns its icon; the one-line rows centre theirs. */
+  .field-verification:has(.field-verification-details) {
+    @apply items-start;
+  }
+
+  /* --- Parts -------------------------------------------------------------- */
+
+  /* The mismatch slot only — verified, pending and none use `.section-marker`,
+     which brings its own 16px box. Figma frames this glyph 15x18 and centres it
+     on the first line, so the BOX is what aligns, not the glyph; without the
+     height the expanded state sits 1.5px high. */
+  .field-verification-icon {
+    @apply inline-flex h-[18px] shrink-0 items-center justify-center;
+  }
+
+  .field-verification-label {
+    @apply text-caption; /* 12px / 18px / 400 */
+  }
+
+  /* --- Expanded (State=mismatch - details) -------------------------------- */
+
+  .field-verification-details {
+    @apply flex flex-col items-start gap-1; /* 4px */
+    min-width: 0;
+  }
+
+  /* Data/Data xs needs font-mono — --text-* carries no family. See CLAUDE.md. */
+  .field-verification-detail {
+    @apply text-data-xs font-mono; /* 12px / 16.5px / 400, JetBrains Mono */
+    @apply text-content-secondary;
+  }
+
+  /* Plain text plus an arrow, not a Text Button instance. See the header. */
+  .field-verification-action {
+    @apply inline-flex items-center gap-1.75; /* 7px */
+    @apply text-caption; /* 12px / 18px / 400 */
+    @apply cursor-pointer;
+  }
+
+  /* --- States ------------------------------------------------------------- */
+
+  /* verified: the only state whose icon and label differ in colour. */
+  .field-verification-verified {
+    @apply text-content-tertiary;
+  }
+  .field-verification-verified .field-verification-icon {
+    @apply text-approved;
+  }
+
+  /* pending and none: Section Marker instances like verified, but bound to
+     Content/Tertiary where Section Marker's own `unverified` is Secondary/Main.
+     The colour cascades into the nested `.section-marker`, which sets none of
+     its own without a status class. */
+  .field-verification-pending,
+  .field-verification-none {
+    @apply text-content-tertiary;
+  }
+
+  /* mismatch: Critical/Main throughout, except the mono detail line, which
+     stays Content/Secondary. */
+  .field-verification-mismatch {
+    @apply text-critical;
+  }
+
+  /* --- Ring --------------------------------------------------------------- */
+
+  /* Figma boolean, hidden by default. Square, as on Section Marker — this box
+     has no radius either. */
+  .field-verification.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

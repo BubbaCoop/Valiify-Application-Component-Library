@@ -1,0 +1,17 @@
+/**
+ * PostCSS + Tailwind v4 setup for Valiify Short App UI
+ */
+
+/* Optional: Load fonts */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* Required */
+@import "tailwindcss";
+@import "@valiify/shortapp-ui/source";
+
+/* Custom styles */
+body {
+  font-family: Inter, system-ui, sans-serif;
+  background: var(--color-surface-frame);
+  padding: 2rem;
+}

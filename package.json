@@ -1,0 +1,94 @@
+{
+  "name": "@valiify/shortapp-ui",
+  "version": "0.1.0",
+  "description": "Tailwind CSS component library for the Valiify Short App (online account applications)",
+  "style": "dist/index.css",
+  "types": "types/index.d.ts",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./dist/index.css",
+    "./index.css": "./dist/index.css",
+    "./fonts": "./src/fonts.css",
+    "./source": "./src/library.css",
+    "./icons/sprite.svg": "./src/icons/sprite.svg",
+    "./types": "./types/index.d.ts"
+  },
+  "files": [
+    "dist",
+    "src",
+    "types",
+    "examples",
+    "README.md",
+    "GETTING_STARTED.md",
+    "TROUBLESHOOTING.md",
+    "CHANGELOG.md",
+    "CLAUDE.md"
+  ],
+  "scripts": {
+    "build": "npm run build:theme && npm run build:icons && postcss src/index.css -o dist/index.css",
+    "prepack": "npm run build && npm run fix-examples",
+    "fix-examples": "node scripts/fix-example-deps.mjs",
+    "restore-examples": "node scripts/restore-example-deps.mjs",
+    "build:theme": "node scripts/build-theme.mjs",
+    "build:icons": "node scripts/build-sprite.mjs",
+    "dev": "postcss src/index.css -o dist/index.css --watch",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "new:component": "node scripts/new-component.mjs",
+    "verify:component": "node scripts/verify-component.mjs",
+    "verify:layers": "node scripts/verify-layers.mjs",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "verify:visual": "node scripts/visual-verify.mjs",
+    "verify:a11y": "node scripts/a11y-scan.mjs",
+    "audit": "node scripts/audit-components.mjs",
+    "chromatic": "chromatic"
+  },
+  "keywords": [
+    "tailwind",
+    "tailwindcss",
+    "css",
+    "components",
+    "valiify",
+    "application",
+    "forms",
+    "onboarding",
+    "ui"
+  ],
+  "author": "Valiify",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BubbaCoop/Valiify-Application-Component-Library.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@storybook/addon-a11y": "^10.5.10",
+    "@storybook/addon-docs": "^10.5.10",
+    "@storybook/addon-mcp": "^0.7.0",
+    "@storybook/addon-themes": "^10.5.10",
+    "@storybook/html-vite": "^10.5.10",
+    "@tailwindcss/postcss": "^4.3.3",
+    "chromatic": "^18.6.0",
+    "lucide-static": "^1.33.0",
+    "pixelmatch": "^7.2.0",
+    "playwright": "^1.62.1",
+    "pngjs": "^7.0.0",
+    "postcss": "^8.5.26",
+    "postcss-cli": "^11.0.1",
+    "prettier": "^3.9.6",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "storybook": "^10.5.10",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "tailwindcss": ">=4.0.0"
+  }
+}

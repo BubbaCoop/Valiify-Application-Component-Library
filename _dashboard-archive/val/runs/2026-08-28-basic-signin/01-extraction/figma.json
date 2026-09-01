@@ -1,0 +1,234 @@
+{
+  "source": "screenshot",
+  "note": "No Figma file for this run (manifest input.figmaUrl is null). This tree was reconstructed by pixel measurement of 00-input/design@2x.png (2560x1600 px, captured at exactly 2x from a 1280x800 frame). Node ids are synthetic ('est-*'). Geometry is in 1x frame coordinates, derived by scanning pixel edges at 2x and halving; accurate to roughly +/-1px. Colors are hex values sampled from the PNG. Text family/size/weight are visual estimates from glyph band heights (ascender/descender math), marked estimated:true. componentKey is null on every instance-like node: a screenshot carries no component identity.",
+  "frame": { "w": 1280, "h": 800 },
+  "exportScale": 2,
+  "nodes": [
+    {
+      "id": "est-root",
+      "name": "Sign-in page",
+      "type": "FRAME",
+      "geometry": { "x": 0, "y": 0, "w": 1280, "h": 800 },
+      "fills": [{ "type": "SOLID", "hex": "#f0f3f7" }],
+      "children": ["est-card", "est-btn-view-demo"]
+    },
+    {
+      "id": "est-card",
+      "name": "Sign-in card",
+      "type": "FRAME",
+      "componentKey": null,
+      "geometry": { "x": 440, "y": 222, "w": 400, "h": 356 },
+      "fills": [{ "type": "SOLID", "hex": "#ffffff" }],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "hexMeasured": "#ededee",
+          "weightPx": 1,
+          "note": "hairline; #ededee over white is consistent with rgba(20,20,40,0.08) composited"
+        }
+      ],
+      "cornerRadius": { "px": 6, "estimated": true, "note": "corner arc spans ~11px at 2x; 5.5-6px at 1x" },
+      "effects": [],
+      "effectsNote": "no drop shadow detectable — pixels return to page background immediately outside the border",
+      "layout": {
+        "note": "estimated from measured gaps, not authored auto-layout",
+        "paddingPx": { "left": 16, "right": 16, "top": 16, "bottom": 19 },
+        "contentWidthPx": 366
+      },
+      "children": [
+        "est-title",
+        "est-subtitle",
+        "est-email-label",
+        "est-email-value",
+        "est-password-label",
+        "est-password-placeholder",
+        "est-checkbox",
+        "est-checkbox-label",
+        "est-btn-primary",
+        "est-btn-cancel",
+        "est-link"
+      ]
+    },
+    {
+      "id": "est-title",
+      "name": "Title",
+      "type": "TEXT",
+      "characters": "Welcome Back",
+      "geometry": { "x": 457.5, "y": 239.5, "w": 170.5, "h": 17.5, "note": "ink band (ascender to baseline, no descenders in string)" },
+      "textStyle": {
+        "family": "sans-serif (Inter or system-ui — not determinable from pixels)",
+        "sizePx": 24,
+        "weight": 700,
+        "estimated": true
+      },
+      "fills": [{ "type": "SOLID", "hex": "#16161a" }]
+    },
+    {
+      "id": "est-subtitle",
+      "name": "Subtitle",
+      "type": "TEXT",
+      "characters": "Sign in to your Valiify Dashboard account.",
+      "geometry": { "x": 458, "y": 271, "w": 254.5, "h": 12.5, "note": "ink band incl descenders" },
+      "textStyle": { "family": "sans-serif", "sizePx": 13, "weight": 400, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#5b5b68" }]
+    },
+    {
+      "id": "est-email-label",
+      "name": "Email label",
+      "type": "TEXT",
+      "characters": "Email",
+      "geometry": { "x": 458, "y": 315.5, "w": 33.5, "h": 10.5 },
+      "textStyle": { "family": "sans-serif", "sizePx": 14, "weight": 600, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#16161a" }]
+    },
+    {
+      "id": "est-email-value",
+      "name": "Email value (prefilled input text)",
+      "type": "TEXT",
+      "characters": "user@valiify.com",
+      "geometry": { "x": 458, "y": 343, "w": 103, "h": 12.5 },
+      "textStyle": { "family": "sans-serif", "sizePx": 13, "weight": 400, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#16161a" }],
+      "note": "NO visible input chrome: a light-structure pixel scan over the whole card found no border, underline, or background box around this value. The field renders as bare text."
+    },
+    {
+      "id": "est-password-label",
+      "name": "Password label",
+      "type": "TEXT",
+      "characters": "Password",
+      "geometry": { "x": 458, "y": 380.5, "w": 63, "h": 10 },
+      "textStyle": { "family": "sans-serif", "sizePx": 14, "weight": 600, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#16161a" }]
+    },
+    {
+      "id": "est-password-placeholder",
+      "name": "Password placeholder (empty input text)",
+      "type": "TEXT",
+      "characters": "Enter your password",
+      "geometry": { "x": 458, "y": 408.5, "w": 124, "h": 11.5 },
+      "textStyle": { "family": "sans-serif", "sizePx": 13, "weight": 400, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#727280" }],
+      "note": "NO visible input chrome (same scan as email value)."
+    },
+    {
+      "id": "est-checkbox",
+      "name": "Checkbox (unchecked)",
+      "type": "RECTANGLE",
+      "componentKey": null,
+      "geometry": { "x": 457, "y": 443, "w": 16, "h": 16 },
+      "fills": [{ "type": "SOLID", "hex": "#ffffff" }],
+      "strokes": [{ "type": "SOLID", "hexMeasured": "#767676", "weightPx": 1 }],
+      "cornerRadius": { "px": 3, "estimated": true },
+      "note": "#767676 is Chromium's default form-control border color — this reads as a NATIVE unstyled checkbox in the source render, not a library RadioSelect/Checkbox treatment."
+    },
+    {
+      "id": "est-checkbox-label",
+      "name": "Checkbox label",
+      "type": "TEXT",
+      "characters": "Remember me",
+      "geometry": { "x": 482.5, "y": 446, "w": 94, "h": 10, "note": "vertically centered on the checkbox (both center at y=450.75)" },
+      "textStyle": { "family": "sans-serif", "sizePx": 13.5, "weight": 400, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#5b5b68" }]
+    },
+    {
+      "id": "est-btn-primary",
+      "name": "Primary button",
+      "type": "FRAME",
+      "componentKey": null,
+      "geometry": { "x": 457, "y": 485, "w": 291, "h": 28 },
+      "fills": [{ "type": "SOLID", "hex": "#1e4d8c" }],
+      "strokes": [],
+      "cornerRadius": { "px": 5.5, "estimated": true, "note": "arc spans ~10px at 2x" },
+      "children": ["est-btn-primary-label"]
+    },
+    {
+      "id": "est-btn-primary-label",
+      "name": "Primary button label",
+      "type": "TEXT",
+      "characters": "Sign In",
+      "geometry": { "x": 582.5, "y": 493.5, "w": 39, "h": 12, "note": "centered in button (label center x 601.75 vs button center 602.25)" },
+      "textStyle": { "family": "sans-serif", "sizePx": 13, "weight": 600, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#ffffff" }]
+    },
+    {
+      "id": "est-btn-cancel",
+      "name": "Outline button",
+      "type": "FRAME",
+      "componentKey": null,
+      "geometry": { "x": 756, "y": 485, "w": 67, "h": 28 },
+      "fills": [{ "type": "SOLID", "hex": "#ffffff" }],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "hexMeasured": "#ededee",
+          "weightPx": 1,
+          "note": "same measured hairline as the card border"
+        }
+      ],
+      "cornerRadius": { "px": 6, "estimated": true },
+      "children": ["est-btn-cancel-label"]
+    },
+    {
+      "id": "est-btn-cancel-label",
+      "name": "Outline button label",
+      "type": "TEXT",
+      "characters": "Cancel",
+      "geometry": { "x": 769, "y": 493.5, "w": 40, "h": 9.5 },
+      "textStyle": { "family": "sans-serif", "sizePx": 13, "weight": 500, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#16161a" }]
+    },
+    {
+      "id": "est-link",
+      "name": "Text link",
+      "type": "TEXT",
+      "characters": "Forgot password?",
+      "geometry": { "x": 582, "y": 544.5, "w": 116, "h": 13.5, "note": "horizontally centered in card (link center x 640 = card center)" },
+      "textStyle": { "family": "sans-serif", "sizePx": 14, "weight": 500, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#1e4d8c" }],
+      "textDecoration": "none (no underline detected at rest)"
+    },
+    {
+      "id": "est-btn-view-demo",
+      "name": "Small outline button (fixed bottom-right)",
+      "type": "FRAME",
+      "componentKey": null,
+      "geometry": { "x": 1152, "y": 756, "w": 108, "h": 24, "note": "inset ~20px from the viewport's right and bottom edges" },
+      "fills": [{ "type": "NONE", "note": "interior samples #f0f3f7 = page background; fill is transparent or identical to the background" }],
+      "strokes": [
+        {
+          "type": "SOLID",
+          "hexMeasured": "#dfe2e7",
+          "weightPx": 1,
+          "note": "#dfe2e7 over #f0f3f7 is consistent with the same rgba(20,20,40,0.08) hairline as the card/cancel borders"
+        }
+      ],
+      "cornerRadius": { "px": 4.5, "estimated": true },
+      "children": ["est-btn-view-demo-label"]
+    },
+    {
+      "id": "est-btn-view-demo-label",
+      "name": "Small outline button label",
+      "type": "TEXT",
+      "characters": "View Demo Info",
+      "geometry": { "x": 1161, "y": 763, "w": 89.5, "h": 9 },
+      "textStyle": { "family": "sans-serif", "sizePx": 12.5, "weight": 500, "estimated": true },
+      "fills": [{ "type": "SOLID", "hex": "#16161a" }]
+    }
+  ],
+  "layoutObservations": {
+    "note": "vertical gaps between measured ink bands / boxes, 1x px",
+    "gaps": {
+      "title -> subtitle": 14.5,
+      "subtitle -> email label": 32.5,
+      "email label -> email value": 17.5,
+      "email value -> password label": 25.5,
+      "password label -> placeholder": 18,
+      "placeholder -> remember-me row": 23,
+      "remember-me row -> buttons": 26.5,
+      "buttons -> forgot link": 32,
+      "primary button -> cancel button (horizontal)": 8,
+      "checkbox -> label (horizontal)": 9.5
+    },
+    "buttonRow": "Sign In (291) + gap (8) + Cancel (67) = 366 = full card content width; the primary button flexes, cancel hugs"
+  }
+}

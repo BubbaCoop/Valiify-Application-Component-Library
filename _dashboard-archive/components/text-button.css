@@ -1,0 +1,170 @@
+/**
+ * Text Button Component
+ *
+ * Text-only button for inline or cell-level actions. Extracted from Figma Text
+ * Button (679:21601) — 11 variants across Type x Hover x Pressed x Active,
+ * plus Icon and Ring booleans.
+ *
+ * Usage:
+ *   <button class="text-button text-button-cell">Select all</button>
+ *
+ *   <button class="text-button text-button-primary">
+ *     <svg class="icon icon-size-12" aria-hidden="true"><use href="#plus" /></svg>
+ *     Add row
+ *   </button>
+ *
+ * THIS IS NOT A .btn VARIANT. Different Figma component, different type scale,
+ * different geometry — .btn has fixed 24/28/32px heights, this hugs its text at
+ * 15px or 18px. Reach for .btn-empty when you want a real button that happens
+ * to look bare; reach for .text-button for an inline affordance inside a table
+ * cell or a line of copy.
+ *
+ * THE THREE TYPES ARE NOT THREE SKINS OF ONE CONTROL — cell is a genuinely
+ * different size from the other two:
+ *
+ *   cell     11px Micro L    7px/1px padding   pill background on hover
+ *   text     12px Caption    no padding        colour-only states
+ *   Primary  12px Caption    no padding        colour-only states
+ *
+ * `text` and `Primary` differ ONLY in colour ramp. `cell` is the odd one out,
+ * and it is the Figma default, so the base class carries its geometry.
+ *
+ * TWO FIGMA ODDITIES REPRODUCED, not corrected:
+ *   - `text` draws Hover and Pressed identically (both Content/Primary, no
+ *     background), so pressing a text button gives no feedback. cell and
+ *     Primary both step to a distinct pressed value.
+ *   - `Primary` has no Active variant. cell and text both do. Nothing is
+ *     invented here to fill the gap: aria-pressed on a Primary text button
+ *     inherits the bold weight only, matching the closest thing Figma draws.
+ * Both are flagged with the designer.
+ *
+ * ACTIVE ALSO CHANGES WEIGHT, from 400 to 500 — `Micro L - Bold` for cell and
+ * `Caption - Bold` for text. Careful: both Figma styles say "Bold" and both
+ * report Medium / 500. Do not map "-Bold" to 700. Because the type token also
+ * carries size and line-height, this cannot be a bare `font-medium`.
+ *
+ * CELL'S HEIGHT IS PINNED AT 15px, and must be. `Micro L` carries a Figma
+ * "Auto" line height, so the line box is font-dependent — Figma resolves it to
+ * 13px and Chrome to 14px, which would ship the control a pixel tall. This is
+ * the same trap button.css and pill.css already document. `text` and `Primary`
+ * need no pin: their 18px line-height is explicit, so the box lands on 18
+ * either way.
+ *
+ * NO DISABLED VARIANT EXISTS in Figma. The rule below is the house convention,
+ * so a disabled control is not silently clickable.
+ */
+
+@layer components {
+  .text-button {
+    /* Layout — shared by all three types */
+    @apply inline-flex shrink-0 items-center justify-center gap-1; /* 4px */
+
+    /* Shape — the radius only shows on cell, which is the only type with a
+       background, but Figma sets it on all three (the Ring uses it too). */
+    @apply rounded-pill;
+
+    /* Reset so the class works on button / a / span alike */
+    @apply appearance-none border-none bg-transparent text-left no-underline;
+
+    /* Default geometry and type: cell, which is Figma's default variant */
+    @apply px-1.75 py-0.25; /* 7px / 1px */
+    @apply h-[15px]; /* pinned — see the header */
+    @apply text-micro-l; /* 11px / 400 / Auto */
+    @apply text-content-secondary;
+
+    /* Interaction */
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- Types -------------------------------------------------------------- */
+
+  /* Explicit form of the default. */
+  .text-button-cell {
+    @apply px-1.75 py-0.25; /* 7px / 1px */
+    @apply h-[15px]; /* pinned — see the header */
+    @apply text-micro-l; /* 11px / 400 / Auto */
+    @apply text-content-secondary;
+  }
+
+  /* No padding at all — 52x18 in Figma is exactly the 12px/18px line box. */
+  .text-button-text {
+    @apply h-auto px-0 py-0;
+    @apply text-caption; /* 12px / 18px / 400 */
+    @apply text-content-secondary;
+  }
+
+  .text-button-primary {
+    @apply h-auto px-0 py-0;
+    @apply text-caption; /* 12px / 18px / 400 */
+    @apply text-primary;
+  }
+
+  /* --- States ------------------------------------------------------------- */
+
+  /* Shared: hover and press darken the label. Primary overrides both below. */
+  .text-button:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-content-primary;
+  }
+
+  .text-button:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-content-primary;
+  }
+
+  /* cell is the only type that grows a background. */
+  .text-button-cell:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-hover;
+  }
+
+  .text-button-cell:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-focused;
+  }
+
+  /* Primary rides the Primary ramp instead of the Content ramp. Same
+     specificity as the shared rules above, so it must stay after them —
+     the ordering is load-bearing, exactly as in button.css. */
+  .text-button-primary:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-primary-dark;
+  }
+
+  .text-button-primary:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply text-primary-pressed;
+  }
+
+  /* Active — the selected/applied state. Weight steps 400 -> 500, and because
+     the type token carries size and line-height too, the whole token is
+     swapped rather than just the weight. */
+  .text-button-cell[aria-pressed="true"],
+  .text-button-cell[aria-selected="true"] {
+    @apply bg-primary-soft text-primary;
+    @apply text-micro-l-bold; /* 11px / 500 / Auto */
+  }
+
+  .text-button-text[aria-pressed="true"],
+  .text-button-text[aria-selected="true"] {
+    @apply text-primary;
+    @apply text-caption-bold; /* 12px / 18px / 500 */
+  }
+
+  /* Figma draws no Active for Primary. It already sits at Primary/Main, so the
+     only thing left to express selection with is the weight. Nothing invented. */
+  .text-button-primary[aria-pressed="true"],
+  .text-button-primary[aria-selected="true"] {
+    @apply text-caption-bold; /* 12px / 18px / 500 */
+  }
+
+  .text-button:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Not in Figma — house convention. */
+  .text-button:disabled,
+  .text-button[aria-disabled="true"] {
+    @apply cursor-not-allowed text-content-tertiary;
+  }
+
+  /* Ring — Figma boolean, hidden by default. Same 2px inset Primary/Main
+     treatment as Chip, Avatar, Pill and Tag. */
+  .text-button.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

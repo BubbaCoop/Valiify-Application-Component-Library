@@ -1,0 +1,19 @@
+{
+  "name": "valiify-ui-postcss-starter",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "postcss src/styles.css -o dist/styles.css",
+    "watch": "postcss src/styles.css -o dist/styles.css --watch",
+    "serve": "npm run build && npx serve ."
+  },
+  "dependencies": {
+    "@valiify/shortapp-ui": "file:../.."
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "postcss": "^8.4.0",
+    "postcss-cli": "^11.0.0",
+    "tailwindcss": "^4.0.0"
+  }
+}

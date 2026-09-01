@@ -1,0 +1,156 @@
+/**
+ * Alert Component
+ *
+ * Contextual feedback banner for inline status messages. Extracted from Figma
+ * Alert (880:31080) — 5 variants on a single `Type` axis, plus three booleans
+ * (Icon, Action Button, Dismiss).
+ *
+ * Usage:
+ *   <div class="alert alert-critical" role="alert">
+ *     <div class="alert-body">
+ *       <svg class="alert-icon icon icon-size-18" aria-hidden="true">
+ *         <use href="#triangle-alert" />
+ *       </svg>
+ *       <div class="alert-content">
+ *         <p class="alert-title">Business address mismatch</p>
+ *         <p class="alert-message">Middesk returns a registered-agent address.</p>
+ *         <button class="text-button text-button-primary">Review Field</button>
+ *       </div>
+ *       <button class="icon-button icon-button-md" aria-label="Dismiss">
+ *         <svg class="icon icon-size-14" aria-hidden="true"><use href="#x" /></svg>
+ *       </button>
+ *     </div>
+ *   </div>
+ *
+ * A TYPE CLASS IS REQUIRED. `.alert` carries layout only; every colour lives on
+ * the type. Figma's `Type` axis has no default value, and baking one into the
+ * base class is the mistake Tabs already taught us — "explicit beats clever".
+ * A bare `.alert` renders transparent, which reads as the authoring error it is.
+ *
+ * Type drives exactly two colours, and all five follow the same pattern except
+ * one:
+ *
+ *   type      fill              rail + icon
+ *   critical  Critical/Soft     Critical/Main
+ *   warning   Warning/Soft      Warning/Main
+ *   success   Approved/Soft     Approved/Main
+ *   info      Primary/Soft      Primary/Main
+ *   neutral   Neutral/Soft      Neutral/Main rail, but Neutral/CONTENT icon
+ *
+ * NEUTRAL'S ICON IS THE ODD ONE OUT. Verified by sampling the Figma render, not
+ * assumed: its rail is `Neutral/Main` (#9999a6) while its glyph is
+ * `Neutral/Content` (#65656e). Every other type uses one colour for both. This
+ * is why `Neutral/Content` appears in that variant's variable set and nowhere
+ * else. Reproduced faithfully; on the designer list.
+ *
+ * THE RAIL IS A BORDER, NOT A CHILD. Figma models the 3px accent as a clipped
+ * rectangle layer inside an `overflow: clip` frame; here it is the left border,
+ * which saves consumers a DOM node and a class.
+ *
+ * This was verified rather than assumed — both renders were traced pixel by
+ * pixel down the top-left corner. Figma's rail is 2px wide through the arc and
+ * reaches its full 3px seven rows down; ours reaches 3px on the eighth. A
+ * one-row antialiasing difference in how the two renderers clip, with identical
+ * geometry either side of it.
+ *
+ * WIDTH IS NOT PINNED. Figma's 828px is the leftover of a 1007px artboard with
+ * 36px margins, not a specification — an inline banner spans its container.
+ * Contrast Modal (480) and Toast (356), which are genuinely fixed floating
+ * elements and ARE pinned.
+ *
+ * THE ACTION AND DISMISS ARE EXISTING COMPONENTS. Figma's "Review Field" is a
+ * literal Text Button instance (Type=Primary). The dismiss is NOT an instance —
+ * it is a stray 10x16 raw vector, where Toast and Modal both use a real Icon
+ * Button. Treated as an authoring slip and implemented as `.icon-button
+ * icon-button-md`, matching the rest of the library. On the designer list.
+ *
+ * The 8px radius is raw in Figma rather than bound to `Radius/MD`, the same
+ * unbound reading Toast's card has. Mapped to `--radius-surface` because the
+ * value matches exactly.
+ */
+
+@layer components {
+  .alert {
+    /* Layout — a banner, so it fills its container */
+    @apply flex w-full items-start;
+
+    /* Shape. The rail is the left border; the radius clips it, which is what
+       Figma's `overflow: clip` frame achieves around its rectangle layer. */
+    @apply rounded-surface; /* 8px */
+    @apply overflow-hidden;
+    @apply border-l-[3px] border-l-transparent;
+
+    /* No fill of its own — the type class supplies it. */
+    @apply bg-transparent;
+  }
+
+  /* --- Parts -------------------------------------------------------------- */
+
+  .alert-body {
+    @apply flex flex-1 items-start gap-3; /* 12px */
+    min-width: 0;
+    @apply p-4; /* 16px */
+  }
+
+  /* 18px. Colour comes from the type class; the glyph is the consumer's. */
+  .alert-icon {
+    @apply shrink-0;
+  }
+
+  .alert-content {
+    @apply flex flex-1 flex-col items-start gap-1; /* 4px */
+    min-width: 0;
+  }
+
+  /* 12.5px with a 12.5px line-height — the line box is exactly the cap height,
+     as in Toast. Body 2 - Bold reports Medium/500 despite the name. */
+  .alert-title {
+    @apply text-body-2-bold; /* 12.5px / 12.5px / 500 */
+    @apply text-content-primary;
+  }
+
+  .alert-message {
+    @apply text-caption; /* 12px / 18px / 400 */
+    @apply text-content-secondary;
+  }
+
+  /* --- Types -------------------------------------------------------------- */
+
+  .alert-critical {
+    @apply border-l-critical bg-critical-soft;
+  }
+  .alert-critical .alert-icon {
+    @apply text-critical;
+  }
+
+  .alert-warning {
+    @apply border-l-warning bg-warning-soft;
+  }
+  .alert-warning .alert-icon {
+    @apply text-warning;
+  }
+
+  .alert-success {
+    @apply border-l-approved bg-approved-soft;
+  }
+  .alert-success .alert-icon {
+    @apply text-approved;
+  }
+
+  .alert-info {
+    @apply border-l-primary bg-primary-soft;
+  }
+  .alert-info .alert-icon {
+    @apply text-primary;
+  }
+
+  .alert-neutral {
+    @apply border-l-neutral bg-neutral-soft;
+  }
+
+  /* Neutral/Content, not Neutral/Main — the one type whose rail and glyph
+     differ. Verified against the Figma render. See the header. */
+  .alert-neutral .alert-icon {
+    @apply text-neutral-content;
+  }
+}

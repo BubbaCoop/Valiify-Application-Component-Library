@@ -1,0 +1,133 @@
+/**
+ * Tag Component
+ *
+ * Compact label for categorization and filtering — a label that happens to be
+ * clickable, as distinct from Pill, which is a toggle. Extracted from Figma
+ * Tag (79:251): Hover × Active × Disabled × Size, plus four boolean slots.
+ *
+ * Usage:
+ *   <button class="tag" aria-pressed="false">Design</button>
+ *
+ *   <button class="tag tag-md" aria-pressed="false">
+ *     <span class="avatar avatar-xs">JS</span>
+ *     Design
+ *     <span class="tag-count">1</span>
+ *     <span class="dot dot-warning"></span>
+ *   </button>
+ *
+ * THE SLOTS ARE EXISTING COMPONENTS, NOT NEW PARTS. Figma's avatar slot is a
+ * literal instance of Avatar `Size=xs` — byte-identical class list — so it uses
+ * `.avatar avatar-xs`. The status dot is a 5px `Warning/Main` circle, which is
+ * exactly `.dot dot-warning`. Only the count needed a new class, because
+ * despite the description calling it a "count badge" it is not a badge at all:
+ * plain JetBrains Mono text, no circle, no fill, no border.
+ *
+ * AVATAR AND COUNT ARE md-ONLY. Figma draws neither on any sm variant. They
+ * are not merely hidden at sm — the layers do not exist.
+ *
+ * TAG vs PILL — both descriptions say "filtering", so:
+ *   Tag is a label. Transparent with a hairline at rest, so it reads as
+ *   content. Carries metadata (avatar, count, status). Two sizes, a disabled
+ *   state, and a solid high-contrast active fill — a hard on/off applied
+ *   filter. Reach for it to label a record inline in content.
+ *
+ *   Pill is chrome. Always filled, borderless, no slots, optional dropdown
+ *   chevron, and a soft-tint active — a selected item in a set. Reach for it
+ *   in a filter or segmented bar.
+ *
+ * Two Figma oddities reproduced rather than corrected:
+ *   - md's active state bumps the label to weight 500; sm's stays 400.
+ *   - gap is LARGER on the smaller size (sm 10px, md 8px).
+ * Both look like authoring slips. Flagged with the designer; faithful here.
+ *
+ * Disabled changes the label colour and nothing else — not the border, not the
+ * background, and not the slots. A disabled Tag keeps a fully enabled Avatar.
+ */
+
+@layer components {
+  .tag {
+    /* Layout */
+    @apply inline-flex shrink-0 items-center gap-2.5; /* 10px at sm */
+    @apply px-2.25 py-1; /* 9px / 4px */
+    @apply h-[21px];
+
+    /* Shape */
+    @apply rounded-pill;
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+
+    /* Reset so the class works on button / a / span alike */
+    @apply appearance-none text-left no-underline;
+
+    /* Colors — rest is transparent, not white. It reads as content. */
+    @apply bg-transparent text-content-primary;
+
+    /* Type — sm */
+    @apply text-micro-l; /* 11px / 400 */
+
+    /* Interaction */
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- Parts ------------------------------------------------------------ */
+
+  /* Not a badge, despite the Figma description — bare mono text. md only. */
+  .tag-count {
+    @apply shrink-0;
+    @apply text-data-xs font-mono; /* 12px / 16.5px / 400, JetBrains Mono */
+    @apply text-content-tertiary;
+  }
+
+  /* --- Sizes ------------------------------------------------------------ */
+
+  .tag-sm {
+    @apply h-[21px] gap-2.5; /* 10px gap */
+    @apply text-micro-l; /* 11px / 400 */
+  }
+
+  /* 24px is fixed in Figma and wins over its own nominal 4px padding, which
+     would compute to 26px. Pinned, as button.css does. */
+  .tag-md {
+    @apply h-[24px] gap-2; /* 8px gap */
+    @apply text-caption; /* 12px / 18px / 400 */
+  }
+
+  /* --- States ----------------------------------------------------------- */
+
+  .tag:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-subtle;
+  }
+
+  .tag:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Active — a solid, full-contrast fill, unlike Pill's soft tint. */
+  .tag[aria-pressed="true"],
+  .tag[aria-selected="true"] {
+    @apply bg-primary text-content-contrast;
+  }
+
+  .tag[aria-pressed="true"] .tag-count,
+  .tag[aria-selected="true"] .tag-count {
+    @apply text-content-contrast;
+  }
+
+  /* Only md bumps the weight when active. sm has no equivalent step. */
+  .tag-md[aria-pressed="true"],
+  .tag-md[aria-selected="true"] {
+    @apply text-caption-bold; /* 12px / 18px / 500 */
+  }
+
+  /* Disabled dims the label ONLY — border, background and slots are untouched,
+     which is what Figma draws. No blanket opacity. */
+  .tag:disabled,
+  .tag[aria-disabled="true"] {
+    @apply cursor-not-allowed text-content-tertiary;
+  }
+
+  /* Ring — Figma boolean, hidden by default. Same treatment as Chip, Avatar
+     and Pill. */
+  .tag.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

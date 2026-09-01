@@ -1,0 +1,208 @@
+{
+  "$meta": {
+    "run": "2026-08-28-basic-signin",
+    "generated": "2026-08-28",
+    "registry": "val/registry/components.json (generated 2026-08-28, fresh)",
+    "source": "screenshot — every figmaComponentKey is null, so confidence 'exact' is unreachable by definition. Node ids are the extraction's synthetic est-* ids. 'name-match' is also unreachable in practice: the node names in figma.json/structure.md were invented by the extraction agent to describe what each element visually is, not read from Figma components, so treating them as component names would overstate confidence. Every match below is therefore visual-guess at best, justified from measured geometry, sampled colors, and the component CSS under src/components/.",
+    "paletteEvidence": "Sampled hexes coincide exactly with library tokens (#f0f3f7 Surface/Frame, #1e4d8c Primary/Main, #16161a Content/Primary, #5b5b68 Content/Secondary, #727280 Content/Tertiary, #ededee/#dfe2e7 = Stroke/Divider composited) and button heights equal .btn md/sm (28/24px) — strong evidence the source render already used the Valiify palette, which raises confidence in the visual-guess matches below."
+  },
+  "instances": [
+    {
+      "figmaNode": "est-card",
+      "figmaComponentKey": null,
+      "match": "Card",
+      "confidence": "visual-guess",
+      "variantMapping": {},
+      "propOverrides": {
+        "bordered": false
+      },
+      "notes": "White panel 400x356 at x440,y222 (dead-centered in the 1280x800 frame). Measured styling matches .card on 3 of 4 properties: bg #ffffff (bg-surface-paper), 1px-rendered hairline measuring #ededee = Stroke/Divider composited over white (.card's border-thin border-stroke-divider — Chrome renders the 0.5px hairline as 1px, so the 1px measurement is consistent), 16px content padding (.card's p-4), and no drop shadow (.card has none at rest). DEVIATION 1: corner radius measures ~6px (= --radius-control / rounded-control), .card is rounded-surface (8px) — override the radius if .card is used. DEVIATION 2: bottom padding measures 19px vs 16px elsewhere. DEVIATION 3: the drawn title/subtitle do NOT use .card-title/.card-body type (see est-title/est-subtitle). CAUTION: .card is documented placeholder scaffolding (CLAUDE.md: 'Leftover Phase 1 proof-of-concept scaffolding... do not build product UI on it'; excluded from verify:visual). Safest build: compose the chrome from tokens directly — bg-surface-paper, border border-[length:var(--border-thin)] border-stroke-divider, rounded-control, p-4 — rather than depend on the placeholder class. Fixed 400px width and both-axis centering are call-site layout, not component styling."
+    },
+    {
+      "figmaNode": "est-title",
+      "figmaComponentKey": null,
+      "match": null,
+      "confidence": "none",
+      "variantMapping": {},
+      "propOverrides": {
+        "text": "Welcome Back"
+      },
+      "notes": "Plain text node, ~24px/700 in #16161a (Content/Primary). No registry component renders standalone headings, and no typography token matches: the scale jumps from --text-h1 (19px/600) to --text-display (46px/300) — 24px/700 sits in the gap and 700 weight exists nowhere in the ramp. If forced onto the library, .card-title (text-h2, 17px/600) is the semantic slot but renders visibly smaller and lighter than drawn. Build agent must write raw type (text-[24px] font-bold text-content-primary) or accept a visible downgrade to a token. Not a future component candidate by itself — but a 'card heading larger than H1' suggests a missing heading token, worth flagging to the designer."
+    },
+    {
+      "figmaNode": "est-subtitle",
+      "figmaComponentKey": null,
+      "match": null,
+      "confidence": "none",
+      "variantMapping": {},
+      "propOverrides": {
+        "text": "Sign in to your Valiify Dashboard account."
+      },
+      "notes": "Plain text node. Measured ~13px/400 in #5b5b68 — an exact double token match: --text-body-1 (13px/19.5px/400) + Content/Secondary, which is precisely what .card-body applies (text-body-1 text-content-secondary). No component needed; utilities suffice (text-body-1 text-content-secondary), or .card-body if the card wrapper is used. Measured 14.5px gap below the title is call-site spacing."
+    },
+    {
+      "figmaNode": "est-email-label + est-email-value",
+      "figmaComponentKey": null,
+      "match": "Input",
+      "confidence": "visual-guess",
+      "variantMapping": {
+        "type": "email",
+        "bgVariant": "white (default)",
+        "size": "indeterminable — no field box exists to measure; value text 13px = Body 1, which is both md and lg text; default lg is the safe choice"
+      },
+      "propOverrides": {
+        "label": "Email",
+        "value": "user@valiify.com",
+        "showLabel": true,
+        "showHelp": false
+      },
+      "notes": "Structurally a labeled form field (label above, value below) — the Input registry entry is the only plausible component. TWO MAJOR MEASURED DEVIATIONS the build agent must not paper over: (1) CHROME-LESS FIELD — a light-structure pixel scan over the whole card found NO border, background box, or underline around the value; the library's .input-field draws a hairline border, bg-surface-paper and a fixed height (25/29/35px), none of which is present in the drawing. Per the extraction, treat the chrome as UNSPECIFIED rather than absent-by-design: building with the library .input-field adds visible chrome the screenshot lacks; reproducing as-drawn means a bare borderless input. Decide explicitly and record which. (2) LABEL STYLE — drawn label is ~14px/600 mixed-case in #16161a (Content/Primary); the library .input-label is 10px/600 UPPERCASE tracking-1px in Content/Tertiary. These are not the same treatment; using .input-label will render 'EMAIL' small and grey. (3) Label-to-value gap measures 17.5px vs the library's 6px label padding — consistent with the missing field box absorbing the difference. Value color #16161a = Content/Primary matches the library input text token."
+    },
+    {
+      "figmaNode": "est-password-label + est-password-placeholder",
+      "figmaComponentKey": null,
+      "match": "Input",
+      "confidence": "visual-guess",
+      "variantMapping": {
+        "type": "password",
+        "bgVariant": "white (default)",
+        "size": "indeterminable — same reasoning as the email field"
+      },
+      "propOverrides": {
+        "label": "Password",
+        "placeholder": "Enter your password",
+        "value": "",
+        "showLabel": true,
+        "showHelp": false
+      },
+      "notes": "Same structure and same two deviations as the email field: chrome-less (no .input-field box measurable) and oversized mixed-case label (~14px/600 Content/Primary vs library 10px uppercase Content/Tertiary). SUPPORTING EVIDENCE for the Input match: the placeholder samples #727280 = Content/Tertiary exactly — the library Input's placeholder token since the 2026-08-22 update (and it distinguishes Input from DropdownField, whose placeholder is still Content/Faint). Empty field shown with placeholder; type=password masking applies only once a value is entered."
+    },
+    {
+      "figmaNode": "est-checkbox + est-checkbox-label",
+      "figmaComponentKey": null,
+      "match": "Checkbox",
+      "confidence": "visual-guess",
+      "variantMapping": {
+        "checked": "false"
+      },
+      "propOverrides": {
+        "label": "Remember me",
+        "subtitle": null,
+        "icon": null
+      },
+      "notes": "Structurally the library Checkbox (box + gap + label in a row; measured 9.5px gap vs the library's 9px Spacing/9 — within tolerance, good supporting evidence). BUT the control itself is measured as a NATIVE UNSTYLED checkbox, not the library treatment: border samples #767676, Chromium's default form-control color and the only off-palette value on the page; box is 16x16 vs the library's 15px .checkbox-control; radius ~3px vs the library's Radius/XS 4px. The library Checkbox's unchecked box is 1px Stroke/Divider on no fill — visibly lighter than the drawn #767676. Also the LABEL deviates: measured ~13.5px/400 in #5b5b68 (Content/Secondary) vs the library .checkbox-label text-caption (12px/18px/400) in Content/Primary. Recommended build: use the library Checkbox (real <input> in a <label>, as checkbox.css requires) and accept that it will render lighter/smaller than the screenshot — the native control in the source render is almost certainly an unstyled artifact, not design intent. Record that choice; do not try to reproduce #767676."
+    },
+    {
+      "figmaNode": "est-btn-primary",
+      "figmaComponentKey": null,
+      "match": "Button",
+      "confidence": "visual-guess",
+      "variantMapping": {
+        "variant": "primary",
+        "size": "md (default)"
+      },
+      "propOverrides": {
+        "label": "Sign In"
+      },
+      "notes": "Match is strong: height 28px = .btn md exactly; fill #1e4d8c = --color-primary exactly (.btn-primary bg); label white = Content/Contrast; radius ~5.5-6px = rounded-control (6px). DEVIATION 1 (the one the build agent gets wrong if unstated): WIDTH — the button is 291px, flexed to fill the row's remaining width (291 + 8px gap + 67 Cancel = 366 = full content width). Library buttons hug their label; this needs a call-site width utility (flex-1 or grow in the actions row). DEVIATION 2: label measures ~13px/600 vs the library text-action-m (12.5px/14px/500). Both deltas are within pixel-estimation error for glyph measurement (±0.5px / one weight step), so ship the stock .btn btn-primary and let text-action-m stand — do NOT add a font override for what is likely measurement noise from a screenshot."
+    },
+    {
+      "figmaNode": "est-btn-cancel",
+      "figmaComponentKey": null,
+      "match": "Button",
+      "confidence": "visual-guess",
+      "variantMapping": {
+        "variant": "outline",
+        "size": "md (default)"
+      },
+      "propOverrides": {
+        "label": "Cancel"
+      },
+      "notes": "Match is strong: height 28px = .btn md; hairline measures #ededee = Stroke/Divider composited over white, exactly what .btn's border-thin border-stroke-divider renders (Chrome paints the 0.5px hairline at 1px, matching the measured 1px); radius 6px = rounded-control; label #16161a = Content/Primary, ~13px/500 vs text-action-m 12.5px/500 (within estimation error); width 67px hugs the label, which is the library default. Measured 'white fill' is indistinguishable from .btn's bg-transparent over the white card — no override needed. Sits in a flex row after the flexed primary button with an 8px gap (gap-2 at the call site)."
+    },
+    {
+      "figmaNode": "est-link",
+      "figmaComponentKey": null,
+      "match": "Link",
+      "confidence": "visual-guess",
+      "variantMapping": {
+        "style": "strong (base .link)"
+      },
+      "propOverrides": {
+        "label": "Forgot password?"
+      },
+      "notes": "Uniquely identifying combination: 14px type in #1e4d8c (Primary/Main) with NO underline at rest — .link (strong) is the only Link style with no rest underline AND the only one that rests on Primary/Main (quiet rests Content/Secondary, monospace Content/Primary, critical Critical/Main; all three underline throughout). DEVIATION: measured weight ~500 vs strong's font-semibold (600). Glyph-band weight estimation from a screenshot is fuzzy by at least one step; no library style is 14px/500/Primary/no-underline, so ship .link as-is rather than inventing a hybrid. Horizontal centering in the card (center x = 640) is call-site layout (e.g. text-center on a wrapper)."
+    },
+    {
+      "figmaNode": "est-btn-view-demo",
+      "figmaComponentKey": null,
+      "match": "Button",
+      "confidence": "visual-guess",
+      "variantMapping": {
+        "variant": "outline",
+        "size": "sm"
+      },
+      "propOverrides": {
+        "label": "View Demo Info"
+      },
+      "notes": "Match is strong: height 24px = .btn-sm exactly; interior samples the page background (#f0f3f7), i.e. transparent fill — precisely .btn's bg-transparent (this button sits on Surface/Frame, so the transparency is actually visible here, unlike Cancel); hairline measures #dfe2e7 = the same rgba(20,20,40,0.08) Stroke/Divider composited over #f0f3f7; label #16161a = Content/Primary. DEVIATION 1: radius measures ~4.5px where .btn-sm keeps rounded-control (6px) — .btn-sm overrides height/padding/type only, never radius. The 4.5 estimate is from a ~9px arc at 2x and could be noise, but if faithful reproduction is required it needs a rounded-tight (4px) override; recommend shipping stock 6px and flagging. DEVIATION 2: label measures ~12.5px/500 vs text-action-s (12px/14px/500) — within estimation error, no override. DEVIATION 3: positioning is fixed to the viewport, bottom-right, ~20px inset from both edges — call-site (fixed right-5 bottom-5), not component styling."
+    }
+  ],
+  "gaps": [
+    {
+      "figmaNode": "est-title",
+      "confidence": "none",
+      "summary": "24px/700 heading has no component and no typography token — the scale gaps from h1 (19/600) straight to display (46/300). Needs raw type at the call site; candidate for a new heading token."
+    },
+    {
+      "figmaNode": "est-subtitle",
+      "confidence": "none",
+      "summary": "Plain paragraph; exact token match (text-body-1 + text-content-secondary) — no component needed, utilities suffice."
+    },
+    {
+      "figmaNode": "est-card",
+      "confidence": "visual-guess",
+      "summary": "Matches the Card registry entry closely (padding, hairline, paper fill, no shadow) but .card is documented placeholder scaffolding and its 8px radius disagrees with the drawn 6px. Build the chrome from tokens; do not depend on .card."
+    },
+    {
+      "figmaNode": "est-email-label + est-email-value",
+      "confidence": "visual-guess",
+      "summary": "Input, but drawn with NO field chrome and a 14px mixed-case Content/Primary label — both contradict the library's .input-field box and 10px uppercase .input-label. Chrome must be treated as unspecified; an explicit build decision is required."
+    },
+    {
+      "figmaNode": "est-password-label + est-password-placeholder",
+      "confidence": "visual-guess",
+      "summary": "Same as the email field (chrome-less, oversized label). Placeholder color #727280 = Content/Tertiary matches the library Input token exactly, supporting the match."
+    },
+    {
+      "figmaNode": "est-checkbox + est-checkbox-label",
+      "confidence": "visual-guess",
+      "summary": "Library Checkbox structurally (9px-gap row), but the drawn control is a native unstyled 16px checkbox (#767676 Chromium default border) and the label is Content/Secondary ~13.5px vs the library's Content/Primary 12px caption. Use the library control; do not reproduce the native artifact."
+    },
+    {
+      "figmaNode": "est-btn-primary",
+      "confidence": "visual-guess",
+      "summary": "Button primary md — height, fill, radius, and text color all token-exact. One real deviation: 291px width is row-flexed, not hugging; needs flex-1 at the call site."
+    },
+    {
+      "figmaNode": "est-btn-cancel",
+      "confidence": "visual-guess",
+      "summary": "Button outline md — height, hairline color, radius, label color all consistent with stock .btn. No overrides needed."
+    },
+    {
+      "figmaNode": "est-link",
+      "confidence": "visual-guess",
+      "summary": "Link strong — the only style that is Primary/Main with no rest underline. Measured weight 500 vs the library 600 is within screenshot-estimation error."
+    },
+    {
+      "figmaNode": "est-btn-view-demo",
+      "confidence": "visual-guess",
+      "summary": "Button outline sm — height and transparent fill token-exact. Measured ~4.5px radius disagrees with .btn's 6px (possibly noise); fixed bottom-right viewport positioning is call-site."
+    },
+    {
+      "figmaNode": "est-root (page background)",
+      "confidence": "none",
+      "summary": "Not a component instance — full-bleed #f0f3f7 fill = Surface/Frame token exactly (bg-surface-frame on the page). Recorded here so the build agent doesn't miss it."
+    }
+  ]
+}

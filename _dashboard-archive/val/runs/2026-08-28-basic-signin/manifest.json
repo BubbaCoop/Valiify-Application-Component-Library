@@ -1,0 +1,77 @@
+{
+  "runId": "2026-08-28-basic-signin",
+  "input": {
+    "figmaUrl": null,
+    "screenshot": "00-input/design@2x.png",
+    "source": "screenshot",
+    "exportScale": 2,
+    "frame": {
+      "w": 1280,
+      "h": 800
+    }
+  },
+  "gates": [
+    {
+      "gate": 1,
+      "agent": "val-figma",
+      "status": "pass",
+      "at": "2026-08-28T21:11:03.432Z",
+      "notes": "8 instances, 0 behaviors (screenshot source, explicit source-limited notes). page@2x = 2560x1600 = frame x2. Sampled colors land on library tokens. Noted: inputs render chrome-less; checkbox is a native control."
+    },
+    {
+      "gate": 3,
+      "agent": "val-context",
+      "status": "pass",
+      "at": "2026-08-28T21:14:06.192Z",
+      "notes": "4 flows, 1 state, 5 open questions. None block navigation or the depicted state; all 5 resolved by requester in 00-input/requester-answers.md (reproduce as drawn). Email mono-vs-sans contradiction resolved: design wins."
+    },
+    {
+      "gate": 2,
+      "agent": "val-components",
+      "status": "pass",
+      "at": "2026-08-28T21:15:34.529Z",
+      "notes": "10 instances mapped: 0 exact, 0 name (screenshot source, no componentKeys), 8 visual-guess, 2 none. All entries carry confidence + notes; 11-item gaps array. Deviations recorded: chrome-less inputs, native checkbox, flexed Sign In width, card vs placeholder .card."
+    },
+    {
+      "gate": 4,
+      "agent": "val-build",
+      "status": "pass",
+      "at": "2026-08-28T21:26:18.465Z",
+      "notes": "index.html + styles.css + self-check.md (all checks pass; the 3 grep-visible x-marks are column-header legends). Zero console errors verified. No hardcoded hex in rules; token quote block present. 10 components, 4 behaviors wired, 4 val:gap one-offs. Known deviation: .link weight 600 vs drawn ~400 (library canonical wins per map)."
+    },
+    {
+      "gate": 5,
+      "agent": "val-qa",
+      "status": "rework",
+      "at": "2026-08-29T03:09:16.888Z",
+      "notes": "QA: FAIL | TESTS: 29 | FAILURES: 2. S6.1/S6.2: #email and #password receive keyboard focus but draw no visible focus indicator (.input keeps outline-none; the ring lives on the dropped .input-field wrapper). Agent process stalled after writing complete artifacts; spec re-run by orchestrator reproduced 22/2/5 exactly."
+    },
+    {
+      "gate": 4,
+      "agent": "val-build",
+      "status": "pass",
+      "at": "2026-08-29T03:15:26.232Z",
+      "notes": "REWORK 1: single :focus-visible rule on .signin-field .input restating the library focus-ring (2px Primary/Main, -2px offset). Rest-state screenshot byte-identical to pre-fix baseline; zero console errors; self-check re-walked 10/10. No other regions touched."
+    },
+    {
+      "gate": 5,
+      "agent": "val-qa",
+      "status": "pass",
+      "at": "2026-08-29T03:17:41.708Z",
+      "notes": "Post-rework re-run, same 29-check spec: 24 pass, 0 fail, 5 n/a. Prior S6.1/S6.2 resolved by the :focus-visible ring; no regressions; zero console/page errors."
+    },
+    {
+      "gate": 6,
+      "agent": "val-accuracy",
+      "status": "pass",
+      "at": "2026-08-29T03:21:08.990Z",
+      "notes": "Artifacts regenerated fresh. 20x13 grid, 252 non-empty tiles: 251 pass, 1 warn, 0 fail — passPct 99.6%. Zero fail tiles in matched library components. Single warn (2.3%, tile 9,8): .link renders Inter 600 vs drawn ~400 — the Gate 4 accepted deviation, reported as a component-variant finding."
+    }
+  ],
+  "reworkCount": 1,
+  "final": {
+    "accuracy": 99.6,
+    "qaPass": true,
+    "signedOff": true
+  }
+}

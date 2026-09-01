@@ -1,0 +1,196 @@
+/**
+ * Pagination Item Component
+ *
+ * Individual pagination cell — page number, ellipsis, or navigation arrow.
+ * Extracted from Figma Pagination Item (894:1495) — 10 variants on a single
+ * `State` axis. Composes inside the Pagination bar.
+ *
+ * Usage:
+ *   <button class="pagination-item">2</button>
+ *   <button class="pagination-item pagination-item-active" aria-current="page">3</button>
+ *   <span class="pagination-item pagination-item-ellipsis" aria-hidden="true">...</span>
+ *   <button class="pagination-item pagination-item-nav" aria-label="Next page">
+ *     <svg class="icon icon-size-14" aria-hidden="true"><use href="#chevron-right" /></svg>
+ *   </button>
+ *
+ * A 32x32 box in every state. Four kinds, three of which take hover and
+ * pressed; ellipsis takes neither, because Figma draws none — it is a label,
+ * not a control, so it ships as a `<span>`.
+ *
+ *   default    Surface/Paper + 1px Stroke/Border, 13px mono, Content/Secondary
+ *   active     Primary/Main fill, Content/Contrast, NO stroke
+ *   ellipsis   no fill, no stroke, Content/Tertiary, a literal "..." text node
+ *   nav        the default box with a 14px icon, Secondary/Main
+ *
+ * default and nav are the same box; only the content and the token differ —
+ * default's label binds `Content/Secondary`, nav's glyph binds `Secondary/Main`.
+ * Both resolve to #5b5b68. The distinction is preserved because Figma draws it.
+ *
+ * THE SIX HOVER AND PRESSED STATES ARE NOT TOKENISED. This is the headline
+ * finding for this component and it is on the designer list. `get_variable_defs`
+ * returns almost nothing for those variants — only `Stroke/Line` — so their
+ * fills and strokes are raw values. Read by sampling the Figma render:
+ *
+ *   state             Figma raw   shipped here        delta
+ *   default-hover     #f2f2f5     Action/Hover        3.3   (imperceptible)
+ *   default-pressed   #e5e5eb     Action/Selected     11.7
+ *   active-hover      #295c9e     Primary/Dark        see below
+ *   active-pressed    #143d75     Primary/Pressed     36.6  (see below)
+ *
+ * THE LABEL DARKENS TOO, which an earlier revision missed entirely: Figma draws
+ * it #40404d on hover and #2e2e38 on pressed against Content/Secondary at rest.
+ * The state rules only changed the background, so the label never moved. Both
+ * greys are as un-tokenised as the fills — the nearest are Secondary/Strong
+ * (delta 23.2) and Content/Primary (delta 45.3), which is what ships. A third
+ * un-tokenised axis, and the largest deltas in the component.
+ *
+ * The fills follow the Action ramp, which is what the progression clearly
+ * intends and lands within a few units of Figma. Surface/Neutral is marginally
+ * closer to the hover fill (delta 1.7) but is a surface token, not an
+ * interaction one — the wrong semantics for a hover state.
+ *
+ * ACTIVE HOVER GOES *LIGHTER* IN FIGMA (#295c9e against Primary/Main's
+ * #1e4d8c), where every other component in the library — Button, TextButton,
+ * Pill — darkens to Primary/Dark on hover. No lighter-primary token exists.
+ * Primary/Dark is used here so pagination behaves like the rest of the library;
+ * that is a deliberate divergence, not a match. Raised with the designer.
+ *
+ * THE BORDER DARKENS THROUGH THREE UN-TOKENISED GREYS: #e1e1e3 (rest, which IS
+ * exactly Stroke/Border), then #c6c6cc and #b1b1ba. Those two are Stroke/Border
+ * at rgba(20,20,40,0.2) and 0.25 EXACTLY — composited over the STATE FILL
+ * rather than over white, they reproduce the render with zero error. (An
+ * earlier revision said "roughly 0.24 and 0.33", derived over white; that was
+ * wrong.) The stroke ramp has no such steps —
+ * Stroke/Divider, Border and Disabled all sit at 0.129 or lighter. The border
+ * is therefore held at Stroke/Border in every state rather than inventing two
+ * alphas; the fill and label carry the state. Also on the designer list.
+ *
+ * ACTIVE-PRESSED IS THE WORST FIT HERE. Figma's #143d75 is 10.6 from
+ * Primary/Dark and 36.6 from the Primary/Pressed that ships. Primary/Dark is
+ * already spent on active-hover, and reusing it would flatten a state Figma
+ * distinguishes, so the library ramp is kept and the divergence recorded —
+ * previously only the hover one was.
+ *
+ * THE LABEL WEIGHT VARIES BY KIND, which is easy to miss because the size and
+ * family do not. Figma draws three different JetBrains Mono weights:
+ *
+ *   default    Medium   (500)
+ *   active     Bold     (700)
+ *   ellipsis   Regular  (400)
+ *
+ * None of the three is a named Figma text style, and `--text-data-s` is
+ * Regular, so the token supplies family and size and each kind steps its own
+ * weight. An earlier revision of this file shipped Medium for all three.
+ *
+ * The 4px radius is raw in Figma too, but its value is exactly
+ * `--radius-tight`, so it is mapped rather than hardcoded.
+ *
+ * No disabled variant exists in Figma, but a pagination bar cannot work without
+ * one — the nav arrows disable at the first and last page. Added as a house
+ * convention using tokens rather than a blanket opacity, which is the treatment
+ * the visual harness rejected on IconButton.
+ */
+
+@layer components {
+  .pagination-item {
+    /* Layout — a fixed 32x32 cell in every state */
+    @apply inline-flex size-8 shrink-0 items-center justify-center;
+
+    /* Shape. 4px is raw in Figma but equals --radius-tight exactly. */
+    @apply rounded-tight;
+    @apply border border-[length:var(--border-line)] border-stroke-border;
+
+    /* Reset so the class works on button / a / span alike */
+    @apply appearance-none no-underline;
+
+    /* Colors — default */
+    @apply bg-surface-paper text-content-secondary;
+
+    /* Type — 13px JetBrains Mono, Medium for the default kind. Not a named
+       Figma style, and the WEIGHT VARIES BY KIND (see below), so --text-data-s
+       supplies family and size and each kind steps the weight itself. */
+    @apply text-data-s font-mono font-medium;
+
+    /* Interaction */
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- States on the default box (shared with nav) ------------------------ */
+
+  /* Both kinds that own these are excluded by name rather than relying on
+     source order. `active` has its own ramp below, and `ellipsis` is a <span>
+     that :hover would otherwise still match. Equal-specificity rules resolved
+     by ordering are exactly the fragility the library audit flagged, so the
+     exclusions are explicit. */
+  .pagination-item:not(.pagination-item-active):not(
+      .pagination-item-ellipsis
+    ):hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-hover text-secondary-strong;
+  }
+
+  .pagination-item:not(.pagination-item-active):not(
+      .pagination-item-ellipsis
+    ):active:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-selected text-content-primary;
+  }
+
+  .pagination-item:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* --- Kind: active ------------------------------------------------------- */
+
+  /* Figma draws no stroke here. A transparent border keeps the box arithmetic
+     identical to the other kinds, and the fill paints under it. */
+  .pagination-item-active {
+    @apply border-transparent bg-primary text-content-contrast;
+    @apply font-bold; /* JetBrains Mono Bold — heavier than default's Medium */
+  }
+
+  /* Figma lightens on hover; the library darkens everywhere else. See header. */
+  .pagination-item-active:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-primary-dark;
+  }
+
+  .pagination-item-active:active:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-primary-pressed;
+  }
+
+  /* Disabled must not repaint an active cell white — see the disabled rule at
+     the foot of the file, which is deliberately scoped away from active. */
+  .pagination-item-active:disabled,
+  .pagination-item-active[aria-disabled="true"] {
+    @apply border-transparent bg-primary-disabled text-content-contrast;
+  }
+
+  /* --- Kind: nav ---------------------------------------------------------- */
+
+  /* The same box as default. Only the content differs — a 14px icon, which the
+     call site sizes, as everywhere else in the library. */
+  .pagination-item-nav {
+    @apply text-secondary;
+  }
+
+  /* --- Kind: ellipsis ----------------------------------------------------- */
+
+  /* Not a control: no fill, no stroke, and Figma draws no hover or pressed.
+     Ships as a <span>, so the interactive rules above never apply. */
+  .pagination-item-ellipsis {
+    @apply border-transparent bg-transparent text-content-tertiary;
+    @apply font-normal; /* JetBrains Mono Regular — lighter than default's Medium */
+    @apply cursor-default;
+  }
+
+  /* --- Disabled (house convention — see header) --------------------------- */
+
+  .pagination-item:not(.pagination-item-active):disabled,
+  .pagination-item:not(.pagination-item-active)[aria-disabled="true"] {
+    @apply cursor-not-allowed bg-surface-paper text-content-faint;
+    @apply border-stroke-disabled;
+  }
+
+  .pagination-item-active:disabled,
+  .pagination-item-active[aria-disabled="true"] {
+    @apply cursor-not-allowed;
+  }
+}

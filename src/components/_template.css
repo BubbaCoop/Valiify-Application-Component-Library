@@ -1,0 +1,109 @@
+/**
+ * __NAME__ Component
+ *
+ * TODO: describe what this component is for.
+ * Populate the styles below from the Figma design.
+ *
+ * Usage:
+ *   <div class="__CLASS__">...</div>
+ *
+ * ---------------------------------------------------------------------------
+ * HOUSE STYLE — please keep to these conventions so components stay uniform.
+ *
+ * 1. Everything goes inside `@layer components` so consumer utilities can
+ *    override component styles without !important.
+ *
+ * 2. Prefer the token utilities generated from themes/valiify.css over
+ *    hand-written var():
+ *
+ *      GOOD  @apply bg-surface-paper text-content-primary border-stroke-divider;
+ *      BAD   background-color: var(--color-surface-paper);
+ *
+ *    Every --color-* token has bg-*, text-*, and border-* utilities.
+ *    NOTE: there is no `surface-card` — Figma's surface stack is only
+ *    Frame / Neutral / Paper. Cards render on Paper.
+ *
+ * 3. Radii use the role-named tokens, never t-shirt sizes:
+ *      rounded-micro     indicators, bars      (Figma Radius/Micro, 2px)
+ *      rounded-tight     tags, badges          (Figma Radius/XS, 4px)
+ *      rounded-control   buttons, inputs       (Figma Radius/SM, 6px)
+ *      rounded-surface   cards, panels         (Figma Radius/MD, 8px)
+ *      rounded-pill      avatars, pills        (Figma Radius/Rounded)
+ *
+ *    Do NOT use rounded-xs / rounded-sm / rounded-md — those are Tailwind's
+ *    own defaults and are not part of the Valiify design system.
+ *
+ * 4. Type comes from the composite text tokens, which carry size, line-height,
+ *    weight and tracking in one utility:
+ *      @apply text-action-m;   controls
+ *      @apply text-body-1;     body copy
+ *      @apply text-h1;         headings
+ *
+ *    Tailwind's --text-* cannot carry font-family, so the JetBrains Mono
+ *    styles MUST be paired with font-mono or they render in Inter:
+ *      @apply text-data-m font-mono;
+ *
+ * 5. Border widths need an explicit var(), because --border-* has no Tailwind
+ *    namespace to generate a utility from:
+ *      @apply border border-[length:var(--border-thin)];   0.5px hairline
+ *      @apply border border-[length:var(--border-line)];   1px
+ *
+ * 6. Spacing uses Tailwind's standard scale, which aligns exactly to Figma:
+ *    Spacing/8 -> p-2, Spacing/12 -> p-3, Spacing/7 -> p-1.75.
+ *    See the mapping table in CLAUDE.md. Do NOT invent --spacing-* tokens.
+ *
+ * 7. State conventions — match these selectors across all components:
+ *      &:hover:not(:disabled)   hover (never fires on disabled elements)
+ *      &:active:not(:disabled)  pressed
+ *      &:focus-visible          keyboard focus ring
+ *      &:disabled               disabled
+ *
+ * 8. Modifier classes are additive and flat: .__CLASS__-primary, not
+ *    .__CLASS__.variant-primary.
+ *
+ * Delete this comment block once the component is populated.
+ * ---------------------------------------------------------------------------
+ */
+
+@layer components {
+  .__CLASS__ {
+    /* Layout */
+    @apply inline-flex items-center;
+
+    /* Shape */
+    @apply rounded-control;
+    @apply border border-[length:var(--border-thin)];
+
+    /* Type */
+    @apply text-body-1;
+
+    /* Colors */
+    @apply border-stroke-divider bg-surface-paper text-content-primary;
+  }
+
+  /* --- Variants ------------------------------------------------------- */
+
+  /* .__CLASS__-primary {
+    @apply border-transparent bg-primary text-content-contrast;
+  } */
+
+  /* --- Sizes ---------------------------------------------------------- */
+
+  /* .__CLASS__-sm {
+    @apply px-3 py-1.5 text-xs;
+  } */
+
+  /* --- States --------------------------------------------------------- */
+
+  /* .__CLASS__:hover:not(:disabled) {
+    @apply bg-action-hover;
+  }
+
+  .__CLASS__:focus-visible {
+    @apply focus-ring;
+  }
+
+  .__CLASS__:disabled {
+    @apply cursor-not-allowed text-secondary-disabled;
+  } */
+}

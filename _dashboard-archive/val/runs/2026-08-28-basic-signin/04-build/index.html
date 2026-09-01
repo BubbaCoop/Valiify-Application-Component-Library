@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valiify Dashboard — Sign In</title>
+
+    <!--
+      Fonts: @fontsource, self-hosted from the repo's node_modules so the
+      page renders offline and deterministically (no Google Fonts CDN).
+      Weights used on this page: 400 (subtitle, values, remember-me),
+      500 (field labels, button labels), 600 (title, .link).
+      No JetBrains Mono: the requester confirmed the email value renders in
+      Inter (answer 1), and no other verifiable data appears on the page.
+    -->
+    <link
+      rel="stylesheet"
+      href="../../../../node_modules/@fontsource/inter/400.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../../../node_modules/@fontsource/inter/500.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../../../node_modules/@fontsource/inter/600.css"
+    />
+
+    <!-- Built library: tokens (as custom properties) + component classes. -->
+    <link rel="stylesheet" href="../../../../dist/index.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- est-card — mapped: Card (visual-guess), but built as a bespoke
+         token-composed surface per the map's note and requester answer 5
+         (white, 1px hairline, 6px radius, no shadow — not the placeholder
+         .card class). -->
+    <!-- val:gap — bespoke card surface; no shippable Card component exists -->
+    <main class="signin-card" aria-labelledby="signin-title">
+      <!-- est-title — unmapped (confidence: none): 24px heading has no
+           component and no type token. -->
+      <!-- val:gap — raw 24px/600 heading; candidate for a new heading token -->
+      <h1 class="signin-title" id="signin-title">Welcome Back</h1>
+
+      <!-- est-subtitle — unmapped (confidence: none): plain paragraph on
+           exact tokens (Body 1 + Content/Secondary). -->
+      <!-- val:gap — no component needed; token utilities suffice -->
+      <p class="signin-subtitle">Sign in to your Valiify Dashboard account.</p>
+
+      <div class="signin-form">
+        <!-- est-email-label + est-email-value — mapped: Input. Requester
+             answer 2: chrome-less as drawn — the library .input element
+             class with NO .input-field box. Answer 1: value stays Inter. -->
+        <div class="signin-field">
+          <label class="signin-field-label" for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="input"
+            value="user@valiify.com"
+          />
+        </div>
+
+        <!-- est-password-label + est-password-placeholder — mapped: Input,
+             same chrome-less treatment (requester answer 2). -->
+        <div class="signin-field">
+          <label class="signin-field-label" for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="input"
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <!-- est-checkbox + est-checkbox-label — requester answer 3:
+             reproduce the NATIVE 16x16 checkbox as drawn; the library
+             Checkbox markup is deliberately not used. Unchecked by default
+             (writeup). -->
+        <!-- val:gap — native control per requester; library Checkbox bypassed -->
+        <div class="signin-remember">
+          <input type="checkbox" id="remember" class="signin-checkbox" />
+          <label class="signin-remember-label" for="remember"
+            >Remember me</label
+          >
+        </div>
+
+        <!-- est-btn-primary — mapped: Button, variant=primary, size=md
+             (default); flexed to the remaining row width at the call site.
+             est-btn-cancel — mapped: Button, variant=outline, size=md
+             (default); hugs its label. -->
+        <div class="signin-actions">
+          <button type="button" class="btn btn-primary signin-submit" id="sign-in">
+            Sign In
+          </button>
+          <button type="button" class="btn btn-outline" id="cancel">
+            Cancel
+          </button>
+        </div>
+
+        <!-- est-link — mapped: Link, style=strong (base .link).
+             Destination: the forgot-password page — explicitly outside this
+             build (03-requirements §2 row 3), so the href stays inert. -->
+        <p class="signin-forgot">
+          <a class="link" href="#" id="forgot">Forgot password?</a>
+        </p>
+      </div>
+    </main>
+
+    <!-- est-btn-view-demo — mapped: Button, variant=outline, size=sm; fixed
+         to the viewport's bottom-right (writeup), stock 6px radius per the
+         map's recommendation. -->
+    <button type="button" class="btn btn-outline btn-sm view-demo" id="view-demo">
+      View Demo Info
+    </button>
+
+    <script>
+      // Behaviors from 03-requirements.md §2 (writeup-sourced; the run's
+      // behaviors.json is a source-limited empty set). Native alert() with
+      // the requester-confirmed copy (answer 4). No backend: no submission,
+      // no navigation, no remember-me persistence.
+      document.getElementById("sign-in").addEventListener("click", () => {
+        alert("Sign in clicked");
+      });
+
+      document.getElementById("cancel").addEventListener("click", () => {
+        alert("Cancel clicked");
+      });
+
+      document.getElementById("view-demo").addEventListener("click", () => {
+        alert("This is a demo!");
+      });
+
+      // "Forgot password?" is the page's one true navigation; its
+      // destination page is out of scope for this build, so the anchor is
+      // left inert (href="#") rather than pointed at a page that does not
+      // exist.
+    </script>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+/**
+ * Segment Selector Component
+ *
+ * The framed container that wraps segment tabs. Extracted from Figma Segment
+ * Selector (784:34686), whose description reads: "Horizontal segmented control
+ * combining multiple filter segments. Use for toggling between 2-5 mutually
+ * exclusive options."
+ *
+ * It is a PARENT of Tabs, not a variant of it — Figma composes it literally
+ * from `Tabs Type=segment` instances. So its children are `.tab tab-segment`;
+ * this file only styles the frame.
+ *
+ *   <div class="segment-selector" role="radiogroup" aria-label="View">
+ *     <button class="tab tab-segment" role="radio" aria-checked="true">Overview</button>
+ *     <button class="tab tab-segment" role="radio" aria-checked="false">Detail</button>
+ *   </div>
+ *
+ * Use `role="tablist"` + `role="tab"` + `aria-selected` instead when the
+ * segments swap panels rather than set a value.
+ *
+ * THERE IS NO SLIDING THUMB. Many segmented controls animate a floating
+ * indicator; this one does not. The selected state is styling on the selected
+ * child — white fill, a 0.5px hairline, darker text — and Figma models no
+ * indicator layer. Any slide animation would be invented.
+ *
+ * CHILDREN HUG THEIR LABELS; they do not stretch. Figma's 160px example is
+ * content-driven — both segments are 79px only because both labels are the
+ * string "Overview". Adding a fourth or fifth segment GROWS the container
+ * rather than compressing the segments, and there is no overflow handling,
+ * which is why the description caps it at 2-5 options.
+ *
+ * `.segment-selector-fill` is an addition, not from Figma: it distributes the
+ * segments equally, which is what most people expect of a segmented control
+ * and what you want when the labels differ in length. Opt in.
+ */
+
+@layer components {
+  .segment-selector {
+    /* Layout — 1px frame around the segments, no gap between them */
+    @apply inline-flex items-center gap-0;
+    @apply p-0.25; /* 1px */
+
+    /* Shape */
+    @apply rounded-tight; /* Radius/XS, 4px */
+    @apply border-none;
+
+    /* Colors */
+    @apply bg-surface-frame;
+  }
+
+  /* --- Equal-width segments (NOT from Figma) ---------------------------- */
+
+  .segment-selector-fill {
+    @apply flex w-full;
+  }
+
+  .segment-selector-fill > .tab {
+    @apply flex-1;
+  }
+
+  /* --- States ----------------------------------------------------------- */
+
+  /* The container has no hover or disabled state of its own — every
+     interactive state lives on the children. Deliberately no :focus-within —
+     focus lands on a segment, which rings itself; ringing the frame too would
+     double it. :focus-visible is here only for a roving-tabindex group where
+     the container itself takes focus.
+
+     It does carry Figma's Ring boolean, at the container's own 4px radius
+     rather than the segments' 2px. */
+  .segment-selector:focus-visible {
+    @apply focus-ring;
+  }
+
+  .segment-selector.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

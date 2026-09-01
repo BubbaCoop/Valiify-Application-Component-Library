@@ -1,0 +1,87 @@
+/**
+ * Avatar Component
+ *
+ * Circular user marker showing initials. Extracted from Figma Avatar (79:230)
+ * — 8 variants (4 sizes × Disabled), plus a Ring boolean.
+ *
+ * Usage:
+ *   <span class="avatar avatar-md">NC</span>
+ *
+ * FOUR SIZES, THREE TYPE STYLES. xs and sm share Micro S - Bold; only md and
+ * lg step up. Do not assume one style per size.
+ *
+ *   xs  16px  Micro S - Bold   8px / 600 / 0.4%
+ *   sm  18px  Micro S - Bold   8px / 600 / 0.4%
+ *   md  20px  Micro M - Bold   8.5px / 500      (default)
+ *   lg  34px  Micro L - Bold   11px / 500
+ *
+ * Careful: Figma names the md and lg styles "- Bold" but both report Medium /
+ * 500. Only Micro S - Bold is actually 600. Do not map "-Bold" to 700.
+ *
+ * INITIALS ONLY. Figma's component description reads "User profile image
+ * displayed as a circle", but no image layer, image fill, or swap slot exists
+ * in any of the 8 variants — the only children are the text node and a hidden
+ * Ring. No image support is implemented here rather than invent one; the
+ * contradiction is flagged for the designer.
+ *
+ * Disabled changes the background and NOTHING else — the initials stay
+ * Content/Contrast rather than dimming.
+ */
+
+@layer components {
+  .avatar {
+    /* Layout */
+    @apply inline-flex shrink-0 items-center justify-center;
+
+    /* Default size: md (20px) */
+    @apply size-5;
+
+    /* Shape */
+    @apply rounded-pill; /* Radius/Rounded */
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+
+    /* Colors */
+    @apply bg-primary text-content-contrast;
+
+    /* Type — md */
+    @apply text-micro-m-bold; /* 8.5px / 500 */
+  }
+
+  /* --- Sizes ------------------------------------------------------------ */
+
+  .avatar-xs {
+    @apply size-4; /* 16px */
+    @apply text-micro-s-bold; /* 8px / 600 / 0.4% */
+  }
+
+  .avatar-sm {
+    @apply size-4.5; /* 18px */
+    @apply text-micro-s-bold; /* 8px / 600 / 0.4% */
+  }
+
+  .avatar-md {
+    @apply size-5; /* 20px — same as default */
+    @apply text-micro-m-bold; /* 8.5px / 500 */
+  }
+
+  .avatar-lg {
+    @apply size-8.5; /* 34px */
+    @apply text-micro-l-bold; /* 11px / 500 */
+  }
+
+  /* --- States ----------------------------------------------------------- */
+
+  /* Not an interactive element, so there is no :disabled to hook — a modifier
+     class, matching .input-disabled. Only the fill changes. */
+  .avatar-disabled {
+    @apply bg-primary-disabled;
+  }
+
+  /* Figma's Ring is a boolean property, hidden by default, and shares the 2px
+     Primary/Main treatment used by Chip. Figma insets it -0.5px so its outer
+     edge clears the hairline; normalised to a plain inset ring here, which is
+     within half a pixel and cannot overflow the layout. */
+  .avatar.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

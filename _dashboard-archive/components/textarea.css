@@ -1,0 +1,156 @@
+/**
+ * Textarea Component
+ *
+ * Multi-line text input field with labels, help text, and error messages.
+ * Extracted from Figma Text Field Container (854:24876) — 12 variants
+ * (state × filled × error).
+ *
+ * WHAT IS AND IS NOT FROM FIGMA
+ * Figma defines one geometry — 12px / 7px padding, 6px radius, 0.5px
+ * stroke-divider hairline, Body 1 text — and no Size property.
+ *
+ * HEIGHT IS DELIBERATELY NOT STYLED. The field hugs its <textarea>, so the
+ * consumer decides: `rows` for an initial line count, a height utility for a
+ * fixed box, or the resize handle. There are no size variants.
+ *
+ * .textarea-counter is a library extension, not in the design file.
+ *
+ * Structure:
+ *   <div class="textarea-container">
+ *     <div class="textarea-label">...</div>           <!-- Optional -->
+ *     <div class="textarea-field">...</div>           <!-- Required -->
+ *     <div class="textarea-error-message">...</div>   <!-- Optional -->
+ *   </div>
+ *
+ * Usage:
+ *   <div class="textarea-container">
+ *     <div class="textarea-field">
+ *       <textarea class="textarea" rows="4" placeholder="Enter text..."></textarea>
+ *     </div>
+ *   </div>
+ */
+
+@layer components {
+  /* --- Container ---------------------------------------------------- */
+
+  .textarea-container {
+    @apply flex flex-col items-start w-full;
+  }
+
+  /* --- Label ------------------------------------------------------- */
+
+  .textarea-label {
+    @apply flex items-center w-full pb-1.5; /* 6px bottom padding */
+    @apply text-[10px] font-semibold uppercase tracking-[1px] leading-[12px];
+    @apply text-content-tertiary;
+  }
+
+  .textarea-label > span {
+    @apply flex-1;
+  }
+
+  /* Note: Help button uses .icon-button .icon-button-xs from icon-button.css */
+
+  /* --- Textarea Field ---------------------------------------------- */
+
+  .textarea-field {
+    /* Layout */
+    @apply flex items-start w-full; /* items-start for top alignment */
+    @apply px-3 py-1.75; /* 12px / 7px, per Figma */
+
+    /* No height of its own — the field hugs the <textarea> inside it, so the
+       consumer sets the size with `rows`, a height utility, or by dragging. */
+
+    /* Shape */
+    @apply rounded-control; /* 6px */
+
+    /* Border */
+    @apply border border-[length:var(--border-thin)] border-stroke-divider;
+
+    /* Background - default: white */
+    @apply bg-surface-paper;
+
+    /* Interaction */
+    @apply transition-colors duration-150;
+  }
+
+  /* --- Actual Textarea Element ------------------------------------- */
+
+  .textarea {
+    /* Layout */
+    @apply flex-1 w-full;
+    min-width: 0;
+
+    /* Remove default styling */
+    @apply appearance-none bg-transparent border-none outline-none;
+    @apply p-0 m-0;
+
+    /* The consumer owns the height: `rows` sets the initial size, and the
+       user can drag to grow it. Set `resize-none` alongside an explicit
+       height utility for a fixed box. */
+    @apply resize-y;
+    @apply block;
+
+    /* Typography */
+    @apply text-body-1; /* 13px / 19.5px / 400 */
+    @apply text-content-primary;
+
+    /* Placeholder */
+    &::placeholder {
+      @apply text-content-faint;
+    }
+  }
+
+  /* No size variants. Figma defines no Size property for this component, and
+     a multi-line box's height is a usage decision, not a design token — drive
+     it with `rows`, a height utility, or the resize handle. */
+
+  /* --- Background Variants ----------------------------------------- */
+
+  .textarea-bg-neutral {
+    @apply bg-surface-card; /* Figma BG=Neutral is Surface/Card #fafafb */
+  }
+
+  /* --- States ------------------------------------------------------ */
+
+  /* Hover */
+  .textarea-field:hover:not(:has(:disabled)):not(.textarea-disabled) {
+    @apply border-stroke-border;
+  }
+
+  /* Focus */
+  .textarea-field:focus-within {
+    @apply focus-ring;
+  }
+
+  /* Error */
+  .textarea-field.textarea-error {
+    @apply border-critical;
+  }
+
+  /* Disabled */
+  .textarea-field:has(:disabled),
+  .textarea-field.textarea-disabled {
+    @apply bg-action-subtle border-stroke-divider cursor-not-allowed;
+  }
+
+  .textarea:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  /* --- Error Message ----------------------------------------------- */
+
+  .textarea-error-message {
+    @apply flex items-center w-full pt-1.5; /* 6px top padding */
+    @apply text-[11px] leading-[normal] font-normal;
+    @apply text-critical-strong;
+  }
+
+  /* --- Character Counter (Optional) -------------------------------- */
+
+  .textarea-counter {
+    @apply flex items-center justify-end w-full pt-1;
+    @apply text-[11px] leading-[normal] font-normal;
+    @apply text-content-secondary;
+  }
+}

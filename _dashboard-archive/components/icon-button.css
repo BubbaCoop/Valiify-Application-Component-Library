@@ -1,0 +1,83 @@
+/**
+ * Icon Button Component
+ *
+ * Compact button displaying only an icon. Use for toolbar actions, close buttons,
+ * and secondary actions where space is limited. Extracted from Figma (78:210).
+ *
+ * Usage:
+ *   <button class="icon-button icon-button-xs" aria-label="Close">
+ *     <svg class="icon icon-size-12" aria-hidden="true">
+ *       <use href="#x" />
+ *     </svg>
+ *   </button>
+ */
+
+@layer components {
+  .icon-button {
+    /* Layout */
+    @apply inline-flex items-center justify-center;
+
+    /* Shape */
+    @apply rounded-control; /* 6px */
+
+    /* Background - transparent by default */
+    @apply bg-transparent;
+
+    /* Icon colour — icons inherit currentColor */
+    @apply text-secondary; /* Secondary/Main */
+
+    /* No border */
+    @apply border-none;
+
+    /* Interaction */
+    @apply cursor-pointer;
+    @apply transition-colors duration-150;
+
+    /* Default size: Large (28×28px with 6px padding) */
+    @apply size-7 p-1.5; /* 28px, 6px padding */
+  }
+
+  /* --- Size Variants -------------------------------------------------- */
+
+  .icon-button-xs {
+    @apply size-3 p-0; /* 12×12px, no padding (icon fills button) */
+  }
+
+  .icon-button-md {
+    @apply size-[18px] p-0.5; /* 18×18px, 2px padding */
+  }
+
+  .icon-button-lg {
+    @apply size-7 p-1.5; /* 28×28px, 6px padding (same as default) */
+  }
+
+  /* --- States --------------------------------------------------------- */
+
+  .icon-button:hover:not(:disabled) {
+    @apply bg-action-hover text-secondary-strong;
+  }
+
+  .icon-button:active:not(:disabled) {
+    @apply bg-action-focused text-secondary-strong;
+  }
+
+  /* The shared tab-through affordance. Deliberately on the base rather than a
+     size modifier, so every size gets it — and because Icon Button is the
+     dismiss control in Alert, Modal and Toast, those three inherit it too.
+     Figma models no focus state for this component; `focus-ring` is the
+     library-wide convention, not an invention for this file. */
+  .icon-button:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Figma dims the glyph with its own token rather than fading the whole
+     button — an earlier version used opacity-50, which is not the design. */
+  .icon-button:disabled {
+    @apply cursor-not-allowed text-secondary-disabled;
+  }
+
+  /* Optional ring state (for selected/active state) */
+  .icon-button.icon-ring {
+    @apply ring-2 ring-primary;
+  }
+}

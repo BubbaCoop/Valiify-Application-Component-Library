@@ -1,0 +1,34 @@
+/**
+ * Valiify Short App UI — library source.
+ *
+ * This is the `@valiify/shortapp-ui/source` entry point: the design tokens and
+ * component classes, with NO `@import "tailwindcss"` and NO webfont import of
+ * its own.
+ *
+ * Consumers import this into their own stylesheet so that THEIR Tailwind build
+ * processes our `@theme` block and generates token-derived utilities
+ * (`bg-approved`, `rounded-pill`, `type-label-l`, …):
+ *
+ *   @import "tailwindcss";
+ *   @import "@valiify/shortapp-ui/source";
+ *
+ * Two deliberate omissions:
+ *
+ * 1. No `@import "tailwindcss"`. The consumer owns that line, so their config,
+ *    plugins, and content detection stay in charge.
+ *
+ * 2. No font `@import`. CSS requires every `@import` to precede all other
+ *    rules, and a nested one lands mid-file and is silently discarded — so
+ *    putting it here would produce invalid CSS in the consumer's bundle. It
+ *    would also force a Google Fonts request they never asked for. Consumers on
+ *    this path load Inter and JetBrains Mono themselves.
+ *
+ * src/index.css wraps this file to build the standalone dist/index.css, which
+ * DOES include the font import (at a valid position) so the compiled artifact
+ * works on its own.
+ */
+
+@import "./themes/valiify.css";
+@import "./base/index.css";
+@import "./components/index.css";
+@import "./utilities/index.css";

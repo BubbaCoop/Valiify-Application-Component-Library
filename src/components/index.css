@@ -1,0 +1,12 @@
+/**
+ * Component Index
+ *
+ * Imports all component stylesheets.
+ * Components are loaded in alphabetical order for consistency.
+ *
+ * Short App components will be registered here as they are extracted
+ * from the Short App Figma file. Use `npm run new:component <Name>` to
+ * scaffold a component — it registers the @import automatically.
+ */
+
+

@@ -1,0 +1,108 @@
+/**
+ * Pill Component
+ *
+ * Compact rounded control. Extracted from Figma Pill (91:505) — 6 variants
+ * (State rest/hover/active × Dropdown Yes/No), plus a Ring boolean.
+ *
+ * Figma describes it as "Rounded pill-shaped toggle used for segmented
+ * selections and filter options."
+ *
+ * Usage — as a dropdown trigger:
+ *   <button class="pill" aria-haspopup="listbox" aria-expanded="false">
+ *     John Smith
+ *     <svg class="pill-chevron icon icon-size-13" aria-hidden="true">
+ *       <use href="#chevron-down" />
+ *     </svg>
+ *   </button>
+ *
+ * Usage — as a filter toggle (no chevron):
+ *   <button class="pill" aria-pressed="false">Overdue</button>
+ *
+ * ACTIVE MEANS TWO THINGS, and which one depends on the chevron. Figma draws a
+ * single "active" treatment but ships both a Dropdown=Yes and a Dropdown=No
+ * variant, so it has to serve both:
+ *   with a chevron    -> active = menu open      -> aria-expanded="true"
+ *   without a chevron -> active = selected       -> aria-pressed="true"
+ * Both attributes drive the same fill and text colour; only aria-expanded
+ * rotates the chevron, because a selected pill has nothing to flip.
+ *
+ * TOKEN NAMES ARE OFF BY ONE HERE, and this is not a mistake to fix: the REST
+ * background is the token literally named `Action/Hover`, and the HOVER
+ * background is `Action/Focused`. It reads like a bug in review. It is what
+ * the design file specifies.
+ *
+ * "Statecap" is NOT uppercase. Despite the style name, Figma renders the label
+ * mixed-case with no text-transform. Do not add `uppercase`.
+ *
+ * Height is pinned at 17px. Without a chevron the line box alone would give
+ * ~15.5px, because `--text-statecap` carries an Auto line height that is
+ * font-dependent — see CLAUDE.md. Figma is 17px with or without the chevron.
+ */
+
+@layer components {
+  .pill {
+    /* Layout */
+    @apply inline-flex shrink-0 items-center gap-1.25; /* 5px gap */
+    @apply px-2.25 py-0.5; /* 9px / 2px */
+    @apply h-[17px];
+
+    /* Shape — no border at any state */
+    @apply rounded-pill;
+    @apply border-none;
+
+    /* Reset so the class works on button / a / div alike */
+    @apply appearance-none text-left no-underline;
+
+    /* Colors — rest. Yes, rest really is Action/Hover; see the header. */
+    @apply bg-action-hover text-content-secondary;
+
+    /* Type — 9.5px / 600, mixed case */
+    @apply text-statecap;
+
+    /* Interaction */
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- Parts ------------------------------------------------------------ */
+
+  /* 13px trailing chevron. Present only on the Dropdown=Yes variant. */
+  .pill-chevron {
+    @apply shrink-0;
+    @apply transition-transform duration-150;
+  }
+
+  /* --- States ----------------------------------------------------------- */
+
+  .pill:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-focused;
+  }
+
+  .pill:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Active — open (with a chevron) or selected (without one). */
+  .pill[aria-expanded="true"],
+  .pill[aria-pressed="true"],
+  .pill[aria-selected="true"] {
+    @apply bg-primary-soft text-primary;
+  }
+
+  /* Only an open menu flips the chevron. A selected pill does not. */
+  .pill[aria-expanded="true"] .pill-chevron {
+    @apply rotate-180;
+  }
+
+  /* Figma has no disabled variant. Following the house convention so the
+     control is not silently clickable when a consumer disables it. */
+  .pill:disabled,
+  .pill[aria-disabled="true"] {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* Ring — Figma boolean, hidden by default. Same 2px inset Primary/Main
+     treatment as Chip and Avatar. */
+  .pill.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

@@ -1,0 +1,97 @@
+/**
+ * Radio Select Component
+ *
+ * Radio button input for single-selection from a group with label support.
+ * Token-exact implementation from Figma (Radio component).
+ *
+ * Circle: 15px × 15px
+ * Inner dot (when selected): 8px × 8px
+ * Gap between radio and label: 9px (gap-2.25, Spacing/9)
+ * Typography: var(--text-caption) for label
+ *
+ * Usage:
+ *   <label class="radio-select">
+ *     <input type="radio" name="group" class="radio-select-input" />
+ *     <span class="radio-select-label">Label text</span>
+ *   </label>
+ */
+
+@layer components {
+  .radio-select {
+    /* Layout - horizontal with gap between radio and label */
+    @apply inline-flex items-center gap-2.25; /* Figma Spacing/9 (9px) */
+    @apply cursor-pointer;
+  }
+
+  .radio-select-input {
+    /* Reset native appearance */
+    @apply appearance-none;
+    @apply m-0 p-0;
+    @apply shrink-0; /* Prevent circle from being squished */
+    @apply cursor-pointer;
+
+    /* Dimensions - exact 15px circle from Figma */
+    @apply size-[15px];
+
+    /* Shape */
+    @apply rounded-pill; /* Figma Radius/Rounded (9999px) */
+    @apply border border-[length:var(--border-line)]; /* Figma 1px border */
+
+    /* Default state colors */
+    @apply border-stroke-border bg-surface-paper;
+
+    @apply transition-colors duration-150;
+
+    /* Position context for the inner dot pseudo-element */
+    @apply relative;
+  }
+
+  /* Inner dot (selected state) - created with ::before pseudo-element */
+  .radio-select-input:checked::before {
+    @apply content-[''];
+    @apply absolute;
+    @apply inset-0 m-auto; /* Center the 8px dot in the 15px circle */
+    @apply size-[8px]; /* Figma inner dot size */
+    @apply rounded-pill;
+    @apply bg-primary; /* Figma Primary/Main */
+  }
+
+  /* Hover state */
+  .radio-select-input:hover:not(:disabled) {
+    @apply border-secondary; /* Figma Secondary/Main */
+  }
+
+  /* Active/Selected state - border changes to primary */
+  .radio-select-input:checked {
+    @apply border-primary; /* Figma Primary/Main */
+  }
+
+  /* Focused state - keyboard navigation ring */
+  .radio-select-input:focus-visible {
+    @apply focus-ring; /* Figma Menu Item > Ring: 2px Primary/Main */
+  }
+
+  /* Disabled state */
+  .radio-select-input:disabled {
+    @apply cursor-not-allowed;
+    @apply border-stroke-divider bg-surface-paper; /* Figma Stroke/Divider */
+  }
+
+  /* Disabled selected state - keep the dot but with disabled styling */
+  .radio-select-input:disabled:checked::before {
+    @apply bg-stroke-divider; /* Match the disabled border */
+  }
+
+  /* Label text */
+  .radio-select-label {
+    /* Typography from Figma */
+    @apply text-caption; /* Figma Body Content/Caption (12px/18px/400) */
+    @apply text-content-primary; /* Default text color */
+    @apply select-none; /* Prevent text selection on click */
+  }
+
+  /* Disabled label text */
+  .radio-select:has(.radio-select-input:disabled) .radio-select-label {
+    @apply text-content-tertiary; /* Figma Content/Tertiary */
+  }
+}

@@ -1,0 +1,70 @@
+/**
+ * Tooltip Component
+ *
+ * Dark contextual popover for hover explanations and helper text. Extracted
+ * from Figma Tooltip (880:31125) — a single symbol, no variants.
+ *
+ * Structure (Figma's own property names):
+ *   <div class="tooltip" role="tooltip">
+ *     <p class="tooltip-title">INDUSTRY / NAICS</p>
+ *     <p class="tooltip-content">North American Industry Classification …</p>
+ *     <hr class="tooltip-divider" />
+ *     <p class="tooltip-subtext">Middesk · Secretary of State</p>
+ *   </div>
+ *
+ * All four parts are optional in markup. Figma models title / content /
+ * subtext as TEXT properties rather than boolean toggles, so it draws them
+ * always — but a tooltip with only `.tooltip-content` is the common case and
+ * nothing here depends on the siblings being present.
+ *
+ * This is the only DARK surface in the library: the background is
+ * `Content/Primary`, and the text tokens invert accordingly — `Content/Faint`
+ * for the title and subtext, `Content/Contrast` for the body.
+ *
+ * POSITIONING IS THE CONSUMER'S JOB. Figma models the bubble only — no arrow,
+ * no placement, no collision handling. There is no pointer/caret layer in the
+ * component at all.
+ */
+
+@layer components {
+  .tooltip {
+    /* Layout */
+    @apply flex w-70 flex-col items-start gap-1.5; /* 280px, 6px */
+    @apply px-4 py-3; /* 16px / 12px */
+
+    /* Shape */
+    @apply rounded-control; /* 6px */
+    @apply border border-[length:var(--border-line)] border-stroke-divider;
+
+    /* Colors — dark surface */
+    @apply bg-content-primary;
+
+    /* Elevation — Figma General Drop Shadow */
+    @apply shadow-panel;
+  }
+
+  /* --- Parts ------------------------------------------------------------ */
+
+  /* Title and subtext are styled identically in Figma — same size, same
+     token. Kept as one rule so they cannot drift apart. */
+  .tooltip-title,
+  .tooltip-subtext {
+    @apply w-full;
+    @apply text-micro-l text-content-faint; /* 11px / 400 */
+  }
+
+  .tooltip-content {
+    @apply w-full;
+    @apply text-caption text-content-contrast; /* 12px / 18px / 400 */
+  }
+
+  /* A 0.5px rule in Content/Secondary — NOT Stroke/Divider, which would be
+     invisible on this dark background. Drawn as a filled box rather than a
+     border because Chrome rounds sub-pixel border widths up to a full 1px;
+     a background box can render the half pixel at 2x. */
+  .tooltip-divider {
+    @apply w-full border-none;
+    height: var(--border-thin);
+    @apply bg-content-secondary;
+  }
+}

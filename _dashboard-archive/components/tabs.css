@@ -1,0 +1,213 @@
+/**
+ * Tabs Component
+ *
+ * A tab item, in three styles. Extracted from Figma Tabs (108:653) — 12
+ * variants: Type (underline | chip | segment) × Size × Hover × Active.
+ * Figma's description: "Tab navigation item available as underline, chip, or
+ * segment style. Supports optional subtitle and badge for notification counts."
+ *
+ * SELECTOR OR NAVIGATOR — the markup differs, the styling does not.
+ *
+ *   Navigator (switches views):
+ *     <div class="tabs" role="tablist">
+ *       <button class="tab" role="tab" aria-selected="true" aria-controls="p1">Overview</button>
+ *     </div>
+ *     <div id="p1" role="tabpanel">…</div>
+ *
+ *   Selector (picks a value):
+ *     <div class="tabs" role="radiogroup" aria-label="View">
+ *       <button class="tab tab-segment" role="radio" aria-checked="true">Overview</button>
+ *     </div>
+ *
+ * Both `aria-selected` and `aria-checked` drive the active styling, so the
+ * same CSS serves either contract. Pick the one that matches what the control
+ * actually does — a tab that swaps a panel is a tablist; one that sets a form
+ * value is a radiogroup.
+ *
+ * CHIP AND SEGMENT ARE ONE CONTROL WITH TWO SKINS. They differ in exactly two
+ * declarations — radius (6px vs 2px) and active fill (a grey tint vs white).
+ * Height, padding, gap, every text colour, the hover fill and the active
+ * border are byte-identical. Modifiers, never two components.
+ *
+ * Size=sm exists for underline ONLY. Figma draws no small chip or segment.
+ *
+ * Underline is 32px (lg) / 26px (sm). Figma authors no height on it any more —
+ * those fall out of padding plus the line box — but they are pinned here
+ * because lg's line box comes from an Auto line height, which is
+ * font-dependent. See CLAUDE.md.
+ *
+ * The badge slot is the existing Chip component — `.badge badge-neutral` maps
+ * onto it byte-for-byte. Do not build a new part for it. There is no icon slot
+ * and no status dot; Tag has those, Tabs does not.
+ */
+
+@layer components {
+  /* --- Container -------------------------------------------------------- */
+
+  /* Figma's Navigation set (994:31364) defines a container for each type. The
+     three map on as:
+       Navigation / Tab     -> .tabs            (bare row, 8px gap)
+       Navigation / chip    -> .tabs tabs-chip  (bare row, 12px gap + inset padding)
+       Navigation / Segment -> .segment-selector (the framed one, its own file)
+
+     Only Segment has chrome; the other two are bare rows that differ in
+     spacing. `.tabs` defaults to the underline row because it is the common
+     case; `.tabs-chip` overrides it.
+
+     Deliberately NOT encoded: Figma's Tab variant frame is a fixed 409×35 with
+     18px horizontal and 3px vertical slack it has no padding to account for,
+     and its children stretch to 35px rather than their natural 32. That reads
+     as a hand-resized frame, not intent, so the row is derived from gap + item
+     height instead. Raised with the designer. */
+  .tabs {
+    @apply inline-flex items-center gap-2; /* 8px */
+  }
+
+  .tabs-chip {
+    @apply gap-3 px-3 py-1.5; /* 12px gap, 12px / 6px inset padding */
+  }
+
+  /* --- Item (defaults to underline, lg) ---------------------------------- */
+
+  /* Shared chrome only. A tab ALWAYS needs one of the three type classes —
+     Type is a required axis in Figma with no default, and giving `.tab` a
+     built-in default forced `:not()` chains whose specificity then outranked
+     `.tab-sm`. Explicit is cheaper than clever here.
+
+     Note there is deliberately no `border-none`: it sets `--tw-border-style:
+     none`, which the underline's active rule then inherits through
+     `border-bottom-style: var(--tw-border-style)`, computing the 2px rule to
+     zero. Tailwind's preflight already gives buttons a 0-width border. */
+  .tab {
+    /* Layout */
+    @apply inline-flex shrink-0 items-center justify-center;
+
+    /* Reset so the class works on button / a / div alike */
+    @apply appearance-none bg-transparent no-underline;
+
+    /* Interaction */
+    @apply cursor-pointer transition-colors duration-150;
+  }
+
+  /* --- Parts ------------------------------------------------------------- */
+
+  /* Optional second line. 8px semibold in primary — note it is NOT the muted
+     colour you would expect of a subtitle. */
+  .tab-subtitle {
+    @apply block;
+    @apply text-micro-s-bold text-primary; /* 8px / 600 / 0.4% */
+  }
+
+  /* The badge slot is `.badge badge-neutral` from chip.css — no part here. */
+
+  /* --- Types ------------------------------------------------------------- */
+
+  .tab-underline {
+    @apply h-8 gap-2 px-1.5 py-2; /* 32px, 8px gap, 6px / 8px */
+    @apply rounded-none;
+    @apply text-action-l text-secondary; /* 13px / 500 */
+  }
+
+  /* chip and segment share everything but radius and active fill */
+  .tab-chip,
+  .tab-segment {
+    @apply h-[26px] gap-1 px-3; /* 26px, 4px gap, 12px padding-x */
+    @apply text-action-s; /* 12px / 14px / 500 — no weight change when active */
+    @apply text-content-tertiary;
+  }
+
+  .tab-chip {
+    @apply rounded-control; /* 6px */
+  }
+
+  .tab-segment {
+    @apply rounded-micro; /* 2px */
+  }
+
+  /* --- Sizes ------------------------------------------------------------- */
+
+  /* underline only — Figma draws no small chip or segment. Changes height and
+     the type ramp; padding and indicator thickness are untouched. */
+  /* underline only — Figma draws no small chip or segment. Changes height and
+     the type ramp; padding and indicator thickness are untouched.
+     Must stay AFTER .tab-underline: both this and its active rule tie on
+     specificity with the underline rules, so source order decides. */
+  .tab-sm {
+    @apply h-[26px] gap-2.5 py-1.5; /* 26px, 10px gap, 6px */
+    @apply text-action-s; /* 12px / 14px / 500 */
+  }
+
+  /* --- States ------------------------------------------------------------ */
+
+  /* Underline hover reaches the ACTIVE colour but keeps rest's weight and gains
+     no rule — so hover previews the active state without asserting it.
+     This was a no-op until 2026-08-22: hover used to bind `Content/Secondary`,
+     which resolves to the same #5b5b68 as rest's `Secondary/Main`. The designer
+     rebound it to `Content/Primary`, so the visual spec now asserts hover and
+     rest differ, which it previously could not. */
+  .tab-underline:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply gap-2.5 text-content-primary; /* 10px — lg widens on hover too */
+  }
+
+  .tab-chip:hover:not(:disabled):not([aria-disabled="true"]),
+  .tab-segment:hover:not(:disabled):not([aria-disabled="true"]) {
+    @apply bg-action-subtle text-content-secondary;
+  }
+
+  .tab:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Active — `aria-selected` for a tablist, `aria-checked` for a radiogroup. */
+  .tab[aria-selected="true"],
+  .tab[aria-checked="true"] {
+    @apply text-content-primary;
+  }
+
+  /* Underline: a 2px bottom rule, and the label steps up to semibold. */
+  .tab-underline[aria-selected="true"],
+  .tab-underline[aria-checked="true"] {
+    @apply gap-2.5; /* 10px — Figma widens the gap when active */
+    @apply border-b border-b-[length:var(--border-micro)] border-primary;
+    @apply text-action-l-bold; /* 13px / 600 */
+  }
+
+  .tab-sm[aria-selected="true"],
+  .tab-sm[aria-checked="true"] {
+    @apply text-action-s-bold; /* 12px / 600 */
+  }
+
+  /* chip and segment: a fill swap plus a hairline. No weight change. */
+  .tab-chip[aria-selected="true"],
+  .tab-chip[aria-checked="true"],
+  .tab-segment[aria-selected="true"],
+  .tab-segment[aria-checked="true"] {
+    @apply border border-[length:var(--border-thin)] border-stroke-border;
+  }
+
+  .tab-chip[aria-selected="true"],
+  .tab-chip[aria-checked="true"] {
+    @apply bg-action-selected; /* grey tint */
+  }
+
+  .tab-segment[aria-selected="true"],
+  .tab-segment[aria-checked="true"] {
+    @apply bg-surface-paper; /* white */
+  }
+
+  /* Not in Figma — house convention, so a disabled tab is not silently
+     clickable. */
+  .tab:disabled,
+  .tab[aria-disabled="true"] {
+    @apply cursor-not-allowed opacity-50;
+  }
+
+  /* Ring — Figma boolean, hidden by default.
+     Simplified: Figma's inset is state-dependent (0 at rest, `0 0 -2px 0` on
+     active underline so the ring wraps the rule, `-0.5px` on active chip and
+     segment so it clears the hairline). A uniform inset ring is close enough
+     for a rarely-used affordance; flagged rather than silently claimed exact. */
+  .tab.with-ring {
+    @apply ring-[length:var(--border-micro)] ring-inset ring-primary;
+  }
+}

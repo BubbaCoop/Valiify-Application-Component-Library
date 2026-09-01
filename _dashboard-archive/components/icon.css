@@ -1,0 +1,147 @@
+/**
+ * Icon Component
+ *
+ * Standardized icon sizing and styling for the Valiify Dashboard UI.
+ * Works with SVG sprite system (src/icons/sprite.svg).
+ *
+ * Usage with SVG sprite:
+ *   <svg class="icon icon-size-20" aria-hidden="true">
+ *     <use href="#search" />
+ *   </svg>
+ *
+ * With ring state (selected/active):
+ *   <svg class="icon icon-size-20 icon-ring" aria-label="Active">
+ *     <use href="#check" />
+ *   </svg>
+ *
+ * In buttons/components:
+ *   <button class="btn btn-primary">
+ *     <svg class="icon icon-size-20" aria-hidden="true">
+ *       <use href="#save" />
+ *     </svg>
+ *     Save
+ *   </button>
+ *
+ * STROKE WEIGHT SCALES WITH SIZE, AND NOT PROPORTIONALLY. Extracted from Figma
+ * Icon Container (69:6944) on 2026-08-25 by reading the exported SVG of all 11
+ * size variants — each exports at its own viewBox with a hand-set stroke-width,
+ * so the RENDERED width is the declared number in device px:
+ *
+ *     10, 11  -> 0.75px      15, 16, 18  -> 1.25px
+ *     12, 13  -> 1.00px      20, 22      -> 1.50px
+ *                            24          -> 2.00px
+ *
+ * The sprite is a single 24-unit viewBox, so `stroke-width` here is in USER
+ * UNITS, not pixels: a value of 2 renders `2 * size / 24` px. Each size class
+ * therefore sets `--icon-stroke = target * 24 / size`, which is why the numbers
+ * below look arbitrary and are NOT monotonic — 18px needs a *smaller* user-unit
+ * value (1.667) than 16px (1.875) to draw the same 1.25px, because its box is
+ * bigger. Do not "tidy" them into a sequence.
+ *
+ * This replaced a flat `stroke-width: 2`, which rendered a strictly linear
+ * `size/12` ramp: exact at 12, 15 and 24 but up to 22% too thick elsewhere
+ * (1.83px against Figma's 1.50 at 22px). Note the direction — an earlier audit
+ * claimed our strokes were "roughly half" Figma's, on the grounds that Figma
+ * exports `stroke-width="2"` at every size. Both are false: only the 24px
+ * variant declares 2, the 12px variant declares nothing at all (SVG default 1),
+ * and our strokes were too THICK, never thin.
+ *
+ * 14px IS RESOLVED. Figma declares 1.1px there, which the designer confirmed was
+ * an authoring mistake, and has since specified 1.25px — so 14 joins the 15 / 16
+ * / 18 plateau rather than extending the 1.0 run at 12 / 13. Its user-unit value
+ * (2.142857) is the largest in the ramp, which is correct: 14px is the smallest
+ * box that has to reach 1.25px.
+ *
+ * `--icon-stroke` is a custom property so a consumer sizing an icon with raw
+ * utilities (`w-5 h-5`) instead of `.icon-size-20` can set the matching weight.
+ *
+ * ONE SYMBOL IS EXEMPT: `custom-help` is the sprite's only non-24 viewBox
+ * (22x22) and its only symbol carrying a `stroke-width` presentation attribute.
+ * An element's own presentation attribute beats an inherited CSS value, so the
+ * ramp does not reach it.
+ */
+
+@layer components {
+  .icon {
+    /* Layout */
+    @apply inline-flex items-center justify-center;
+    @apply shrink-0; /* Prevent flex containers from squashing icons */
+
+    /* Default to 16px size if no size class is specified */
+    @apply w-4 h-4;
+
+    /* SVG styling - uses currentColor to inherit text color */
+    /* 1.875 user units over a 24 viewBox = 1.25px at the 16px default box,
+       which is Figma's size-16 stroke. See the header. */
+    --icon-stroke: 1.875;
+    stroke-width: var(--icon-stroke);
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- Size Variants -------------------------------------------------- */
+
+  .icon-size-10 {
+    @apply w-[10px] h-[10px];
+    --icon-stroke: 1.8; /* 0.75px */
+  }
+
+  .icon-size-11 {
+    @apply w-[11px] h-[11px];
+    --icon-stroke: 1.636364; /* 0.75px */
+  }
+
+  .icon-size-12 {
+    @apply w-3 h-3; /* 12px */
+    --icon-stroke: 2; /* 1px */
+  }
+
+  .icon-size-13 {
+    @apply w-[13px] h-[13px];
+    --icon-stroke: 1.846154; /* 1px */
+  }
+
+  .icon-size-14 {
+    @apply w-3.5 h-3.5; /* 14px */
+    --icon-stroke: 2.142857; /* 1.25px */
+  }
+
+  .icon-size-15 {
+    @apply w-[15px] h-[15px];
+    --icon-stroke: 2; /* 1.25px */
+  }
+
+  .icon-size-16 {
+    @apply w-4 h-4; /* 16px */
+    --icon-stroke: 1.875; /* 1.25px */
+  }
+
+  .icon-size-18 {
+    @apply w-[18px] h-[18px];
+    --icon-stroke: 1.666667; /* 1.25px */
+  }
+
+  .icon-size-20 {
+    @apply w-5 h-5; /* 20px */
+    --icon-stroke: 1.8; /* 1.5px */
+  }
+
+  .icon-size-22 {
+    @apply w-5.5 h-5.5; /* 22px */
+    --icon-stroke: 1.636364; /* 1.5px */
+  }
+
+  .icon-size-24 {
+    @apply w-6 h-6; /* 24px */
+    --icon-stroke: 2; /* 2px */
+  }
+
+  /* --- States --------------------------------------------------------- */
+
+  .icon-ring {
+    @apply rounded-full;
+    @apply border border-[length:var(--border-micro)] border-primary;
+  }
+}

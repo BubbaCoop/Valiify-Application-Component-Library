@@ -1,0 +1,203 @@
+/**
+ * Modal Component
+ *
+ * Dialog overlay for confirmations and focused workflows. Extracted from Figma
+ * Modal (908:1580) — 3 variants on a single `Action` axis, plus two booleans
+ * (Context Window, Leading Icon).
+ *
+ * Usage:
+ *   <dialog class="modal modal-destructive">
+ *     <div class="modal-header">
+ *       <div class="modal-title-group">
+ *         <span class="modal-icon">
+ *           <svg class="icon icon-size-20" aria-hidden="true">
+ *             <use href="#triangle-alert" />
+ *           </svg>
+ *         </span>
+ *         <h2 class="modal-title">Decline this application?</h2>
+ *       </div>
+ *       <button class="icon-button icon-button-lg" aria-label="Close">
+ *         <svg class="icon icon-size-16" aria-hidden="true"><use href="#x" /></svg>
+ *       </button>
+ *     </div>
+ *
+ *     <div class="modal-subtitles">
+ *       <p class="modal-subtitle">The applicant is notified through the portal.</p>
+ *       <p class="modal-description">Two blocking items remain unresolved.</p>
+ *     </div>
+ *
+ *     <div class="modal-context">
+ *       <p class="modal-context-text">#BA-204417 · Northwind Freight LLC</p>
+ *     </div>
+ *
+ *     <div class="modal-footer">
+ *       <button class="btn btn-empty btn-lg">Cancel</button>
+ *       <button class="btn btn-critical btn-lg">Decline application</button>
+ *     </div>
+ *   </dialog>
+ *
+ * THE THREE VARIANTS ARE STRUCTURALLY IDENTICAL. Only the header icon and its
+ * container colour differ. Figma's 299px (positive) vs 317px (destructive,
+ * neutral) heights are the subtitle wrapping to a second line, NOT a spec
+ * difference — the modal is auto-height and only its 480px width is fixed.
+ *
+ * ACTION ALSO PICKS THE CONFIRM BUTTON, which no amount of metadata reveals —
+ * it took a screenshot to catch. Figma renders it as a Button instance with a
+ * per-variant override:
+ *   positive     -> .btn-primary   (blue)
+ *   neutral      -> .btn-outline   (white)
+ *   destructive  -> .btn-critical  (red)
+ * The variant classes here style ONLY the icon container; the footer button is
+ * the consumer's to pick, because it is an instance slot in Figma too.
+ *
+ * `.btn-critical` did not exist — Button's own variant set (73:180) has just
+ * primary / outline / empty. It is added in button.css and documented there.
+ *
+ * TWO TOKEN INCONSISTENCIES REPRODUCED, not corrected:
+ *   - positive uses `Approved/Content` for the icon where the other two use
+ *     `{Action}/Main`.
+ *   - neutral fills its container with `Surface/Neutral` (opaque #f1f1f4)
+ *     where the other two use `{Action}/Soft` (a 9% tint). `Neutral/Soft`
+ *     exists and would have been the consistent choice.
+ * Both are flagged with the designer; faithful here.
+ *
+ * TWO VALUES ARE NOT TOKENISED IN FIGMA, and they are handled differently:
+ *   - the 12px corner radius stays raw. Our scale stops at 8px
+ *     (`--radius-surface`) and Figma hardcodes 12 too, so inventing a sixth
+ *     radius token for one component would imply a system that does not exist.
+ *   - the drop shadow IS recorded, as `--shadow-modal` in
+ *     tokens/figma-tokens.json. It is a local effect rather than the named
+ *     "General Drop Shadow" style behind `--shadow-panel` (34px/-12px against
+ *     this one's 16px/0), but Switch Knob Shadow set the precedent:
+ *     component-local effects get tokens, they just do not get style names.
+ *
+ * POSITIONING AND THE BACKDROP ARE THE CONSUMER'S, as with Tooltip — Figma
+ * draws the dialog frame only, with no scrim layer. The one concession is a
+ * `::backdrop` rule for when `.modal` is used on a native `<dialog>`, since a
+ * modal with no backdrop is not shippable. Marked as an extension below.
+ */
+
+@layer components {
+  .modal {
+    /* Layout — 480px fixed width, height follows content */
+    @apply flex w-120 flex-col items-start gap-6; /* 480px, 24px between sections */
+    @apply p-8; /* 32px */
+
+    /* Shape — 12px is a raw Figma value, not a token; see the header */
+    @apply rounded-[12px];
+    @apply border border-[length:var(--border-line)] border-stroke-divider;
+
+    /* Colors */
+    @apply bg-surface-paper text-content-primary;
+
+    /* Elevation — see the header: a local effect, NOT --shadow-panel */
+    @apply shadow-modal;
+  }
+
+  /* --- Header ------------------------------------------------------------ */
+
+  .modal-header {
+    @apply flex w-full items-start justify-between;
+  }
+
+  .modal-title-group {
+    @apply flex flex-1 items-center gap-3; /* 12px */
+    min-width: 0;
+  }
+
+  /* 36px circle = a 20px icon plus 8px of padding. Defaults to the neutral
+     treatment; the variant classes below override it. */
+  .modal-icon {
+    @apply inline-flex shrink-0 items-center justify-center;
+    @apply p-2; /* 8px -> 36px overall */
+    @apply rounded-pill;
+    @apply bg-surface-neutral text-neutral;
+  }
+
+  .modal-title {
+    @apply flex-1;
+    min-width: 0;
+    @apply text-h1; /* 19px / 21.8px / 600 */
+    @apply text-content-primary;
+  }
+
+  /* --- Subtitles ---------------------------------------------------------- */
+
+  .modal-subtitles {
+    @apply flex w-full flex-col items-start gap-2; /* 8px */
+  }
+
+  /* Two different 12px styles, and they are not interchangeable — the line
+     heights differ (18px vs 14px), as do the colours. */
+  .modal-subtitle {
+    @apply w-full;
+    @apply text-caption; /* 12px / 18px / 400 */
+    @apply text-content-secondary;
+  }
+
+  .modal-description {
+    @apply w-full;
+    @apply text-help-caption; /* 12px / 14px / 400 */
+    @apply text-content-tertiary;
+  }
+
+  /* --- Context window (Figma's Context Window boolean) -------------------- */
+
+  .modal-context {
+    @apply flex w-full items-center;
+    @apply p-3; /* 12px */
+    @apply rounded-surface; /* 8px */
+    @apply border border-[length:var(--border-line)] border-stroke-border;
+    @apply bg-surface-frame;
+  }
+
+  .modal-context-text {
+    @apply flex-1;
+    min-width: 0;
+    @apply text-data-xs font-mono; /* 12px / 16.5px / 400, JetBrains Mono */
+    @apply text-content-primary;
+  }
+
+  /* --- Footer ------------------------------------------------------------- */
+
+  .modal-footer {
+    @apply flex w-full items-center justify-end gap-3; /* 12px */
+  }
+
+  /* Figma dims the cancel label to Content/Secondary, where .btn-empty is
+     Content/Primary. This is an INSTANCE OVERRIDE in the Modal, not a change to
+     the Button component — Button's own set (73:180) is untouched — so it is
+     scoped to the footer rather than pushed into button.css. Flagged with the
+     designer: if empty buttons are meant to be Secondary everywhere, this rule
+     should move and this scoping should disappear. */
+  .modal-footer .btn-empty:not(:hover):not(:active) {
+    @apply text-content-secondary;
+  }
+
+  /* --- Action variants ---------------------------------------------------- */
+
+  /* These style the icon container only. The footer button is a slot — see the
+     header for which .btn variant each Action pairs with. */
+
+  .modal-destructive .modal-icon {
+    @apply bg-critical-soft text-critical;
+  }
+
+  /* Approved/Content, not Approved/Main — Figma's own inconsistency. */
+  .modal-positive .modal-icon {
+    @apply bg-approved-soft text-approved-content;
+  }
+
+  /* Surface/Neutral, not Neutral/Soft — Figma's own inconsistency. */
+  .modal-neutral .modal-icon {
+    @apply bg-surface-neutral text-neutral;
+  }
+
+  /* --- Native <dialog> support (extension, not from Figma) ---------------- */
+
+  /* `<dialog>` centres itself and supplies a backdrop for free; both of its
+     UA defaults (1em padding, inset border) are already overridden above. */
+  dialog.modal::backdrop {
+    background-color: oklch(0.2027 0.0395 282.3 / 0.4);
+  }
+}

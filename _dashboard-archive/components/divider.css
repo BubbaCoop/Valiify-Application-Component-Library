@@ -1,0 +1,143 @@
+/**
+ * Divider Component
+ *
+ * Content separator for visual breaks between sections. Extracted from Figma
+ * Divider (880:31270) — 3 variants on a single `Type` axis.
+ *
+ * Usage — simple:
+ *   <hr class="divider" />
+ *
+ * Usage — labeled:
+ *   <div class="divider-labeled">
+ *     <hr class="divider" />
+ *     <span class="divider-label">Beneficial owners</span>
+ *     <hr class="divider" />
+ *   </div>
+ *
+ * Usage — metadata:
+ *   <div class="divider-metadata">
+ *     <span class="divider-metadata-item">
+ *       <span class="divider-metadata-key">Updated</span>
+ *       <span class="divider-metadata-value font-mono">Jul 17</span>
+ *     </span>
+ *     <span class="divider-metadata-separator"></span>
+ *     <span class="divider-metadata-item">
+ *       <span class="divider-metadata-key">Reviewer</span>
+ *       <span class="divider-metadata-value">M. Carden</span>
+ *     </span>
+ *   </div>
+ *
+ * THE THREE TYPES ARE STRUCTURALLY INCOMPATIBLE, so they are not modifiers of
+ * one base. `simple` is a single element; `labeled` and `metadata` are flex rows
+ * with children. `.divider-labeled` and `.divider-metadata` therefore stand
+ * alone and do NOT take `.divider`, the same shape as `.link-inline`.
+ *
+ * `.divider` IS THE SIMPLE TYPE. That is a deliberate departure: Figma's default
+ * variant is `labeled`, but a bare `.divider` cannot render it — labeled needs
+ * three children. Naming the plainest form after the component is the only
+ * reading that works, and it makes the reuse below possible.
+ *
+ * LABELED IS BUILT FROM TWO `.divider`s, which is exactly how Figma models it:
+ * the variant contains two Line children flanking the text. They flex to fill,
+ * so the label stays centred whatever the container width.
+ *
+ * TWO DIFFERENT STROKE TOKENS, and they are easy to conflate:
+ *   the horizontal rules      `Stroke/Divider`  rgba(20,20,40,0.08)
+ *   metadata's vertical bars  `Stroke/Border`   rgba(20,20,40,0.13)
+ * The vertical separators really are the heavier of the two.
+ *
+ * THE RULES ARE BACKGROUNDS, NOT BORDERS. Figma draws them as 1px lines on
+ * zero-height frames; here they are a 1px box with a background, which sidesteps
+ * the border-box trap entirely — nothing in this component gains height from a
+ * hairline, so no height needs pinning.
+ *
+ * NO TEXT STYLE IS BOUND ANYWHERE IN THIS COMPONENT, on either type — verified,
+ * `get_variable_defs(880:31253)` returns only Stroke/Line, Stroke/Divider,
+ * Content/Tertiary and Spacing/16. An earlier revision claimed the labeled type
+ * was "byte-for-byte Label S Sans - Bold"; its VALUES match that style
+ * (10px/12px/600/0.1em) but nothing binds it, and the distinction matters
+ * because of the casing below.
+ *
+ * CASING IS THE CONSUMER'S, and this is a deliberate reversal. The label used
+ * `type-label-s-bold`, whose utility form adds `text-transform: uppercase` —
+ * but Figma applies no transform: the caps are typed into the sample string,
+ * whose node is literally named "BENEFICIAL OWNERS". Forcing them meant a label
+ * passed as "Beneficial owners" came back shouted. It now uses
+ * `text-label-s-bold`, which carries the same size, weight and tracking without
+ * imposing case.
+ *
+ * This also settles a question the library had answered two ways: Chip left
+ * casing alone for exactly this reason — typed caps and a transform are
+ * indistinguishable through the API — while this component imposed it. Both now
+ * leave it to the caller.
+ *
+ * THE METADATA TYPE IS ALSO RAW: keys are 12px Inter Regular and values 12px
+ * Inter Medium, both with Auto leading, so `--text-caption` is the wrong fit
+ * despite matching the size — its 18px line-height would make the row 18px
+ * where Figma is 16.
+ *
+ * MONO IS A CALL-SITE CHOICE. Figma's sample renders its date value in JetBrains
+ * Mono Medium while the other two values are Inter Medium. That is an instance
+ * override for data, not a rule of the component, so `.divider-metadata-value`
+ * stays Inter and you add `font-mono` where the value is data.
+ */
+
+@layer components {
+  /* Type=simple, and the rule used inside Type=labeled. Works on an <hr>, which
+     needs its default border removed. */
+  .divider {
+    @apply w-full border-0;
+    @apply h-px bg-stroke-divider;
+    @apply m-0;
+  }
+
+  /* --- Type = labeled ----------------------------------------------------- */
+
+  .divider-labeled {
+    @apply flex w-full items-center gap-4; /* 16px */
+  }
+
+  /* The flanking rules fill whatever is left, keeping the label centred. */
+  .divider-labeled > .divider {
+    @apply flex-1;
+    min-width: 0;
+  }
+
+  /* Matches Label S Sans - Bold's VALUES; Figma binds no style — see the header.
+     `text-label-s-bold`, not `type-label-s-bold`: the utility form adds
+     `text-transform: uppercase`, which Figma does not apply. */
+  .divider-label {
+    @apply shrink-0;
+    @apply text-label-s-bold; /* 10px / 12px / 600 / 0.1em */
+    @apply text-content-tertiary;
+  }
+
+  /* --- Type = metadata ---------------------------------------------------- */
+
+  .divider-metadata {
+    @apply flex items-center gap-4; /* 16px */
+  }
+
+  .divider-metadata-item {
+    @apply inline-flex shrink-0 items-center gap-1.5; /* 6px */
+  }
+
+  /* Raw 12px type with Auto leading — see the header on why not --text-caption. */
+  .divider-metadata-key {
+    @apply text-[12px] font-normal;
+    @apply leading-[normal]; /* Figma Auto — NOT Tailwind's leading-normal (1.5) */
+    @apply text-content-tertiary;
+  }
+
+  .divider-metadata-value {
+    @apply text-[12px] font-medium;
+    @apply leading-[normal];
+    @apply text-content-primary;
+  }
+
+  /* Stroke/BORDER here, heavier than the horizontal rules. */
+  .divider-metadata-separator {
+    @apply h-4 w-px shrink-0; /* 16px tall */
+    @apply bg-stroke-border;
+  }
+}
