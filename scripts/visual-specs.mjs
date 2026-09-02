@@ -39,10 +39,135 @@
 
 
 export const SPECS = {
-  // Short App component specs will be added here as components are extracted
-  // from the Short App Figma file. Every component needs an entry — a component
-  // with no spec is unverified, however good its CSS looks.
-  //
   // The dashboard library's full spec file is preserved at
   // _dashboard-archive/visual-specs.mjs for reference on check patterns.
+
+  // ------------------------------------------------------------------- Radio
+  Radio: {
+    figma: "Radio 1:419 — 4 variants across Active × Hover × Pressed",
+    variants: 4,
+    stories: {
+      // nth 0 = unchecked, nth 1 = checked
+      "components-radio--both-rest-states": [
+        { label: "width 20", sel: ".radio", get: "width", expect: 20 },
+        { label: "height 20", sel: ".radio", get: "height", expect: 20 },
+        {
+          label: "true circle (radius not 0)",
+          sel: ".radio",
+          get: "border-radius",
+          not: true,
+          expect: "0px",
+        },
+        // The ring is an inset box-shadow, not a border — Chrome floors a
+        // fractional border-width, so only a shadow can carry Figma's 1.5px.
+        {
+          label: "ring colour Stroke/Border",
+          sel: ".radio",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "ring width 1.5px survives (fractional-border trap)",
+          sel: ".radio",
+          get: "box-shadow",
+          contains: true,
+          expect: "1.5px",
+        },
+        {
+          label: "ring is inside-aligned (inset)",
+          sel: ".radio",
+          get: "box-shadow",
+          contains: true,
+          expect: "inset",
+        },
+        {
+          label: "no border (the ring must not double up)",
+          sel: ".radio",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        {
+          label: "rest has no fill",
+          sel: ".radio",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "unchecked draws no dot",
+          sel: ".radio",
+          get: "::before.content",
+          expect: "none",
+        },
+        {
+          label: "hover fills Action/Hover",
+          sel: ".radio",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-action-hover" },
+        },
+        // Checked (nth 1)
+        {
+          label: "checked ring is Primary/Primary",
+          sel: ".radio",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "checked keeps the 1.5px ring width",
+          sel: ".radio",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          expect: "1.5px",
+        },
+        {
+          label: "checked has no fill (only the dot)",
+          sel: ".radio",
+          nth: 1,
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "dot 10px wide",
+          sel: ".radio",
+          nth: 1,
+          get: "::before.width",
+          expect: "10px",
+        },
+        {
+          label: "dot 10px tall",
+          sel: ".radio",
+          nth: 1,
+          get: "::before.height",
+          expect: "10px",
+        },
+        {
+          label: "dot fill Primary/Primary",
+          sel: ".radio",
+          nth: 1,
+          get: "::before.background-color",
+          expect: { token: "--color-primary" },
+        },
+        // Figma draws no checked+hover variant, so the hover tint deliberately
+        // excludes :checked — pin that the exclusion holds.
+        {
+          label: "hover does not tint a checked radio",
+          sel: ".radio",
+          nth: 1,
+          get: "background-color",
+          hover: true,
+          expect: "rgba(0, 0, 0, 0)",
+        },
+
+        // NOT ASSERTED: the pressed fill (Action/Pressed) — the harness can
+        // hover but cannot hold a mousedown, so :active is unreachable here.
+        // The token is pinned in the theme and the rule mirrors hover's shape.
+        // NOT ASSERTED: disabled styling — Figma models no disabled variant
+        // and the CSS deliberately invents none (cursor only).
+      ],
+    },
+  },
 };

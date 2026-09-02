@@ -5,7 +5,7 @@
  * Source:    tokens/figma-tokens.json
  * Generator: scripts/build-theme.mjs  (npm run build:theme)
  *
- * Figma: Valiify-ShortApp-Component-Library (TBD)
+ * Figma: Updated-Short-App (PA5pr1Q8KLfbjTxdAbFm0V)
  *
  * Declared in Tailwind's `@theme` so every token generates utilities:
  *   --color-primary  -> bg-primary, text-primary, border-primary
@@ -23,6 +23,16 @@
  */
 
 @theme static {
+  /* Brand primary */
+  --color-primary: oklch(0.4697 0.1733 20.42); /* #a6192e */
+
+  /* Stroke colors — widths are --border-* below */
+  --color-stroke-border: oklch(0.2178 0 0 / 0.169); /* #1a1a1a2b */
+
+  /* Action overlays (interaction states) */
+  --color-action-hover: oklch(0.2178 0 0 / 0.039); /* #1a1a1a0a */
+  --color-action-pressed: oklch(0.2178 0 0 / 0.078); /* #1a1a1a14 */
+
   /*
    * Radii — named by ROLE, not by Figma's t-shirt size. Tailwind v4 ships
    * --radius-xs/-sm/-md itself; redefining those would silently change

@@ -23,11 +23,62 @@ then stop — I write all commit messages and commit myself.
 
 ### Available Components
 
-**None yet.** Components will be documented here as they are extracted from the
+#### Radio
+
+Radio button control for single selection from a group. Extracted from Figma
+Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20.
+
+- **Base**: `.radio` — applied **directly to a native `<input type="radio">`**
+- **States**: `:hover`, `:active`, `:checked`, `:focus-visible`, `:disabled`
+- **Dimensions**: 20×20 circle, 1.5px inside ring, 10px inner dot when checked
+- **No label, no sizes, no slots** — the Figma component is the bare control;
+  compose your own label markup around it
+
+| State     | ring (1.5px inside)          | fill              | dot                    |
+| --------- | ---------------------------- | ----------------- | ---------------------- |
+| rest      | `Stroke/Border`              | none              | —                      |
+| `:hover`  | unchanged                    | `Action/Hover`    | —                      |
+| `:active` | unchanged                    | `Action/Pressed`  | —                      |
+| `:checked`| `Primary/Primary`            | **none**          | 10px `Primary/Primary` |
+
+> **The ring is an inset `box-shadow`, not a border — load-bearing.** Chrome
+> floors fractional `border-width`, so a 1.5px border renders 1px. An inset
+> box-shadow paints the authored 1.5 exactly, and inset matches Figma's inside
+> stroke alignment, so the 20px layout box is unaffected. Same family of trap
+> as the dashboard LoadingIndicator's masked-gradient ring.
+
+> **Hover and pressed exclude `:checked` by name.** Figma draws no
+> checked+hover or checked+pressed variant, so a checked radio deliberately
+> takes no tint — the spec pins this. If the designer adds those variants,
+> remove the `:not(:checked)` guards rather than layering new rules.
+
+> **Not modelled in Figma, not invented here:** no disabled variant (`:disabled`
+> swaps the cursor and nothing else — a disabled radio renders identically to
+> an enabled one; on the designer list), and no focus variant (`:focus-visible`
+> uses the library-wide `focus-ring` convention, whose tokens await the Short
+> App focus-ring extraction).
+
+> **Structure quirk in the design file, harmless here:** the three unchecked
+> variants draw the ring as a child ellipse, while checked puts the stroke on
+> the variant frame itself. Visually identical; flagged to the designer.
+
+```html
+<!-- Bare control -->
+<input type="radio" name="plan" class="radio" />
+<input type="radio" name="plan" class="radio" checked />
+
+<!-- With a label, composed at the call site -->
+<label style="display: inline-flex; align-items: center; gap: 10px;">
+  <input type="radio" name="account-type" class="radio" checked />
+  Business
+</label>
+```
+
+---
+
+Further components will be documented here as they are extracted from the
 Short App Figma file, one section per component, following the format used in
-[_dashboard-archive/DASHBOARD-CLAUDE.md](_dashboard-archive/DASHBOARD-CLAUDE.md):
-base class, variants, sizes, states, the traps discovered during extraction,
-and copy-pasteable HTML examples.
+[_dashboard-archive/DASHBOARD-CLAUDE.md](_dashboard-archive/DASHBOARD-CLAUDE.md).
 
 ### Design Tokens
 
@@ -321,13 +372,13 @@ App Figma once its icon usage is extracted.
 ## Design System
 
 Based on the Valiify Short App design system from Figma
-(**file key: TBD** — to be confirmed when token extraction begins).
+(file key: `PA5pr1Q8KLfbjTxdAbFm0V`, file: Updated-Short-App).
 
 ## Links
 
 - **Repository**: https://github.com/BubbaCoop/Valiify-Application-Component-Library
 - **NPM Package**: TBD (will publish as `@valiify/shortapp-ui`)
-- **Figma**: Short App component library (file key TBD)
+- **Figma**: Updated-Short-App (PA5pr1Q8KLfbjTxdAbFm0V)
 - **Storybook**: TBD (will be deployed)
 - **Dashboard library (predecessor)**: https://github.com/BubbaCoop/Valiify-dashboard-ui
 

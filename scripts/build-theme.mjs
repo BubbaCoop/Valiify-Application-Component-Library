@@ -135,8 +135,11 @@ function colorVarName(figmaName) {
   const [group, variant] = figmaName.split("/");
   const prefix = COLOR_GROUPS[group] ?? kebab(group);
   // Content/* and Stroke/* have no "Main"; their variants are all meaningful.
+  // The Short App file names each ramp's main shade after its group
+  // (`Primary/Primary`) where the dashboard file used `Main` — both forms
+  // emit the unsuffixed token.
   if (
-    variant === "Main" &&
+    (variant === "Main" || variant === group) &&
     !["Content", "Surface", "Stroke", "Action"].includes(group)
   ) {
     return `--color-${prefix}`;

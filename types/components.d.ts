@@ -10,5 +10,8 @@
  * _dashboard-archive/components.d.ts for reference on the pattern.
  */
 
+// Radio component classes
+export type RadioClass = "radio";
+
 // Union of all component classes
-export type ValiifyComponentClass = never;
+export type ValiifyComponentClass = never | RadioClass;
