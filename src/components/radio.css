@@ -27,8 +27,9 @@
  *   - no checked+hover / checked+pressed — both tint rules exclude :checked
  *   - no disabled variant — :disabled gets cursor-not-allowed and nothing
  *     visual; a designer decision is needed
- *   - no focus variant — :focus-visible uses the library-wide focus-ring
- *     convention (its tokens await the Short App focus-ring extraction)
+ *   - no focus variant in the component set — :focus-visible uses the
+ *     library-wide focus-ring utility, backed by Figma's "Primary Ring"
+ *     effect (3px Primary/Ring halo, extracted with the token set)
  */
 
 @layer components {

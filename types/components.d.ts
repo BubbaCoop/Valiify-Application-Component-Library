@@ -13,5 +13,14 @@
 // Radio component classes
 export type RadioClass = "radio";
 
+// IconButton component classes
+export type IconButtonClass = "icon-button";
+
+// Checkbox component classes
+export type CheckboxClass = "checkbox";
+
+// Switch component classes
+export type SwitchClass = "switch";
+
 // Union of all component classes
-export type ValiifyComponentClass = never | RadioClass;
+export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass;

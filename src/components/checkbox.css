@@ -1,0 +1,130 @@
+/**
+ * Checkbox Component
+ *
+ * Binary selection control. Extracted from Figma Checkbox (1:424) — 8 variants
+ * across Active × Hover × Pressed × Disabled, all 18×18.
+ *
+ *   <span class="checkbox-control">
+ *     <input type="checkbox" class="checkbox-input" />
+ *     <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+ *   </span>
+ *
+ * The wrapper exists because the checkmark is the sprite's #check glyph — a
+ * pseudo-element cannot render <use>, so the input and glyph need a shared
+ * 18px positioning context. (Same reasoning as the dashboard's archived
+ * checkbox; Radio needs no wrapper because its dot is a plain ::before circle.)
+ *
+ * Geometry: 18×18 box, radius 3px (a RAW value in Figma — the file's Radius
+ * scale is 2/4/6/8 and a fitted-model pixel measurement confirmed ~3.0; on the
+ * designer list). Check glyph 16×16 at 1px inset.
+ *
+ * State system — two parallel ramps, and unlike Radio BOTH branches have
+ * hover/pressed drawn in Figma:
+ *
+ *   unchecked   ring 1.5px inset Stroke/Border; fill Paper → Action/Hover →
+ *               Action/Pressed; disabled = ring thins to 1px AND swaps to
+ *               Stroke/Divider (two simultaneous changes — both authored,
+ *               confirmed by pixel measurement)
+ *   checked     no ring at all (Figma draws none); fill Primary →
+ *               Primary/Hover → Primary/Focus (pressed!) → Primary/Disabled
+ *
+ * THE RING IS AN INSET BOX-SHADOW, NOT A BORDER — Chrome floors fractional
+ * border-width, so a 1.5px border renders 1px (Radio's trap, same fix). A
+ * box-shadow also never affects layout, so no explicit-height pinning needed.
+ *
+ * The unchecked border LOOKS like it darkens on hover/pressed in Figma's
+ * renders — it does not. Stroke/Border is translucent (17% ink) over a fill
+ * that itself darkens; one constant token reproduces all three sampled border
+ * colours. Do not "fix" it into per-state ring colours.
+ *
+ * Verbatim Figma naming, reproduced not corrected: the checked PRESSED state
+ * binds the token literally named Primary/Focus. It is wired to :active here —
+ * never to :focus-visible. Keyboard focus uses the library focus-ring.
+ *
+ * Not modelled in Figma, not invented: disabled+hover, disabled+pressed,
+ * indeterminate/mixed (`:indeterminate` renders as unchecked — needs a design
+ * decision), focus. The check glyph's white is also unbound in Figma; it
+ * matches Text/Contrast exactly and ships as that token (designer to confirm).
+ */
+
+@layer components {
+  .checkbox-control {
+    /* Shared 18px positioning context for the input and the sprite glyph. */
+    @apply relative inline-flex size-4.5 shrink-0 items-center justify-center;
+  }
+
+  .checkbox-input {
+    @apply absolute inset-0 m-0 cursor-pointer appearance-none p-0;
+    /* Raw 3px — deliberately not rounded-xs (2) or rounded-sm (4). */
+    @apply rounded-[3px] bg-surface-paper;
+    box-shadow: inset 0 0 0 1.5px var(--color-stroke-border);
+    transition:
+      background-color 150ms,
+      box-shadow 150ms;
+  }
+
+  /* --- Unchecked ramp ----------------------------------------------------- */
+
+  .checkbox-input:hover:not(:disabled):not(:checked) {
+    @apply bg-action-hover;
+  }
+
+  .checkbox-input:active:not(:disabled):not(:checked) {
+    @apply bg-action-pressed;
+  }
+
+  /* Disabled unchecked: ring thins to 1px AND swaps to Stroke/Divider —
+     a colour-only :disabled rule would under-reproduce the design. */
+  .checkbox-input:disabled {
+    @apply cursor-not-allowed;
+  }
+  .checkbox-input:disabled:not(:checked) {
+    box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
+  }
+
+  /* --- Checked ramp ------------------------------------------------------- */
+
+  /* Figma draws no ring on any checked variant — drop it, don't recolour it. */
+  .checkbox-input:checked {
+    @apply bg-primary;
+    box-shadow: none;
+  }
+
+  .checkbox-input:checked:hover:not(:disabled) {
+    @apply bg-primary-hover;
+  }
+
+  /* Figma's token for checked+pressed is literally Primary/Focus. */
+  .checkbox-input:checked:active:not(:disabled) {
+    @apply bg-primary-focus;
+  }
+
+  /* Translucent token, composited as-is (renders ~#e5bbc1 over paper). */
+  .checkbox-input:checked:disabled {
+    @apply bg-primary-disabled;
+  }
+
+  .checkbox-input:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* --- Check glyph -------------------------------------------------------- */
+
+  .checkbox-check {
+    @apply pointer-events-none absolute inset-0 m-auto size-4 opacity-0;
+    /* White is unbound in Figma; Text/Contrast matches exactly. */
+    @apply text-content-contrast;
+    /* The sprite's symbols carry no paint attributes — supply the Lucide
+       defaults here. stroke-width 2 on the 24-unit viewBox renders 1.33px at
+       this 16px size (measured ≈1.23px — within AA measurement noise). */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .checkbox-input:checked ~ .checkbox-check {
+    @apply opacity-100;
+  }
+}

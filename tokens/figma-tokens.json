@@ -3,34 +3,339 @@
     "description": "Raw design token extraction from Figma. Source of truth for scripts/build-theme.mjs, which generates src/themes/valiify.css from this file.",
     "figmaFile": "Updated-Short-App",
     "fileKey": "PA5pr1Q8KLfbjTxdAbFm0V",
-    "extractedVia": "Figma MCP get_variable_defs",
+    "extractedVia": "Figma Plugin API via use_figma (figma.variables.getLocalVariableCollectionsAsync — the COMPLETE local set, applied or not) + get_variable_defs sweeps for typography and effects",
     "extractedFrom": [
       {
-        "nodeId": "1:419",
-        "name": "Radio (component set) \u2014 via get_variable_defs on all 4 variants, 2026-09-01"
+        "nodeId": "1:2",
+        "name": "Section 1 (text-style preview) — AUTHORITATIVE for typography"
+      },
+      {
+        "nodeId": "1:217",
+        "name": "Components (section) — full subtree sweep, plus per-frame sweeps of every component set inside it (fields incl. Error variants, Radio, Checkbox, iconbutton, Switch, Disclaimer, Header, List Item, Select Card, Badge, Box, Skeleton, Owner Container)"
+      },
+      {
+        "nodeId": "25:359",
+        "name": "Portal Specific (section) — Buttons, Application Status, Action"
+      },
+      {
+        "nodeId": "(file-level)",
+        "name": "Local variable collection 'Collection 1' (Mode 1) — all 77 variables enumerated via the Plugin API, 2026-09-02"
       }
     ],
-    "status": "PARTIAL \u2014 tokens land here per-component as extraction proceeds; the full-file sweep (search_design_system audit) has not run yet. Groups below hold only what extracted components bind.",
+    "extractedOn": "2026-09-01, completed via Plugin API enumeration 2026-09-02",
+    "status": "COMPLETE variable enumeration. 56 colors / 13 spacing / 8 radius from the local collection via the Plugin API; 24 text styles from the type-preview + component sweeps; 1 effect (Primary Ring). The earlier applied-only sweep had missed 26 unapplied colors (the entire Error and Info ramps, the Success/Warning/Neutral tint sets, BG/Page and BG/Card) plus ALL spacing and radius variables.",
     "limitations": [
-      "get_variable_defs returns only variables APPLIED to a layer in the queried subtree. Tokens defined in Figma but not yet used anywhere will be absent. Audit token-group completeness with search_design_system, which lists variables whether or not anything uses them. This bit the dashboard extraction twice (Surface/Card, Critical/Content).",
-      "DUPLICATE NAMES SILENTLY DROP STYLES. The response is a keyed object, so two Figma styles sharing a name collapse into one \u2014 and the survivor's values get attributed to the wrong style. If a style looks wrong, check for a name collision first."
+      "get_variable_defs returns only variables APPLIED to a layer — the applied-only sweep missed 26 of 56 colors and all spacing/radius variables. The Plugin API enumeration (use_figma -> figma.variables.getLocalVariableCollectionsAsync) is the authoritative completeness source; re-run it when the designer adds tokens.",
+      "search_design_system indexes published LIBRARIES, not this file's local collection, and returns names without values — not useful for this file's token audit.",
+      "DUPLICATE NAMES SILENTLY DROP STYLES in get_variable_defs' keyed response. The Plugin API enumeration does not have this problem; typography (which still comes from get_variable_defs) keeps the textKey collision guard as backstop."
     ],
     "resolved": [
-      "lineHeight: the API returns the sentinel 100 for Figma's \"Auto\". It does NOT mean 100%. Record as the string \"AUTO\" and emit CSS line-height: normal.",
-      "letterSpacing: EVERY value this API returns is a PERCENTAGE, not px. Store as letterSpacingPercent and emit as em: 10 -> 0.1em, 0.4 -> 0.004em.",
-      "textTransform: --text-* composites cannot carry text-transform (or font-family), so uppercase styles need paired type-* utilities emitted by the generator."
+      "lineHeight: UNLIKE the dashboard file, this file authors explicit px line heights on nearly every style (e.g. 28/34, 15/20). The API's Auto sentinel 100 appears only on Labels, links & UI/Link — recorded as the string \"AUTO\" and emitted as line-height: normal.",
+      "letterSpacing: EVERY value this API returns is a PERCENTAGE, not px (dashboard-verified reading). Stored as letterSpacingPercent and emitted as em: 10 -> 0.1em, 8 -> 0.08em, 16 -> 0.16em, 5 -> 0.05em.",
+      "Figma group 'Text' maps to the public prefix 'content' and 'BG' to 'surface' (COLOR_GROUPS in the generator) — avoids text-text-* / bg-bg-* utilities and matches the dashboard library's public API shape.",
+      "'Base' is treated as a ramp's main shade (Neutral/Base -> --color-neutral), same as 'Main' and the group-named form (Primary/Primary -> --color-primary).",
+      "Spacing: 13 whole-px variables (2..64) exist and ALL map exactly to Tailwind native steps (2 -> p-0.5 ... 64 -> p-16), so no --spacing-* tokens are emitted, same rule as the dashboard."
+    ],
+    "openQuestions": [
+      "CASING: the type preview renders Eyebrow, Micro-Label, Button Label, Tag & Pill, Data Key, and both Lockup styles in UPPERCASE, but Font(...) from the API carries no textTransform, so bound-transform vs typed-in-caps cannot be distinguished. No textTransform is recorded (Chip/Divider precedent: casing is the caller's); revisit per-component as instances are extracted, and confirm with the designer.",
+      "ERROR BINDING SLIP (upgraded from open question): a full Error ramp EXISTS (#c0362c with Text/BG/Ring/Stroke/Stroke-Hover) but is applied nowhere — the field components' Error=Yes variants bind Warning/Base instead. Now clearly an authoring slip to raise with the designer; implement error states against the Error ramp only after they confirm.",
+      "Action/Pressed and Action/Active are distinct variables with the identical value #1a1a1a14 — possibly one is legacy. Both extracted.",
+      "Success/Base and Success/Text are distinct variables with the identical value #2e6e4e. Both extracted (the dashboard's Approved ramp split the same way with different values, so this may diverge later).",
+      "Primary/Primary and Primary/Text are distinct variables with the identical value #a6192e. Both extracted.",
+      "Radius/xl (10px) and Radius/2xl (12px) deliberately override Tailwind v4's defaults (12px/16px) in the emitted theme; xs/sm/md/lg are byte-identical to Tailwind's so those are no-ops. Radius/none and Radius/full are not emitted (native rounded-none / rounded-full already match).",
+      "All 77 variables carry scope ALL_SCOPES — no scoping discipline in the file yet; harmless for CSS emission."
     ]
   },
   "color": {
     "Primary/Primary": "#a6192e",
+    "Primary/Hover": "#951328",
+    "Primary/Focus": "#850e22",
+    "Primary/Disabled": "#a6192e4d",
+    "Primary/Text": "#a6192e",
+    "Primary/BG": "#a6192e0f",
+    "Primary/Ring": "#a6192e38",
+    "Primary/Track": "#a6192e24",
+    "Neutral/Base": "#6f7276",
+    "Neutral/Hover": "#5a5b5d",
+    "Neutral/Text": "#65686c",
+    "Neutral/Disabled": "#6f727699",
+    "Neutral/BG": "#6f727614",
+    "Neutral/Ring": "#6f727638",
+    "Neutral/Stroke": "#6f72764d",
+    "Neutral/Stroke - Hover": "#6f727673",
+    "Text/Primary": "#1a1a1a",
+    "Text/Secondary": "#54565b",
+    "Text/Tertiary": "#6f7276",
+    "Text/Hint": "#8e9195",
+    "Text/Contrast": "#ffffff",
+    "BG/Paper": "#fffdfb",
+    "BG/App Page": "#fafaf9",
+    "BG/Page": "#fdf8f5",
+    "BG/Card": "#f1f0ee",
     "Stroke/Border": "#1a1a1a2b",
+    "Stroke/Divider": "#1a1a1a1c",
+    "Stroke/Hover": "#1a1a1a8f",
     "Action/Hover": "#1a1a1a0a",
-    "Action/Pressed": "#1a1a1a14"
+    "Action/Pressed": "#1a1a1a14",
+    "Action/Active": "#1a1a1a14",
+    "Action/Focused": "#1a1a1a1a",
+    "Success/Base": "#2e6e4e",
+    "Success/Text": "#2e6e4e",
+    "Success/BG": "#2e6e4e14",
+    "Success/Ring": "#2e6e4e38",
+    "Success/Stroke": "#2e6e4e4d",
+    "Success/Stroke - Hover": "#2e6e4e73",
+    "Warning/Base": "#b4791c",
+    "Warning/Text": "#8b5d16",
+    "Warning/BG": "#b4791c14",
+    "Warning/Ring": "#b4791c38",
+    "Warning/Stroke": "#b4791c4d",
+    "Warning/Stroke - Hover": "#b4791c73",
+    "Error/Base": "#c0362c",
+    "Error/Text": "#c0362c",
+    "Error/BG": "#c0362c14",
+    "Error/Ring": "#c0362c38",
+    "Error/Stroke": "#c0362c4d",
+    "Error/Stroke - Hover": "#c0362c73",
+    "Info/Base": "#1b4e8b",
+    "Info/Text": "#1b4e8b",
+    "Info/BG": "#1b4e8b14",
+    "Info/Ring": "#1b4e8b38",
+    "Info/Stroke": "#1b4e8b4d",
+    "Info/Stroke - Hover": "#1b4e8b73"
   },
-  "radius": {},
+  "radius": {
+    "Radius/none": 0,
+    "Radius/xs": 2,
+    "Radius/sm": 4,
+    "Radius/md": 6,
+    "Radius/lg": 8,
+    "Radius/xl": 10,
+    "Radius/2xl": 12,
+    "Radius/full": 9999
+  },
   "strokeWidth": {},
-  "spacing": {},
-  "typography": {},
-  "effect": {},
-  "focusRing": null
+  "spacing": {
+    "Spacing/2": 2,
+    "Spacing/4": 4,
+    "Spacing/6": 6,
+    "Spacing/8": 8,
+    "Spacing/10": 10,
+    "Spacing/12": 12,
+    "Spacing/16": 16,
+    "Spacing/20": 20,
+    "Spacing/24": 24,
+    "Spacing/32": 32,
+    "Spacing/40": 40,
+    "Spacing/48": 48,
+    "Spacing/64": 64
+  },
+  "typography": {
+    "Display & Title/Default": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 28,
+      "weight": 500,
+      "lineHeight": 34,
+      "letterSpacingPercent": 0
+    },
+    "Display & Title/Large": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 30,
+      "weight": 500,
+      "lineHeight": 38,
+      "letterSpacingPercent": 0
+    },
+    "Display & Title/Title": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 22,
+      "weight": 500,
+      "lineHeight": 26,
+      "letterSpacingPercent": 0
+    },
+    "Display & Title/Medium": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 16,
+      "weight": 500,
+      "lineHeight": 20,
+      "letterSpacingPercent": 0
+    },
+    "Metric/Large": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 30,
+      "weight": 500,
+      "lineHeight": 34,
+      "letterSpacingPercent": 0
+    },
+    "Metric/Medium": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 26,
+      "weight": 500,
+      "lineHeight": 30,
+      "letterSpacingPercent": 0
+    },
+    "Metric/Small": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 20,
+      "weight": 500,
+      "lineHeight": 26,
+      "letterSpacingPercent": 0
+    },
+    "Body & Supporting/Lead & Subtitle": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 16,
+      "weight": 500,
+      "lineHeight": 24,
+      "letterSpacingPercent": 0
+    },
+    "Body & Supporting/Default": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 15,
+      "weight": 400,
+      "lineHeight": 20,
+      "letterSpacingPercent": 0
+    },
+    "Body & Supporting/Input": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 16,
+      "weight": 400,
+      "lineHeight": 24,
+      "letterSpacingPercent": 0
+    },
+    "Body & Supporting/Content": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 13,
+      "weight": 400,
+      "lineHeight": 16,
+      "letterSpacingPercent": 0
+    },
+    "Body & Supporting/Help & Caption": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 12,
+      "weight": 400,
+      "lineHeight": 14,
+      "letterSpacingPercent": 0
+    },
+    "Labels, links & UI/Default": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 14,
+      "weight": 400,
+      "lineHeight": 20,
+      "letterSpacingPercent": 0
+    },
+    "Labels, links & UI/Strong": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 14,
+      "weight": 500,
+      "lineHeight": 20,
+      "letterSpacingPercent": 0
+    },
+    "Labels, links & UI/Field Label": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 13,
+      "weight": 500,
+      "lineHeight": 16,
+      "letterSpacingPercent": 0
+    },
+    "Labels, links & UI/Data Key": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 9,
+      "weight": 600,
+      "lineHeight": 12,
+      "letterSpacingPercent": 8
+    },
+    "Labels, links & UI/Time stamp": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 12,
+      "weight": 400,
+      "lineHeight": 16,
+      "letterSpacingPercent": 0
+    },
+    "Labels, links & UI/Lockup and wordmark": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 15,
+      "weight": 600,
+      "lineHeight": 17,
+      "letterSpacingPercent": 10
+    },
+    "Labels, links & UI/Lockup & Tagline": {
+      "family": "Inter",
+      "style": "Medium",
+      "size": 9,
+      "weight": 500,
+      "lineHeight": 11,
+      "letterSpacingPercent": 16
+    },
+    "Labels, links & UI/Eyebrow": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 11,
+      "weight": 600,
+      "lineHeight": 16,
+      "letterSpacingPercent": 10
+    },
+    "Labels, links & UI/Micro-Label": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 9,
+      "weight": 600,
+      "lineHeight": 12,
+      "letterSpacingPercent": 8
+    },
+    "Labels, links & UI/Button Label": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 14,
+      "weight": 600,
+      "lineHeight": 20,
+      "letterSpacingPercent": 10
+    },
+    "Labels, links & UI/Link": {
+      "family": "Inter",
+      "style": "Regular",
+      "size": 14,
+      "weight": 400,
+      "lineHeight": "AUTO",
+      "letterSpacingPercent": 0
+    },
+    "Labels, links & UI/Tag & Pill": {
+      "family": "Inter",
+      "style": "Semi Bold",
+      "size": 11,
+      "weight": 600,
+      "lineHeight": 16,
+      "letterSpacingPercent": 5
+    }
+  },
+  "effect": {
+    "Primary Ring": {
+      "offsetX": 0,
+      "offsetY": 0,
+      "blur": 0,
+      "spread": 3,
+      "color": "#a6192e38"
+    }
+  },
+  "focusRing": {
+    "width": 3,
+    "color": "#a6192e38",
+    "colorFigmaToken": "Primary/Ring"
+  }
 }
