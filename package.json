@@ -44,7 +44,8 @@
     "verify:visual": "node scripts/visual-verify.mjs",
     "verify:a11y": "node scripts/a11y-scan.mjs",
     "audit": "node scripts/audit-components.mjs",
-    "chromatic": "chromatic"
+    "chromatic": "chromatic",
+    "verify:bundle": "node scripts/verify-bundle.mjs"
   },
   "keywords": [
     "tailwind",

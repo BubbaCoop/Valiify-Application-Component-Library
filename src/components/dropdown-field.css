@@ -1,0 +1,158 @@
+/**
+ * DropdownField Component
+ *
+ * Labeled listbox-trigger form field. Extracted from Figma Dropdown Field
+ * (1:358) — 9 variants on the same partial Filled × Hover × Focus × Error
+ * matrix as Plain Text Field, all 413×73 (25px label row + 48px trigger).
+ *
+ * NOT a native <select> — a button trigger that composes the shipped
+ * .dropdown-list panel (TextSelector's aria-haspopup / aria-expanded
+ * precedent). Part naming mirrors the TextField family.
+ *
+ *   <div class="dropdown-field">
+ *     <div class="dropdown-field-title-row">
+ *       <span id="x-label" class="dropdown-field-title">Account type</span>
+ *     </div>
+ *     <button id="x-trigger" class="dropdown-field-trigger" type="button"
+ *             aria-haspopup="listbox" aria-expanded="false"
+ *             aria-labelledby="x-label">
+ *       <span id="x-value" class="dropdown-field-value dropdown-field-value-placeholder"
+ *             aria-hidden="true">
+ *         Select an account type
+ *       </span>
+ *       <!-- With a selection: drop aria-hidden, swap the placeholder class
+ *            for the value ink, and set aria-labelledby="x-label x-value" so
+ *            the announced name is "label, value". The unselected prompt is
+ *            decorative (name = label alone) — and its Text/Hint ink fails
+ *            WCAG contrast (3.11:1) as authored; designer list. -->
+ *       <svg class="dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+ *     </button>
+ *   </div>
+ *
+ * TRIGGER HEIGHT IS FRAME-AUTHORITY PINNED (h-12) — the 1px border lives
+ * inside border-box (Secondary-button closure; a real border, NOT the
+ * Radio/Checkbox inset-shadow trick — this stroke is a whole pixel).
+ *
+ * STATE MODEL (border-only; fill, label ink, value ink and chevron ink never
+ * change — pixel + variable verified across all nine variants):
+ *   rest    Stroke/Border
+ *   hover   Stroke/Hover (excluded by name on open and on error)
+ *   open    [aria-expanded="true"] → Primary border + 3px Primary Ring +
+ *           chevron 180° (Figma's Focus axis reads as OPEN: the rotation is
+ *           structurally verified — the icon's bbox shifts by exactly its
+ *           own w/h, the corner-rotation signature). :focus-visible gets the
+ *           same border+ring treatment but NEVER the rotation — arrow
+ *           direction must track the panel, not keyboard focus.
+ *   error   [aria-invalid="true"] → Warning/Base, VERBATIM — the amber slip
+ *           confirmed for the whole field family; no Error/* token exists in
+ *           the set. Written AFTER the open rule on purpose: equal
+ *           specificity, so source order lets the amber border win on
+ *           error+open while the ring and rotation (separate properties)
+ *           still apply — exactly the compound Figma draws.
+ *   error+hover unchanged (unwired in Figma — byte-identical variables).
+ *
+ * THE CHEVRON IS #chevron-down IN Neutral/Base, CONSTANT ink in every state
+ * (even error). Tailwind v4's rotate-180 sets the CSS `rotate` property —
+ * the transition targets `rotate`, not `transform`.
+ *
+ * The panel is the shipped .dropdown-list + .list-option rows, composed by
+ * the consumer; positioning and open/close JS are the consumer's (the
+ * library ships no JS). Optional slots per the family: right-aligned
+ * optional text and an 18px helper icon-button in the label row (both
+ * hidden in every Figma variant; the helper glyph is the misnamed
+ * ChevronLeft placeholder), and a hint below in NORMAL FLOW (Figma's
+ * bottomContent geometry is broken — the RadioField defect verbatim).
+ *
+ * Not modelled, not invented: disabled, empty+error, hover+open variants.
+ */
+
+@layer components {
+  .dropdown-field {
+    @apply flex w-full min-w-0 flex-col;
+  }
+
+  /* --- Label row (25 = 20 line + 5px pb) --------------------------------- */
+
+  .dropdown-field-title-row {
+    @apply flex items-center gap-1 pb-1.25;
+  }
+
+  .dropdown-field-title {
+    @apply text-label-strong text-content-secondary; /* never recolours */
+  }
+
+  /* Right-aligned optional text — ink inferred (hidden in every variant). */
+  .dropdown-field-optional {
+    @apply ml-auto text-help-caption text-content-tertiary;
+  }
+
+  .dropdown-field-help {
+    @apply ml-auto size-4.5 shrink-0 cursor-pointer border-0 bg-transparent p-0 text-neutral-disabled;
+  }
+  .dropdown-field-help svg {
+    @apply size-4.5;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- Trigger (48px pinned) ---------------------------------------------- */
+
+  .dropdown-field-trigger {
+    @apply m-0 flex h-12 w-full min-w-0 appearance-none items-center gap-2 px-3;
+    @apply cursor-pointer rounded-sm border border-stroke-border bg-surface-paper text-left;
+    transition: border-color 150ms;
+  }
+
+  .dropdown-field-value {
+    @apply min-w-0 flex-1 truncate text-input text-content-primary;
+  }
+
+  .dropdown-field-value-placeholder {
+    @apply text-content-hint;
+  }
+
+  .dropdown-field-chevron {
+    @apply size-4.5 shrink-0 text-neutral; /* constant ink, every state */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: rotate 150ms;
+  }
+
+  /* --- States (order load-bearing — see header) --------------------------- */
+
+  .dropdown-field-trigger:hover:not(:focus-visible):not([aria-expanded="true"]):not([aria-invalid="true"]) {
+    @apply border-stroke-hover;
+  }
+
+  .dropdown-field-trigger:focus-visible,
+  .dropdown-field-trigger[aria-expanded="true"] {
+    @apply focus-ring border-primary;
+  }
+
+  /* Rotation tracks the PANEL, never bare keyboard focus. */
+  .dropdown-field-trigger[aria-expanded="true"] .dropdown-field-chevron {
+    @apply rotate-180;
+  }
+
+  /* After the open rule on purpose: amber wins the border tie on
+     error+open; the ring and rotation still apply. */
+  .dropdown-field-trigger[aria-invalid="true"] {
+    @apply border-warning;
+  }
+
+  /* --- Hint (normal-flow correction, family pattern) ----------------------- */
+
+  .dropdown-field-hint {
+    @apply m-0 pt-1.25 text-help-caption text-content-secondary;
+  }
+
+  .dropdown-field:has(.dropdown-field-trigger[aria-invalid="true"]) .dropdown-field-hint {
+    @apply text-warning-text; /* inferred — designer to confirm */
+  }
+}

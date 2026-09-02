@@ -433,11 +433,14 @@ Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
 One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
 24 variants: `Size` {sm, md, lg} × `Selected` × `Hover` × `LastItem`.
 
-- **Base**: `.list-item` — layout only, **a size class is required** (Figma's
-  samples only show sm; no default is baked in)
-- **Sizes**: `.list-item-sm` (Help & Caption 12px, 30px / **34px selected**),
-  `.list-item-md` (Labels Default 14px, 36px), `.list-item-lg` (Input 16px, 40px)
-- **Parts**: `.list-item-text` (wraps, doesn't truncate), `.list-item-check`
+- **Base**: `.list-option` — layout only, **a size class is required** (Figma's
+  samples only show sm; no default is baked in). Named `-option`, NOT
+  `-item`: `.list-item` IS Tailwind's own `display: list-item` utility and
+  the collision stacked the rows (caught live; same trap later hit
+  `.text-field-label` vs the `text-field-label` type token's utility)
+- **Sizes**: `.list-option-sm` (Help & Caption 12px, 30px / **34px selected**),
+  `.list-option-md` (Labels Default 14px, 36px), `.list-option-lg` (Input 16px, 40px)
+- **Parts**: `.list-option-text` (wraps, doesn't truncate), `.list-option-check`
   (18px sprite glyph, ALWAYS in markup, shown by selection)
 - **States**: `:hover` (works on selected rows too — a real Figma variant),
   `[aria-selected="true"]` / `[aria-checked="true"]`, `:focus-visible`
@@ -454,9 +457,9 @@ One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
 > Not modelled, not invented: disabled, pressed.
 
 ```html
-<button class="list-item list-item-sm" role="option" aria-selected="true">
-  <span class="list-item-text">English</span>
-  <svg class="list-item-check" aria-hidden="true"><use href="#check" /></svg>
+<button class="list-option list-option-sm" role="option" aria-selected="true">
+  <span class="list-option-text">English</span>
+  <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
 </button>
 ```
 
@@ -478,8 +481,8 @@ The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
 
 ```html
 <div class="dropdown-list" role="listbox">
-  <button class="list-item list-item-sm" role="option" aria-selected="true">…</button>
-  <button class="list-item list-item-sm" role="option" aria-selected="false">…</button>
+  <button class="list-option list-option-sm" role="option" aria-selected="true">…</button>
+  <button class="list-option list-option-sm" role="option" aria-selected="false">…</button>
 </div>
 ```
 
@@ -734,6 +737,154 @@ One row in the owners list. Extracted from Figma Owner Container (274:258) —
 </div>
 ```
 
+#### TextField
+
+Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
+— 9 variants on a **partial** `Filled` × `Hover` × `Focus` × `Error` matrix
+(no empty+error, no hover+focus, no disabled), all 413×73.
+
+- **Parts**: `.text-field` › `.text-field-title-row` (25px: `.text-field-title`
+  + optional `.text-field-help` 18px icon-button) › `.text-field-box` (48px
+  pinned wrapper div — a native input can't host the icon slots; state styling
+  hangs off it via `:has()`) › `.text-field-input` (the native input) +
+  optional `.text-field-icon` (18px, leading/trailing) › `.text-field-hint`
+- **States**: `:hover`, `:has(:focus)` (any focus — Figma's Focus axis is the
+  caret), `aria-invalid="true"` (error), `:focus` ring on error too
+
+| state | border (1px, border-box) | extra |
+| --- | --- | --- |
+| rest | `Stroke/Border` | — |
+| `:hover` | `Stroke/Hover` | — |
+| focus | `Primary` | + 3px Primary Ring (`focus-ring`) |
+| error | **`Warning/Base`** (amber — verbatim) | — |
+| error+hover | **unchanged** (unwired in Figma; excluded by name) | — |
+| error+focus | border stays amber | **crimson ring still fires** |
+
+> **THE PART CLASS IS `-title`, NOT `-label`** — a `.text-field-label` class
+> collides with the `text-field-label` type token's generated utility
+> (utilities out-cascade components; the `.list-item` lesson). RadioField's
+> `-title` naming adopted family-wide.
+> **The label binds `text-label-strong` (14/20/500), NOT the
+> `text-field-label` token (13/16)** — verbatim in all nine variants; that
+> token is used by no shipped component yet. Designer list.
+> **Error binds the WARNING ramp** — settled with variables AND pixels across
+> both field sets; no Error/* token appears anywhere. The Error-ramp question
+> is closed as an authoring slip until the designer rebinds.
+> **Fill, label ink and value ink never change in any state** (pixel-verified)
+> — border-only reactions. The placeholder/value ink swap is native
+> `::placeholder` (`Text/Hint` → `Text/Primary`), no Filled class.
+> **The hint ships in normal flow** — Figma's bottomContent geometry is broken
+> (absolute −19px/−313%, the RadioField defect verbatim, all three fields).
+> Error hint ink `Warning/Text` is INFERRED (row hidden in every variant).
+> **Placeholder contrast fails WCAG as authored** (Text/Hint 3.11:1) — axe
+> can't see `::placeholder` here but flags the same ink on DropdownField;
+> waived in KNOWN_ISSUES with rationale. Designer list.
+> Not modelled, not invented: **disabled** (a priority gap for real forms).
+
+```html
+<div class="text-field">
+  <div class="text-field-title-row">
+    <label class="text-field-title" for="fname">First name</label>
+  </div>
+  <div class="text-field-box">
+    <input id="fname" class="text-field-input" type="text" placeholder="Jane" />
+  </div>
+</div>
+
+<!-- error: aria-invalid drives it; describedby wires the hint -->
+<div class="text-field">
+  <div class="text-field-title-row">
+    <label class="text-field-title" for="email">Email</label>
+  </div>
+  <div class="text-field-box">
+    <input id="email" class="text-field-input" type="email"
+           aria-invalid="true" aria-describedby="email-hint" />
+  </div>
+  <p id="email-hint" class="text-field-hint">Enter a valid email address.</p>
+</div>
+```
+
+#### DropdownField
+
+Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
+9 variants, same partial matrix and 413×73 anatomy as TextField.
+
+- **Parts**: `.dropdown-field` › `.dropdown-field-title-row` /
+  `.dropdown-field-title` (+ optional `.dropdown-field-optional` right slot,
+  `.dropdown-field-help`) › `.dropdown-field-trigger` (a `<button>`, 48px
+  pinned, `aria-haspopup="listbox"`) › `.dropdown-field-value`
+  (+ `-value-placeholder` for the unselected ink) + `.dropdown-field-chevron`
+  › `.dropdown-field-hint`
+- **NOT a native `<select>`** — composes the shipped `.dropdown-list` +
+  `.list-option` panel (consumer JS positions and toggles it; TextSelector
+  precedent)
+- **States**: `:hover`, `:focus-visible` OR `[aria-expanded="true"]` (Primary
+  border + ring), `[aria-invalid="true"]` — same ramp as TextField, all the
+  same exclusions/compounds
+
+> **The chevron flips 180° on `[aria-expanded="true"]` ONLY** — never on bare
+> keyboard focus (arrow direction tracks the PANEL). Structurally verified in
+> Figma (the icon's bbox shifts by exactly its own w/h — the corner-rotation
+> signature). Uses the CSS `rotate` property (Tailwind v4).
+> **Chevron ink is `Neutral/Base`, constant in EVERY state** including error
+> (no amber tint) — pixel + variable verified. Glyph is `#chevron-down`
+> (Code Connect-resolved; the Figma layer name lies).
+> **The error rule is written AFTER the open rule on purpose** — equal
+> specificity, so source order gives error+open its amber border while the
+> ring and rotation (separate properties) persist. Do not reorder.
+> **Unselected accessible name = the label alone** — the placeholder span is
+> `aria-hidden` decoration and `aria-labelledby` lists only the title id;
+> with a selection, drop `aria-hidden` and append the value id ("label,
+> value"). A `<label for>` on a button would clobber the name — use
+> `aria-labelledby`.
+> **The placeholder ink fails WCAG contrast as authored** (3.11:1) — the one
+> waived KNOWN_ISSUES entry in the a11y scanner; designer list.
+
+```html
+<div class="dropdown-field">
+  <div class="dropdown-field-title-row">
+    <span id="at-label" class="dropdown-field-title">Account type</span>
+  </div>
+  <button class="dropdown-field-trigger" type="button" aria-haspopup="listbox"
+          aria-expanded="false" aria-labelledby="at-label">
+    <span id="at-value" class="dropdown-field-value dropdown-field-value-placeholder"
+          aria-hidden="true">Select an account type</span>
+    <svg class="dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+  </button>
+</div>
+```
+
+#### TextArea
+
+Labeled multi-line text input. Extracted from Figma Text Area Field
+(199:12523) — 6 variants (`Filled` × `Hover` × `Focus`), all 413×104.
+**No Error axis exists** — none is invented (designer list: deliberate?).
+
+- **Parts**: `.text-area` › `.text-area-title-row` / `.text-area-title`
+  (+ optional `-optional`, `-help`) › `.text-area-input` (the native
+  `<textarea>` IS the box — no icon slots to host) › `.text-area-hint`
+- **Box**: `h-[79px]` pinned (off Tailwind's scale on purpose), `px-3`
+  **`py-2.5`** — the 10px y-padding is authored and differs from the
+  siblings (designer list) — top-anchored text, same border/ring ramp as
+  the family (token-verified zero deviations)
+
+> **Two labeled corrections of Figma defects**: the value node carries the
+> Input style's single-line nowrap/ellipsis (copy-paste artifact — wrapping
+> ships, the defect doesn't; a spec check guards the regression), and no
+> overflow-clip (it would suppress the scrollbar a fixed-height textarea
+> needs).
+> **`resize: none` is a library decision, flagged as such** — Figma draws no
+> grabber and no overflow state; callers opt in with a resize utility.
+
+```html
+<div class="text-area">
+  <div class="text-area-title-row">
+    <label class="text-area-title" for="notes">Notes</label>
+  </div>
+  <textarea id="notes" class="text-area-input" placeholder="Anything else?"></textarea>
+</div>
+```
+
 ---
 
 Further components will be documented here as they are extracted from the
@@ -895,6 +1046,36 @@ to the Short App extraction:
 - **Figma styles named "- Bold" often resolve to Medium/500.** Read the weight
   the style reports, never map the name.
 
+## Library Contracts (decided 2026-09-02)
+
+Decisions a consumer or contributor would otherwise discover by surprise:
+
+- **Light-only, by design.** The token set is light-mode only and no
+  dark-mode variant is planned until the Figma file defines one — a
+  deliberate non-goal, not an oversight. Do not add `prefers-color-scheme`
+  blocks to components.
+- **Breakpoints**: the library defines no `--breakpoint-*` tokens; Tailwind's
+  native scale is the contract. The single library-authored media query is
+  Header's 768px mobile switch (`md`), documented there. New responsive
+  behaviour should use Tailwind's breakpoints, never new raw values.
+- **Z-index scale** (established ahead of the Confirmation Modal):
+  content `z-0` · sticky chrome (Header) `z-40` · overlay backdrop `z-50` ·
+  modal/panel `z-60` · toast `z-70`. Header already ships z-40; overlay
+  components must use this scale, not invent values.
+- **No class prefix.** Component classes are unprefixed; the collision risk
+  with Tailwind utilities is gated mechanically instead (`verify:bundle`
+  compiles every component class name through Tailwind + the theme and fails
+  on any that resolve to a utility — the `.list-item`/`.text-field-label`
+  bug class). Consumers who need namespacing can use Tailwind v4's `prefix()`
+  on their own utilities; library classes stay stable API.
+- **Undefined tokens are a build failure.** `verify:bundle` also fails on any
+  fallback-less `var(--…)` in dist that the bundle never defines (the
+  `--color-surface-frame` bug class).
+- **Candidate refactor, deliberately deferred**: the sprite-glyph paint block
+  (`fill:none; stroke:currentColor; stroke-width:2; …`) is repeated in 8+
+  component files and could become one `@utility icon-glyph` — do it as a
+  dedicated pass with full visual re-verification, not opportunistically.
+
 ## Installation
 
 ```bash
@@ -1049,6 +1230,29 @@ present in `dist`.
 The two checks are complementary and neither replaces the other — this one
 cannot see a 1px height error, and the visual harness cannot see a hardcoded
 hex that happens to match its token.
+
+### Bundle verification
+
+```bash
+npm run verify:bundle   # after npm run build — reads dist
+```
+
+Two gates over the build output that no other harness can see (both bug
+classes shipped for real before this existed):
+
+1. **Undefined `var()` references** — a fallback-less `var(--x)` defined
+   nowhere in the bundle resolves to nothing with no error anywhere (the
+   `--color-surface-frame` dashboard-leftover bug).
+2. **Class/utility collisions** — every component class name is compiled
+   through the real Tailwind + theme as a candidate; any name that produces
+   a utility rule collides (the `.list-item` / `.text-field-label` bugs).
+   A built-in canary (`flex`) must be flagged every run or the gate fails
+   itself rather than passing vacuously.
+
+Both run in CI, together with `verify:a11y` (which waives documented design
+defects via `KNOWN_ISSUES` in [scripts/a11y-scan.mjs](scripts/a11y-scan.mjs)
+— printed, never silent). The consolidated designer list lives at
+[docs/designer-list.md](docs/designer-list.md).
 
 ## Storybook
 

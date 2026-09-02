@@ -16,6 +16,10 @@
 @layer base {
   html {
     color: var(--color-content-primary);
-    background-color: var(--color-surface-frame);
+    /* BG/App Page — the application ground. Was var(--color-surface-frame),
+       a dashboard-era token this theme never defined; the undefined ref
+       shipped in dist and resolved to nothing (caught by the 2026-09-02
+       audit; verify:bundle now gates this class of bug). */
+    background-color: var(--color-surface-app-page);
   }
 }

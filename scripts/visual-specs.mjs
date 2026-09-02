@@ -38,6 +38,40 @@
  */
 
 
+
+// The Skeleton written spec's full dimension matrix (550:7998) — every cell
+// swept programmatically. [shape, [sm w,h], [md w,h], [lg w,h]]; square
+// shapes carry one number.
+const SKELETON_MATRIX = [
+  ["text", [120, 12], [200, 16], [320, 20]],
+  ["heading", [160, 20], [240, 24], [360, 32]],
+  ["circle", [32], [40], [56]],
+  ["rectangle", [120, 80], [200, 120], [320, 180]],
+  ["button", [64, 32], [96, 36], [128, 40]],
+  ["input", [280, 48], [330, 60], [420, 72]],
+  ["textarea", [280, 80], [330, 100], [420, 128]],
+  ["card", [280, 140], [330, 158], [420, 200]],
+  ["switch", [28, 16], [36, 20], [44, 24]],
+  ["checkbox", [14], [18], [22]],
+  ["badge", [60, 16], [80, 20], [100, 24]],
+  ["listitem", [280, 28], [330, 32], [420, 40]],
+  ["tab", [80, 28], [100, 32], [120, 36]],
+  ["avatar", [32], [40], [56]],
+  ["dropdown", [280, 48], [330, 60], [420, 72]],
+  ["radio", [16], [20], [24]],
+];
+const SKELETON_MATRIX_CHECKS = SKELETON_MATRIX.flatMap(([shape, ...sizes]) =>
+  sizes.flatMap((dims, i) => {
+    const size = ["sm", "md", "lg"][i];
+    const sel = `.skeleton-${shape}.skeleton-${size}`;
+    const [w, h = w] = dims;
+    return [
+      { label: `${shape} ${size} width ${w}`, sel, get: "width", expect: w },
+      { label: `${shape} ${size} height ${h}`, sel, get: "height", expect: h },
+    ];
+  }),
+);
+
 export const SPECS = {
   // The dashboard library's full spec file is preserved at
   // _dashboard-archive/visual-specs.mjs for reference on check patterns.
@@ -776,6 +810,16 @@ export const SPECS = {
     stories: {
       // AllSizes: three columns of [unselected, selected]: nth 0/1 sm, 2/3 md, 4/5 lg
       "components-listitem--all-sizes": [
+        // Per-size type bindings — Help & Caption / Labels Default / Input.
+        { label: "sm type 12px Help & Caption", sel: ".list-option-sm", get: "font-size", expect: "12px" },
+        { label: "sm line 14px", sel: ".list-option-sm", get: "line-height", expect: "14px" },
+        { label: "md type 14px Labels Default", sel: ".list-option-md", get: "font-size", expect: "14px" },
+        { label: "md line 20px", sel: ".list-option-md", get: "line-height", expect: "20px" },
+        { label: "lg type 16px Input", sel: ".list-option-lg", get: "font-size", expect: "16px" },
+        { label: "lg line 24px", sel: ".list-option-lg", get: "line-height", expect: "24px" },
+        // The gap-collapse trick: 10px unconditional; the hidden check
+        // contributes none, so unselected rows read gap-0 visually.
+        { label: "gap unconditional 10", sel: ".list-option-sm", get: "gap", expect: "10px" },
         { label: "sm unselected 30", sel: ".list-option-sm", get: "height", expect: 30 },
         {
           label: "sm SELECTED grows to 34 (Figma's emergent hug, reproduced)",
@@ -1509,13 +1553,9 @@ export const SPECS = {
         // harness freezes animations to keep colour reads deterministic. The
         // 2s ease-in-out 1→0.4 spec is pinned in CSS per the written spec.
       ],
-      "components-skeleton--all-sizes": [
-        { label: "avatar sm 32", sel: ".skeleton-avatar", get: "width", expect: 32 },
-        { label: "avatar md 40", sel: ".skeleton-avatar", nth: 1, get: "width", expect: 40 },
-        { label: "avatar lg 56", sel: ".skeleton-avatar", nth: 2, get: "width", expect: 56 },
-        { label: "button sm 64×32", sel: ".skeleton-button", get: "width", expect: 64 },
-        { label: "button lg 128×40", sel: ".skeleton-button", nth: 2, get: "width", expect: 128 },
-      ],
+      // The full written-spec matrix (16 shapes × 3 sizes × w/h), generated
+      // from SKELETON_MATRIX above — every cell swept, not spot-checked.
+      "components-skeleton--all-sizes": SKELETON_MATRIX_CHECKS,
     },
   },
 
@@ -1913,6 +1953,380 @@ export const SPECS = {
       // do not exist on either axis); long-name truncation (applied as the
       // library convention, no Figma variant tests overflow); the Figma glyph
       // layer misnames (ships #pencil / #trash-2 regardless — designer list).
+    },
+  },
+
+  // --------------------------------------------------------------- TextField
+  TextField: {
+    figma:
+      "Plain Text Field 1:291 — 9 variants: Filled × Hover × Focus × Error (partial). Error binds Warning/Base verbatim.",
+    variants: 9,
+    stories: {
+      // AllStates order: 0 rest-empty · 1 filled · 2 error (+hint)
+      "components-textfield--all-states": [
+        { label: "field total 73 (label 25 + box 48)", sel: ".text-field", get: "height", expect: 73 },
+        { label: "label row 25", sel: ".text-field-title-row", get: "height", expect: 25 },
+        { label: "box pinned 48", sel: ".text-field-box", get: "height", expect: 48 },
+        { label: "box radius 4 (authored)", sel: ".text-field-box", get: "border-radius", expect: "4px" },
+        { label: "box border 1px", sel: ".text-field-box", get: "border-top-width", expect: "1px" },
+        { label: "box padding 12", sel: ".text-field-box", get: "padding-left", expect: "12px" },
+        {
+          label: "rest border Stroke/Border",
+          sel: ".text-field-box",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "hover border Stroke/Hover",
+          sel: ".text-field-box",
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-stroke-hover" },
+        },
+        {
+          label: "fill Paper (constant across states)",
+          sel: ".text-field-box",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "label ink Content/Secondary (never recolours)",
+          sel: ".text-field-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        { label: "label type label-strong 14", sel: ".text-field-title", get: "font-size", expect: "14px" },
+        {
+          label: "placeholder ink Content/Hint",
+          sel: ".text-field-input",
+          get: "::placeholder.color",
+          expect: { token: "--color-content-hint" },
+        },
+        { label: "input type 16/24", sel: ".text-field-input", get: "font-size", expect: "16px" },
+        {
+          label: "value ink Content/Primary",
+          sel: ".text-field-input",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        // Error (nth 2) — the Warning ramp, verbatim from Figma.
+        {
+          label: "error border Warning/Base (NOT the Error ramp)",
+          sel: ".text-field-box",
+          nth: 2,
+          get: "border-top-color",
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error+hover UNCHANGED (unwired in Figma — no Stroke/Hover leak)",
+          sel: ".text-field-box",
+          nth: 2,
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error label ink unchanged",
+          sel: ".text-field-title",
+          nth: 2,
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "error hint ink Warning/Text (inferred binding — designer to confirm)",
+          sel: ".text-field-hint",
+          get: "color",
+          expect: { token: "--color-warning-text" },
+        },
+        // Focus — click into the field, let the border/outline transition settle.
+        {
+          label: "focus border Primary",
+          sel: ".text-field-box",
+          get: "border-top-color",
+          before: [{ click: ".text-field-input", wait: 450 }],
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "focus ring 3px",
+          sel: ".text-field-box",
+          get: "outline-width",
+          before: [{ click: ".text-field-input", wait: 450 }],
+          expect: "3px",
+        },
+        {
+          label: "focus ring Primary/Ring",
+          sel: ".text-field-box",
+          get: "outline-color",
+          before: [{ click: ".text-field-input", wait: 450 }],
+          expect: { token: "--color-primary-ring" },
+        },
+        // The compound Figma draws: amber border + crimson ring on error+focus.
+        {
+          label: "error+focus border STAYS Warning (amber wins the tie)",
+          sel: ".text-field-box",
+          nth: 2,
+          get: "border-top-color",
+          before: [{ click: ".text-field:nth-of-type(3) .text-field-input", wait: 450 }],
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error+focus ring STILL crimson Primary/Ring",
+          sel: ".text-field-box",
+          nth: 2,
+          get: "outline-color",
+          before: [{ click: ".text-field:nth-of-type(3) .text-field-input", wait: 450 }],
+          expect: { token: "--color-primary-ring" },
+        },
+      ],
+      "components-textfield--with-slots": [
+        { label: "icon slot 18", sel: ".text-field-icon", get: "width", expect: 18 },
+        { label: "help icon-button 18", sel: ".text-field-help", get: "width", expect: 18 },
+        { label: "hint type help-caption 12", sel: ".text-field-hint", get: "font-size", expect: "12px" },
+        {
+          label: "hint ink Content/Secondary (non-error)",
+          sel: ".text-field-hint",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+      ],
+
+      // NOT ASSERTED: disabled (no axis in Figma — flagged as a real-form gap,
+      // designer list); empty+error and hover+focus (undrawn; focus wins by
+      // source order — library decision).
+    },
+  },
+
+  // ----------------------------------------------------------- DropdownField
+  DropdownField: {
+    figma:
+      "Dropdown Field 1:358 — 9 variants (same partial matrix as TextField) + chevron 180° flip on the open state.",
+    variants: 9,
+    stories: {
+      // AllStates order: 0 placeholder · 1 filled · 2 open · 3 error(+hint) · 4 error+open
+      "components-dropdownfield--all-states": [
+        { label: "field total 73 (no hint)", sel: ".dropdown-field", get: "height", expect: 73 },
+        { label: "trigger pinned 48", sel: ".dropdown-field-trigger", get: "height", expect: 48 },
+        { label: "trigger radius 4", sel: ".dropdown-field-trigger", get: "border-radius", expect: "4px" },
+        { label: "trigger px 12", sel: ".dropdown-field-trigger", get: "padding-left", expect: "12px" },
+        { label: "trigger gap 8", sel: ".dropdown-field-trigger", get: "gap", expect: "8px" },
+        { label: "chevron 18", sel: ".dropdown-field-chevron", get: "width", expect: 18 },
+        {
+          label: "rest border Stroke/Border",
+          sel: ".dropdown-field-trigger",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "hover border Stroke/Hover",
+          sel: ".dropdown-field-trigger",
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-stroke-hover" },
+        },
+        {
+          label: "placeholder ink Content/Hint",
+          sel: ".dropdown-field-value",
+          get: "color",
+          expect: { token: "--color-content-hint" },
+        },
+        {
+          label: "value ink Content/Primary",
+          sel: ".dropdown-field-value",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "chevron ink Neutral/Base at rest",
+          sel: ".dropdown-field-chevron",
+          get: "color",
+          expect: { token: "--color-neutral" },
+        },
+        { label: "chevron closed: no rotation", sel: ".dropdown-field-chevron", get: "rotate", expect: "none" },
+        // Open (nth 2): Primary border + ring + 180° chevron.
+        {
+          label: "open border Primary",
+          sel: ".dropdown-field-trigger",
+          nth: 2,
+          get: "border-top-color",
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "open ring 3px",
+          sel: ".dropdown-field-trigger",
+          nth: 2,
+          get: "outline-width",
+          expect: "3px",
+        },
+        {
+          label: "open chevron rotated 180",
+          sel: ".dropdown-field-chevron",
+          nth: 2,
+          get: "rotate",
+          expect: "180deg",
+        },
+        // Error (nth 3): amber border, chevron ink UNCHANGED.
+        {
+          label: "error border Warning/Base (NOT the Error ramp)",
+          sel: ".dropdown-field-trigger",
+          nth: 3,
+          get: "border-top-color",
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error+hover UNCHANGED (unwired)",
+          sel: ".dropdown-field-trigger",
+          nth: 3,
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error chevron ink STILL Neutral/Base (no amber tint)",
+          sel: ".dropdown-field-chevron",
+          nth: 3,
+          get: "color",
+          expect: { token: "--color-neutral" },
+        },
+        {
+          label: "error hint ink Warning/Text (inferred — designer to confirm)",
+          sel: ".dropdown-field-hint",
+          get: "color",
+          expect: { token: "--color-warning-text" },
+        },
+        // Error+open (nth 4): the compound — amber border wins, ring + flip persist.
+        {
+          label: "error+open border STAYS Warning",
+          sel: ".dropdown-field-trigger",
+          nth: 4,
+          get: "border-top-color",
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error+open ring STILL applies",
+          sel: ".dropdown-field-trigger",
+          nth: 4,
+          get: "outline-width",
+          expect: "3px",
+        },
+        {
+          label: "error+open chevron still flipped",
+          sel: ".dropdown-field-chevron",
+          nth: 4,
+          get: "rotate",
+          expect: "180deg",
+        },
+        {
+          label: "fill Paper constant",
+          sel: ".dropdown-field-trigger",
+          nth: 4,
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+      ],
+
+      // NOT ASSERTED: disabled / empty+error / hover+open (undrawn in Figma);
+      // bare :focus-visible border+ring (the harness cannot hold synthetic
+      // keyboard focus reliably — wired identically to [aria-expanded] minus
+      // the rotation, pinned by code review); panel positioning (consumer's).
+    },
+  },
+
+  // ---------------------------------------------------------------- TextArea
+  TextArea: {
+    figma:
+      "Text Area Field 199:12523 — 6 variants (Filled × Hover × Focus). No Error axis. py-10 is authored (family inconsistency).",
+    variants: 6,
+    stories: {
+      // AllStates order: 0 empty · 1 filled(multi-line) · 2 empty+hint
+      "components-textarea--all-states": [
+        { label: "field total 104 (label 25 + box 79)", sel: ".text-area", get: "height", expect: 104 },
+        { label: "label row 25", sel: ".text-area-title-row", get: "height", expect: 25 },
+        { label: "box pinned 79 (off-scale, arbitrary on purpose)", sel: ".text-area-input", get: "height", expect: 79 },
+        {
+          label: "y-padding 10 — authored, NOT the siblings' centering",
+          sel: ".text-area-input",
+          get: "padding-top",
+          expect: "10px",
+        },
+        { label: "x-padding 12", sel: ".text-area-input", get: "padding-left", expect: "12px" },
+        { label: "radius 4", sel: ".text-area-input", get: "border-radius", expect: "4px" },
+        {
+          label: "rest border Stroke/Border",
+          sel: ".text-area-input",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "hover border Stroke/Hover",
+          sel: ".text-area-input",
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-stroke-hover" },
+        },
+        {
+          label: "focus border Primary",
+          sel: ".text-area-input",
+          get: "border-top-color",
+          before: [{ click: ".text-area-input", wait: 450 }],
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "focus ring 3px Primary/Ring",
+          sel: ".text-area-input",
+          get: "outline-color",
+          before: [{ click: ".text-area-input", wait: 450 }],
+          expect: { token: "--color-primary-ring" },
+        },
+        {
+          label: "fill Paper constant",
+          sel: ".text-area-input",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "placeholder ink Content/Hint",
+          sel: ".text-area-input",
+          get: "::placeholder.color",
+          expect: { token: "--color-content-hint" },
+        },
+        {
+          label: "value ink Content/Primary",
+          sel: ".text-area-input",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "resize none (library decision — Figma draws no grabber)",
+          sel: ".text-area-input",
+          get: "resize",
+          expect: "none",
+        },
+        {
+          label: "wrapping enabled (regression guard vs Figma's copy-paste nowrap defect)",
+          sel: ".text-area-input",
+          get: "white-space",
+          not: true,
+          expect: "nowrap",
+        },
+        {
+          label: "label ink Content/Secondary",
+          sel: ".text-area-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "hint ink Content/Secondary",
+          sel: ".text-area-hint",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+      ],
+
+      // NOT ASSERTED: Error (no axis exists — none invented); disabled;
+      // hover+focus (undrawn; focus wins by source order).
     },
   },
 };
