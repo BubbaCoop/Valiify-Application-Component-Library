@@ -1,0 +1,81 @@
+/**
+ * Radio Component
+ *
+ * Radio button control for single selection from a group. Extracted from Figma
+ * Radio (1:419) — 4 variants across Active × Hover × Pressed, all 20×20.
+ *
+ * The Figma component is the bare 20px control — no label, no slots. Apply the
+ * class directly to a native input and compose your own label markup:
+ *
+ *   <input type="radio" name="plan" class="radio" />
+ *
+ * Geometry (all from the exported vectors):
+ *   frame        20×20, true circle, edge to edge (no padding)
+ *   ring         1.5px INSIDE stroke — Stroke/Border at rest,
+ *                Primary/Primary when checked
+ *   inner dot    10×10 Primary/Primary circle, centered (checked only)
+ *   hover        Action/Hover fill across the whole circle, ring unchanged
+ *   pressed      Action/Pressed fill, ring unchanged
+ *
+ * THE RING IS A BOX-SHADOW, NOT A BORDER — and that is load-bearing. Chrome
+ * floors fractional border-width, so a 1.5px border renders 1px (the same trap
+ * the dashboard's LoadingIndicator hit). An inset box-shadow paints the
+ * authored 1.5 exactly, and inset matches Figma's inside stroke alignment, so
+ * the 20px layout box is unaffected either way.
+ *
+ * Not modelled in Figma (reproduced, not invented):
+ *   - no checked+hover / checked+pressed — both tint rules exclude :checked
+ *   - no disabled variant — :disabled gets cursor-not-allowed and nothing
+ *     visual; a designer decision is needed
+ *   - no focus variant — :focus-visible uses the library-wide focus-ring
+ *     convention (its tokens await the Short App focus-ring extraction)
+ */
+
+@layer components {
+  .radio {
+    /* A real <input type="radio"> — native semantics, form participation and
+       keyboard behaviour for free. */
+    @apply relative m-0 inline-block shrink-0 cursor-pointer appearance-none p-0;
+
+    /* 20×20 true circle (Figma binds no radius token — it is an ellipse). */
+    @apply size-5 rounded-full;
+
+    /* 1.5px inside stroke — Stroke/Border. See header for why not `border`. */
+    box-shadow: inset 0 0 0 1.5px var(--color-stroke-border);
+
+    transition:
+      background-color 150ms,
+      box-shadow 150ms;
+  }
+
+  /* --- States ----------------------------------------------------------- */
+
+  /* Hover and pressed tint the whole circle, under the ring. Figma draws no
+     checked+hover or checked+pressed variant, so both exclude :checked. */
+  .radio:hover:not(:disabled):not(:checked) {
+    @apply bg-action-hover;
+  }
+
+  .radio:active:not(:disabled):not(:checked) {
+    @apply bg-action-pressed;
+  }
+
+  /* Checked: ring steps to Primary/Primary, same 1.5px inside stroke. */
+  .radio:checked {
+    box-shadow: inset 0 0 0 1.5px var(--color-primary);
+  }
+
+  /* Inner dot — 10×10 Primary/Primary circle, centered in the 20px frame. */
+  .radio:checked::before {
+    @apply absolute inset-0 m-auto size-2.5 rounded-full bg-primary content-[''];
+  }
+
+  .radio:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Figma models no disabled variant; nothing visual is invented here. */
+  .radio:disabled {
+    @apply cursor-not-allowed;
+  }
+}

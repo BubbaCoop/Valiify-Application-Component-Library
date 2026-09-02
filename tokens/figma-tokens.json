@@ -1,14 +1,19 @@
 {
   "$meta": {
     "description": "Raw design token extraction from Figma. Source of truth for scripts/build-theme.mjs, which generates src/themes/valiify.css from this file.",
-    "figmaFile": "Valiify-ShortApp-Component-Library",
-    "fileKey": "TBD",
+    "figmaFile": "Updated-Short-App",
+    "fileKey": "PA5pr1Q8KLfbjTxdAbFm0V",
     "extractedVia": "Figma MCP get_variable_defs",
-    "extractedFrom": [],
-    "status": "AWAITING EXTRACTION — the Short App Figma tokens have not been pulled yet. Every group below is empty on purpose. The dashboard library's extraction (with its hard-won limitations/resolved notes) is preserved at _dashboard-archive/tokens/figma-tokens.json as a reference for the extraction process.",
+    "extractedFrom": [
+      {
+        "nodeId": "1:419",
+        "name": "Radio (component set) \u2014 via get_variable_defs on all 4 variants, 2026-09-01"
+      }
+    ],
+    "status": "PARTIAL \u2014 tokens land here per-component as extraction proceeds; the full-file sweep (search_design_system audit) has not run yet. Groups below hold only what extracted components bind.",
     "limitations": [
       "get_variable_defs returns only variables APPLIED to a layer in the queried subtree. Tokens defined in Figma but not yet used anywhere will be absent. Audit token-group completeness with search_design_system, which lists variables whether or not anything uses them. This bit the dashboard extraction twice (Surface/Card, Critical/Content).",
-      "DUPLICATE NAMES SILENTLY DROP STYLES. The response is a keyed object, so two Figma styles sharing a name collapse into one — and the survivor's values get attributed to the wrong style. If a style looks wrong, check for a name collision first."
+      "DUPLICATE NAMES SILENTLY DROP STYLES. The response is a keyed object, so two Figma styles sharing a name collapse into one \u2014 and the survivor's values get attributed to the wrong style. If a style looks wrong, check for a name collision first."
     ],
     "resolved": [
       "lineHeight: the API returns the sentinel 100 for Figma's \"Auto\". It does NOT mean 100%. Record as the string \"AUTO\" and emit CSS line-height: normal.",
@@ -16,7 +21,12 @@
       "textTransform: --text-* composites cannot carry text-transform (or font-family), so uppercase styles need paired type-* utilities emitted by the generator."
     ]
   },
-  "color": {},
+  "color": {
+    "Primary/Primary": "#a6192e",
+    "Stroke/Border": "#1a1a1a2b",
+    "Action/Hover": "#1a1a1a0a",
+    "Action/Pressed": "#1a1a1a14"
+  },
   "radius": {},
   "strokeWidth": {},
   "spacing": {},

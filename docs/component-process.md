@@ -34,7 +34,7 @@ the full seven steps again is how one two-line change cost 66k tokens.
 
 ## Step 1 · Locate it in Figma
 
-File key: `TBD — Short App component library file key`.
+File key: `PA5pr1Q8KLfbjTxdAbFm0V`.
 
 Most components live in the **Basic components** section, `67:3409`. Running
 `get_metadata` on that node returns every component frame with its node id and
@@ -71,15 +71,55 @@ get_metadata(fileKey, "<component node id>")
 
 ---
 
-## Step 2 · Extract the spec with a subagent
+## Step 2 · Extract the spec — the multi-agent pipeline
 
-Spawn one subagent per component. They run in parallel — seven components were
-extracted concurrently in a single pass, and that pass found four real defects
-in components that were already "done".
+Extraction is a **multi-subagent pipeline**, orchestrated by the `/extract`
+command ([.claude/commands/extract.md](../.claude/commands/extract.md)). A
+single briefed agent was tried first and produced uneven results — quality
+tracked the discipline of each hand-written brief, single-source readings went
+unchecked (the dashboard shipped a ring a third too thick off one bad pixel
+trace), and 13 sequential remote Figma calls made even a 4-variant component
+take ~10 minutes. Three parallel lanes are both faster (wall clock ≈ the
+slowest lane, not the sum) and safer (synthesis cross-checks every value two
+lanes both speak to).
 
-**The subagent reports. It never writes files, and it never interprets.**
-Interpretation stays with you, because the traps below need judgement the agent
-does not have context for.
+```
+/extract <Name> <node-url>
+   Gate 0  metadata sweep (main session, 1 call → variant matrix)
+   Gate 1  three lanes IN PARALLEL:
+             extract-structure   anatomy, slots, booleans, SVG geometry
+             extract-tokens      per-variant variable bindings, state deltas
+             extract-visual      pixel measurement, state distinguishability
+   Gate 2  extract-synthesis    cross-check + Tailwind v4 mapping
+   Gate 3  implement (main session — Steps 3–7 below)
+```
+
+| stage | agent | what it alone can see |
+| --- | --- | --- |
+| lane 1 | [`extract-structure`](../.claude/agents/extract-structure.md) | child layers, hidden booleans, stroke alignment, authoring quirks |
+| lane 2 | [`extract-tokens`](../.claude/agents/extract-tokens.md) | exact variable names + hex per variant, per-state deltas |
+| lane 3 | [`extract-visual`](../.claude/agents/extract-visual.md) | painted stroke widths by pixel coverage, flattened vectors, whether states are actually distinguishable |
+| synthesis | [`extract-synthesis`](../.claude/agents/extract-synthesis.md) | conflicts between the lanes; the Tailwind utility/token mapping and trap flags; the visual-spec assertion list |
+
+Rules that hold across the pipeline:
+
+- **Lanes report; they never write files and never interpret.** Synthesis
+  reconciles; the main session implements. A BLOCKING conflict from synthesis
+  stops the build — never implement around a contradiction.
+- **Every lane batches its independent Figma calls in one parallel message** —
+  the wall-clock cost is remote calls at 10–60s each, not tokens or models.
+- The visual lane may be skipped only for components with no strokes, no
+  vector glyphs and no fractional-looking values; when in doubt, run it.
+- **Multiple components**: run every component's lanes concurrently; synthesis
+  stays per-component. Seven components were once extracted in a single
+  parallel pass, and that pass found four real defects in components that
+  were already "done".
+- **None of this touches Val.** Different agent prefix, read-only lanes,
+  nothing in `commands/val.md` references it. Val assembles pages from
+  finished components; this pipeline builds the components.
+
+The brief template below remains the reference for what a complete extraction
+covers — the lane agents embed its rules in their definitions.
 
 ### Use the cheapest tool that answers the question
 
@@ -120,7 +160,7 @@ Extract raw design specs from Figma for the Valiify **<Name>** component, so
 they can be implemented as CSS and encoded as expected values in an automated
 visual-regression test.
 
-Figma fileKey: `TBD — Short App component library file key`
+Figma fileKey: `PA5pr1Q8KLfbjTxdAbFm0V`
 Component set frame: `<node-id>`
 
 Variants (dimensions from metadata in parentheses):
@@ -329,7 +369,7 @@ because a narrow question is harder to answer vaguely.
 ```
 Re-extract ONLY what changed in the Valiify **<Name>** component.
 
-Figma fileKey: `TBD — Short App component library file key`
+Figma fileKey: `PA5pr1Q8KLfbjTxdAbFm0V`
 Component set frame: `<node-id>`
 
 The designer reported: <what they said>.

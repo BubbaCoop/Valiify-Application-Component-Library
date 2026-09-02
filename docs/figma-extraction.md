@@ -17,7 +17,7 @@ Before beginning extraction:
 - [ ] Figma designs finalized and reviewed by design team
 - [ ] Code Connect access configured
 - [ ] Figma MCP tool available in Claude Code
-- [ ] Short App component library file (key: TBD) ready
+- [ ] Updated-Short-App file (key: PA5pr1Q8KLfbjTxdAbFm0V) ready
 
 > **Audit with `search_design_system`, not `get_variable_defs`.**
 > `get_variable_defs` only returns variables *applied to a layer*. A token that
@@ -258,7 +258,7 @@ Before marking extraction complete:
 
 ## Tools & Resources
 
-- **Figma File**: Short App component library (file key TBD)
+- **Figma File**: Updated-Short-App (PA5pr1Q8KLfbjTxdAbFm0V)
 - **OKLch Converter**: https://oklch.com
 - **Claude Skills**: `figma:figma-use`, `figma:figma-code-connect`
 
