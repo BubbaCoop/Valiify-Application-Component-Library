@@ -62,7 +62,8 @@
 
 @layer components {
   .skeleton {
-    --skeleton-fill: #f1f1f4; /* authored raw; no matching variable exists */
+    /* static-ok(hardcoded-color): the written spec's "Surface/Neutral" variable does not exist in the file (designer list); tokenize when it lands */
+    --skeleton-fill: #f1f1f4;
     @apply block;
     background-color: var(--skeleton-fill);
     animation: skeleton-pulse 2s ease-in-out infinite;

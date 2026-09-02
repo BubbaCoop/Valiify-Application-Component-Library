@@ -69,6 +69,24 @@ export async function verifyTokenUsage(componentPath) {
   const css = await fs.readFile(componentPath, 'utf-8');
   const violations = [];
 
+  // WAIVER PRAGMAS — for values that are deliberately raw because Figma
+  // itself binds no variable (DropdownList's shadow, Skeleton's fill). A
+  // comment on the flagged line, or the line above it:
+  //
+  //   /* static-ok(hardcoded-color): raw in Figma, no variable exists — designer list */
+  //
+  // waives that ONE rule for that ONE line. Waived findings are printed
+  // (yellow), never silently dropped — the a11y KNOWN_ISSUES precedent —
+  // and a pragma that waives nothing is itself a failure, so waivers
+  // cannot rot after the underlying value is tokenized.
+  // Parsed from the RAW source (pragmas live in comments, which the scan
+  // below deliberately strips).
+  const pragmas = [];
+  css.split('\n').forEach((line, index) => {
+    const m = line.match(/\/\*\s*static-ok\(([a-z-]+)\)\s*:\s*(.+?)\s*\*\//);
+    if (m) pragmas.push({ line: index + 1, type: m[1], reason: m[2], used: false });
+  });
+
   // Comments are blanked out first, so a trailing `/* #fafafb */` cannot be
   // mistaken for a hardcoded value.
   const lines = stripComments(css).split('\n');
@@ -116,10 +134,38 @@ export async function verifyTokenUsage(componentPath) {
     }
   });
 
+  // Partition: a violation is waived when a same-type pragma sits on its
+  // line or the line above.
+  const waived = [];
+  const live = [];
+  for (const v of violations) {
+    const p = pragmas.find(
+      (p) => p.type === v.type && (p.line === v.line || p.line === v.line - 1),
+    );
+    if (p) {
+      p.used = true;
+      waived.push({ ...v, reason: p.reason });
+    } else {
+      live.push(v);
+    }
+  }
+  // Stale-waiver guard: a pragma that waives nothing is itself a violation.
+  for (const p of pragmas) {
+    if (!p.used) {
+      live.push({
+        line: p.line,
+        type: 'stale-waiver',
+        value: `static-ok(${p.type})`,
+        message: `This pragma waives nothing — the ${p.type} finding it covered is gone. Remove the pragma.`,
+      });
+    }
+  }
+
   return {
-    violations: violations.length,
-    compliant: violations.length === 0,
-    details: violations
+    violations: live.length,
+    compliant: live.length === 0,
+    details: live,
+    waived,
   };
 }
 
@@ -368,6 +414,7 @@ export async function verifyPackage(componentName) {
 
 const GREEN = '\x1b[32m';
 const RED = '\x1b[31m';
+const YELLOW = '\x1b[33m';
 const DIM = '\x1b[2m';
 const BOLD = '\x1b[1m';
 const OFF = '\x1b[0m';
@@ -418,6 +465,11 @@ async function main() {
   for (const v of tokens.details) {
     console.log(`        ${DIM}${basename}.css:${v.line}${OFF}  ${v.type}  ${v.value}`);
     console.log(`        ${DIM}${v.message}${OFF}`);
+  }
+  for (const w of tokens.waived ?? []) {
+    console.log(
+      `        ${YELLOW}waived${OFF}  ${DIM}${basename}.css:${w.line}${OFF}  ${w.type}  ${w.value}  ${DIM}— ${w.reason}${OFF}`,
+    );
   }
 
   // Standards + package share a { checks: [{check, passed, message}] } shape

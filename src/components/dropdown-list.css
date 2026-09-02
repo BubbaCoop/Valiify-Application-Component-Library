@@ -40,6 +40,7 @@
     @apply border border-stroke-divider bg-surface-paper;
     /* Library extension + its required shadow strategy — see header. */
     overflow: clip;
+    /* static-ok(hardcoded-color): the Figma shadow is raw — bound to no effect variable (designer list); no token exists to use */
     filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
   }
 }

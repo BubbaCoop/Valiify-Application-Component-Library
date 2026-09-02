@@ -86,7 +86,7 @@
     @apply bg-action-active;
   }
   /* Faithful reproduction of the near-invisible Focused swap (designer list). */
-  .tab-portal[aria-selected="true"]:hover {
+  .tab-portal[aria-selected="true"]:hover:not(:disabled) {
     @apply bg-action-focused;
   }
 
@@ -97,7 +97,7 @@
     box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
   }
   /* Ring deliberately unchanged on hover — only the fill washes. */
-  .tab-application:hover:not([aria-selected="true"]) {
+  .tab-application:hover:not([aria-selected="true"]):not(:disabled) {
     @apply bg-action-hover;
   }
   /* Source order after the shared active rule so the crimson ink wins. */
