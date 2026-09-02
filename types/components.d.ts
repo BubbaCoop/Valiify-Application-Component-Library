@@ -46,5 +46,31 @@ export type BadgeClass = "badge";
 // BoxAction component classes
 export type BoxActionClass = "box-action";
 
+// Tabs component classes
+export type TabsClass = "tabs";
+
+// Header component classes
+export type HeaderClass = "header";
+
+// RadioField component classes
+export type RadioFieldClass = "radio-field";
+
+// Skeleton component classes
+export type SkeletonClass = "skeleton";
+
+// Owner component classes
+export type OwnerClass = "owner";
+
+// OwnerContainer component classes
+export type OwnerContainerClass =
+  | "owner-container"
+  | "owner-container-info"
+  | "owner-container-title"
+  | "owner-container-name"
+  | "owner-container-percent"
+  | "owner-container-contact"
+  | "owner-container-contact-text"
+  | "owner-container-actions";
+
 // Union of all component classes
-export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass;
+export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass | TabsClass | HeaderClass | RadioFieldClass | SkeletonClass | OwnerClass | OwnerContainerClass;

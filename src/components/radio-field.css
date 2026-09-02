@@ -1,0 +1,84 @@
+/**
+ * RadioField Component
+ *
+ * A labeled radio-group form field. Extracted from Figma Radio Fields
+ * (123:6059) — 6 declared variants (Filled × Hover × Focus), all 413×65.
+ *
+ *   <fieldset class="radio-field">
+ *     <legend class="radio-field-title">Title</legend>
+ *     <div class="radio-field-options">
+ *       <label class="radio-field-option">
+ *         <input type="radio" name="q" class="radio" />
+ *         Yes
+ *       </label>
+ *       <label class="radio-field-option">
+ *         <input type="radio" name="q" class="radio" />
+ *         No
+ *       </label>
+ *     </div>
+ *   </fieldset>
+ *
+ * THE FIGMA STATE AXES ARE UNWIRED — verified three ways: all six variants
+ * bind identical variables, share identical structure, and render
+ * byte-identical pixels (0-diff; "Filled" checks nothing, hover/focus draw
+ * nothing). The axes exist as labels only. Accordingly this CSS defines NO
+ * field-level states: all real interaction comes from the composed .radio
+ * (native :hover tints, :checked crimson, :focus-visible ring). Top
+ * designer-list item for this component.
+ *
+ * Geometry (65 = 25 title block + 40 actions row):
+ *   title row    Labels/Strong 14/500/20 in Text/Secondary, 5px bottom
+ *                padding, optional trailing 18px helper-icon slot (hidden in
+ *                every Figma variant — its recent redesign could not be
+ *                verified from this set; currently a chevron-left glyph,
+ *                which looks like a placeholder. Designer list.)
+ *   actions row  40px tall, options 24px apart, 8px radio-to-label gap,
+ *                option text Input 16/400/24
+ *
+ * Option label ink is RAW #000000 in Figma — the only raw black in the file;
+ * shipped as Text/Primary (#1a1a1a), the library's actual ink (designer
+ * list). The Figma "Bottom Label" block has broken authored geometry
+ * (absolute, bottom:-59px, right:-313%) and is unexercised — .radio-field-hint
+ * ships as a normal flow element instead, a labeled correction.
+ *
+ * Not modelled (and in this case not even wired): error, disabled. No Error
+ * axis exists here unlike the sibling text fields.
+ */
+
+@layer components {
+  .radio-field {
+    @apply m-0 flex min-w-0 flex-col border-0 p-0;
+  }
+
+  .radio-field-title {
+    @apply flex w-full items-center gap-1 pb-1.25; /* 5px */
+    @apply text-label-strong text-content-secondary;
+  }
+
+  /* Optional 18px helper-icon slot in the title row (hidden in every Figma
+     variant — geometry from the layer data; glyph is the caller's). */
+  .radio-field-help {
+    @apply size-4.5 shrink-0 cursor-pointer text-neutral-disabled;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .radio-field-options {
+    @apply flex h-10 items-center gap-6; /* 40px row, 24px between options */
+  }
+
+  .radio-field-option {
+    @apply inline-flex cursor-pointer items-center gap-2; /* 8px */
+    /* Figma authors raw #000000 here — shipped as the library ink. */
+    @apply text-input text-content-primary;
+  }
+
+  /* Figma's bottomContent boolean — its authored geometry is broken
+     (absolute/-59px/-313%); shipped as normal flow, a labeled correction. */
+  .radio-field-hint {
+    @apply pt-1.25 text-help-caption text-content-secondary;
+  }
+}
