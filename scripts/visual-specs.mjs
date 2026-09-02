@@ -762,8 +762,9 @@ export const SPECS = {
           expect: "2px",
         },
 
-        // NOT ASSERTED: disabled (Figma models none; cursor only) and
-        // pressed/focus variants (none exist on the axis).
+        // NOT ASSERTED: disabled (cursor only); the PRESSED ramp added in the
+        // 2026-09-02 rework (Neutral/Pressed glyph both ramps, Action/Focused halo)
+        // — the harness cannot hold :active; pinned from the variable diff.
       ],
     },
   },
@@ -1201,6 +1202,323 @@ export const SPECS = {
     },
   },
 
+  // ------------------------------------------------------------------ Header
+  Header: {
+    figma:
+      "Header 550:7507 — Web/Mobile variants (label + width only). Sticky, full width, and the 768px breakpoint are labeled library extensions.",
+    variants: 2,
+    stories: {
+      // Harness default viewport is 1100×900 — above the 768px breakpoint,
+      // so the DESKTOP side renders; the mobile side is asserted hidden.
+      "components-header--interactive": [
+        { label: "height 60", sel: ".header", get: "height", expect: 60 },
+        {
+          label: "fill Paper",
+          sel: ".header",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "bottom border Stroke/Divider 1px (real border — pinned height absorbs it)",
+          sel: ".header",
+          get: "border-bottom-width",
+          expect: "1px",
+        },
+        {
+          label: "bottom border colour",
+          sel: ".header",
+          get: "border-bottom-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        { label: "sticky", sel: ".header", get: "position", expect: "sticky" },
+        { label: "top 0", sel: ".header", get: "top", expect: "0px" },
+        { label: "z-index 40 (library decision)", sel: ".header", get: "z-index", expect: "40" },
+        { label: "padding-x 20", sel: ".header", get: "padding-left", expect: "20px" },
+        { label: "logo slot 30 tall", sel: ".header-logo", get: "height", expect: 30 },
+        {
+          label: "logo absolutely centered (holds true center)",
+          sel: ".header-logo",
+          get: "position",
+          expect: "absolute",
+        },
+        {
+          label: "desktop selector participates in flex (display: contents wrapper)",
+          sel: ".header-desktop",
+          get: "display",
+          expect: "contents",
+        },
+        {
+          label: "mobile selector hidden above the breakpoint",
+          sel: ".header-mobile",
+          get: "display",
+          expect: "none",
+        },
+        // Header must not cascade onto the composed TextSelector.
+        {
+          label: "composed text-selector keeps its own label token",
+          sel: ".header .text-selector-label",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+      ],
+    },
+  },
+
+  // -------------------------------------------------------------- RadioField
+  RadioField: {
+    figma:
+      "Radio Fields 123:6059 — 6 declared variants; ALL state axes unwired (three-lane-verified 0-pixel diffs). Real states come from the composed .radio.",
+    variants: 6,
+    stories: {
+      "components-radiofield--interactive": [
+        {
+          label: "title Labels/Strong 500 in Text/Secondary",
+          sel: ".radio-field-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "title weight 500",
+          sel: ".radio-field-title",
+          get: "font-weight",
+          expect: "500",
+        },
+        {
+          label: "title bottom padding 5",
+          sel: ".radio-field-title",
+          get: "padding-bottom",
+          expect: "5px",
+        },
+        {
+          label: "actions row 40 tall",
+          sel: ".radio-field-options",
+          get: "height",
+          expect: 40,
+        },
+        { label: "options 24 apart", sel: ".radio-field-options", get: "gap", expect: "24px" },
+        { label: "radio-to-label 8", sel: ".radio-field-option", get: "gap", expect: "8px" },
+        {
+          label: "option text Input 16px",
+          sel: ".radio-field-option",
+          get: "font-size",
+          expect: "16px",
+        },
+        {
+          label: "option ink Text/Primary (Figma's raw #000 not copied — designer list)",
+          sel: ".radio-field-option",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "composed radio is the shipped 20px control",
+          sel: ".radio-field .radio",
+          get: "width",
+          expect: 20,
+        },
+        {
+          label: "the field itself draws no box (unwired axes reproduced as absence)",
+          sel: ".radio-field",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+      ],
+      "components-radiofield--filled": [
+        // Figma's Filled axis renders nothing; ours is the real checked input.
+        {
+          label: "checked radio renders the crimson ring (native, from .radio)",
+          sel: ".radio-field .radio",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary" },
+        },
+      ],
+    },
+  },
+
+  // -------------------------------------------------------------------- Tabs
+  Tabs: {
+    figma: "Tabs 23:825 — 7 variants: Type {Portal, Application} × Hover × Active",
+    variants: 7,
+    stories: {
+      // BothTypes: portal row (nth 0 selected, 1 rest) then application row
+      // (nth 2 selected, 3 rest) across .tab
+      "components-tabs--both-types": [
+        // Height 34 at every state pins the inset-shadow decision — a real
+        // border would render the bordered Application type at 36.
+        { label: "portal height 34", sel: ".tab-portal", get: "height", expect: 34 },
+        { label: "application height 34 (the inset-shadow check)", sel: ".tab-application", get: "height", expect: 34 },
+        { label: "padding-x 12", sel: ".tab", get: "padding-left", expect: "12px" },
+        { label: "padding-y 7", sel: ".tab", get: "padding-top", expect: "7px" },
+        { label: "gap 8", sel: ".tab", get: "gap", expect: "8px" },
+        { label: "radius 4", sel: ".tab", get: "border-radius", expect: "4px" },
+        { label: "icon 16", sel: ".tab svg", get: "width", expect: 16 },
+        {
+          label: "no text-transform (Labels styles carry none)",
+          sel: ".tab",
+          get: "text-transform",
+          expect: "none",
+        },
+        // Portal selected (nth 0), portal rest (nth 1)
+        {
+          label: "portal active wash Action/Active",
+          sel: ".tab-portal",
+          get: "background-color",
+          expect: { token: "--color-action-active" },
+        },
+        {
+          label: "portal active weight 500",
+          sel: ".tab-portal",
+          get: "font-weight",
+          expect: "500",
+        },
+        {
+          label: "portal active+hover steps to Action/Focused (near-invisible but two real tokens)",
+          sel: ".tab-portal",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-action-focused" },
+        },
+        {
+          label: "portal rest has NO box",
+          sel: ".tab-portal",
+          nth: 1,
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "portal rest has no ring",
+          sel: ".tab-portal",
+          nth: 1,
+          get: "box-shadow",
+          expect: "none",
+        },
+        {
+          label: "portal rest ink Secondary",
+          sel: ".tab-portal",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "portal hover ink Primary, weight UNCHANGED",
+          sel: ".tab-portal",
+          nth: 1,
+          get: "font-weight",
+          hover: true,
+          expect: "400",
+        },
+        // Application selected (nth 0 in its row = overall .tab-application nth 0)
+        {
+          label: "application active ink Primary/Text",
+          sel: ".tab-application",
+          get: "color",
+          expect: { token: "--color-primary-text" },
+        },
+        {
+          label: "application active fill Primary/BG",
+          sel: ".tab-application",
+          get: "background-color",
+          expect: { token: "--color-primary-bg" },
+        },
+        {
+          label: "application active ring Primary",
+          sel: ".tab-application",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary" },
+        },
+        // The undrawn combination: hover must not restyle the selected tab.
+        {
+          label: "application active+hover excluded (undrawn in Figma)",
+          sel: ".tab-application",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-primary-bg" },
+        },
+        // Application rest (nth 1)
+        {
+          label: "application rest fill Paper",
+          sel: ".tab-application",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "application rest ring Stroke/Divider",
+          sel: ".tab-application",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "application hover fill Action/Hover, ring UNCHANGED",
+          sel: ".tab-application",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          hover: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "no real border anywhere",
+          sel: ".tab-application",
+          get: "border-top-width",
+          expect: "0px",
+        },
+      ],
+    },
+  },
+
+  // ---------------------------------------------------------------- Skeleton
+  Skeleton: {
+    figma:
+      "Skeleton 525:4650 (16 shapes) + written spec 550:7998 (authoritative for the size matrix, radii, animation)",
+    variants: 16,
+    stories: {
+      "components-skeleton--all-shapes": [
+        // Radius groups — one probe per group.
+        { label: "text radius 4", sel: ".skeleton-text", get: "border-radius", expect: "4px" },
+        { label: "button radius 6", sel: ".skeleton-button", get: "border-radius", expect: "6px" },
+        { label: "card radius 8", sel: ".skeleton-card", get: "border-radius", expect: "8px" },
+        { label: "badge radius 10 (rounded-xl override)", sel: ".skeleton-badge", get: "border-radius", expect: "10px" },
+        {
+          label: "avatar fully round",
+          sel: ".skeleton-avatar",
+          get: "border-radius",
+          not: true,
+          expect: "10px",
+        },
+        // Spot dimensions across the matrix (md defaults).
+        { label: "text md 200×16", sel: ".skeleton-text", get: "width", expect: 200 },
+        { label: "heading md 24 tall", sel: ".skeleton-heading", get: "height", expect: 24 },
+        { label: "input md 330×60", sel: ".skeleton-input", get: "width", expect: 330 },
+        { label: "card md 158 tall", sel: ".skeleton-card", get: "height", expect: 158 },
+        { label: "switch md 36×20", sel: ".skeleton-switch", get: "width", expect: 36 },
+        { label: "radio md 20", sel: ".skeleton-radio", get: "width", expect: 20 },
+        // The fill: raw #f1f1f4 — the written spec names a variable that does
+        // NOT exist in the file (verified by full enumeration). Literal
+        // comparison is correct here; tokenize when the designer adds it.
+        {
+          label: "fill raw #f1f1f4 (no matching variable exists — designer list)",
+          sel: ".skeleton",
+          get: "background-color",
+          expect: "rgb(241, 241, 244)",
+        },
+        // NOTE: the pulse animation is deliberately NOT asserted here — the
+        // harness freezes animations to keep colour reads deterministic. The
+        // 2s ease-in-out 1→0.4 spec is pinned in CSS per the written spec.
+      ],
+      "components-skeleton--all-sizes": [
+        { label: "avatar sm 32", sel: ".skeleton-avatar", get: "width", expect: 32 },
+        { label: "avatar md 40", sel: ".skeleton-avatar", nth: 1, get: "width", expect: 40 },
+        { label: "avatar lg 56", sel: ".skeleton-avatar", nth: 2, get: "width", expect: 56 },
+        { label: "button sm 64×32", sel: ".skeleton-button", get: "width", expect: 64 },
+        { label: "button lg 128×40", sel: ".skeleton-button", nth: 2, get: "width", expect: 128 },
+      ],
+    },
+  },
+
   // ------------------------------------------------------------ TextSelector
   TextSelector: {
     figma: "Text Selector 1:489 — 12 variants: Hover × Active × Mobile (duplicate hover columns resolved as hover vs open)",
@@ -1391,6 +1709,210 @@ export const SPECS = {
         // (authored 16 vs a 15px 1x-raster read) — the 16px assertion above
         // pins the authored-metadata resolution.
       ],
+    },
+  },
+
+  // ------------------------------------------------------------------- Owner
+  Owner: {
+    figma: "Owner 261:13225 — 3 variants: Type {individual, Add, company}, all 34×34, no state axis",
+    variants: 3,
+    stories: {
+      // AllTypes order: 0 user (individual) · 1 plus (Add) · 2 building (company)
+      "components-owner--all-types": [
+        { label: "tile 34×34", sel: ".owner", get: "width", expect: 34 },
+        { label: "tile height 34", sel: ".owner", get: "height", expect: 34 },
+        {
+          label: "radius 4px (authored wins over the 1x arc under-read)",
+          sel: ".owner",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "fill Neutral/BG",
+          sel: ".owner",
+          get: "background-color",
+          expect: { token: "--color-neutral-bg" },
+        },
+        {
+          label: "no border on any tile (Add scanned NOT dashed)",
+          sel: ".owner",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        { label: "glyph 18px", sel: ".owner svg", get: "width", expect: 18 },
+        {
+          label: "glyph ink Neutral/Base",
+          sel: ".owner",
+          get: "color",
+          expect: { token: "--color-neutral" },
+        },
+        // The Type axis is a glyph swap and NOTHING else — the Add and
+        // company tiles must compute identically to individual.
+        {
+          label: "Add tile fill identical (variant = glyph swap only)",
+          sel: ".owner",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-neutral-bg" },
+        },
+        {
+          label: "company tile ink identical",
+          sel: ".owner",
+          nth: 2,
+          get: "color",
+          expect: { token: "--color-neutral" },
+        },
+
+        // NOT ASSERTED: states (Figma models none — the tile is static
+        // decoration); initials/text (no text layer exists in any variant —
+        // Owner is icon-only, unlike the circular Avatar).
+      ],
+    },
+  },
+
+  // --------------------------------------------------------- OwnerContainer
+  OwnerContainer: {
+    figma:
+      "Owner Container 274:258 — 2 variants: Property 1 {Person, Company}, 509×92.5, zero deltas beyond glyph + copy",
+    variants: 2,
+    stories: {
+      "components-ownercontainer--person": [
+        {
+          label: "row height 92.5 (92 content + 0.5 hairline; fractional must survive)",
+          sel: ".owner-container",
+          get: "height",
+          expect: 92.5,
+        },
+        { label: "padding x 20", sel: ".owner-container", get: "padding-left", expect: "20px" },
+        { label: "padding y 16", sel: ".owner-container", get: "padding-top", expect: "16px" },
+        { label: "gap 16 tile→info", sel: ".owner-container", get: "gap", expect: "16px" },
+        {
+          label: "divider is a box-shadow, never a border (floor-to-1px trap)",
+          sel: ".owner-container",
+          get: "border-bottom-width",
+          expect: "0px",
+        },
+        {
+          label: "divider shadow carries Stroke/Divider",
+          sel: ".owner-container",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "row draws no background (bare list row, not a card)",
+          sel: ".owner-container",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        { label: "title row pinned 34", sel: ".owner-container-title", get: "height", expect: 34 },
+        {
+          label: "contact row pinned 18",
+          sel: ".owner-container-contact",
+          get: "height",
+          expect: 18,
+        },
+        {
+          label: "name ink Content/Primary",
+          sel: ".owner-container-name",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "name type title-medium 16px",
+          sel: ".owner-container-name",
+          get: "font-size",
+          expect: "16px",
+        },
+        {
+          label: "name weight 500",
+          sel: ".owner-container-name",
+          get: "font-weight",
+          expect: "500",
+        },
+        {
+          label: "percent same style as name (single title-level binding; medium confidence)",
+          sel: ".owner-container-percent",
+          get: "font-size",
+          expect: "16px",
+        },
+        {
+          label: "percent ink Content/Primary",
+          sel: ".owner-container-percent",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "contact ink Content/Secondary",
+          sel: ".owner-container-contact",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "contact type help-caption 12px",
+          sel: ".owner-container-contact",
+          get: "font-size",
+          expect: "12px",
+        },
+        {
+          label: "badge hidden by default (Figma's tag boolean, default false)",
+          sel: ".owner-container .badge",
+          get: "display",
+          expect: "none",
+        },
+        {
+          label: "composed Owner tile 34px",
+          sel: ".owner-container .owner",
+          get: "width",
+          expect: 34,
+        },
+        {
+          label: "actions gap 12",
+          sel: ".owner-container-actions",
+          get: "gap",
+          expect: "12px",
+        },
+        {
+          label: "composed Edit is the shipped micro button (12px row)",
+          sel: ".owner-container .btn-micro",
+          get: "height",
+          expect: 12,
+        },
+        {
+          label: "composed delete is IconButton sm+State (18px box)",
+          sel: ".owner-container .icon-button",
+          get: "width",
+          expect: 18,
+        },
+      ],
+      "components-ownercontainer--company": [
+        // Person vs Company must be computationally identical — glyph + copy only.
+        {
+          label: "Company row height identical 92.5",
+          sel: ".owner-container",
+          get: "height",
+          expect: 92.5,
+        },
+        {
+          label: "Company name style identical",
+          sel: ".owner-container-name",
+          get: "font-size",
+          expect: "16px",
+        },
+      ],
+      "components-ownercontainer--with-badge": [
+        {
+          label: "unhidden badge renders (the tag boolean on)",
+          sel: ".owner-container .badge",
+          get: "height",
+          expect: 16,
+        },
+      ],
+
+      // NOT ASSERTED: row states (Figma models none — hover/selected/disabled
+      // do not exist on either axis); long-name truncation (applied as the
+      // library convention, no Figma variant tests overflow); the Figma glyph
+      // layer misnames (ships #pencil / #trash-2 regardless — designer list).
     },
   },
 };

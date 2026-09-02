@@ -265,6 +265,46 @@ across `Active` × `Hover` × `Pressed` × `Disabled`, all 18×18.
 </label>
 ```
 
+#### Header
+
+The application shell header. Extracted from Figma Header (550:7507) — Web
+(1410×60) / Mobile (375×60) variants, which differ **only** by frame width
+and the TextSelector's label ("English" → "EN").
+
+- **Base**: `.header` — 60px pinned, `BG/Paper`, 1px `Stroke/Divider` bottom
+  border (a real border: pinned height + border-box absorbs it), 20px
+  x-padding
+- **Parts**: `.header-logo` (caller asset slot, 30px tall, absolutely
+  centered — its crimson #CD1041 is the client brand asset's own colour,
+  deliberately untokenized), plus the composed `.text-selector`
+- **Breakpoint helpers**: `.header-desktop` / `.header-mobile` wrappers —
+  render both selector labels; the 768px media query switches them
+
+> **Three labeled library extensions** (the consumer contract; Figma models
+> none): `position: sticky; top: 0; z-index: 40` (first z-index in the
+> library — establish a scale when overlay components land), full width, and
+> the 768px breakpoint. No scrolled shadow — Figma draws none.
+> **The helpers are `display: contents` wrappers, not classes on
+> `.text-selector`** — header.css sorts before text-selector.css, so
+> equal-specificity display rules on the same element would lose by import
+> order.
+> **Sticky sticks to the nearest scrolling ancestor** — mount as a direct
+> child of the scroll container or both contract behaviours silently break.
+
+```html
+<header class="header">
+  <img class="header-logo" src="/logo.svg" alt="Alabama Credit Union" />
+  <span class="header-desktop">
+    <button class="text-selector" aria-haspopup="listbox" aria-expanded="false">
+      <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+      <span class="text-selector-label">English</span>
+      <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+    </button>
+  </span>
+  <span class="header-mobile"><!-- same, label "EN" --></span>
+</header>
+```
+
 #### IconButton
 
 Compact icon-only button. Extracted from Figma "icon button" (1:429) — 16
@@ -284,13 +324,15 @@ variants across `Size` × `Type` × `Hover` × `Subtle`.
 
 > **Always give an icon-only button an `aria-label`.**
 > **md as the bare default is a library choice** — Figma names no default Size.
-> **Two Figma authoring slips shipped as the consistent reading** (both
-> 3-lane-confirmed, both on the designer list): `23:723` (md/State/rest) binds
-> the muted `Neutral/Disabled` against all its siblings' `Neutral/Base`;
-> `23:725` hand-shrinks its glyph to 14px against three 18px siblings.
+> **Revised 2026-09-02 (Neutral-ramp rework)**: a Pressed axis was added —
+> `:active` binds the new `Neutral/Pressed` for **both** ramps (pressing a
+> Subtle button reaches full-strength ink), and the State type's pressed halo
+> deepens to `Action/Focused`. `Neutral/Hover` also darkened (#484b4f). The
+> old `23:723` rest-binding slip **was fixed by the designer**; still open:
+> `23:725`'s hand-shrunk glyph (shipped 18px).
 > **Legibility flag**: the Subtle rest glyph is very faint over white.
-> **Not modelled, not invented**: Disabled (cursor only), Pressed, Focus
-> (library `focus-ring`).
+> **Not modelled, not invented**: Disabled (cursor only), Focus (library
+> `focus-ring`).
 
 ```html
 <button class="icon-button" aria-label="Close">
@@ -306,6 +348,48 @@ variants across `Size` × `Type` × `Hover` × `Subtle`.
 <button class="icon-button icon-button-sm icon-button-subtle" aria-label="Help">
   <svg aria-hidden="true"><use href="#circle-help" /></svg>
 </button>
+```
+
+#### Skeleton
+
+Loading placeholders mirroring real components. Extracted from Figma Skeleton
+(525:4650, **16 shapes**) plus the authored written spec (550:7998) — the
+authority for the SM/MD/LG matrix, per-shape radii, and the animation.
+
+- **Base**: `.skeleton` — fill + pulse only; **both a shape and a size class
+  are required** (dimensions are a 16×3 matrix, not one box at three scales)
+- **Shapes**: `-text -heading -circle -rectangle -button -input -textarea
+  -card -switch -checkbox -badge -listitem -tab -avatar -dropdown -radio`
+- **Sizes**: `-sm -md -lg` — written-spec defaults; widths stretch freely
+  (`w-full` just works — consumer utilities win), heights stay near defaults
+
+| radius | shapes |
+| --- | --- |
+| 4px | text, heading, checkbox |
+| 6px | button, input, textarea, tab, dropdown |
+| 8px | rectangle, card |
+| 10px | badge, switch |
+| full | circle, avatar, radio |
+
+> **The fill is raw `#f1f1f4`** — the written spec names a "Surface/Neutral"
+> variable that does not exist in this file's collection (verified by full
+> Plugin API enumeration; the name matches the dashboard-era palette). Ships
+> as `--skeleton-fill` for overridability; tokenize when the variable lands.
+> Designer list.
+> **The pulse is the written spec's, not Tailwind's `animate-pulse`** — 2s
+> ease-in-out, opacity 1→0.4→1 (Tailwind's floors at 0.5 on a different
+> curve). Instances pulse in sync for free; do NOT stagger with
+> animation-delay — the spec rules it out. Reduced-motion guard lives inside
+> `@layer components` (the dashboard's one cascade leak, not repeated).
+> **Accessibility**: each `.skeleton` is `aria-hidden` decoration; the
+> CONTAINER carries `role="status"`, `aria-busy="true"` and a label.
+
+```html
+<div role="status" aria-busy="true" aria-label="Loading profile">
+  <span class="skeleton skeleton-circle skeleton-lg" aria-hidden="true"></span>
+  <span class="skeleton skeleton-heading skeleton-lg" aria-hidden="true"></span>
+  <span class="skeleton skeleton-text skeleton-md w-full" aria-hidden="true"></span>
+</div>
 ```
 
 #### Switch
@@ -399,6 +483,48 @@ The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
 </div>
 ```
 
+#### RadioField
+
+Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
+— 6 declared variants across `Filled` × `Hover` × `Focus`.
+
+- **Parts**: `.radio-field` (a `<fieldset>`), `.radio-field-title` (a
+  `<legend>`, Labels/Strong 14/500, `Text/Secondary`, optional
+  `.radio-field-help` 18px icon slot), `.radio-field-options` (40px row,
+  24px apart), `.radio-field-option` (a `<label>` composing the shipped
+  `.radio`, 8px gap, Input 16/400), `.radio-field-hint` (optional, 12/400)
+- **States: none at field level, deliberately** — see below
+
+> **Figma's state axes are UNWIRED — verified three independent ways**: all
+> six variants bind identical variables, share identical structure, and
+> render byte-identical pixels (`Filled` checks nothing; hover/focus draw
+> nothing). All real interaction ships from the composed `.radio` (native
+> tints, crimson `:checked`, focus-ring). Top designer-list item.
+> **The helper icon is hidden in every Figma variant** — its recent redesign
+> could not be verified from this set, and the current glyph is a
+> chevron-left (reads as a placeholder). Designer list.
+> **Option ink is raw `#000000` in Figma** (the file's only raw black) —
+> shipped as `Text/Primary`; designer list. The `bottomContent` block's
+> authored geometry is broken (absolute −59px/−313%) — `.radio-field-hint`
+> ships in normal flow as a labeled correction.
+> No Error axis exists (unlike the sibling text fields), no disabled.
+
+```html
+<fieldset class="radio-field">
+  <legend class="radio-field-title">Do you have an existing account?</legend>
+  <div class="radio-field-options">
+    <label class="radio-field-option">
+      <input type="radio" name="existing" class="radio" checked />
+      Yes
+    </label>
+    <label class="radio-field-option">
+      <input type="radio" name="existing" class="radio" />
+      No
+    </label>
+  </div>
+</fieldset>
+```
+
 #### SelectCard
 
 Selectable / navigational option card. Extracted from Figma Card (9:367) —
@@ -449,6 +575,46 @@ Selectable / navigational option card. Extracted from Figma Card (9:367) —
 </button>
 ```
 
+#### Tabs
+
+Chip-style tab item, two types. Extracted from Figma Tabs (23:825) — 7
+variants: `Type` {Portal, Application} × `Hover` × `Active`.
+
+- **Base**: `.tab` — layout + shared ink ramp; **a type class is required**
+- **Types**: `.tab-portal` (ghost — bare until active, then a neutral
+  `Action/Active` wash), `.tab-application` (always boxed — Paper +
+  `Stroke/Divider` ring, crimson when active)
+- **Row**: `.tabs` — **unsourced structural extension** (no tablist frame in
+  Figma yet)
+- **States**: `:hover` (ink preview, weight unchanged),
+  `[aria-selected="true"]` (ink + weight 400→500), `:focus-visible`
+- **Geometry**: 34px hug (7+7+20), 12/7 padding, 8px gap, 4px radius, 16px
+  caller icon slot
+
+> **No underline exists** — every active cue is fill/ring/ink
+> (pixel-verified; the dashboard's underline-tab instincts don't apply).
+> **The Application ring is an inset box-shadow**: height is hug-driven, so a
+> real border would render 36px, not the drawn 34.
+> **Portal active+hover is a near-invisible token swap** (`Action/Active` →
+> `Action/Focused`, Δ6/255) — reproduced faithfully; designer list.
+> **Application active+hover is undrawn** — the hover rule excludes the
+> selected tab by name.
+> **The active weight step reflows the hug ~1px** (Figma's own; designer
+> list). Not modelled, not invented: disabled, pressed.
+
+```html
+<div class="tabs" role="tablist" aria-label="Application steps">
+  <button class="tab tab-application" role="tab" aria-selected="true">
+    <svg aria-hidden="true"><use href="#user" /></svg>
+    Your details
+  </button>
+  <button class="tab tab-application" role="tab" aria-selected="false">
+    <svg aria-hidden="true"><use href="#banknote" /></svg>
+    Funding
+  </button>
+</div>
+```
+
 #### TextSelector
 
 Language-picker dropdown trigger. Extracted from Figma Text Selector (1:489) —
@@ -484,6 +650,88 @@ Language-picker dropdown trigger. Extracted from Figma Text Selector (1:489) —
   <span class="text-selector-label">English</span>
   <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
 </button>
+```
+
+#### Owner
+
+Icon-in-a-box owner marker. Extracted from Figma Owner (261:13225) — 3
+variants on one `Type` axis {individual, Add, company}, all 34×34, **no state
+axis**.
+
+- **Base**: `.owner` — 34px rounded square (**4px radius — NOT a circle**;
+  deliberately distinct from the circular, initials-only Avatar), `Neutral/BG`
+  fill, glyph in `Neutral/Base`
+- **One class, no type modifiers** — the three Figma variants are
+  byte-identical at the token level and differ only by glyph; the glyph is a
+  caller slot (IconButton precedent): `#user` / `#plus` / `#building`
+
+> **No stroke on any variant** — the Add tile was pixel-scanned for a dashed
+> ring and has none. **Icon-only forever** — no text layer exists in any
+> variant. Static decoration: never a button, no states drawn or invented.
+> Geometry closes exactly (8+18+8 = 34); shipped as a pinned flex box.
+
+```html
+<span class="owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
+<span class="owner"><svg aria-hidden="true"><use href="#plus" /></svg></span>
+<span class="owner"><svg aria-hidden="true"><use href="#building" /></svg></span>
+```
+
+#### OwnerContainer
+
+One row in the owners list. Extracted from Figma Owner Container (274:258) —
+2 variants (`Property 1` = Person / Company), 509×92.5, **no state axis**.
+
+- **Parts**: `.owner-container` (the row), `.owner-container-info` (column),
+  `.owner-container-title` (34px pinned row: `.owner-container-name` flex-1
+  truncating + optional `.badge` + `.owner-container-percent`),
+  `.owner-container-contact` (18px pinned row: `.owner-container-contact-text`
+  flex-1 + `.owner-container-actions`)
+- **Pure composition, no variant classes** — Person vs Company differ ONLY by
+  the Owner glyph and copy (zero variable/structural deltas, lane-verified).
+  Composes the shipped Owner, Badge, `.btn-micro` (Edit) and
+  `.icon-button-sm.icon-button-state` (delete) unmodified.
+
+> **The divider is a 0.5px inset box-shadow, height pinned `h-[92.5px]`** —
+> Figma draws a bottom-only 0.5px `Stroke/Divider` hairline (pixel-confirmed
+> at half coverage); a border would be floored to 1px AND add height. Math:
+> 16+34+8+18+16 = 92, + 0.5. A Gate-0 metadata read said 94.5 — three
+> independent reads + arithmetic + pixels say 92.5 (the 94.5 matches the
+> hairline-adds-2px trap applied to a rendered read); designer list.
+> **No background, side borders, or radius** — a bare list row (ListItem
+> posture), not a card. Width is the caller's (509 is the sample hug).
+> **Actions live IN the contact row** (342+8+69 = 419 exactly), trailing the
+> text. The delete button is icon-only — always give it an `aria-label`.
+> **The badge is Figma's `tag` boolean, hidden by default** — toggle the
+> `hidden` attribute, no modifier class.
+> **Title/contact row heights (34/18) are frame authority** — both exceed
+> their line boxes with no authored padding; Button's h-12 precedent.
+> **Figma's glyph layers are misnamed** ("arrow-right" renders a pencil,
+> "ChevronLeft" a trash can — SelectCard defect class); ships `#pencil` /
+> `#trash-2`. Percent's type style is inferred (single title-level binding,
+> matching ink — medium confidence). Both on the designer list.
+> **Semantics**: a list row with actions, never a button — mount as `<li>` in
+> a list (or `role="listitem"`); only the two nested actions are interactive.
+
+```html
+<div class="owner-container">
+  <span class="owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
+  <div class="owner-container-info">
+    <div class="owner-container-title">
+      <span class="owner-container-name">John Smith</span>
+      <span class="badge" hidden>Optional</span>
+      <span class="owner-container-percent">20%</span>
+    </div>
+    <div class="owner-container-contact">
+      <span class="owner-container-contact-text">(123) 456-7890 · john.smith@valiify.com</span>
+      <div class="owner-container-actions">
+        <button class="btn btn-micro">Edit <svg aria-hidden="true"><use href="#pencil" /></svg></button>
+        <button class="icon-button icon-button-sm icon-button-state" aria-label="Remove John Smith">
+          <svg aria-hidden="true"><use href="#trash-2" /></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 ```
 
 ---

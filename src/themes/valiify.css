@@ -35,8 +35,9 @@
 
   /* Neutral ramp */
   --color-neutral: oklch(0.5508 0.0072 255.51); /* #6f7276 */
-  --color-neutral-hover: oklch(0.471 0.0034 264.53); /* #5a5b5d */
-  --color-neutral-text: oklch(0.516 0.0073 255.51); /* #65686c */
+  --color-neutral-hover: oklch(0.4115 0.0077 255.53); /* #484b4f */
+  --color-neutral-pressed: oklch(0.3114 0.0068 248.05); /* #2e3134 */
+  --color-neutral-text: oklch(0.4699 0.0075 255.52); /* #585b5f */
   --color-neutral-disabled: oklch(0.5508 0.0072 255.51 / 0.6); /* #6f727699 */
   --color-neutral-bg: oklch(0.5508 0.0072 255.51 / 0.078); /* #6f727614 */
   --color-neutral-ring: oklch(0.5508 0.0072 255.51 / 0.22); /* #6f727638 */

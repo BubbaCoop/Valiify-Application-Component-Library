@@ -1,0 +1,53 @@
+/**
+ * Owner Component
+ *
+ * Icon-in-a-box marker for an application owner (person, company, or the
+ * add-owner affordance). Extracted from Figma Owner (261:13225) — 3 variants
+ * on a single Type axis {individual, Add, company}, all 34×34, NO state axis.
+ *
+ *   <span class="owner">
+ *     <svg aria-hidden="true"><use href="#user" /></svg>
+ *   </span>
+ *
+ * ONE CLASS, NO TYPE MODIFIERS — the three Figma variants are byte-identical
+ * at the token level (verified: identical variable maps, identical geometry)
+ * and differ ONLY by which 18px glyph is nested. That is exactly IconButton's
+ * shape, so the glyph is a caller slot: pass #user / #plus / #building (or
+ * any sprite symbol). No .owner-individual/-add/-company classes exist on
+ * purpose.
+ *
+ * A ROUNDED SQUARE, NOT A CIRCLE — 4px radius (authored; the 1x arc-fit
+ * under-reads small radii, authored metadata wins per the Switch-knob
+ * precedent). Deliberately distinct from the circular, initials-only Avatar:
+ * Owner is icon-only and carries no text layer in any variant.
+ *
+ * No stroke exists on any variant — the Add tile was pixel-scanned for a
+ * dashed ring and has none; it is the same flat Neutral/BG tile as the
+ * others, differentiated only by its plus glyph.
+ *
+ * Geometry: Figma authors 8px padding around the 18px glyph (8+18+8 = 34
+ * exactly); shipped as a pinned 34px flex box with a centered glyph — same
+ * result, no derived height.
+ *
+ * Not modelled in Figma, not invented: hover, pressed, disabled, focus —
+ * the tile is static decoration, never interactive. Don't make it a button.
+ */
+
+@layer components {
+  .owner {
+    @apply inline-flex size-8.5 shrink-0 items-center justify-center; /* 34px */
+    @apply rounded-sm bg-neutral-bg text-neutral;
+  }
+
+  /* Glyph slot — any sprite symbol, painted by the tile (IconButton
+     precedent). The sprite's symbols carry no paint attributes, so the
+     Lucide defaults are supplied here. */
+  .owner svg {
+    @apply size-4.5 shrink-0; /* 18px */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}

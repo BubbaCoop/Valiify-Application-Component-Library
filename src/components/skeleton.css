@@ -1,0 +1,170 @@
+/**
+ * Skeleton Component
+ *
+ * Loading placeholders mirroring real components. Extracted from Figma
+ * Skeleton (525:4650, 16 single-size shape variants) PLUS the authored
+ * written spec (550:7998), which is the authority for the SM/MD/LG dimension
+ * matrix, per-shape radii, and the animation contract.
+ *
+ *   <div role="status" aria-busy="true" aria-label="Loading profile">
+ *     <span class="skeleton skeleton-circle skeleton-lg" aria-hidden="true"></span>
+ *     <span class="skeleton skeleton-heading skeleton-lg" aria-hidden="true"></span>
+ *     <span class="skeleton skeleton-text skeleton-md" aria-hidden="true"></span>
+ *   </div>
+ *
+ * BOTH a shape and a size class are required — 16 shapes × 3 sizes, and the
+ * dimensions are a matrix, not one box at three scales.
+ *
+ * Radius is the SHAPE's (mirroring the component each replaces); dimensions
+ * are the SIZE's. Defaults are starting points — the spec says stretch with
+ * fill in layouts ("w-full just works": consumer utilities beat components
+ * in the cascade). Heights should stay near defaults.
+ *
+ * | radius       | shapes                                  |
+ * | ------------ | --------------------------------------- |
+ * | rounded-sm 4 | text, heading, checkbox                 |
+ * | rounded-md 6 | button, input, textarea, tab, dropdown  |
+ * | rounded-lg 8 | rectangle, card                         |
+ * | rounded-xl 10| badge, switch                           |
+ * | rounded-full | circle, avatar, radio                   |
+ *
+ * FILL IS RAW #f1f1f4 — the written spec names a "Surface/Neutral" variable
+ * that does NOT exist in this file's collection (verified by full Plugin API
+ * enumeration; the name matches the dashboard-era palette). Shipped as the
+ * authored literal via --skeleton-fill for overridability; when the designer
+ * adds the real variable, re-extract and tokenize. Designer list.
+ *
+ * ANIMATION (per the written spec, verbatim): pulse 2s ease-in-out infinite,
+ * opacity 1 -> 0.4 -> 1. Deliberately NOT Tailwind's animate-pulse — its
+ * keyframe floors at 0.5 on a cubic-bezier, neither of which matches the
+ * authored spec (same divergence the dashboard documented). Instances pulse
+ * in sync for free (identical animations started together); do NOT add
+ * per-element animation-delay — the spec explicitly rules out staggering.
+ *
+ * The reduced-motion guard lives INSIDE @layer components so it cannot
+ * outrank consumer utilities (the dashboard's one cascade leak, not
+ * repeated). @keyframes stay outside — they are name-scoped, not cascaded.
+ *
+ * Accessibility (library decision, as the dashboard's): each .skeleton is
+ * aria-hidden decoration; the CONTAINER carries role="status",
+ * aria-busy="true" and a label — one announcement, not N grey boxes.
+ */
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@layer components {
+  .skeleton {
+    --skeleton-fill: #f1f1f4; /* authored raw; no matching variable exists */
+    @apply block;
+    background-color: var(--skeleton-fill);
+    animation: skeleton-pulse 2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton {
+      animation: none;
+    }
+  }
+
+  /* --- Shapes (radius) ------------------------------------------------------ */
+
+  .skeleton-text,
+  .skeleton-heading,
+  .skeleton-checkbox {
+    @apply rounded-sm;
+  }
+  .skeleton-button,
+  .skeleton-input,
+  .skeleton-textarea,
+  .skeleton-tab,
+  .skeleton-dropdown {
+    @apply rounded-md;
+  }
+  .skeleton-rectangle,
+  .skeleton-card {
+    @apply rounded-lg;
+  }
+  .skeleton-badge,
+  .skeleton-switch {
+    @apply rounded-xl;
+  }
+  .skeleton-circle,
+  .skeleton-avatar,
+  .skeleton-radio {
+    @apply rounded-full;
+  }
+
+  /* --- Dimensions: shape × size matrix (written-spec defaults) ------------- */
+
+  .skeleton-text.skeleton-sm      { @apply h-3 w-30; }      /* 120×12 */
+  .skeleton-text.skeleton-md      { @apply h-4 w-50; }      /* 200×16 */
+  .skeleton-text.skeleton-lg      { @apply h-5 w-80; }      /* 320×20 */
+
+  .skeleton-heading.skeleton-sm   { @apply h-5 w-40; }      /* 160×20 */
+  .skeleton-heading.skeleton-md   { @apply h-6 w-60; }      /* 240×24 */
+  .skeleton-heading.skeleton-lg   { @apply h-8 w-90; }      /* 360×32 */
+
+  .skeleton-circle.skeleton-sm    { @apply size-8; }        /* 32 */
+  .skeleton-circle.skeleton-md    { @apply size-10; }       /* 40 */
+  .skeleton-circle.skeleton-lg    { @apply size-14; }       /* 56 */
+
+  .skeleton-rectangle.skeleton-sm { @apply h-20 w-30; }     /* 120×80 */
+  .skeleton-rectangle.skeleton-md { @apply h-30 w-50; }     /* 200×120 */
+  .skeleton-rectangle.skeleton-lg { @apply h-45 w-80; }     /* 320×180 */
+
+  .skeleton-button.skeleton-sm    { @apply h-8 w-16; }      /* 64×32 */
+  .skeleton-button.skeleton-md    { @apply h-9 w-24; }      /* 96×36 */
+  .skeleton-button.skeleton-lg    { @apply h-10 w-32; }     /* 128×40 */
+
+  .skeleton-input.skeleton-sm     { @apply h-12 w-70; }     /* 280×48 */
+  .skeleton-input.skeleton-md     { @apply h-15 w-82.5; }   /* 330×60 */
+  .skeleton-input.skeleton-lg     { @apply h-18 w-105; }    /* 420×72 */
+
+  .skeleton-textarea.skeleton-sm  { @apply h-20 w-70; }     /* 280×80 */
+  .skeleton-textarea.skeleton-md  { @apply h-25 w-82.5; }   /* 330×100 */
+  .skeleton-textarea.skeleton-lg  { @apply h-32 w-105; }    /* 420×128 */
+
+  .skeleton-card.skeleton-sm      { @apply h-35 w-70; }     /* 280×140 */
+  .skeleton-card.skeleton-md      { @apply h-39.5 w-82.5; } /* 330×158 */
+  .skeleton-card.skeleton-lg      { @apply h-50 w-105; }    /* 420×200 */
+
+  .skeleton-switch.skeleton-sm    { @apply h-4 w-7; }       /* 28×16 */
+  .skeleton-switch.skeleton-md    { @apply h-5 w-9; }       /* 36×20 */
+  .skeleton-switch.skeleton-lg    { @apply h-6 w-11; }      /* 44×24 */
+
+  .skeleton-checkbox.skeleton-sm  { @apply size-3.5; }      /* 14 */
+  .skeleton-checkbox.skeleton-md  { @apply size-4.5; }      /* 18 */
+  .skeleton-checkbox.skeleton-lg  { @apply size-5.5; }      /* 22 */
+
+  .skeleton-badge.skeleton-sm     { @apply h-4 w-15; }      /* 60×16 */
+  .skeleton-badge.skeleton-md     { @apply h-5 w-20; }      /* 80×20 */
+  .skeleton-badge.skeleton-lg     { @apply h-6 w-25; }      /* 100×24 */
+
+  .skeleton-listitem.skeleton-sm  { @apply h-7 w-70; }      /* 280×28 */
+  .skeleton-listitem.skeleton-md  { @apply h-8 w-82.5; }    /* 330×32 */
+  .skeleton-listitem.skeleton-lg  { @apply h-10 w-105; }    /* 420×40 */
+
+  .skeleton-tab.skeleton-sm       { @apply h-7 w-20; }      /* 80×28 */
+  .skeleton-tab.skeleton-md       { @apply h-8 w-25; }      /* 100×32 */
+  .skeleton-tab.skeleton-lg       { @apply h-9 w-30; }      /* 120×36 */
+
+  .skeleton-avatar.skeleton-sm    { @apply size-8; }        /* 32 */
+  .skeleton-avatar.skeleton-md    { @apply size-10; }       /* 40 */
+  .skeleton-avatar.skeleton-lg    { @apply size-14; }       /* 56 */
+
+  .skeleton-dropdown.skeleton-sm  { @apply h-12 w-70; }     /* 280×48 */
+  .skeleton-dropdown.skeleton-md  { @apply h-15 w-82.5; }   /* 330×60 */
+  .skeleton-dropdown.skeleton-lg  { @apply h-18 w-105; }    /* 420×72 */
+
+  .skeleton-radio.skeleton-sm     { @apply size-4; }        /* 16 */
+  .skeleton-radio.skeleton-md     { @apply size-5; }        /* 20 */
+  .skeleton-radio.skeleton-lg     { @apply size-6; }        /* 24 */
+}

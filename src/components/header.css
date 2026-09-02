@@ -1,0 +1,85 @@
+/**
+ * Header Component
+ *
+ * The application shell header. Extracted from Figma Header (550:7507) —
+ * 2 variants: Web (1410×60) / Mobile (375×60), which differ ONLY by frame
+ * width and the TextSelector's label ("English" → "EN").
+ *
+ *   <header class="header">
+ *     <img class="header-logo" src="/logo.svg" alt="Alabama Credit Union" />
+ *     <span class="header-desktop">
+ *       <button class="text-selector" …>…English…</button>
+ *     </span>
+ *     <span class="header-mobile">
+ *       <button class="text-selector" …>…EN…</button>
+ *     </span>
+ *   </header>
+ *
+ * Shell: 60px pinned, BG/Paper, 1px Stroke/Divider BOTTOM border (a real
+ * border is safe here — explicit height + border-box keeps the 1px inside
+ * the 60; the inset-shadow trick is for fractional strokes and hug heights),
+ * 20px x-padding, right-aligned content row.
+ *
+ * The logo is a CALLER ASSET SLOT (30px tall, width intrinsic), absolutely
+ * centered so it holds true center regardless of the right cluster — its
+ * crimson (#CD1041) is the client brand asset's own, deliberately not a
+ * theme token. The language control is the shipped .text-selector.
+ *
+ * THREE LABELED LIBRARY EXTENSIONS (the consumer contract; Figma models
+ * none of them — designer list):
+ *   - position: sticky, top 0, z-40 (no z-scale exists yet; revisit when
+ *     overlay components land)
+ *   - full width (Figma's 1410/375 are artboards)
+ *   - the 768px breakpoint: .header-desktop / .header-mobile wrappers show
+ *     one of two .text-selector instances. display:contents keeps the
+ *     visible wrapper out of the flex box-model; display:none removes the
+ *     hidden one from render AND the a11y tree. Wrappers, not classes on
+ *     .text-selector itself — header.css sorts before text-selector.css,
+ *     so equal-specificity display rules on the same element would lose
+ *     to its inline-flex by import order.
+ *
+ * Sticky note for consumers: sticks to the nearest SCROLLING ancestor —
+ * mount as a direct child of the scroll container (usually body) or both
+ * the stickiness and the full-bleed width silently break.
+ *
+ * No scrolled-state shadow — Figma draws none; not invented.
+ */
+
+@layer components {
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 40; /* library decision — no z-scale exists yet */
+    @apply flex h-15 w-full items-center justify-end px-5;
+    @apply border-b border-stroke-divider bg-surface-paper;
+  }
+
+  /* Caller asset slot — 30px tall, intrinsic width, true-centered. The
+     sticky header is itself positioned, so it is the containing block. */
+  .header-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    @apply h-7.5 w-auto;
+  }
+
+  /* --- Breakpoint helpers (library extension, 768px — a library decision;
+     Figma names no breakpoint) --------------------------------------------- */
+
+  .header-desktop {
+    display: contents;
+  }
+  .header-mobile {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .header-desktop {
+      display: none;
+    }
+    .header-mobile {
+      display: contents;
+    }
+  }
+}

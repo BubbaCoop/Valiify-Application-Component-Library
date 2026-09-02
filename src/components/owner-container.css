@@ -1,0 +1,105 @@
+/**
+ * OwnerContainer Component
+ *
+ * One row in the owners list: an Owner tile + name/ownership title line +
+ * contact line with trailing edit/delete actions. Extracted from Figma
+ * Owner Container (274:258) — 2 variants (Property 1 = Person / Company),
+ * 509×92.5, NO state axis.
+ *
+ *   <div class="owner-container">
+ *     <span class="owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
+ *     <div class="owner-container-info">
+ *       <div class="owner-container-title">
+ *         <span class="owner-container-name">John Smith</span>
+ *         <span class="badge" hidden>Optional</span>
+ *         <span class="owner-container-percent">20%</span>
+ *       </div>
+ *       <div class="owner-container-contact">
+ *         <span class="owner-container-contact-text">(123) 456-7890 · john.smith@valiify.com</span>
+ *         <div class="owner-container-actions">
+ *           <button class="btn btn-micro">Edit <svg aria-hidden="true"><use href="#pencil" /></svg></button>
+ *           <button class="icon-button icon-button-sm icon-button-state" aria-label="Remove owner">
+ *             <svg aria-hidden="true"><use href="#trash-2" /></svg>
+ *           </button>
+ *         </div>
+ *       </div>
+ *     </div>
+ *   </div>
+ *
+ * PURE COMPOSITION, NO VARIANT CLASSES — Person vs Company differ ONLY by
+ * the Owner tile's glyph and the sample copy (zero variable or structural
+ * deltas, verified across all three lanes). The nested Owner, Badge, Button
+ * (Micro) and IconButton (sm + State) are the shipped components, unmodified.
+ *
+ * THE DIVIDER IS A 0.5px INSET BOX-SHADOW, HEIGHT PINNED h-[92.5px] —
+ * Figma draws a bottom-only 0.5px Stroke/Divider hairline (the pixels
+ * confirm it: the rendered edge composites at half coverage, not the full
+ * 1px value). A border-b would be floored to 1px by Chrome AND add height
+ * past the authored frame; the shadow is layout-inert so the math closes:
+ * 16 pad + 34 title + 8 gap + 18 contact + 16 pad = 92, + 0.5 hairline.
+ *
+ * The row draws NO background, NO side/top borders, NO radius — it is a
+ * bare list row (ListItem's divider posture), not a card. Width is the
+ * caller's (Figma's 509 is the sample hug).
+ *
+ * TITLE/CONTACT ROW HEIGHTS ARE PINNED (34 / 18) — both exceed their text's
+ * line box (20 / 14) with no authored padding responsible; frame authority,
+ * same as Button's h-12 (designer list).
+ *
+ * ACTIONS LIVE IN THE CONTACT ROW — trailing the contact text (Figma:
+ * 342 text + 8 gap + 69 actions = 419 exactly), not a separate column.
+ * Edit is the shipped .btn-micro; delete is .icon-button-sm.icon-button-state
+ * and MUST carry an aria-label (icon-only). The Figma glyph layers are
+ * misnamed ("arrow-right" renders a pencil, "ChevronLeft" a trash can —
+ * SelectCard defect class, designer list); ship #pencil and #trash-2.
+ *
+ * The optional badge is Figma's `tag` boolean, hidden by default — toggle
+ * the `hidden` attribute, no modifier class.
+ *
+ * Semantics: the row is a LIST ROW WITH ACTIONS, never a button — only the
+ * two nested actions are interactive. Not modelled, not invented: hover,
+ * selected, disabled, focus at row level.
+ */
+
+@layer components {
+  .owner-container {
+    /* items-start: tile and info both sit at the 16px top pad in Figma. */
+    @apply flex h-[92.5px] w-full items-start gap-4 px-5 py-4;
+    /* 0.5px bottom hairline — see header; never a border. */
+    box-shadow: inset 0 -0.5px 0 var(--color-stroke-divider);
+  }
+
+  .owner-container-info {
+    @apply flex min-w-0 flex-1 flex-col gap-2;
+  }
+
+  /* Pinned 34px — frame authority, not derived from the 20px line box. */
+  .owner-container-title {
+    @apply flex h-8.5 items-center gap-2;
+  }
+
+  .owner-container-name {
+    @apply min-w-0 flex-1 truncate text-title-medium text-content-primary;
+  }
+
+  /* Same bound style + ink as the name (single title-level binding in
+     Figma; pixel ink matches — medium confidence, designer to confirm). */
+  .owner-container-percent {
+    @apply shrink-0 whitespace-nowrap text-title-medium text-content-primary;
+  }
+
+  /* Pinned 18px — same frame-authority note as the title row. The type is
+     set on the row; the nested actions repaint themselves (btn-micro and
+     icon-button both carry their own ink and type). */
+  .owner-container-contact {
+    @apply flex h-4.5 items-center gap-2 text-help-caption text-content-secondary;
+  }
+
+  .owner-container-contact-text {
+    @apply min-w-0 flex-1 truncate;
+  }
+
+  .owner-container-actions {
+    @apply flex shrink-0 items-center gap-3;
+  }
+}

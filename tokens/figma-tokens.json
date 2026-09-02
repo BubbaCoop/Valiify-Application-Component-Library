@@ -20,6 +20,10 @@
       {
         "nodeId": "(file-level)",
         "name": "Local variable collection 'Collection 1' (Mode 1) — all 77 variables enumerated via the Plugin API, 2026-09-02"
+      },
+      {
+        "nodeId": "(file-level)",
+        "name": "Neutral ramp rework re-enumerated via Plugin API 2026-09-02: Hover 5a5b5d->484b4f, Text 65686c->585b5f, NEW Neutral/Pressed 2e3134 (78 vars total)"
       }
     ],
     "extractedOn": "2026-09-01, completed via Plugin API enumeration 2026-09-02",
@@ -56,8 +60,9 @@
     "Primary/Ring": "#a6192e38",
     "Primary/Track": "#a6192e24",
     "Neutral/Base": "#6f7276",
-    "Neutral/Hover": "#5a5b5d",
-    "Neutral/Text": "#65686c",
+    "Neutral/Hover": "#484b4f",
+    "Neutral/Pressed": "#2e3134",
+    "Neutral/Text": "#585b5f",
     "Neutral/Disabled": "#6f727699",
     "Neutral/BG": "#6f727614",
     "Neutral/Ring": "#6f727638",

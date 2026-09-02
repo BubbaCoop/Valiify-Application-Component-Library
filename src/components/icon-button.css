@@ -31,15 +31,19 @@
  * 2 on the 24-unit viewBox renders 1.5px at 18px and 1.167px at 14px, both
  * inside the pixel-measured brackets.
  *
- * Two Figma authoring slips shipped as their consistent reading, not copied:
- *   - 23:723 (md/State/rest) binds Neutral/Disabled where its three siblings
- *     and both sm counterparts bind Neutral/Base — three extraction lanes
- *     confirmed the muted render is really drawn. Shipped as Neutral/Base.
- *   - 23:725 (md/State/Subtle rest) hand-shrinks its glyph to 14px against
- *     three 18px siblings. Shipped as 18px.
- *   Both on the designer list.
+ * REVISED 2026-09-02 with the designer's Neutral-ramp rework: a PRESSED axis
+ * was added (8 variants, 24 total). Pressed binds the NEW Neutral/Pressed
+ * (#2e3134) for BOTH ramps — pressing a Subtle button reaches the same ink
+ * as a default one — and the State type deepens its halo to Action/Focused.
+ * The rework also darkened Neutral/Hover (#484b4f); the token assertions
+ * track it automatically.
  *
- * Not modelled in Figma, not invented: Disabled (cursor only), Pressed, Focus
+ * The 23:723 rest-binding anomaly from the first extraction WAS FIXED by the
+ * designer (md/State/rest now binds Neutral/Base) — the consistent reading
+ * this file shipped is now the authored one. Still open: 23:725's hand-shrunk
+ * 14px glyph (shipped as 18px).
+ *
+ * Not modelled in Figma, not invented: Disabled (cursor only), Focus
  * (library focus-ring). The md default size is a library choice — Figma names
  * no default on the Size axis.
  */
@@ -100,6 +104,19 @@
      chrome. A full circle, per Figma's literal 9999px. */
   .icon-button-state:hover:not(:disabled) {
     @apply rounded-full bg-action-hover;
+  }
+
+  /* --- Pressed (added in the 2026-09-02 rework) ----------------------------
+     Neutral/Pressed unifies BOTH ramps — after the Subtle rules so the
+     equal-specificity cascade resolves to pressed. */
+
+  .icon-button:active:not(:disabled),
+  .icon-button-subtle:active:not(:disabled) {
+    @apply text-neutral-pressed;
+  }
+  /* State type: the pressed halo deepens to Action/Focused. */
+  .icon-button-state:active:not(:disabled) {
+    @apply rounded-full bg-action-focused;
   }
 
   /* --- Shared states ------------------------------------------------------ */

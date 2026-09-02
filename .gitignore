@@ -38,3 +38,4 @@ pnpm-debug.log*
 # Val pipeline run artifacts
 val/runs/*
 !val/runs/.gitkeep
+.claude/scheduled_tasks.lock
