@@ -1,0 +1,115 @@
+/**
+ * ListItem Component
+ *
+ * One row in a dropdown/selection list. Extracted from Figma List Item
+ * (1:463) — 24 variants: Size {sm, md, lg} × Selected × Hover × LastItem.
+ *
+ *   <button class="list-option list-option-sm" role="option" aria-selected="true">
+ *     <span class="list-option-text">English</span>
+ *     <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
+ *   </button>
+ *
+ * A SIZE CLASS IS REQUIRED — Figma's samples only ever show sm, so no default
+ * is baked in (the Tabs lesson: explicit beats clever).
+ *
+ * | size | type token                | height (unselected / selected) |
+ * | ---- | ------------------------- | ------------------------------ |
+ * | -sm  | Help & Caption 12/400/14  | 30 / **34**                    |
+ * | -md  | Labels Default 14/400/20  | 36 / 36                        |
+ * | -lg  | Input 16/400/24           | 40 / 40                        |
+ *
+ * Heights are content-driven (12/8 padding + line box) — the sm selected row
+ * grows to 34 because the fixed 18px check icon exceeds sm's 14px line box.
+ * That is Figma's own emergent hug behaviour, reproduced not corrected
+ * (designer list), and it falls out of this CSS with no hardcoded heights.
+ *
+ * THE GAP-COLLAPSE TRICK: gap-2.5 (10px) is declared unconditionally; the
+ * check icon is display:none until [aria-selected="true"], and a display:none
+ * flex child contributes no gap — so "gap 0 unselected / 10px selected"
+ * needs no conditional class. The check is ALWAYS in the markup (a
+ * pseudo-element cannot render <use> — the Checkbox trap), visibility is
+ * CSS's; this also keeps the height hug automatic. Deliberate divergence
+ * from the dashboard MenuItem, where callers added the check conditionally.
+ *
+ * Selection swaps the row's INK to Primary (text and check inherit together
+ * via currentColor); no background. Hover adds Action/Hover — on selected
+ * rows too (a real Figma variant, no exclusion). The divider is structural
+ * (:not(:last-child)) and an INSET BOX-SHADOW — Figma's inside-aligned stroke
+ * lives within the 30/36/40 frame heights; a border would add 1px.
+ *
+ * CLASS NAME: `.list-option`, NOT `.list-item` — `list-item` is Tailwind's
+ * own display utility (display: list-item), which sits in the utilities layer
+ * and overrides the component's flex, stacking the row's children. Caught by
+ * the visual harness on first run.
+ *
+ * Not modelled, not invented: disabled, pressed (Action/Pressed exists in the
+ * file but is never bound here), focus (library focus-ring).
+ */
+
+@layer components {
+  .list-option {
+    @apply flex w-full cursor-pointer items-center gap-2.5 px-3 py-2;
+    @apply m-0 appearance-none border-0 bg-transparent text-left;
+    @apply text-content-primary;
+    transition: background-color 150ms;
+  }
+
+  /* Divider on every row but the last — Figma's LastItem boolean, structural.
+     An inset box-shadow, not border-b: Figma's divider is inside-aligned
+     (the 30/36/40 frame heights CONTAIN it), while a CSS border adds 1px
+     under border-box on an unpinned-height row. Caught by the spec (+1px). */
+  .list-option:not(:last-child) {
+    box-shadow: inset 0 -1px 0 var(--color-stroke-divider);
+  }
+
+  /* --- Sizes (required) --------------------------------------------------- */
+
+  .list-option-sm {
+    @apply text-help-caption;
+  }
+  .list-option-md {
+    @apply text-label;
+  }
+  .list-option-lg {
+    @apply text-input;
+  }
+
+  /* --- Parts ---------------------------------------------------------------- */
+
+  .list-option-text {
+    @apply min-w-0 flex-1; /* wraps rather than truncates, per Figma */
+  }
+
+  .list-option-check {
+    @apply hidden size-4.5 shrink-0; /* 18px at every size — fixed glyph */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- States ----------------------------------------------------------------- */
+
+  .list-option:hover:not(:disabled) {
+    @apply bg-action-hover;
+  }
+
+  /* Selection: ink swap only (text + check inherit together). */
+  .list-option[aria-selected="true"],
+  .list-option[aria-checked="true"] {
+    @apply text-primary;
+  }
+  .list-option[aria-selected="true"] .list-option-check,
+  .list-option[aria-checked="true"] .list-option-check {
+    @apply block;
+  }
+
+  .list-option:focus-visible {
+    @apply focus-ring;
+  }
+
+  .list-option:disabled {
+    @apply cursor-not-allowed;
+  }
+}

@@ -1,0 +1,110 @@
+/**
+ * BoxAction Component
+ *
+ * A boxed row composing a control (Checkbox or Switch) with a label — the
+ * "opt in by clicking anywhere on the row" pattern. Extracted from Figma
+ * Box action (199:12990) — 8 variants: Type {Checkbox 48px, Switch 44px} ×
+ * single-axis states {rest, Hover, Active, Disabled}.
+ *
+ *   <label class="box-action box-action-checkbox">
+ *     <span class="checkbox-control">
+ *       <input type="checkbox" class="checkbox-input" />
+ *       <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+ *     </span>
+ *     <span class="box-action-label">Paperless statements</span>
+ *   </label>
+ *
+ *   <label class="box-action box-action-switch">
+ *     <input type="checkbox" role="switch" class="switch" />   <!-- order: control first or last is the caller's; Figma leads with it -->
+ *     <span class="box-action-label">Email notifications</span>
+ *   </label>
+ *
+ * PURE COMPOSITION + :has(). The nested control is the shipped component,
+ * unmodified — its own :checked styling (crimson fill / knob travel) comes
+ * free. This CSS touches only the row: ring, fill, label. All row state
+ * derives from the real input via :has(:checked) / :has(:disabled) — no
+ * class to keep in sync, no JS.
+ *
+ * THE RING IS AN INSET BOX-SHADOW, pinned heights h-12/h-11: Figma's stroke
+ * is inside-aligned (48/44 contain it — the math closes exactly: 24 padding
+ * + 24 label line / 20 switch), a border would grow past the pinned box, and
+ * the disabled ring is an authored 0.5px which a border would floor to 1px.
+ *
+ * Row states (per Figma; no compound states are drawn — excluded by name):
+ *   rest      ring Stroke/Divider · fill Paper
+ *   hover     ring Stroke/Hover · fill UNCHANGED (byte-proven) · control
+ *             deliberately untouched (Figma never propagates row hover)
+ *   active    ring Primary · fill Primary/BG · checkbox-type label steps to
+ *             text-lead (16/500 — a different bound style; ink unchanged);
+ *             switch-type label never steps
+ *   disabled  fill BG/App Page · label Tertiary · ring 0.5px Stroke/Divider
+ *             (checkbox type) / 1px Stroke/Border (switch type — per-type
+ *             token difference read from the variables; designer list)
+ *
+ * Labels: checkbox type text-input (16/400) in Text/Primary; switch type
+ * text-body-content (13/400) in Text/Secondary.
+ *
+ * Not modelled, not invented: row-level focus (the nested control's own
+ * focus-ring serves), compound states. Figma's sample width 423 is the hug —
+ * the row spans its container.
+ */
+
+@layer components {
+  .box-action {
+    @apply flex w-full cursor-pointer items-center gap-3 rounded-sm px-4 py-3;
+    @apply bg-surface-paper;
+    box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
+    transition:
+      box-shadow 150ms,
+      background-color 150ms;
+  }
+
+  .box-action-checkbox {
+    @apply h-12; /* 48 = 24 padding + 24 label line-height */
+  }
+  .box-action-switch {
+    @apply h-11; /* 44 = 24 padding + 20 control */
+  }
+
+  /* --- Labels (per type) --------------------------------------------------- */
+
+  .box-action-label {
+    @apply min-w-0 flex-1;
+    transition: color 150ms;
+  }
+  .box-action-checkbox .box-action-label {
+    @apply text-input text-content-primary; /* 16/400/24 */
+  }
+  .box-action-switch .box-action-label {
+    @apply text-body-content text-content-secondary; /* 13/400/16 */
+  }
+
+  /* --- States (compounds excluded by name — Figma draws none) -------------- */
+
+  .box-action:hover:not(:has(:checked)):not(:has(:disabled)) {
+    box-shadow: inset 0 0 0 1px var(--color-stroke-hover);
+  }
+
+  .box-action:has(:checked):not(:has(:disabled)) {
+    @apply bg-primary-bg;
+    box-shadow: inset 0 0 0 1px var(--color-primary);
+  }
+  /* Only the checkbox type steps its label to Lead & Subtitle when active. */
+  .box-action-checkbox:has(:checked):not(:has(:disabled)) .box-action-label {
+    @apply text-lead; /* 16/500/24; ink deliberately unchanged */
+  }
+
+  .box-action:has(:disabled) {
+    @apply cursor-not-allowed bg-surface-app-page;
+    /* Authored 0.5px — box-shadow renders it exactly (a border would floor
+       it to 1px). */
+    box-shadow: inset 0 0 0 0.5px var(--color-stroke-divider);
+  }
+  /* Per-type disabled ring token difference, read from the variable sweep. */
+  .box-action-switch:has(:disabled) {
+    box-shadow: inset 0 0 0 1px var(--color-stroke-border);
+  }
+  .box-action:has(:disabled) .box-action-label {
+    @apply text-content-tertiary;
+  }
+}

@@ -1,0 +1,26 @@
+/**
+ * Badge Component
+ *
+ * Small uppercase status/qualifier pill (Figma's sample: "OPTIONAL").
+ * Extracted inline from Figma Badge (28:507) — a single symbol, no variants:
+ * 16px-tall full-round pill, Neutral/BG fill, 8px horizontal padding,
+ * Eyebrow type (11/600/16, 10% tracking, uppercase transform) in
+ * Text/Secondary.
+ *
+ *   <span class="badge">Optional</span>
+ *
+ * The uppercase is the Eyebrow style's own transform (type-eyebrow bundles
+ * it) — pass the label in natural case. Width hugs the label; height is
+ * pinned at 16 (= the line-height; no border, so no hairline trap).
+ *
+ * Not modelled, not invented: no colour variants, no sizes, no states — the
+ * symbol has no axes at all. If status colours appear later they extract as
+ * new variants.
+ */
+
+@layer components {
+  .badge {
+    @apply inline-flex h-4 shrink-0 items-center rounded-full px-2;
+    @apply bg-neutral-bg text-content-secondary type-eyebrow;
+  }
+}

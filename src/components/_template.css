@@ -20,18 +20,15 @@
  *      BAD   background-color: var(--color-surface-paper);
  *
  *    Every --color-* token has bg-*, text-*, and border-* utilities.
- *    NOTE: there is no `surface-card` — Figma's surface stack is only
- *    Frame / Neutral / Paper. Cards render on Paper.
+ *    This file's surface stack: surface-paper / surface-app-page /
+ *    surface-page / surface-card (Figma group BG/*).
  *
- * 3. Radii use the role-named tokens, never t-shirt sizes:
- *      rounded-micro     indicators, bars      (Figma Radius/Micro, 2px)
- *      rounded-tight     tags, badges          (Figma Radius/XS, 4px)
- *      rounded-control   buttons, inputs       (Figma Radius/SM, 6px)
- *      rounded-surface   cards, panels         (Figma Radius/MD, 8px)
- *      rounded-pill      avatars, pills        (Figma Radius/Rounded)
- *
- *    Do NOT use rounded-xs / rounded-sm / rounded-md — those are Tailwind's
- *    own defaults and are not part of the Valiify design system.
+ * 3. Radii: this file's Figma scale IS Tailwind's t-shirt naming — use
+ *    rounded-xs (2) / rounded-sm (4) / rounded-md (6) / rounded-lg (8) /
+ *    rounded-xl (10, overrides Tailwind) / rounded-2xl (12, overrides) /
+ *    rounded-full. (The dashboard-era role names rounded-control etc. do
+ *    NOT exist in this theme.) A raw off-scale value (Checkbox's 3px)
+ *    ships as rounded-[3px] with a comment.
  *
  * 4. Type comes from the composite text tokens, which carry size, line-height,
  *    weight and tracking in one utility:
@@ -70,12 +67,13 @@
     /* Layout */
     @apply inline-flex items-center;
 
-    /* Shape */
-    @apply rounded-control;
-    @apply border border-[length:var(--border-thin)];
+    /* Shape — Short App radii are Tailwind's own names (xs/sm/md/lg/xl/2xl);
+       no --border-* width tokens exist in this file, borders are raw px. */
+    @apply rounded-sm;
+    @apply border;
 
     /* Type */
-    @apply text-body-1;
+    @apply text-body;
 
     /* Colors */
     @apply border-stroke-divider bg-surface-paper text-content-primary;
@@ -104,6 +102,6 @@
   }
 
   .__CLASS__:disabled {
-    @apply cursor-not-allowed text-secondary-disabled;
+    @apply cursor-not-allowed text-content-tertiary;
   } */
 }

@@ -261,6 +261,10 @@
  * family, where it applies — cannot be forgotten. Prefer them over the
  * bare text-* token for those styles.
  */
+@utility type-eyebrow {
+  @apply text-eyebrow uppercase; /* Labels, links & UI/Eyebrow */
+}
+
 @utility type-micro-label {
   @apply text-micro-label uppercase; /* Labels, links & UI/Micro-Label */
 }

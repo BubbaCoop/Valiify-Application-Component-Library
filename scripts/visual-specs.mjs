@@ -370,6 +370,126 @@ export const SPECS = {
     },
   },
 
+  // ------------------------------------------------------------------ Avatar
+  Avatar: {
+    figma: "Avatar 23:670 — 4 variants: {MD 24, SM 20} × Feint",
+    variants: 4,
+    stories: {
+      // AllVariants order: 0 md · 1 sm · 2 md feint · 3 sm feint
+      "components-avatar--all-variants": [
+        { label: "md 24", sel: ".avatar", get: "width", expect: 24 },
+        { label: "md tall 24", sel: ".avatar", get: "height", expect: 24 },
+        {
+          label: "circle",
+          sel: ".avatar",
+          get: "border-radius",
+          not: true,
+          expect: "0px",
+        },
+        {
+          label: "md fill Neutral/Base",
+          sel: ".avatar",
+          get: "background-color",
+          expect: { token: "--color-neutral" },
+        },
+        {
+          label: "md ink Contrast",
+          sel: ".avatar",
+          get: "color",
+          expect: { token: "--color-content-contrast" },
+        },
+        {
+          label: "md type Eyebrow 11px",
+          sel: ".avatar",
+          get: "font-size",
+          expect: "11px",
+        },
+        {
+          label: "initials uppercase via the type style",
+          sel: ".avatar",
+          get: "text-transform",
+          expect: "uppercase",
+        },
+        { label: "sm 20", sel: ".avatar", nth: 1, get: "width", expect: 20 },
+        {
+          label: "sm type Micro-Label 9px",
+          sel: ".avatar",
+          nth: 1,
+          get: "font-size",
+          expect: "9px",
+        },
+        {
+          label: "feint fill Neutral/BG",
+          sel: ".avatar",
+          nth: 2,
+          get: "background-color",
+          expect: { token: "--color-neutral-bg" },
+        },
+        {
+          label: "feint ink Secondary",
+          sel: ".avatar",
+          nth: 2,
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+      ],
+    },
+  },
+
+  // ------------------------------------------------------------------- Badge
+  Badge: {
+    figma: "Badge 28:507 — a single symbol, no variant axes",
+    variants: 1,
+    stories: {
+      "components-badge--interactive": [
+        { label: "height 16", sel: ".badge", get: "height", expect: 16 },
+        {
+          label: "pill",
+          sel: ".badge",
+          get: "border-radius",
+          not: true,
+          expect: "0px",
+        },
+        {
+          label: "fill Neutral/BG",
+          sel: ".badge",
+          get: "background-color",
+          expect: { token: "--color-neutral-bg" },
+        },
+        {
+          label: "ink Secondary",
+          sel: ".badge",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "type Eyebrow 11px",
+          sel: ".badge",
+          get: "font-size",
+          expect: "11px",
+        },
+        {
+          label: "uppercase via the type style",
+          sel: ".badge",
+          get: "text-transform",
+          expect: "uppercase",
+        },
+        {
+          label: "padding-x 8",
+          sel: ".badge",
+          get: "padding-left",
+          expect: "8px",
+        },
+        {
+          label: "no border",
+          sel: ".badge",
+          get: "border-top-width",
+          expect: "0px",
+        },
+      ],
+    },
+  },
+
   // ---------------------------------------------------------------- Checkbox
   Checkbox: {
     figma: "Checkbox 1:424 — 8 variants across Active × Hover × Pressed × Disabled",
@@ -644,6 +764,531 @@ export const SPECS = {
 
         // NOT ASSERTED: disabled (Figma models none; cursor only) and
         // pressed/focus variants (none exist on the axis).
+      ],
+    },
+  },
+
+  // ---------------------------------------------------------------- ListItem
+  ListItem: {
+    figma: "List Item 1:463 — 24 variants: Size × Selected × Hover × LastItem",
+    variants: 24,
+    stories: {
+      // AllSizes: three columns of [unselected, selected]: nth 0/1 sm, 2/3 md, 4/5 lg
+      "components-listitem--all-sizes": [
+        { label: "sm unselected 30", sel: ".list-option-sm", get: "height", expect: 30 },
+        {
+          label: "sm SELECTED grows to 34 (Figma's emergent hug, reproduced)",
+          sel: ".list-option-sm",
+          nth: 1,
+          get: "height",
+          expect: 34,
+        },
+        { label: "md 36", sel: ".list-option-md", get: "height", expect: 36 },
+        {
+          label: "md selected stays 36",
+          sel: ".list-option-md",
+          nth: 1,
+          get: "height",
+          expect: 36,
+        },
+        { label: "lg 40", sel: ".list-option-lg", get: "height", expect: 40 },
+        {
+          label: "lg selected stays 40",
+          sel: ".list-option-lg",
+          nth: 1,
+          get: "height",
+          expect: 40,
+        },
+        { label: "padding-x 12", sel: ".list-option-sm", get: "padding-left", expect: "12px" },
+        { label: "padding-y 8", sel: ".list-option-sm", get: "padding-top", expect: "8px" },
+        {
+          label: "unselected ink Text/Primary",
+          sel: ".list-option-sm",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "selected ink Primary (text and check inherit together)",
+          sel: ".list-option-sm",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "check hidden unselected",
+          sel: ".list-option-sm .list-option-check",
+          get: "display",
+          expect: "none",
+        },
+        {
+          label: "check shown selected, 18px fixed at every size",
+          sel: ".list-option-sm .list-option-check",
+          nth: 1,
+          get: "width",
+          expect: 18,
+        },
+        {
+          label: "hover fills Action/Hover on an UNSELECTED row",
+          sel: ".list-option-sm",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-action-hover" },
+        },
+        {
+          label: "hover fills the SELECTED row too (a real Figma variant)",
+          sel: ".list-option-sm",
+          nth: 1,
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-action-hover" },
+        },
+        {
+          label: "hover leaves the selected ink unchanged",
+          sel: ".list-option-sm",
+          nth: 1,
+          get: "color",
+          hover: true,
+          expect: { token: "--color-primary" },
+        },
+      ],
+      "components-listitem--dividers": [
+        // The divider is an INSET SHADOW, not a border — Figma's stroke is
+        // inside-aligned within the frame heights (a border added +1px,
+        // caught by this spec's first run).
+        {
+          label: "divider (inset shadow) on non-last rows",
+          sel: ".list-option",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "divider does not add height (unselected row stays 30)",
+          sel: ".list-option",
+          nth: 1,
+          get: "height",
+          expect: 30,
+        },
+        {
+          label: "no divider on the last row (:last-child, not a class)",
+          sel: ".list-option",
+          nth: 2,
+          get: "box-shadow",
+          expect: "none",
+        },
+      ],
+    },
+  },
+
+  // ------------------------------------------------------------ DropdownList
+  DropdownList: {
+    figma: "Dropdown List 1:480 — 2 variants (row-1 selection toggle, NOT a size axis)",
+    variants: 2,
+    stories: {
+      "components-dropdownlist--interactive": [
+        {
+          label: "fill Paper",
+          sel: ".dropdown-list",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "border Stroke/Divider 1px",
+          sel: ".dropdown-list",
+          get: "border-top-width",
+          expect: "1px",
+        },
+        {
+          label: "border colour",
+          sel: ".dropdown-list",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "radius 4px (authored literal wins over the coarse 1x corner-fit)",
+          sel: ".dropdown-list",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "zero padding (rows are flush)",
+          sel: ".dropdown-list",
+          get: "padding-top",
+          expect: "0px",
+        },
+        { label: "zero gap", sel: ".dropdown-list", get: "row-gap", expect: "normal" },
+        {
+          label: "overflow clip (library extension — hover fills must not poke past corners)",
+          sel: ".dropdown-list",
+          get: "overflow-x",
+          expect: "clip",
+        },
+        // filter, not box-shadow: overflow-clip eats a box's own box-shadow;
+        // drop-shadow() applies to the clipped composite and survives.
+        {
+          label: "shadow ships as filter drop-shadow (raw, unbound in Figma)",
+          sel: ".dropdown-list",
+          get: "filter",
+          contains: true,
+          expect: "drop-shadow",
+        },
+      ],
+    },
+  },
+
+  // --------------------------------------------------------------- BoxAction
+  BoxAction: {
+    figma: "Box action 199:12990 — 8 variants: Type {Checkbox, Switch} × {rest, hover, active, disabled}",
+    variants: 8,
+    stories: {
+      // AllStates: nth 0-2 checkbox (rest, active, disabled) · 3-5 switch (same)
+      "components-boxaction--all-states": [
+        { label: "checkbox row 48", sel: ".box-action-checkbox", get: "height", expect: 48 },
+        { label: "switch row 44", sel: ".box-action-switch", get: "height", expect: 44 },
+        { label: "radius 4px", sel: ".box-action", get: "border-radius", expect: "4px" },
+        { label: "padding-x 16", sel: ".box-action", get: "padding-left", expect: "16px" },
+        { label: "gap 12", sel: ".box-action", get: "gap", expect: "12px" },
+        {
+          label: "rest ring Stroke/Divider (inset — Figma inside stroke)",
+          sel: ".box-action",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "no real border",
+          sel: ".box-action",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        {
+          label: "rest fill Paper",
+          sel: ".box-action",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "hover ring Stroke/Hover",
+          sel: ".box-action",
+          get: "box-shadow",
+          contains: true,
+          hover: true,
+          expect: { token: "--color-stroke-hover" },
+        },
+        {
+          label: "hover leaves the fill unchanged (byte-proven in Figma)",
+          sel: ".box-action",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "checkbox label text-input 16px, Text/Primary",
+          sel: ".box-action-checkbox .box-action-label",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "switch label 13px Text/Secondary",
+          sel: ".box-action-switch .box-action-label",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        // Active via :has(:checked) — nth 1 per type
+        {
+          label: "active ring Primary",
+          sel: ".box-action-checkbox",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "active fill Primary/BG",
+          sel: ".box-action-checkbox",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-primary-bg" },
+        },
+        {
+          label: "active checkbox label steps to 500 (Lead & Subtitle)",
+          sel: ".box-action-checkbox .box-action-label",
+          nth: 1,
+          get: "font-weight",
+          expect: "500",
+        },
+        {
+          label: "active checkbox label ink UNCHANGED",
+          sel: ".box-action-checkbox .box-action-label",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "active switch label does NOT step weight (copy-paste guard)",
+          sel: ".box-action-switch .box-action-label",
+          nth: 1,
+          get: "font-weight",
+          expect: "400",
+        },
+        {
+          label: "the nested control paints itself (composition sanity)",
+          sel: ".box-action-switch .switch",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "hover must not restyle an active row",
+          sel: ".box-action-checkbox",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          hover: true,
+          expect: { token: "--color-primary" },
+        },
+        // Disabled via :has(:disabled) — nth 2 per type
+        {
+          label: "disabled fill BG/App Page",
+          sel: ".box-action-checkbox",
+          nth: 2,
+          get: "background-color",
+          expect: { token: "--color-surface-app-page" },
+        },
+        {
+          label: "disabled checkbox ring 0.5px survives (fractional trap)",
+          sel: ".box-action-checkbox",
+          nth: 2,
+          get: "box-shadow",
+          contains: true,
+          expect: "0.5px",
+        },
+        {
+          label: "disabled switch ring Stroke/Border (per-type token difference)",
+          sel: ".box-action-switch",
+          nth: 2,
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "disabled label Tertiary",
+          sel: ".box-action-checkbox .box-action-label",
+          nth: 2,
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label: "disabled cursor",
+          sel: ".box-action-checkbox",
+          nth: 2,
+          get: "cursor",
+          expect: "not-allowed",
+        },
+      ],
+    },
+  },
+
+  // -------------------------------------------------------------- SelectCard
+  SelectCard: {
+    figma: "Card 9:367 — 6 variants: Hover × Radio × Pressed (pressed = selected on the radio variant)",
+    variants: 6,
+    stories: {
+      // RadioVariants: nth 0 unselected, nth 1 selected
+      "components-selectcard--radio-variants": [
+        { label: "height 76 (content-driven: 32 pad + 20+4+20 text)", sel: ".select-card", get: "height", expect: 76 },
+        { label: "radius 6px", sel: ".select-card", get: "border-radius", expect: "6px" },
+        { label: "padding 16", sel: ".select-card", get: "padding-left", expect: "16px" },
+        { label: "row gap 12", sel: ".select-card", get: "gap", expect: "12px" },
+        // The ring is an inset box-shadow (Figma inside stroke; a border added
+        // +2px to the content-driven 76px height — caught by this spec).
+        {
+          label: "rest ring Stroke/Divider (inset shadow)",
+          sel: ".select-card",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "no real border (ring must not double up)",
+          sel: ".select-card",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        {
+          label: "rest fill Paper",
+          sel: ".select-card",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "hover ring Stroke/Hover",
+          sel: ".select-card",
+          get: "box-shadow",
+          contains: true,
+          hover: true,
+          expect: { token: "--color-stroke-hover" },
+        },
+        {
+          label: "hover leaves the fill UNCHANGED (perimeter-only, pixel-proven)",
+          sel: ".select-card",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "title 20px line-height (explicit, no Auto trap)",
+          sel: ".select-card-title",
+          get: "line-height",
+          expect: "20px",
+        },
+        // Selected via :has(:checked) — nth 1
+        {
+          label: "selected ring Primary",
+          sel: ".select-card",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "selected fill Primary/BG",
+          sel: ".select-card",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-primary-bg" },
+        },
+        {
+          label: "nested radio really renders checked (Primary ring)",
+          sel: ".select-card .radio",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "hover does not touch the selected card",
+          sel: ".select-card",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          hover: true,
+          expect: { token: "--color-primary" },
+        },
+      ],
+      "components-selectcard--chevron-variant": [
+        {
+          label: "chevron 18px, Neutral/Base (variable-bound; visually unconfirmed — designer list)",
+          sel: ".select-card-chevron",
+          get: "width",
+          expect: 18,
+        },
+        {
+          label: "chevron colour",
+          sel: ".select-card-chevron",
+          get: "color",
+          expect: { token: "--color-neutral" },
+        },
+        {
+          label: "chevron variant has no radio",
+          sel: ".select-card .radio",
+          absent: true,
+        },
+      ],
+
+      // NOT ASSERTED: the chevron-variant pressed wash (Action/Pressed) — the
+      // harness cannot hold :active. Pinned in CSS from 3-lane agreement.
+    },
+  },
+
+  // ------------------------------------------------------------ TextSelector
+  TextSelector: {
+    figma: "Text Selector 1:489 — 12 variants: Hover × Active × Mobile (duplicate hover columns resolved as hover vs open)",
+    variants: 12,
+    stories: {
+      // AllStates order: 0 closed · 1 open · 2 closed EN · 3 open EN
+      "components-textselector--all-states": [
+        { label: "row 18 tall", sel: ".text-selector", get: "height", expect: 18 },
+        { label: "gap 4", sel: ".text-selector", get: "gap", expect: "4px" },
+        {
+          label: "ink-only: no box at rest",
+          sel: ".text-selector",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        { label: "globe 16", sel: ".text-selector-icon", get: "width", expect: 16 },
+        { label: "chevron 18", sel: ".text-selector-chevron", get: "width", expect: 18 },
+        {
+          label: "rest label Tertiary",
+          sel: ".text-selector-label",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label: "rest icons Neutral/Disabled (lighter than the label)",
+          sel: ".text-selector-icon",
+          get: "color",
+          expect: { token: "--color-neutral-disabled" },
+        },
+        {
+          label: "hover label Secondary (the col-2 modest step)",
+          sel: ".text-selector-label",
+          get: "color",
+          hover: true,
+          hoverSel: ".text-selector",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "hover leaves the icons at rest ink",
+          sel: ".text-selector-icon",
+          get: "color",
+          hover: true,
+          hoverSel: ".text-selector",
+          expect: { token: "--color-neutral-disabled" },
+        },
+        {
+          label: "no transform on the label (Help & Caption carries none)",
+          sel: ".text-selector-label",
+          get: "text-transform",
+          expect: "none",
+        },
+        // Tailwind v4's rotate-180 sets the CSS `rotate` property, not
+        // `transform` (same lesson as Switch's translate).
+        {
+          label: "closed chevron unrotated",
+          sel: ".text-selector-chevron",
+          get: "rotate",
+          expect: "none",
+        },
+        // Open (nth 1) — the col-3 two-property step
+        {
+          label: "open label Primary",
+          sel: ".text-selector-label",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "open icons Neutral/Base full opacity",
+          sel: ".text-selector-icon",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-neutral" },
+        },
+        {
+          label: "open chevron rotates 180",
+          sel: ".text-selector-chevron",
+          nth: 1,
+          get: "rotate",
+          expect: "180deg",
+        },
+        {
+          label: "open still has no box",
+          sel: ".text-selector",
+          nth: 1,
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
       ],
     },
   },

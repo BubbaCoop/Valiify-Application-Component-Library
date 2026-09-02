@@ -25,5 +25,26 @@ export type SwitchClass = "switch";
 // Button component classes
 export type ButtonClass = "button";
 
+// ListItem component classes
+export type ListItemClass = "list-option";
+
+// DropdownList component classes
+export type DropdownListClass = "dropdown-list";
+
+// TextSelector component classes
+export type TextSelectorClass = "text-selector";
+
+// SelectCard component classes
+export type SelectCardClass = "select-card";
+
+// Avatar component classes
+export type AvatarClass = "avatar";
+
+// Badge component classes
+export type BadgeClass = "badge";
+
+// BoxAction component classes
+export type BoxActionClass = "box-action";
+
 // Union of all component classes
-export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass;
+export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass;

@@ -1,0 +1,109 @@
+/**
+ * SelectCard Component
+ *
+ * Selectable/navigational option card. Extracted from Figma Card (9:367) —
+ * 6 variants, all 415×76: Hover × Radio × Pressed (sparse).
+ *
+ * Two variants, structurally exclusive in Figma (never both):
+ *
+ *   RADIO variant — a <label> composing the shipped .radio input (leading,
+ *   20px), title + description. "Pressed" in Figma means SELECTED: checked
+ *   radio + Primary border + Primary/BG tint, driven here by :has(:checked).
+ *
+ *   CHEVRON variant — a <button> with a trailing 18px chevron; pressed is a
+ *   transient Action/Pressed wash.
+ *
+ *   <label class="select-card">
+ *     <input type="radio" name="plan" class="radio" />
+ *     <span class="select-card-text">
+ *       <span class="select-card-title">Family Connection</span>
+ *       <span class="select-card-description">A relative is already a member</span>
+ *     </span>
+ *   </label>
+ *
+ * Geometry: 16px padding, 12px row gap, 6px radius (raw in Figma; equals this
+ * file's Radius/md and Tailwind's rounded-md — the idiomatic form here), 1px
+ * border (clean whole pixel — no fractional trap; a real border is safe).
+ * Height hugs to 76 via the pinned 20px line-heights + the 4px title/desc
+ * gap (a value only the structure read surfaced — the type tokens alone
+ * under-compute by 4px). Width is the container's (Figma's 415 is the sample).
+ *
+ * Hover changes the BORDER ONLY (pixel-proven: the state diff equals the
+ * perimeter). The pressed border LOOKS darker in Figma but is the same
+ * translucent Stroke/Divider compositing over the tinted fill — one token
+ * (Checkbox-border precedent, do not split).
+ *
+ * State-exclusion discipline: Figma draws no hover/pressed on a selected
+ * card, so both transient rules carry :not(:has(:checked)) guards.
+ *
+ * Not modelled, not invented: disabled, focus (library focus-ring),
+ * selected+hover. Figma's chevron layer is named ChevronLeft but renders
+ * right — shipped as #chevron-right (designer list).
+ */
+
+@layer components {
+  .select-card {
+    @apply flex w-full cursor-pointer items-center gap-3 rounded-md p-4;
+    @apply bg-surface-paper;
+    /* The 1px ring is an INSET BOX-SHADOW, not a border: Figma's stroke is
+       inside-aligned (the 76px frame contains it), while a border adds 2px
+       under border-box on this content-driven card. Caught by the spec. */
+    box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
+    transition:
+      box-shadow 150ms,
+      background-color 150ms;
+  }
+
+  .select-card-text {
+    @apply flex min-w-0 flex-1 flex-col gap-1; /* the load-bearing 4px */
+  }
+
+  .select-card-title {
+    @apply text-label-strong text-content-primary;
+  }
+
+  /* Optional — Figma's subtitle boolean. Omitting collapses the card to 52px
+     (unverified by any sample; all six carry a description). */
+  .select-card-description {
+    @apply text-label text-content-secondary;
+  }
+
+  .select-card-chevron {
+    @apply size-4.5 shrink-0 text-neutral; /* 18px, Neutral/Base */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- Transient states (excluded from the selected card by name) --------- */
+
+  .select-card:hover:not(:has(.radio:checked)) {
+    box-shadow: inset 0 0 0 1px var(--color-stroke-hover);
+  }
+
+  /* Chevron-variant pressed: fill wash; ring token UNCHANGED (it only
+     reads darker because Stroke/Divider composites over the tint). */
+  .select-card:active:not(:has(.radio:checked)) {
+    @apply bg-action-pressed;
+    box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
+  }
+
+  /* --- Selected (radio variant) — persistent, from the real input state --- */
+
+  .select-card:has(.radio:checked) {
+    @apply bg-primary-bg;
+    box-shadow: inset 0 0 0 1px var(--color-primary);
+  }
+
+  .select-card:focus-visible,
+  .select-card:has(.radio:focus-visible) {
+    @apply focus-ring;
+  }
+
+  .select-card:disabled,
+  .select-card:has(.radio:disabled) {
+    @apply cursor-not-allowed;
+  }
+}
