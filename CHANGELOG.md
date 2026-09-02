@@ -39,6 +39,12 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ### Fixed
 
+- **2026-09-02** — First full-CI static sweep: Tabs' active-hover rules
+  gained the house `:not(:disabled)` guards; the two deliberately-raw values
+  (DropdownList's unbound Figma shadow, Skeleton's nonexistent
+  "Surface/Neutral" fill) are now covered by documented
+  `static-ok(<rule>)` waiver pragmas in `verify-component.mjs` — printed,
+  never silent, with a stale-waiver guard.
 - **2026-09-02** — `src/base/index.css` referenced the dashboard-era
   `--color-surface-frame` (undefined in this theme): every consumer page's
   `html` background silently resolved to nothing. Now `surface-app-page`

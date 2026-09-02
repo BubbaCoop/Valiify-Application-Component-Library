@@ -1231,6 +1231,13 @@ The two checks are complementary and neither replaces the other — this one
 cannot see a 1px height error, and the visual harness cannot see a hardcoded
 hex that happens to match its token.
 
+> **Deliberate raw values need a waiver pragma, never a workaround.** When a
+> value is raw because FIGMA binds no variable (DropdownList's shadow,
+> Skeleton's fill), put this on the flagged line or the line above:
+> `/* static-ok(hardcoded-color): <reason, citing the designer list> */`
+> Waived findings print in yellow (never silent), and a pragma that waives
+> nothing fails as `stale-waiver` — so waivers can't outlive the defect.
+
 ### Bundle verification
 
 ```bash
