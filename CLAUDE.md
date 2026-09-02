@@ -23,6 +23,76 @@ then stop — I write all commit messages and commit myself.
 
 ### Available Components
 
+#### Button
+
+Extracted from Figma Button (1:218) — 16 variants across `Type` {Primary,
+Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
+`Mobile` axis was removed by the designer (caught by the Gate-0 metadata sweep).
+
+- **Base**: `.btn` — layout only, **a type class is required** (Figma names no
+  default Type; the Alert/Tabs lesson)
+- **Types**: `.btn-primary`, `.btn-secondary`, `.btn-micro`, `.btn-bubble`
+- **States**: `:hover`, `:active`, `:disabled` (Figma's `Inactive`),
+  `:focus-visible`
+- **Icon slots**: plain `svg` children (18px; 12px in Micro), painted by the
+  button. Figma's layout per Type: Primary trailing only, Secondary/Micro both
+  sides, Bubble leading only — documented, not enforced.
+- **Width is the caller's** — Figma's 239px is the sample hug; add `w-full`
+  in full-width forms. Heights pinned: 48 / 48 / 12 / 34.
+
+| Type | box | type style | rest → hover → pressed → disabled |
+| --- | --- | --- | --- |
+| `-primary` | 48px, 4px radius, filled | `type-button-label` (14/600, 10%, **uppercase**) | fill `Primary → Hover → Focus → Disabled`; white ink **never fades** |
+| `-secondary` | 48px, 4px radius, 1px border | same | border `Stroke/Border → Hover → (pressed adds Action/Hover wash) → Divider`; ink `Secondary → Primary → · → Tertiary` |
+| `-micro` | 12px bare row, no box | `type-micro-label` (9/600, 8%, **uppercase**) | ink `Secondary → Primary (hover **= pressed**) → Tertiary` |
+| `-bubble` | 34px pill | `text-label` (14/400, **mixed case**) | ink ramp + fill `none → Action/Hover → Action/Pressed → none` |
+
+> **Casing is a styled transform, not typed caps** — the Figma samples are
+> "Button" mixed-case; Primary/Secondary/Micro carry an uppercase transform,
+> Bubble doesn't. This resolved the token file's casing question for `Button
+> Label` and `Micro-Label` (both now carry `textTransform` and emit `type-*`
+> utilities); Eyebrow/Data Key/Tag & Pill remain open.
+
+> **Secondary's hover changes the border only** — the fill wash appears only
+> at pressed, and binds the token literally named `Action/Hover` (where
+> Bubble's pressed binds `Action/Pressed`). Verbatim; designer list.
+
+> **`Primary/Focus` is Figma's literal name for the Primary PRESSED fill** —
+> wired to `:active`, never `:focus-visible` (same pattern as Checkbox).
+
+> **Micro's hover and pressed are pixel-identical in Figma** (0/696 diff —
+> measured, not assumed) — reproduced as one rule. Designer list, same defect
+> class as the dashboard's TextButton.
+
+> **Primary's height math is 2px short** (13+13+20 = 46 vs the 48px frame;
+> Secondary closes exactly via its border-box 1px border) — resolved by frame
+> authority (`h-12` pinned), not by inventing padding. Designer list.
+
+> **Secondary's border is a real 1px border** — pixel-aligned, not fractional,
+> so the Radio/Checkbox inset-shadow trick is deliberately NOT used here.
+
+```html
+<button class="btn btn-primary">
+  Continue
+  <svg aria-hidden="true"><use href="#arrow-right" /></svg>
+</button>
+
+<button class="btn btn-secondary">
+  <svg aria-hidden="true"><use href="#arrow-left" /></svg>
+  Back
+</button>
+
+<button class="btn btn-micro">
+  View all
+  <svg aria-hidden="true"><use href="#arrow-right" /></svg>
+</button>
+
+<button class="btn btn-bubble">Skip</button>
+
+<!-- Full width is the caller's -->
+<button class="btn btn-primary w-full">Submit application</button>
+```
+
 #### Radio
 
 Radio button control for single selection from a group. Extracted from Figma
@@ -72,6 +142,82 @@ Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20
 <label style="display: inline-flex; align-items: center; gap: 10px;">
   <input type="radio" name="account-type" class="radio" checked />
   Business
+</label>
+```
+
+#### Avatar
+
+Circular initials marker. Extracted (inline fast-path) from Figma Avatar
+(23:670) — 4 variants: `Property 1` {MD 24px, SM 20px} × `Feint`.
+
+- **Base**: `.avatar` (MD, 24px) — `Neutral/Base` fill, white initials,
+  Eyebrow type (11/600, 10% tracking, uppercase)
+- **Size**: `.avatar-sm` (20px) — steps the type to Micro-Label (9/600, 8%)
+- **Variant**: `.avatar-feint` — `Neutral/BG` 8% tint, `Text/Secondary` ink
+
+> **The uppercase is the type style's own transform** — this component and
+> Badge are the evidence that resolved Eyebrow's casing (typed mixed-case,
+> styled caps). Pass initials in any case.
+> **Initials only** — no image layer exists in any variant, same as the
+> dashboard file's Avatar. No LG, no ring, no disabled modelled.
+
+```html
+<span class="avatar">NC</span>
+<span class="avatar avatar-sm">NC</span>
+<span class="avatar avatar-feint">NC</span>
+```
+
+#### Badge
+
+Small uppercase qualifier pill. Extracted (inline fast-path) from Figma Badge
+(28:507) — a single symbol, no variant axes.
+
+- **Base**: `.badge` — 16px full-round pill, `Neutral/BG` fill, 8px x-padding,
+  Eyebrow type in `Text/Secondary`; width hugs the label
+
+> **No colour variants, sizes, or states exist in the design** — the symbol
+> has no axes. Pass the label in natural case (the Eyebrow transform caps it).
+
+```html
+<span class="badge">Optional</span>
+```
+
+#### BoxAction
+
+A boxed row composing a Checkbox or Switch with a label — the whole row is the
+hit target. Extracted from Figma Box action (199:12990) — 8 variants:
+`Type` {Checkbox 48px, Switch 44px} × {rest, Hover, Active, Disabled}.
+
+- **Base**: `.box-action` (a `<label>`) + type class `.box-action-checkbox` /
+  `.box-action-switch` (required — they carry the pinned heights and label
+  styles) + `.box-action-label`
+- **Pure composition**: the nested control is the shipped `.checkbox-control`
+  / `.switch` markup, unmodified — its checked styling comes free. Row state
+  derives from the real input via `:has(:checked)` / `:has(:disabled)`.
+
+| state | ring (inset shadow) | fill | label |
+| --- | --- | --- | --- |
+| rest | 1px `Stroke/Divider` | `BG/Paper` | checkbox: `text-input`/Primary · switch: `text-body-content`/Secondary |
+| hover | 1px `Stroke/Hover` | **unchanged** | unchanged (row hover never touches the control) |
+| active | 1px `Primary` | `Primary/BG` | checkbox type steps to `text-lead` (500, ink unchanged); switch type never steps |
+| disabled | **0.5px** `Stroke/Divider` (checkbox) / 1px `Stroke/Border` (switch) | `BG/App Page` | `Text/Tertiary` |
+
+> **The ring is an inset box-shadow, heights pinned h-12/h-11** — Figma's
+> inside stroke lives within 48/44 (the math closes exactly), a border would
+> overflow the pinned box, and the authored 0.5px disabled ring would be
+> floored to 1px as a border.
+> **Per-type disabled inconsistencies are Figma's** (different ring tokens; no
+> distinct disabled switch asset) — designer list.
+> No compound states are drawn; the CSS excludes them by name. No row-level
+> focus — the nested control's own focus-ring serves.
+
+```html
+<label class="box-action box-action-checkbox">
+  <span class="checkbox-control">
+    <input type="checkbox" class="checkbox-input" />
+    <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+  </span>
+  <span class="box-action-label">Paperless statements</span>
 </label>
 ```
 
@@ -196,6 +342,148 @@ Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
   Email notifications
   <input type="checkbox" role="switch" class="switch" checked />
 </label>
+```
+
+#### ListItem
+
+One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
+24 variants: `Size` {sm, md, lg} × `Selected` × `Hover` × `LastItem`.
+
+- **Base**: `.list-item` — layout only, **a size class is required** (Figma's
+  samples only show sm; no default is baked in)
+- **Sizes**: `.list-item-sm` (Help & Caption 12px, 30px / **34px selected**),
+  `.list-item-md` (Labels Default 14px, 36px), `.list-item-lg` (Input 16px, 40px)
+- **Parts**: `.list-item-text` (wraps, doesn't truncate), `.list-item-check`
+  (18px sprite glyph, ALWAYS in markup, shown by selection)
+- **States**: `:hover` (works on selected rows too — a real Figma variant),
+  `[aria-selected="true"]` / `[aria-checked="true"]`, `:focus-visible`
+
+> **Selection is an ink swap to `Primary`** — text and check inherit together
+> via currentColor. No background.
+> **The gap-collapse trick**: `gap` is unconditional 10px; the hidden check
+> contributes none, so unselected rows read gap-0 with no conditional class.
+> **The sm selected row grows 30→34** — Figma's emergent hug (the fixed 18px
+> check exceeds sm's 14px line box; md/lg line boxes already clear it).
+> Reproduced, spec-pinned, designer-listed.
+> **The divider is `:not(:last-child)`**, matching the LastItem boolean's
+> intent structurally.
+> Not modelled, not invented: disabled, pressed.
+
+```html
+<button class="list-item list-item-sm" role="option" aria-selected="true">
+  <span class="list-item-text">English</span>
+  <svg class="list-item-check" aria-hidden="true"><use href="#check" /></svg>
+</button>
+```
+
+#### DropdownList
+
+The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
+
+- **Base**: `.dropdown-list` — `BG/Paper`, 1px `Stroke/Divider` border, 4px
+  radius, zero padding/gap, raw `0 2px 5px 10%` shadow
+
+> **Figma naming trap**: the set's "Property 1 = sm/md" toggles which sample
+> row is selected — it is NOT a size axis (both samples are sm rows). No
+> container size classes exist on purpose.
+> **Two paired library choices — never "fix" one alone**: `overflow: clip` is
+> a labeled extension (Figma has no clipping; hover fills would poke past the
+> corners), and the shadow ships as `filter: drop-shadow()` because
+> overflow-clip eats a box's own `box-shadow`.
+> Width is the consumer's — the panel spans its trigger.
+
+```html
+<div class="dropdown-list" role="listbox">
+  <button class="list-item list-item-sm" role="option" aria-selected="true">…</button>
+  <button class="list-item list-item-sm" role="option" aria-selected="false">…</button>
+</div>
+```
+
+#### SelectCard
+
+Selectable / navigational option card. Extracted from Figma Card (9:367) —
+6 variants: `Hover` × `Radio` × `Pressed`.
+
+- **Base**: `.select-card` — 16px padding, 12px gap, 6px radius, 1px border,
+  76px content-driven height (20+**4**+20 text block + 32 padding)
+- **Parts**: `.select-card-text`, `.select-card-title` (Labels Strong 14/500),
+  `.select-card-description` (optional — Figma's subtitle boolean),
+  `.select-card-chevron` (18px, `Neutral/Base`)
+- **Two exclusive variants**: a `<label>` composing the shipped `.radio`
+  (selection card), or a `<button>` with the trailing chevron (navigation)
+
+| state | border | fill |
+| --- | --- | --- |
+| rest | `Stroke/Divider` | `BG/Paper` |
+| `:hover` | `Stroke/Hover` | **unchanged** (pixel-proven perimeter-only) |
+| `:active` (chevron variant) | unchanged token | `Action/Pressed` wash |
+| **selected** (`:has(.radio:checked)`) | `Primary/Primary` | `Primary/BG` |
+
+> **Figma's "Pressed" on the radio variant means SELECTED** — persistent, with
+> the nested radio checked; driven here by `:has(:checked)` from the real
+> input state (CSS-only, no class to sync). The chevron variant's pressed is
+> a transient wash. Two strategies for one axis — designer list.
+> **The pressed border only LOOKS darker** — constant translucent
+> `Stroke/Divider` over the tinted fill (Checkbox precedent).
+> **The chevron layer is named ChevronLeft but renders right** — shipped as
+> `#chevron-right`; designer list.
+> Hover/active exclude the selected card by name (`:not(:has(:checked))`) —
+> Figma draws no selected+hover. Not modelled, not invented: disabled, focus
+> variants (library focus-ring).
+
+```html
+<label class="select-card">
+  <input type="radio" name="join" class="radio" checked />
+  <span class="select-card-text">
+    <span class="select-card-title">Family Connection</span>
+    <span class="select-card-description">A relative is already a member</span>
+  </span>
+</label>
+
+<button class="select-card">
+  <span class="select-card-text">
+    <span class="select-card-title">Family Connection</span>
+    <span class="select-card-description">A relative is already a member</span>
+  </span>
+  <svg class="select-card-chevron" aria-hidden="true"><use href="#chevron-right" /></svg>
+</button>
+```
+
+#### TextSelector
+
+Language-picker dropdown trigger. Extracted from Figma Text Selector (1:489) —
+12 variants across `Hover` × `Active` × `Mobile`, all 18px tall.
+
+- **Parts**: `.text-selector` (the button row), `.text-selector-icon` (16px
+  globe), `.text-selector-label` (Help & Caption 12/400, natural case),
+  `.text-selector-chevron` (18px, rotates)
+- **States**: `:hover`, `[aria-expanded="true"]`, `:focus-visible`
+- **Ink-only** — no box, fill, border, or padding at any state (the
+  `.btn-micro` posture)
+
+| state | label | icons |
+| --- | --- | --- |
+| rest | `Text/Tertiary` | `Neutral/Disabled` (60% — lighter than the label) |
+| `:hover` | `Text/Secondary` | **unchanged** |
+| `[aria-expanded="true"]` | `Text/Primary` | `Neutral/Base` full opacity + chevron 180° |
+
+> **The design file contains duplicate `Hover=yes` variants** — two node
+> groups with different treatments under the same declared properties. Shipped
+> reading (pattern-consistency + node-ID locality): the modest one-token step
+> is `:hover`; the two-property near-black step is the OPEN state, wired to
+> `aria-expanded` together with the chevron rotation (Figma models rotation on
+> a separate Active axis; coupling them is a deliberate simplification). Both
+> on the designer list.
+
+> **Mobile is a label swap only** ("English" → "EN") — pass the short label;
+> no modifier class exists or is needed.
+
+```html
+<button class="text-selector" aria-haspopup="listbox" aria-expanded="false">
+  <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+  <span class="text-selector-label">English</span>
+  <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+</button>
 ```
 
 ---

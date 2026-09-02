@@ -1,0 +1,93 @@
+/**
+ * TextSelector Component
+ *
+ * Language-picker dropdown trigger. Extracted from Figma Text Selector
+ * (1:489) — 12 variants across Hover × Active × Mobile, all 18px tall.
+ *
+ *   <button class="text-selector" aria-haspopup="listbox" aria-expanded="false">
+ *     <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+ *     <span class="text-selector-label">English</span>
+ *     <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+ *   </button>
+ *
+ * Ink-only (like .btn-micro): no box, fill, border, or padding at any state.
+ * 16px globe · Help & Caption 12/400/14 label (natural case) · 18px chevron.
+ *
+ * THE DESIGN FILE CONTAINS DUPLICATE "HOVER" VARIANTS — two node groups both
+ * declare Hover=yes with different treatments. Shipped reading (grounded in
+ * pattern consistency + node-ID locality; designer list):
+ *
+ *   :hover                    label steps one token (Tertiary → Secondary);
+ *                             icons deliberately unchanged
+ *   [aria-expanded="true"]    the two-property step: label → Primary, icons →
+ *                             Neutral/Base full opacity, chevron rotates 180°
+ *
+ * Figma's Active axis only rotates the chevron and its ink columns are
+ * independent axes; this implementation deliberately couples open-state ink
+ * and rotation under aria-expanded (one real-world event). Intentional
+ * simplification — documented on the designer list.
+ *
+ * Icons rest at Neutral/Disabled (60% ink) — LIGHTER than the label's
+ * Tertiary. Tokens-lane property read; the globe's ramp is assumed by parity
+ * with the chevron (designer list).
+ *
+ * Mobile is a label swap only ("English" → "EN") — no modifier class; pass
+ * the short label. Not modelled, not invented: Pressed, Disabled, Focus
+ * (library focus-ring); the declared-but-unused iconDisplay boolean.
+ */
+
+@layer components {
+  .text-selector {
+    @apply m-0 inline-flex h-4.5 cursor-pointer items-center gap-1 border-0 bg-transparent p-0;
+  }
+
+  .text-selector-label {
+    @apply text-help-caption text-content-tertiary;
+    transition: color 150ms;
+  }
+
+  .text-selector-icon {
+    @apply size-4 shrink-0 text-neutral-disabled; /* 16px globe */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: color 150ms;
+  }
+
+  .text-selector-chevron {
+    @apply size-4.5 shrink-0 text-neutral-disabled; /* 18px */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition:
+      color 150ms,
+      transform 150ms;
+  }
+
+  /* Hover: the modest single-token step; excludes the open state (Figma
+     draws no hover+open combination — Radio's :not() discipline). Icons
+     deliberately keep their rest ink. */
+  .text-selector:hover:not([aria-expanded="true"]) .text-selector-label {
+    @apply text-content-secondary;
+  }
+
+  /* Open: the two-property step + rotation. */
+  .text-selector[aria-expanded="true"] .text-selector-label {
+    @apply text-content-primary;
+  }
+  .text-selector[aria-expanded="true"] .text-selector-icon,
+  .text-selector[aria-expanded="true"] .text-selector-chevron {
+    @apply text-neutral;
+  }
+  .text-selector[aria-expanded="true"] .text-selector-chevron {
+    @apply rotate-180;
+  }
+
+  .text-selector:focus-visible {
+    @apply focus-ring;
+  }
+}

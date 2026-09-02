@@ -27,26 +27,70 @@ synthesis agent reconciles your measurements against the other lanes.
 If the Figma tool schemas are not loaded, load them with ONE ToolSearch call
 ("select:mcp__claude_ai_Figma__get_screenshot,mcp__claude_ai_Figma__get_metadata").
 
+## Budget and priorities — measured on real runs, follow them
+
+**Hard budget: ≤20 tool calls.** Past runs at 49–66 calls spent most of them
+re-confirming values the tokens lane binds exactly. Spend your calls on what
+ONLY pixels can know, in this order:
+
+1. **State-pair pixel diffs** — byte-diff suspicious state pairs (hover vs
+   pressed especially). A confirmed 0-diff no-op is this lane's highest-value
+   finding (it has caught real design defects).
+2. **Rendered casing** of any text (uppercase vs typed — cross-checks the
+   structure lane's transform reading).
+3. **Geometry the APIs flatten**: stroke widths by coverage, radii by
+   corner-arc fit, glyph ink extents.
+4. **Unbound-suspicion colours** — regions the tokens lane flagged as having
+   no variable.
+5. **Colour SPOT-CHECKS, not sweeps**: sample ONE representative pixel per
+   distinct state (not per variant per region). The tokens lane binds the
+   values; your sample exists to catch compositing/binding surprises, and one
+   good sample per state does that.
+
+**If the budget runs out with a required measurement unresolved, SAY SO in
+the report — never silently skip.** "Could not measure X within budget" is a
+valid finding; the orchestrator decides whether to re-invoke you for it.
+Quality is preserved by explicitness, not by unlimited calls.
+
+**Known renderer facts — do not re-derive them:**
+- `get_screenshot` NEVER upscales a node above its native size, no matter the
+  `maxDimension` (verified repeatedly at 2048/4096/65536). Small nodes come
+  back at 1.0x; plan for coverage-based sub-pixel analysis at native
+  resolution from the start. Do not retry with larger maxDimension.
+- Renders composite onto an opaque white matte (no alpha at edges) and may
+  carry ~0.5–1px matte offsets; project pixel colours onto the vector between
+  the two known flat colours to recover fractional coverage.
+
 ## Method
 
-1. `get_screenshot` the component SET at high resolution (`maxDimension`
-   2048+), and individual variants only where the set render is too small to
-   measure. Batch independent screenshot calls in one message. Download PNGs
-   with the curl command the tool returns.
-2. Measure with a script (node + pngjs is installed in this repo, or python3):
-   - **Stroke widths by pixel COVERAGE, not binary threshold.** Sum
-     antialiased alpha/ink across a scanline crossing the stroke and divide
-     by the run length. A binary test rounds 1.5px to 2 and cannot be
-     trusted. Always report the scale factor between the PNG and the node's
-     natural size (the tool's metadata gives original_width) and divide it
-     out.
-   - Element sizes (dots, glyphs, gaps) the same way, measured on both axes.
-   - Colour sampling: sample interior pixels away from antialiased edges;
-     report hex.
-3. **State distinguishability**: visually compare state variants. Are hover
-   and rest actually different? Pressed and hover? Report "visually
-   indistinguishable" when true — the dashboard had a hover state that was a
-   no-op for weeks because nobody looked.
+1. `get_screenshot` the component SET first; individual variants only where
+   the set render is too small to measure. Batch independent screenshot calls
+   in one message. Download PNGs with the curl command the tool returns.
+2. Measure with a script (node + pngjs is installed in this repo). Canned
+   starting point — adapt, don't rewrite from scratch:
+
+   ```js
+   const { PNG } = require("pngjs");
+   const png = PNG.sync.read(require("fs").readFileSync(file));
+   const px = (x, y) => {
+     const i = (y * png.width + x) * 4;
+     return [png.data[i], png.data[i + 1], png.data[i + 2]];
+   };
+   // coverage of colour B over colour A at pixel p: project onto the A→B vector
+   const t = (p, A, B) => {
+     let num = 0, den = 0;
+     for (let c = 0; c < 3; c++) { num += (p[c]-A[c])*(B[c]-A[c]); den += (B[c]-A[c])**2; }
+     return Math.min(1, Math.max(0, num / den));
+   };
+   // stroke width = Σ t across a scanline crossing the stroke
+   ```
+
+   - **Stroke widths by pixel COVERAGE, not binary threshold** — a binary
+     test rounds 1.5px to 2. Report the achieved scale with every number.
+   - Element sizes (dots, glyphs, gaps) the same way, both axes.
+   - Colour samples: interior pixels away from antialiased edges.
+3. **State distinguishability**: byte-diff state pairs (see priority 1) and
+   report "visually indistinguishable" when true.
 
 ## CRITICAL RULES
 

@@ -21,9 +21,16 @@ component set (a lone frame, or a page), stop and ask which set to extract.
 
 Decide the lane set by component size:
 - Standard: all three lanes.
-- The visual lane may be SKIPPED only when the component has no strokes, no
-  fractional-looking values, and no vector glyphs — i.e. nothing the APIs
-  could flatten or misreport. When in doubt, run it.
+- SKIP the visual lane when the component has: no text (so no casing
+  question), no vector glyphs, no strokes, and only whole-integer geometry —
+  i.e. nothing the APIs could flatten or misreport AND no state pairs worth
+  pixel-diffing. State the skip decision and its reasoning in your status.
+  When in doubt, run it — but with its ≤20-call budget it is cheap enough
+  that the skip is an optimization, not a rescue.
+- The visual lane's budget rule means it may report "could not measure X
+  within budget" — that is a follow-up decision for YOU at Gate 1, not a
+  deficiency: re-invoke it for that one measurement only if synthesis will
+  need the value.
 
 ## Gate 1 — Parallel lanes (one message, all Agent calls together)
 
@@ -38,6 +45,11 @@ Verify each report against its agent's definition of done (the report-format
 section in its agent file). A lane that answered with guesses or skipped a
 required section gets re-invoked ONCE with the specific deficiency named. If
 it fails twice, halt and report.
+
+A lane that CRASHES (server error, early termination) is not a failed lane —
+RESUME it with SendMessage to its agent id ("continue from where you left
+off"), which preserves its downloads and partial work, rather than spawning a
+fresh agent.
 
 ## Gate 2 — Synthesis
 

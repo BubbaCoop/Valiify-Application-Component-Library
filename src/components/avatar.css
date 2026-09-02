@@ -1,0 +1,39 @@
+/**
+ * Avatar Component
+ *
+ * Circular initials marker. Extracted inline from Figma Avatar (23:670) —
+ * 4 variants: Property 1 {MD 24px, SM 20px} × Feint {No, Yes}.
+ *
+ *   <span class="avatar">NC</span>
+ *
+ * | variant  | fill                      | initials              | type              |
+ * | -------- | ------------------------- | --------------------- | ----------------- |
+ * | base MD  | Neutral/Base              | Text/Contrast (white) | Eyebrow 11/600    |
+ * | -sm      | same fills                | same inks             | Micro-Label 9/600 |
+ * | -feint   | Neutral/BG (8% tint)      | Text/Secondary        | size-matched      |
+ *
+ * Both text styles carry a REAL uppercase transform in Figma (this component
+ * plus Badge are the evidence that resolved Eyebrow's casing) — the type-*
+ * utilities bundle it, so initials render caps however they are typed.
+ *
+ * Initials only — no image layer exists in any variant (same as the dashboard
+ * file's Avatar). Not modelled, not invented: no LG size, no ring, no
+ * disabled, no status dot.
+ */
+
+@layer components {
+  .avatar {
+    @apply inline-flex shrink-0 items-center justify-center rounded-full;
+    @apply size-6 select-none; /* MD 24px */
+    @apply bg-neutral text-content-contrast type-eyebrow;
+  }
+
+  .avatar-sm {
+    @apply size-5 type-micro-label; /* SM 20px, 9/600 */
+  }
+
+  /* Feint: 8% neutral tint, secondary ink — fill and ink change, type doesn't. */
+  .avatar-feint {
+    @apply bg-neutral-bg text-content-secondary;
+  }
+}
