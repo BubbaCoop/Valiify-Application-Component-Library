@@ -1,0 +1,115 @@
+/**
+ * IconButton Component
+ *
+ * Compact icon-only button. Extracted from Figma "icon button" (1:429) —
+ * 16 variants across Size {md, sm} × Type {Icon Only, State} × Hover × Subtle.
+ *
+ *   <button class="icon-button" aria-label="Close">
+ *     <svg><use href="#x" /></svg>
+ *   </button>
+ *
+ * Icon-only buttons ALWAYS need an aria-label.
+ *
+ * Two real Types, not skins:
+ *   bare .icon-button      Figma "Icon Only" — the glyph IS the box (md 18px,
+ *                          sm 14px); hover recolours the glyph and NOTHING
+ *                          else. No background, no radius, ever.
+ *   .icon-button-state     Figma "State" — pads the same glyph into a larger
+ *                          hit target (md 24px, sm 18px) and hover adds a
+ *                          full-circle Action/Hover halo.
+ *
+ * Colour ramps (the Subtle boolean picks a ramp, per size and type alike):
+ *   default   rest Neutral/Base → hover Neutral/Hover
+ *   -subtle   rest Neutral/Disabled (60% ink) → hover Neutral/Base — hover
+ *             "cancels the muting" and never reaches Neutral/Hover. Faithful
+ *             to all 4 Subtle variants; flagged for legibility (very faint
+ *             at rest).
+ *
+ * The glyph is a caller slot: any sprite symbol, no size class needed — the
+ * button sizes and paints its child svg directly. The sprite's symbols carry
+ * no paint attributes, so the Lucide defaults are supplied here; stroke-width
+ * 2 on the 24-unit viewBox renders 1.5px at 18px and 1.167px at 14px, both
+ * inside the pixel-measured brackets.
+ *
+ * Two Figma authoring slips shipped as their consistent reading, not copied:
+ *   - 23:723 (md/State/rest) binds Neutral/Disabled where its three siblings
+ *     and both sm counterparts bind Neutral/Base — three extraction lanes
+ *     confirmed the muted render is really drawn. Shipped as Neutral/Base.
+ *   - 23:725 (md/State/Subtle rest) hand-shrinks its glyph to 14px against
+ *     three 18px siblings. Shipped as 18px.
+ *   Both on the designer list.
+ *
+ * Not modelled in Figma, not invented: Disabled (cursor only), Pressed, Focus
+ * (library focus-ring). The md default size is a library choice — Figma names
+ * no default on the Size axis.
+ */
+
+@layer components {
+  .icon-button {
+    @apply inline-flex shrink-0 cursor-pointer items-center justify-center;
+    @apply m-0 border-0 bg-transparent p-0;
+    /* md default: the glyph IS the box. */
+    @apply size-4.5 text-neutral; /* 18px */
+    transition:
+      color 150ms,
+      background-color 150ms;
+  }
+
+  /* The glyph slot — sized and painted by the button, no icon class needed. */
+  .icon-button svg {
+    @apply size-4.5 shrink-0; /* 18px */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- Size --------------------------------------------------------------- */
+
+  .icon-button-sm {
+    @apply size-3.5; /* 14px */
+  }
+  .icon-button-sm svg {
+    @apply size-3.5;
+  }
+
+  /* --- Colour ramps ------------------------------------------------------- */
+
+  .icon-button:hover:not(:disabled) {
+    @apply text-neutral-hover;
+  }
+
+  /* Subtle: rest at 60% ink; hover restores Base — never Neutral/Hover. */
+  .icon-button-subtle {
+    @apply text-neutral-disabled;
+  }
+  .icon-button-subtle:hover:not(:disabled) {
+    @apply text-neutral;
+  }
+
+  /* --- State type: padded hit target + hover halo ------------------------- */
+
+  .icon-button-state {
+    @apply size-6 p-0.75; /* 24px box, 3px padding around the 18px glyph */
+  }
+  .icon-button-state.icon-button-sm {
+    @apply size-4.5 p-0.5; /* 18px box, 2px padding around the 14px glyph */
+  }
+  /* The halo exists ONLY on the State type — Icon Only hover never draws
+     chrome. A full circle, per Figma's literal 9999px. */
+  .icon-button-state:hover:not(:disabled) {
+    @apply rounded-full bg-action-hover;
+  }
+
+  /* --- Shared states ------------------------------------------------------ */
+
+  .icon-button:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Figma models no disabled variant; nothing visual is invented. */
+  .icon-button:disabled {
+    @apply cursor-not-allowed;
+  }
+}

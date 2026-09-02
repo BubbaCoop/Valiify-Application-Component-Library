@@ -1,0 +1,78 @@
+/**
+ * Switch Component
+ *
+ * Toggle for binary on/off settings. Extracted from Figma Switch (1:446) —
+ * 4 variants, all 36×20: Active {no, yes} × Hover.
+ *
+ *   <input type="checkbox" role="switch" class="switch" />
+ *
+ * A native checkbox with appearance-none: the input is the track, the knob is
+ * ::before, and :checked slides it. Form participation, keyboard toggling and
+ * screen-reader state come free (role="switch" announces it correctly).
+ *
+ * Geometry: 36×20 pill track (no border — none exists in any variant), 16px
+ * knob at 2px inset, 16px travel. The knob diameter is the one cross-lane
+ * conflict of the extraction (authored 16 vs a 15px 1x-raster read); authored
+ * metadata wins — 2+16+16+2 = 36 exactly.
+ *
+ * Colours — note the off-track paints with STROKE-family tokens (translucent
+ * ink over the page), an oddity of this file's naming reproduced faithfully:
+ *
+ *   off rest    track Stroke/Border (17% ink)   knob BG/Paper
+ *   off hover   track Stroke/Hover  (56% ink)   knob unchanged
+ *   on  rest    track Primary                   knob unchanged
+ *   on  hover   track Primary/Hover             knob unchanged
+ *
+ * Use bg-stroke-border / bg-stroke-hover — a background, never border-*.
+ *
+ * Unlike Radio, BOTH branches have hover drawn in Figma, so the checked hover
+ * rule is a real painted state, not an exclusion.
+ *
+ * Not modelled, not invented: Disabled (cursor only), Pressed, Focus (library
+ * focus-ring). The knob ships shadowless: Figma binds no effect variable and
+ * the export's faint spill (~1% in one variant, noise-floor in the rest) is
+ * not a spec — on the designer list.
+ */
+
+@layer components {
+  .switch {
+    @apply relative m-0 inline-flex shrink-0 cursor-pointer appearance-none p-0;
+    /* Explicit both axes — appearance-none leaves no intrinsic size. */
+    @apply h-5 w-9 rounded-full;
+    /* Off-track: a stroke-named token used as a fill, per the design file. */
+    @apply bg-stroke-border;
+    transition: background-color 150ms;
+  }
+
+  .switch:hover:not(:disabled):not(:checked) {
+    @apply bg-stroke-hover;
+  }
+
+  .switch:checked {
+    @apply bg-primary;
+  }
+
+  /* A real Figma variant, not an invented state. */
+  .switch:checked:hover:not(:disabled) {
+    @apply bg-primary-hover;
+  }
+
+  /* Knob: 16px circle, 2px inset, BG/Paper in every state. */
+  .switch::before {
+    @apply absolute top-0.5 left-0.5 size-4 rounded-full bg-surface-paper content-[''];
+    transition: transform 150ms;
+  }
+
+  .switch:checked::before {
+    @apply translate-x-4; /* 16px travel */
+  }
+
+  .switch:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Figma models no disabled variant; nothing visual is invented. */
+  .switch:disabled {
+    @apply cursor-not-allowed;
+  }
+}

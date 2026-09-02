@@ -54,9 +54,10 @@ Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20
 
 > **Not modelled in Figma, not invented here:** no disabled variant (`:disabled`
 > swaps the cursor and nothing else — a disabled radio renders identically to
-> an enabled one; on the designer list), and no focus variant (`:focus-visible`
-> uses the library-wide `focus-ring` convention, whose tokens await the Short
-> App focus-ring extraction).
+> an enabled one; on the designer list), and no focus variant in the component
+> set (`:focus-visible` uses the library-wide `focus-ring` utility — Figma's
+> "Primary Ring" effect, a 3px `Primary/Ring` halo, extracted with the token
+> set).
 
 > **Structure quirk in the design file, harmless here:** the three unchecked
 > variants draw the ring as a child ellipse, while checked puts the stroke on
@@ -74,17 +75,215 @@ Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20
 </label>
 ```
 
+#### Checkbox
+
+Binary selection control. Extracted from Figma Checkbox (1:424) — 8 variants
+across `Active` × `Hover` × `Pressed` × `Disabled`, all 18×18.
+
+- **Parts**: `.checkbox-control` (18px positioning wrapper), `.checkbox-input`
+  (native `<input type="checkbox">`), `.checkbox-check` (sprite `#check` glyph)
+- **States**: `:hover`, `:active`, `:checked`, `:disabled`, `:focus-visible` —
+  and unlike Radio, **both branches have hover/pressed drawn in Figma**
+- **Dimensions**: 18×18 box, raw **3px radius** (on neither Radius token —
+  designer list), 1.5px inside ring, 16×16 check glyph at 1px inset
+
+| state | unchecked | checked |
+| --- | --- | --- |
+| rest | `Stroke/Border` ring 1.5px + Paper fill | `Primary` fill, **no ring** |
+| hover | + `Action/Hover` fill, ring unchanged | `Primary/Hover` |
+| pressed | + `Action/Pressed` | **`Primary/Focus`** (verbatim token name) |
+| disabled | ring thins to **1px** AND swaps to `Stroke/Divider` | `Primary/Disabled` (translucent, as-is) |
+
+> **The ring is an inset box-shadow** (fractional-border trap, same as Radio).
+> **The unchecked border only LOOKS like it darkens across states** — it is one
+> constant translucent token compositing over the changing fill; do not split
+> it into per-state ring colours.
+> **Disabled changes two things at once** (width and token) — pixel-verified,
+> both authored.
+> **`Primary/Focus` is Figma's literal name for the checked PRESSED fill** —
+> wired to `:active`, never `:focus-visible`.
+> **The wrapper exists for the sprite glyph** — a pseudo-element cannot render
+> `<use>`; the check's white is unbound in Figma and ships as `Text/Contrast`
+> (designer to confirm). The sprite's symbols carry no paint attributes, so the
+> component CSS supplies `fill:none; stroke:currentColor; stroke-width:2`.
+> **Not modelled, not invented**: indeterminate (`:indeterminate` renders
+> unchecked — see the IndeterminateGap story), disabled+hover/pressed, focus.
+
+```html
+<label style="display: inline-flex; align-items: center; gap: 10px;">
+  <span class="checkbox-control">
+    <input type="checkbox" class="checkbox-input" checked />
+    <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+  </span>
+  Online banking
+</label>
+```
+
+#### IconButton
+
+Compact icon-only button. Extracted from Figma "icon button" (1:429) — 16
+variants across `Size` × `Type` × `Hover` × `Subtle`.
+
+- **Base**: `.icon-button` — Figma's *Icon Only* type: the glyph IS the box,
+  hover recolours it and **nothing else** (no background, ever)
+- **Type**: `.icon-button-state` — pads the same glyph into a larger hit target
+  and hover adds a full-circle `Action/Hover` halo
+- **Sizes**: md default (18px glyph; 24px box as State), `.icon-button-sm`
+  (14px glyph; 18px box as State). Box = glyph for Icon Only.
+- **Ramp**: default rest `Neutral/Base` → hover `Neutral/Hover`;
+  `.icon-button-subtle` rest `Neutral/Disabled` (60% ink) → hover
+  `Neutral/Base` — **hover cancels the muting and never reaches Neutral/Hover**
+- **Glyph slot**: any sprite symbol, no icon class — the button sizes and
+  paints its child `svg` directly (stroke-width 2 → 1.5px at md, 1.167px at sm)
+
+> **Always give an icon-only button an `aria-label`.**
+> **md as the bare default is a library choice** — Figma names no default Size.
+> **Two Figma authoring slips shipped as the consistent reading** (both
+> 3-lane-confirmed, both on the designer list): `23:723` (md/State/rest) binds
+> the muted `Neutral/Disabled` against all its siblings' `Neutral/Base`;
+> `23:725` hand-shrinks its glyph to 14px against three 18px siblings.
+> **Legibility flag**: the Subtle rest glyph is very faint over white.
+> **Not modelled, not invented**: Disabled (cursor only), Pressed, Focus
+> (library `focus-ring`).
+
+```html
+<button class="icon-button" aria-label="Close">
+  <svg aria-hidden="true"><use href="#x" /></svg>
+</button>
+
+<!-- Padded hit target with hover halo -->
+<button class="icon-button icon-button-state" aria-label="Settings">
+  <svg aria-hidden="true"><use href="#settings" /></svg>
+</button>
+
+<!-- Small, muted -->
+<button class="icon-button icon-button-sm icon-button-subtle" aria-label="Help">
+  <svg aria-hidden="true"><use href="#circle-help" /></svg>
+</button>
+```
+
+#### Switch
+
+Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
+`Active` × `Hover`, all 36×20.
+
+- **Base**: `.switch` on a native `<input type="checkbox" role="switch">` —
+  the input is the track, the knob is `::before`
+- **States**: `:hover`, `:checked`, `:checked:hover`, `:disabled`,
+  `:focus-visible`
+- **Dimensions**: 36×20 pill track (no border in any variant), 16px knob at
+  2px inset, **16px travel** via the CSS `translate` property
+
+| state | track | knob |
+| --- | --- | --- |
+| off rest | `Stroke/Border` (17% ink, **used as a fill**) | `BG/Paper` |
+| off hover | `Stroke/Hover` (56% ink) | unchanged |
+| on rest | `Primary` | unchanged |
+| on hover | `Primary/Hover` | unchanged |
+
+> **The off-track paints with STROKE-family tokens as fills** — `bg-stroke-border`,
+> never `border-*`; a naive read of the token name would add a line that exists
+> nowhere in the design. On the designer list as a naming oddity.
+> **The knob ships shadowless**: Figma binds no effect variable and the
+> export's faint spill (~1% in one variant) is not a spec. Designer list.
+> **Knob diameter was the extraction's one cross-lane conflict** (authored
+> 16×16 vs a 15px 1x-raster read) — authored metadata wins: 2+16+16+2 = 36
+> exactly. The spec pins 16.
+> **Not modelled, not invented**: Disabled (cursor only), Pressed, Focus.
+
+```html
+<label style="display: inline-flex; align-items: center; gap: 16px;">
+  Email notifications
+  <input type="checkbox" role="switch" class="switch" checked />
+</label>
+```
+
 ---
 
 Further components will be documented here as they are extracted from the
 Short App Figma file, one section per component, following the format used in
 [_dashboard-archive/DASHBOARD-CLAUDE.md](_dashboard-archive/DASHBOARD-CLAUDE.md).
 
-### Design Tokens
+### Design Tokens (complete enumeration 2026-09-02)
 
-**Not yet extracted.** The Short App Figma file's tokens have not been pulled
-yet — [tokens/figma-tokens.json](tokens/figma-tokens.json) is a placeholder and
-[src/themes/valiify.css](src/themes/valiify.css) is regenerated from it.
+**56 colors, 8 radii, 13 spacing values, 24 text styles, 1 effect (the focus
+ring).** Colors/spacing/radii come from a **complete Plugin API enumeration of
+the file's local variable collection** (`use_figma` →
+`figma.variables.getLocalVariableCollectionsAsync` — all 77 variables, applied
+or not); typography from the type-preview section (1:2) plus component sweeps.
+Browse them rendered in Storybook under **Foundations → Design Tokens**.
+
+> **The applied-only sweep missed 26 of the 56 colors** — the entire Error and
+> Info ramps, the Success/Warning/Neutral tint sets, `BG/Page`, `BG/Card` —
+> plus ALL spacing and radius variables. The Plugin API enumeration is the
+> authoritative completeness source; re-run it when the designer adds tokens.
+
+**Colors** — `Main`-equivalents are unsuffixed (`Primary/Primary` and
+`Neutral/Base` both count as the ramp's main shade):
+
+- Primary (crimson): `--color-primary` (#a6192e) / `-hover` / `-focus` /
+  `-disabled`, plus tints `-text` / `-bg` / `-ring` / `-track`
+- Neutral: `--color-neutral` / `-hover` / `-text` / `-disabled` / `-bg` /
+  `-ring` / `-stroke` / `-stroke-hover`
+- Content (Figma group **Text**): `--color-content-primary` / `-secondary` /
+  `-tertiary` / `-hint` / `-contrast`
+- Surface (Figma group **BG**): `--color-surface-paper` (#fffdfb) /
+  `-app-page` (#fafaf9) / `-page` (#fdf8f5) / `-card` (#f1f0ee)
+- Stroke: `--color-stroke-border` / `-divider` / `-hover` (all translucent ink)
+- Action: `--color-action-hover` / `-pressed` / `-active` / `-focused`
+- Status — **four full ramps**, each Base + Text + BG/Ring/Stroke/Stroke-Hover
+  tints: `--color-success*` (#2e6e4e), `--color-warning*` (#b4791c, Text
+  #8b5d16), `--color-error*` (#c0362c), `--color-info*` (#1b4e8b)
+
+> **The Figma groups `Text` and `BG` map to the public prefixes `content` and
+> `surface`** — avoiding `text-text-secondary` / `bg-bg-paper` utilities and
+> matching the dashboard library's API shape. The mapping lives in
+> `COLOR_GROUPS` in [scripts/build-theme.mjs](scripts/build-theme.mjs).
+
+> **The Error ramp exists but is applied nowhere** — the field components'
+> `Error=Yes` variants bind `Warning/Base` (amber) instead. Now clearly an
+> authoring slip (upgraded from an open question once the full enumeration
+> surfaced the ramp). On the designer list; build error states against the
+> Error ramp only once confirmed.
+
+**Radii** — Figma's scale IS Tailwind's t-shirt naming; emitted verbatim.
+xs/sm/md/lg (2/4/6/8px) are byte-identical to Tailwind v4's defaults;
+`--radius-xl` (10px) and `--radius-2xl` (12px) **deliberately override**
+Tailwind's 12/16 so `rounded-xl` / `rounded-2xl` mean this design system's
+corners. `Radius/none` and `Radius/full` are not re-emitted (native
+`rounded-none` / `rounded-full` already match). This is the opposite call from
+the dashboard library's role names — that file's scale diverged from Tailwind
+everywhere; this one builds on it.
+
+**Spacing** — 13 whole-px variables (2–64), every one an exact native Tailwind
+step (divide by 4: `Spacing/8` → `p-2`, `Spacing/64` → `p-16`). No
+`--spacing-*` tokens on purpose — defining `--spacing-8: 8px` would make `p-8`
+mean 8px instead of 32px.
+
+**Typography** — 24 composite `--text-*` tokens, all Inter, line heights
+authored in px (only `Link` is Auto):
+
+| Role | tokens |
+| --- | --- |
+| Display & Title | `text-display` 28/34 · `text-display-large` 30/38 · `text-title` 22/26 · `text-title-medium` 16/20 (all 500) |
+| Metric | `text-metric-large` 30/34 · `text-metric-medium` 26/30 · `text-metric-small` 20/26 (all 500) |
+| Body | `text-lead` 16/24/500 · `text-body` 15/20 · `text-input` 16/24 · `text-body-content` 13/16 · `text-help-caption` 12/14 |
+| Labels & UI | `text-label` 14/20 · `text-label-strong` 14/20/500 · `text-field-label` 13/16/500 · `text-button-label` 14/20/600+10% · `text-link` 14/Auto · `text-eyebrow` 11/16/600+10% · `text-tag-pill` 11/16/600+5% · `text-timestamp` 12/16 · `text-data-key` & `text-micro-label` 9/12/600+8% · `text-lockup-wordmark` 15/17/600+10% · `text-lockup-tagline` 9/11/500+16% |
+
+> **Casing is not baked into any token.** The preview renders Eyebrow,
+> Micro-Label, Button Label, Tag & Pill, Data Key and the Lockup styles
+> uppercase, but the API exposes no transform binding — casing stays the
+> caller's (Chip/Divider precedent) until confirmed per component.
+
+**Focus ring** — Figma's `Primary Ring` effect: spread-only drop shadow,
+0/0/0/**3px** in `Primary/Ring` (#a6192e38). Ships as the `focus-ring` utility
+(outline at offset 0 — the ring sits **outside** the element, unlike the
+dashboard's inset ring) and as `--shadow-focus-ring` for real-shadow cases.
+
+**Radii / spacing / border widths** — **this file defines no such variables**;
+geometry is raw per component (verified across 16 subtree sweeps). No
+`--radius-*` or `--border-*` tokens are emitted yet; introduce role tokens only
+if recurring raw values emerge. Spacing stays on Tailwind's native scale.
 
 The pipeline is generated — do not edit the theme CSS by hand:
 

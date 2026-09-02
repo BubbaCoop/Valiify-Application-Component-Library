@@ -8,7 +8,7 @@
  */
 
 /**
- * Keyboard focus ring — Figma Menu Item > Ring (I923:25890;851:22778).
+ * Keyboard focus ring — Figma "Primary Ring" effect (Updated-Short-App).
  *
  * The shared affordance for tabbing between interactive elements. Apply on
  * :focus-visible (not :focus) so it appears for keyboard navigation but not on
@@ -18,18 +18,18 @@
  *
  * Two details worth knowing:
  *
- * 1. The negative outline-offset is deliberate. In Figma the ring is a
- *    full-size overlay frame, so its outer edge aligns with the component's own
- *    outer edge rather than sitting outside it. A negative offset equal to the
- *    ring width reproduces that. Offset 0 or positive would grow the element's
- *    visual bounds.
+ * 1. Figma authors this as a spread-only drop shadow: offset 0/0, blur 0,
+ *    spread 3, in Primary/Ring (Primary at 22% alpha) — a soft halo sitting
+ *    OUTSIDE the element. An outline at offset 0 occupies exactly the same
+ *    geometry as a spread-3 shadow, so the ring is an outline (which cannot
+ *    be painted over by a background the way a box-shadow layer can).
+ *    Contrast the dashboard library, whose ring was inset via a negative
+ *    offset — that was that file's design, not a library invariant.
  *
  * 2. `outline` follows the element's own border-radius, so the ring needs no
- *    radius of its own — it picks up rounded-control, rounded-surface, or
- *    whatever the component already sets. This matches Figma, where the Ring
- *    frame's radius tracks its parent.
+ *    radius of its own — it picks up the component's corners automatically.
  */
 @utility focus-ring {
   outline: var(--ring-focus-width) solid var(--ring-focus-color);
-  outline-offset: calc(-1 * var(--ring-focus-width));
+  outline-offset: 0px;
 }

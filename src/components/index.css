@@ -11,4 +11,7 @@
 
 
 
+@import "./checkbox.css";
+@import "./icon-button.css";
 @import "./radio.css";
+@import "./switch.css";

@@ -121,12 +121,20 @@ const COLOR_GROUPS = {
   Primary: "primary",
   Secondary: "secondary",
   Content: "content",
+  // The Short App file calls its ink ramp "Text" and its surfaces "BG".
+  // Mapped to the same public prefixes the dashboard used: `content` avoids
+  // the double-word `text-text-secondary` utility, `surface` avoids `bg-bg-*`.
+  Text: "content",
+  BG: "surface",
   Surface: "surface",
   Stroke: "stroke",
   Action: "action",
   Approved: "approved",
   Critical: "critical",
+  Success: "success",
   Warning: "warning",
+  Error: "error",
+  Info: "info",
   Neutral: "neutral",
   misc: "misc",
 };
@@ -136,11 +144,12 @@ function colorVarName(figmaName) {
   const prefix = COLOR_GROUPS[group] ?? kebab(group);
   // Content/* and Stroke/* have no "Main"; their variants are all meaningful.
   // The Short App file names each ramp's main shade after its group
-  // (`Primary/Primary`) where the dashboard file used `Main` — both forms
-  // emit the unsuffixed token.
+  // (`Primary/Primary`) or calls it "Base" (`Neutral/Base`, `Warning/Base`)
+  // where the dashboard file used `Main` — all three forms emit the
+  // unsuffixed token.
   if (
-    (variant === "Main" || variant === group) &&
-    !["Content", "Surface", "Stroke", "Action"].includes(group)
+    (variant === "Main" || variant === "Base" || variant === group) &&
+    !["Content", "Surface", "Stroke", "Action", "Text", "BG"].includes(group)
   ) {
     return `--color-${prefix}`;
   }
@@ -148,19 +157,12 @@ function colorVarName(figmaName) {
 }
 
 /**
- * Radii use ROLE names, not Figma's t-shirt sizes. Tailwind v4 already ships
- * --radius-xs/-sm/-md/-lg/-xl, and redefining those silently changes what
- * rounded-xs/-sm/-md mean for every consumer of this library.
- *
- * `micro` and `tight` are provisional — confirm against real component usage.
+ * Radii pass through with Figma's own names — see the comment emitted with
+ * them. (The dashboard library used role names because its Figma scale
+ * diverged from Tailwind's everywhere; this file's scale IS Tailwind's naming
+ * with matching xs–lg values, so verbatim is the honest emission and only
+ * xl/2xl override Tailwind's defaults, deliberately.)
  */
-const RADIUS_ROLES = {
-  "Radius/Micro": ["micro", "indicators, bars"],
-  "Radius/XS": ["tight", "tags, badges"],
-  "Radius/SM": ["control", "buttons, inputs"],
-  "Radius/MD": ["surface", "cards, panels"],
-  "Radius/Rounded": ["pill", "avatars, pills"],
-};
 
 const STROKE_ROLES = {
   "Stroke/Thin": "thin",
@@ -175,20 +177,48 @@ const STROKE_ROLES = {
  * Label S Mono are different styles at the same size — collapsing on size alone
  * would collide. The collision guard at the call site is the backstop.
  */
+/**
+ * Short App text-style names -> token keys, explicit per style.
+ *
+ * A bare "variant after the slash" rule collides here: three styles are named
+ * "Default" (Display & Title, Body & Supporting, Labels) and two are named
+ * "Large" (Display & Title, Metric). The collision guard at the call site
+ * would catch it, so the map below is the resolution, not a convenience —
+ * every key is chosen to read naturally as a utility (`text-display`,
+ * `text-body`, `text-eyebrow`).
+ */
+const TEXT_KEYS = {
+  "Display & Title/Default": "display",
+  "Display & Title/Large": "display-large",
+  "Display & Title/Title": "title",
+  "Display & Title/Medium": "title-medium",
+  "Metric/Large": "metric-large",
+  "Metric/Medium": "metric-medium",
+  "Metric/Small": "metric-small",
+  "Body & Supporting/Lead & Subtitle": "lead",
+  "Body & Supporting/Default": "body",
+  "Body & Supporting/Input": "input",
+  "Body & Supporting/Content": "body-content",
+  "Body & Supporting/Help & Caption": "help-caption",
+  "Labels, links & UI/Default": "label",
+  "Labels, links & UI/Strong": "label-strong",
+  "Labels, links & UI/Field Label": "field-label",
+  "Labels, links & UI/Data Key": "data-key",
+  "Labels, links & UI/Time stamp": "timestamp",
+  "Labels, links & UI/Lockup and wordmark": "lockup-wordmark",
+  "Labels, links & UI/Lockup & Tagline": "lockup-tagline",
+  "Labels, links & UI/Eyebrow": "eyebrow",
+  "Labels, links & UI/Micro-Label": "micro-label",
+  "Labels, links & UI/Button Label": "button-label",
+  "Labels, links & UI/Link": "link",
+  "Labels, links & UI/Tag & Pill": "tag-pill",
+};
+
 function textKey(figmaName) {
-  const variant = figmaName.split("/")[1];
-  return kebab(
-    variant
-      .replace(/^Action /, "action-")
-      .replace(/^Micro Data /, "data-micro-")
-      .replace(/^Micro /, "micro-")
-      .replace(/^Label ([LS]) (Sans|Mono)/, (_, size, fam) =>
-        fam === "Mono" ? `label-${size}-mono` : `label-${size}`,
-      )
-      .replace(/^Data /, "data-")
-      .replace(/^Body /, "body-")
-      .replace(/^Help /, "help-"),
-  );
+  // Fallback for a style added to Figma after this map was written: kebab the
+  // whole name so it cannot collide, and rely on the caller's guard to flag
+  // any duplicate. Add new styles to TEXT_KEYS deliberately, not here.
+  return TEXT_KEYS[figmaName] ?? kebab(figmaName);
 }
 
 /**
@@ -252,16 +282,21 @@ p("@theme static {");
 
 // Colors, grouped in the order the design system reads
 const GROUP_ORDER = [
-  ["Primary", "Brand primary"],
+  ["Primary", "Brand primary (crimson ramp + tints)"],
   ["Secondary", "Brand secondary"],
+  ["Neutral", "Neutral ramp"],
+  ["Text", "Content (text / ink) — Figma group: Text"],
   ["Content", "Content (text / ink)"],
+  ["BG", "Surfaces — Figma group: BG"],
   ["Surface", "Surface stack (back to front)"],
-  ["Stroke", "Stroke colors — widths are --border-* below"],
+  ["Stroke", "Stroke colors"],
   ["Action", "Action overlays (interaction states)"],
+  ["Success", "Status — success"],
   ["Approved", "Status — approved"],
-  ["Critical", "Status — critical"],
   ["Warning", "Status — warning"],
-  ["Neutral", "Status — neutral"],
+  ["Error", "Status — error"],
+  ["Critical", "Status — critical"],
+  ["Info", "Status — info"],
   ["misc", "UnGrouped one-offs"],
 ];
 
@@ -277,17 +312,25 @@ for (const [group, label] of GROUP_ORDER) {
   p();
 }
 
-p("  /*");
-p("   * Radii — named by ROLE, not by Figma's t-shirt size. Tailwind v4 ships");
-p("   * --radius-xs/-sm/-md itself; redefining those would silently change");
-p("   * rounded-xs/-sm/-md for consumers.");
-p("   */");
-for (const [figmaName, [role, usage]] of Object.entries(RADIUS_ROLES)) {
-  const v = tokens.radius?.[figmaName];
-  if (v === undefined) continue; // token not extracted yet
-  p(`  --radius-${role}: ${v}px; /* ${figmaName} — ${usage} */`);
+const radiusEntries = Object.entries(tokens.radius ?? {});
+if (radiusEntries.length) {
+  p("  /*");
+  p("   * Radii — this file's Figma scale IS Tailwind's t-shirt naming, and its");
+  p("   * xs/sm/md/lg values are byte-identical to Tailwind v4's defaults");
+  p("   * (2/4/6/8px), so emitting them verbatim is a no-op there. xl and 2xl");
+  p("   * DELIBERATELY override Tailwind (10px vs 12, 12px vs 16) so rounded-xl");
+  p("   * and rounded-2xl mean this design system's corners — the opposite call");
+  p("   * from the dashboard library, where the Figma scale diverged everywhere");
+  p("   * and role names were safer. Radius/none and Radius/full are skipped:");
+  p("   * rounded-none and rounded-full already mean exactly 0 and fully-round.");
+  p("   */");
+  for (const [figmaName, v] of radiusEntries) {
+    const variant = figmaName.split("/")[1];
+    if (variant === "none" || variant === "full") continue; // native utilities
+    p(`  --radius-${kebab(variant)}: ${v}px; /* ${figmaName} */`);
+  }
+  p();
 }
-p();
 
 p(
   "  /* Border widths — no Tailwind namespace, so used via border-[length:var(...)] */",
@@ -362,10 +405,12 @@ p();
 
 // Shadow mapping: Figma effect name -> CSS variable name
 const SHADOW_NAMES = {
+  // Short App: the focus ring is authored as a spread-only drop shadow
+  // (offset 0/0, blur 0, spread 3, Primary/Ring at 22% alpha).
+  "Primary Ring": "focus-ring",
+  // Dashboard-era names, kept harmlessly for reference; absent from the
+  // Short App tokens so they emit nothing.
   "General Drop Shadow": "panel",
-  "Switch Knob Shadow": "knob",
-  "Modal Drop Shadow": "modal",
-  "Toast Drop Shadow": "toast",
 };
 
 p("  /* Effects */");
@@ -382,12 +427,10 @@ p();
 const ring = tokens.focusRing;
 if (ring) {
   p("  /*");
-  p("   * Keyboard focus ring.");
-  p("   *");
-  p("   * In Figma this is a full-size overlay frame, so the ring's OUTER edge");
-  p("   * aligns with the component's own outer edge instead of sitting outside");
-  p("   * it. Apply with the .focus-ring utility, which reproduces that with a");
-  p("   * negative outline-offset. The radius is inherited from the component.");
+  p("   * Keyboard focus ring — Figma's \"Primary Ring\" effect: a spread-only");
+  p("   * drop shadow (offset 0/0, blur 0) sitting OUTSIDE the element. Apply");
+  p("   * with the .focus-ring utility (an outline at offset 0, which occupies");
+  p("   * the same geometry). The radius is inherited from the component.");
   p("   */");
   p(`  --ring-focus-width: ${ring.width}px;`);
   p(
@@ -426,29 +469,25 @@ p();
  * they are derived from the label tokens above and must stay in step with them.
  * @utility (not @layer utilities) is required for @apply to accept them.
  */
-p("/**");
-p(" * Label type utilities.");
-p(" *");
-p(" * Figma marks every Label style UPPER, but Tailwind's --text-* composite");
-p(
-  " * cannot carry text-transform or font-family. These bundle the whole style so",
-);
-p(
-  " * the casing — and the mono family, where it applies — cannot be forgotten:",
-);
-p(" *");
-p(' *   <span class="type-label-l">Section heading</span>');
-p(" *");
-p(" * Prefer these over the bare text-label-* tokens.");
-p(" */");
-for (const { key, figmaName, t } of labelStyles) {
-  const parts = [`text-${key}`];
-  if (t.family !== "Inter") parts.push("font-mono");
-  parts.push("uppercase");
-  p(`@utility type-${key} {`);
-  p(`  @apply ${parts.join(" ")}; /* ${figmaName} */`);
-  p("}");
-  p();
+if (labelStyles.length) {
+  p("/**");
+  p(" * Uppercase type utilities.");
+  p(" *");
+  p(" * Emitted only for styles whose extraction records textTransform, because");
+  p(" * Tailwind's --text-* composite cannot carry text-transform or");
+  p(" * font-family. These bundle the whole style so the casing — and the mono");
+  p(" * family, where it applies — cannot be forgotten. Prefer them over the");
+  p(" * bare text-* token for those styles.");
+  p(" */");
+  for (const { key, figmaName, t } of labelStyles) {
+    const parts = [`text-${key}`];
+    if (t.family !== "Inter") parts.push("font-mono");
+    parts.push("uppercase");
+    p(`@utility type-${key} {`);
+    p(`  @apply ${parts.join(" ")}; /* ${figmaName} */`);
+    p("}");
+    p();
+  }
 }
 
 if (drift.length) {
@@ -466,11 +505,12 @@ writeFileSync(OUT, L.join("\n"));
 
 const counts = {
   colors: Object.keys(tokens.color).length,
-  radii: Object.keys(RADIUS_ROLES).length,
-  borders: Object.keys(STROKE_ROLES).length,
+  radii: Object.keys(tokens.radius ?? {}).length,
+  borders: Object.keys(tokens.strokeWidth ?? {}).length,
+  spacing: Object.keys(tokens.spacing ?? {}).length,
   "text styles": Object.keys(tokens.typography).length,
   "label utils": labelStyles.length,
-  effects: Object.keys(SHADOW_NAMES).length,
+  effects: Object.keys(tokens.effect ?? {}).length,
 };
 console.log(`\n  wrote  src/themes/valiify.css`);
 for (const [k, v] of Object.entries(counts)) {

@@ -1,28 +1,284 @@
-import { Meta } from "@storybook/addon-docs/blocks";
+import { Meta, ColorPalette, ColorItem, Typeset } from "@storybook/addon-docs/blocks";
 
 <Meta title="Foundations/Design Tokens" />
 
 # Design Tokens
 
-**Pending extraction.** The Short App design tokens have not been pulled from
-Figma yet — `tokens/figma-tokens.json` is a placeholder and this page will be
-rebuilt as the token showcase once extraction lands.
+Extracted from Figma `Updated-Short-App` (fileKey `PA5pr1Q8KLfbjTxdAbFm0V`).
+Colors, spacing and radii come from a **complete Plugin API enumeration of the
+local variable collection** (all 77 variables, applied or not — the
+applied-only sweep had missed 26 unapplied colors including the entire Error
+and Info ramps); typography comes from the type-preview section (1:2) plus
+component sweeps. This page exists to be compared side by side with the Figma
+variables panel — every swatch and specimen below should match.
 
 Tokens live in a Tailwind `@theme` block in `src/themes/valiify.css`, which is
 **generated** from `tokens/figma-tokens.json` by `scripts/build-theme.mjs`.
 Regenerate with `npm run build:theme`.
 
-When tokens are extracted this page should be rebuilt to be compared side by
-side with the Figma variables panel — every swatch and specimen should match.
-The dashboard library's version of this page is preserved at
-`_dashboard-archive/Foundations.mdx` as the reference for the format: colour
-palettes per group (`ColorPalette` / `ColorItem` with the original Figma hex),
-typography specimens (`Typeset`), radii, border widths, and shadows.
+Colors are stored as OKLCh; the hex shown here is the original Figma value. The
+generator asserts every conversion round-trips back to its source hex within
+1/255 per channel, so the two are equivalent.
 
-Two extraction rules worth restating here because they cost real debugging
-time on the dashboard library:
+> **Two naming mappings, deliberate:** Figma's `Text/*` group emits as
+> `--color-content-*` and `BG/*` as `--color-surface-*` — avoiding
+> `text-text-secondary` / `bg-bg-paper` utilities and matching the dashboard
+> library's public API shape. A ramp's main shade is unsuffixed whether Figma
+> calls it `Primary/Primary` or `Neutral/Base`.
 
-- `get_variable_defs` returns only variables actually **applied to a layer** —
-  audit token-group completeness with `search_design_system` instead.
-- Colors are stored as OKLCh; the generator asserts every conversion
-  round-trips back to its source hex within 1/255 per channel.
+## Primary (crimson ramp + tints)
+
+<ColorPalette>
+  <ColorItem
+    title="Primary"
+    subtitle="Figma Primary/*"
+    colors={{
+      Primary: "#a6192e",
+      Hover: "#951328",
+      Focus: "#850e22",
+      "Disabled (30%)": "#a6192e4d",
+    }}
+  />
+  <ColorItem
+    title="Primary tints"
+    subtitle="translucent primary"
+    colors={{
+      "Text (= Primary)": "#a6192e",
+      "BG (6%)": "#a6192e0f",
+      "Ring (22%)": "#a6192e38",
+      "Track (14%)": "#a6192e24",
+    }}
+  />
+</ColorPalette>
+
+## Neutral
+
+<ColorPalette>
+  <ColorItem
+    title="Neutral"
+    subtitle="Figma Neutral/*"
+    colors={{
+      Base: "#6f7276",
+      Hover: "#5a5b5d",
+      Text: "#65686c",
+      "Disabled (60%)": "#6f727699",
+    }}
+  />
+  <ColorItem
+    title="Neutral tints"
+    subtitle="translucent neutral"
+    colors={{
+      "BG (8%)": "#6f727614",
+      "Ring (22%)": "#6f727638",
+      "Stroke (30%)": "#6f72764d",
+      "Stroke - Hover (45%)": "#6f727673",
+    }}
+  />
+</ColorPalette>
+
+## Content (Figma group: Text)
+
+<ColorPalette>
+  <ColorItem
+    title="Content"
+    subtitle="Figma Text/*"
+    colors={{
+      Primary: "#1a1a1a",
+      Secondary: "#54565b",
+      Tertiary: "#6f7276",
+      Hint: "#8e9195",
+      Contrast: "#ffffff",
+    }}
+  />
+</ColorPalette>
+
+## Surfaces (Figma group: BG)
+
+<ColorPalette>
+  <ColorItem
+    title="Surface"
+    subtitle="Figma BG/*"
+    colors={{
+      Paper: "#fffdfb",
+      "App Page": "#fafaf9",
+      Page: "#fdf8f5",
+      Card: "#f1f0ee",
+    }}
+  />
+</ColorPalette>
+
+## Stroke & Action
+
+<ColorPalette>
+  <ColorItem
+    title="Stroke"
+    subtitle="translucent ink"
+    colors={{
+      "Border (17%)": "#1a1a1a2b",
+      "Divider (11%)": "#1a1a1a1c",
+      "Hover (56%)": "#1a1a1a8f",
+    }}
+  />
+  <ColorItem
+    title="Action"
+    subtitle="interaction overlays"
+    colors={{
+      "Hover (4%)": "#1a1a1a0a",
+      "Pressed (8%)": "#1a1a1a14",
+      "Active (8%)": "#1a1a1a14",
+      "Focused (10%)": "#1a1a1a1a",
+    }}
+  />
+</ColorPalette>
+
+## Status
+
+Four full status ramps, each with the same six-shade shape: Base, Text, and
+four translucent tints (BG 8%, Ring 22%, Stroke 30%, Stroke-Hover 45%).
+
+<ColorPalette>
+  <ColorItem
+    title="Success"
+    subtitle="Figma Success/*"
+    colors={{
+      Base: "#2e6e4e",
+      "Text (= Base)": "#2e6e4e",
+      "BG (8%)": "#2e6e4e14",
+      "Ring (22%)": "#2e6e4e38",
+      "Stroke (30%)": "#2e6e4e4d",
+      "Stroke - Hover (45%)": "#2e6e4e73",
+    }}
+  />
+  <ColorItem
+    title="Warning"
+    subtitle="Figma Warning/* — note Text is a darker hex than Base"
+    colors={{
+      Base: "#b4791c",
+      Text: "#8b5d16",
+      "BG (8%)": "#b4791c14",
+      "Ring (22%)": "#b4791c38",
+      "Stroke (30%)": "#b4791c4d",
+      "Stroke - Hover (45%)": "#b4791c73",
+    }}
+  />
+  <ColorItem
+    title="Error"
+    subtitle="Figma Error/* — exists but is APPLIED NOWHERE yet (see note)"
+    colors={{
+      Base: "#c0362c",
+      "Text (= Base)": "#c0362c",
+      "BG (8%)": "#c0362c14",
+      "Ring (22%)": "#c0362c38",
+      "Stroke (30%)": "#c0362c4d",
+      "Stroke - Hover (45%)": "#c0362c73",
+    }}
+  />
+  <ColorItem
+    title="Info"
+    subtitle="Figma Info/* — exists but is applied nowhere yet"
+    colors={{
+      Base: "#1b4e8b",
+      "Text (= Base)": "#1b4e8b",
+      "BG (8%)": "#1b4e8b14",
+      "Ring (22%)": "#1b4e8b38",
+      "Stroke (30%)": "#1b4e8b4d",
+      "Stroke - Hover (45%)": "#1b4e8b73",
+    }}
+  />
+</ColorPalette>
+
+> **The Error ramp exists but the field components don't use it.** Their
+> `Error=Yes` variants bind `Warning/Base` (amber) — with a full Error ramp
+> sitting unapplied, this is now clearly an authoring slip rather than a
+> design decision. On the designer list; implement error states against the
+> Error ramp only once confirmed.
+
+## Typography
+
+24 styles, all Inter. Unlike the dashboard file, line heights here are
+explicit px on nearly every style — only `Link` uses Figma's Auto. Tracking
+values are percentages of font size, emitted as `em`.
+
+### Display & Title
+
+<Typeset fontFamily="Inter" fontSizes={["28px"]} fontWeight={500} sampleText="Display — 28/34 Medium (text-display)" />
+<Typeset fontFamily="Inter" fontSizes={["30px"]} fontWeight={500} sampleText="Display Large — 30/38 Medium (text-display-large)" />
+<Typeset fontFamily="Inter" fontSizes={["22px"]} fontWeight={500} sampleText="Title — 22/26 Medium (text-title)" />
+<Typeset fontFamily="Inter" fontSizes={["16px"]} fontWeight={500} sampleText="Title Medium — 16/20 Medium (text-title-medium)" />
+
+### Metric
+
+<Typeset fontFamily="Inter" fontSizes={["30px"]} fontWeight={500} sampleText="Metric Large — 30/34 (text-metric-large)" />
+<Typeset fontFamily="Inter" fontSizes={["26px"]} fontWeight={500} sampleText="Metric Medium — 26/30 (text-metric-medium)" />
+<Typeset fontFamily="Inter" fontSizes={["20px"]} fontWeight={500} sampleText="Metric Small — 20/26 (text-metric-small)" />
+
+### Body & Supporting
+
+<Typeset fontFamily="Inter" fontSizes={["16px"]} fontWeight={500} sampleText="Lead & Subtitle — 16/24 Medium (text-lead)" />
+<Typeset fontFamily="Inter" fontSizes={["15px"]} fontWeight={400} sampleText="Body — 15/20 Regular (text-body)" />
+<Typeset fontFamily="Inter" fontSizes={["16px"]} fontWeight={400} sampleText="Input — 16/24 Regular (text-input)" />
+<Typeset fontFamily="Inter" fontSizes={["13px"]} fontWeight={400} sampleText="Content — 13/16 Regular (text-body-content)" />
+<Typeset fontFamily="Inter" fontSizes={["12px"]} fontWeight={400} sampleText="Help & Caption — 12/14 Regular (text-help-caption)" />
+
+### Labels, links & UI
+
+<Typeset fontFamily="Inter" fontSizes={["14px"]} fontWeight={400} sampleText="Label — 14/20 Regular (text-label)" />
+<Typeset fontFamily="Inter" fontSizes={["14px"]} fontWeight={500} sampleText="Label Strong — 14/20 Medium (text-label-strong)" />
+<Typeset fontFamily="Inter" fontSizes={["13px"]} fontWeight={500} sampleText="Field Label — 13/16 Medium (text-field-label)" />
+<Typeset fontFamily="Inter" fontSizes={["14px"]} fontWeight={600} sampleText="BUTTON LABEL — 14/20 SemiBold, 10% tracking (text-button-label)" />
+<Typeset fontFamily="Inter" fontSizes={["14px"]} fontWeight={400} sampleText="Link — 14/Auto Regular (text-link)" />
+<Typeset fontFamily="Inter" fontSizes={["11px"]} fontWeight={600} sampleText="EYEBROW — 11/16 SemiBold, 10% tracking (text-eyebrow)" />
+<Typeset fontFamily="Inter" fontSizes={["11px"]} fontWeight={600} sampleText="TAG / PILL — 11/16 SemiBold, 5% tracking (text-tag-pill)" />
+<Typeset fontFamily="Inter" fontSizes={["12px"]} fontWeight={400} sampleText="Time stamp — 12/16 Regular (text-timestamp)" />
+<Typeset fontFamily="Inter" fontSizes={["9px"]} fontWeight={600} sampleText="DATA KEY / MICRO-LABEL — 9/12 SemiBold, 8% tracking (text-data-key, text-micro-label)" />
+<Typeset fontFamily="Inter" fontSizes={["15px"]} fontWeight={600} sampleText="LOCKUP & WORDMARK — 15/17 SemiBold, 10% tracking (text-lockup-wordmark)" />
+<Typeset fontFamily="Inter" fontSizes={["9px"]} fontWeight={500} sampleText="LOCKUP & TAGLINE — 9/11 Medium, 16% tracking (text-lockup-tagline)" />
+
+> **Casing is not baked into any token.** The type preview renders Eyebrow,
+> Micro-Label, Button Label, Tag & Pill, Data Key and the Lockup styles in
+> uppercase, but the API exposes no `text-transform` binding — typed-in caps
+> and a bound transform are indistinguishable. Casing stays the caller's until
+> the designer confirms; the uppercase samples above mirror the preview.
+
+## Focus ring
+
+Figma's **Primary Ring** effect: a spread-only drop shadow — offset 0/0, blur
+0, spread **3px**, in `Primary/Ring` (`#a6192e38`, primary at 22% alpha).
+Available two ways:
+
+- the `focus-ring` utility (an outline at offset 0 — same geometry), applied on
+  `:focus-visible` by every interactive component
+- `--shadow-focus-ring` → `shadow-focus-ring` where a real box-shadow is needed
+
+## Radii
+
+Figma's radius scale uses Tailwind's own t-shirt naming, and the values are
+emitted verbatim:
+
+| Token | px | vs Tailwind v4 default |
+| --- | --- | --- |
+| `--radius-xs` → `rounded-xs` | 2 | identical |
+| `--radius-sm` → `rounded-sm` | 4 | identical |
+| `--radius-md` → `rounded-md` | 6 | identical |
+| `--radius-lg` → `rounded-lg` | 8 | identical |
+| `--radius-xl` → `rounded-xl` | 10 | **overrides** (Tailwind: 12) |
+| `--radius-2xl` → `rounded-2xl` | 12 | **overrides** (Tailwind: 16) |
+
+`Radius/none` (0) and `Radius/full` (9999) are not re-emitted — native
+`rounded-none` / `rounded-full` already mean exactly that. The xl/2xl
+overrides are deliberate: `rounded-xl` should mean *this design system's*
+corner, and xs–lg matching Tailwind's defaults exactly suggests the designer
+built on Tailwind's scale on purpose.
+
+## Spacing
+
+13 whole-px variables — 2, 4, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 64 —
+**every one mapping exactly to a native Tailwind step** (`Spacing/2` → `p-0.5`,
+`Spacing/8` → `p-2`, `Spacing/64` → `p-16`: divide by 4). So no `--spacing-*`
+tokens are emitted, same rule as the dashboard library — defining
+`--spacing-8: 8px` would make `p-8` mean 8px instead of 32px.
+
+## Border widths
+
+No stroke-width variables exist in the file; stroke widths are raw per
+component (Radio's ring is an authored 1.5px, for example).
