@@ -71,6 +71,18 @@ Produce the mapping:
 
 ## Step 3 — Deliverables
 
+**Output contract — compress agreements, spend prose on decisions.** Past
+reports ran to essay length restating values nobody disputed. The rule:
+
+- A value all lanes AGREE on gets ONE table row — no narrative, no
+  restatement of each lane's reading.
+- Full prose is reserved for: CONFLICTS and their resolution, trap flags that
+  forced a non-obvious implementation choice, and designer-list items.
+- All six sections below are REQUIRED — the compression is stylistic, never a
+  licence to drop a section, a conflict, or an "explicitly could not
+  determine" note. Explicit gaps are quality; brevity about settled facts is
+  efficiency.
+
 ```
 ## Reconciled spec
 (one table per concern: geometry, per-state values — the agreed value, with

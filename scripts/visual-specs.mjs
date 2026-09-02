@@ -42,6 +42,205 @@ export const SPECS = {
   // The dashboard library's full spec file is preserved at
   // _dashboard-archive/visual-specs.mjs for reference on check patterns.
 
+  // ------------------------------------------------------------------ Button
+  Button: {
+    figma: "Button 1:218 — 16 variants: Type {Primary, Secondary, Micro, Bubble} × states",
+    variants: 16,
+    stories: {
+      // AllTypes grid order: 0 primary · 1 primary disabled · 2 secondary ·
+      // 3 secondary disabled · 4 micro · 5 micro disabled · 6 bubble · 7 bubble disabled
+      "components-button--all-types": [
+        { label: "primary height 48", sel: ".btn-primary", get: "height", expect: 48 },
+        {
+          label: "primary radius raw 4px",
+          sel: ".btn-primary",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "primary fill Primary",
+          sel: ".btn-primary",
+          get: "background-color",
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "primary ink Contrast",
+          sel: ".btn-primary",
+          get: "color",
+          expect: { token: "--color-content-contrast" },
+        },
+        {
+          label: "primary hover fill Primary/Hover",
+          sel: ".btn-primary",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-primary-hover" },
+        },
+        {
+          label: "primary uppercase is styled, not typed",
+          sel: ".btn-primary",
+          get: "text-transform",
+          expect: "uppercase",
+        },
+        {
+          label: "primary has no border",
+          sel: ".btn-primary",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        // Disabled primary (nth 1): fill fades, INK DOES NOT.
+        {
+          label: "primary disabled fill Primary/Disabled",
+          sel: ".btn-primary",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-primary-disabled" },
+        },
+        {
+          label: "primary disabled ink stays Contrast (does not fade)",
+          sel: ".btn-primary",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-contrast" },
+        },
+        // Secondary
+        { label: "secondary height 48", sel: ".btn-secondary", get: "height", expect: 48 },
+        {
+          label: "secondary border 1px",
+          sel: ".btn-secondary",
+          get: "border-top-width",
+          expect: "1px",
+        },
+        {
+          label: "secondary border Stroke/Border",
+          sel: ".btn-secondary",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "secondary ink Content/Secondary",
+          sel: ".btn-secondary",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "secondary hover border Stroke/Hover",
+          sel: ".btn-secondary",
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-stroke-hover" },
+        },
+        {
+          label: "secondary hover ink Content/Primary",
+          sel: ".btn-secondary",
+          get: "color",
+          hover: true,
+          expect: { token: "--color-content-primary" },
+        },
+        // The detail the whole Secondary hover system hangs on: the fill
+        // appears only at PRESSED — hover must leave it transparent.
+        {
+          label: "secondary hover fill stays transparent (wash is pressed-only)",
+          sel: ".btn-secondary",
+          get: "background-color",
+          hover: true,
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "secondary disabled border Stroke/Divider",
+          sel: ".btn-secondary",
+          nth: 1,
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "secondary disabled ink Content/Tertiary",
+          sel: ".btn-secondary",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        // Micro
+        { label: "micro height 12", sel: ".btn-micro", get: "height", expect: 12 },
+        {
+          label: "micro has no box (no border, no fill)",
+          sel: ".btn-micro",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "micro ink Content/Secondary",
+          sel: ".btn-micro",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "micro hover ink Content/Primary",
+          sel: ".btn-micro",
+          get: "color",
+          hover: true,
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "micro uppercase styled",
+          sel: ".btn-micro",
+          get: "text-transform",
+          expect: "uppercase",
+        },
+        {
+          label: "micro glyph 12px",
+          sel: ".btn-micro svg",
+          get: "width",
+          expect: 12,
+        },
+        // Bubble
+        { label: "bubble height 34", sel: ".btn-bubble", get: "height", expect: 34 },
+        {
+          label: "bubble is a pill",
+          sel: ".btn-bubble",
+          get: "border-radius",
+          not: true,
+          expect: "4px",
+        },
+        {
+          label: "bubble rest fill invisible",
+          sel: ".btn-bubble",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "bubble hover fill Action/Hover",
+          sel: ".btn-bubble",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-action-hover" },
+        },
+        // The only Type WITHOUT the transform — Pill-precedent explicit pin.
+        {
+          label: "bubble casing untransformed",
+          sel: ".btn-bubble",
+          get: "text-transform",
+          expect: "none",
+        },
+        {
+          label: "bubble disabled fill stays invisible (ink dims and nothing else)",
+          sel: ".btn-bubble",
+          nth: 1,
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+
+        // NOT ASSERTED (harness cannot hold :active): primary pressed
+        // (Primary/Focus — Figma's literal name, wired to :active), secondary
+        // pressed's Action/HOVER wash (verbatim naming oddity), bubble
+        // pressed's Action/Pressed, and micro's hover=pressed no-op pair
+        // (0/696 pixel diff in Figma — reproduced as one rule).
+        // NO fractional values exist anywhere in this component — stated
+        // explicitly because every sibling needed a fractional-survival check.
+      ],
+    },
+  },
+
   // ------------------------------------------------------------------- Radio
   Radio: {
     figma: "Radio 1:419 — 4 variants across Active × Hover × Pressed",

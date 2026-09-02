@@ -251,3 +251,20 @@
    * break existing usage. See CLAUDE.md for the full mapping table.
    */
 }
+
+/**
+ * Uppercase type utilities.
+ *
+ * Emitted only for styles whose extraction records textTransform, because
+ * Tailwind's --text-* composite cannot carry text-transform or
+ * font-family. These bundle the whole style so the casing — and the mono
+ * family, where it applies — cannot be forgotten. Prefer them over the
+ * bare text-* token for those styles.
+ */
+@utility type-micro-label {
+  @apply text-micro-label uppercase; /* Labels, links & UI/Micro-Label */
+}
+
+@utility type-button-label {
+  @apply text-button-label uppercase; /* Labels, links & UI/Button Label */
+}

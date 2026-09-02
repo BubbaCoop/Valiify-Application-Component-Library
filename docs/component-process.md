@@ -108,8 +108,16 @@ Rules that hold across the pipeline:
   stops the build — never implement around a contradiction.
 - **Every lane batches its independent Figma calls in one parallel message** —
   the wall-clock cost is remote calls at 10–60s each, not tokens or models.
-- The visual lane may be skipped only for components with no strokes, no
-  vector glyphs and no fractional-looking values; when in doubt, run it.
+- **The visual lane is budgeted at ≤20 calls** (tuned 2026-09-02 after runs at
+  49–66 calls spent most of them re-confirming token-bound colours): it
+  measures only what pixels alone can know — state-pair diffs, casing,
+  flattened geometry, unbound suspicions — spot-checks colours one per state,
+  and reports anything unmeasured within budget explicitly for the
+  orchestrator to follow up. Synthesis compresses agreed values to table rows
+  and spends prose only on conflicts and decisions. Neither change drops a
+  required section — gaps are made explicit, never silent.
+- The visual lane may be skipped only for components with no text, no strokes,
+  no vector glyphs and no fractional-looking values; when in doubt, run it.
 - **Multiple components**: run every component's lanes concurrently; synthesis
   stays per-component. Seven components were once extracted in a single
   parallel pass, and that pass found four real defects in components that

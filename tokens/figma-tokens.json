@@ -37,7 +37,7 @@
       "Spacing: 13 whole-px variables (2..64) exist and ALL map exactly to Tailwind native steps (2 -> p-0.5 ... 64 -> p-16), so no --spacing-* tokens are emitted, same rule as the dashboard."
     ],
     "openQuestions": [
-      "CASING: the type preview renders Eyebrow, Micro-Label, Button Label, Tag & Pill, Data Key, and both Lockup styles in UPPERCASE, but Font(...) from the API carries no textTransform, so bound-transform vs typed-in-caps cannot be distinguished. No textTransform is recorded (Chip/Divider precedent: casing is the caller's); revisit per-component as instances are extracted, and confirm with the designer.",
+      "CASING, PARTIALLY RESOLVED (Button extraction, 2026-09-02): Button Label and Micro-Label carry a REAL uppercase transform — the Button set types its samples 'Button' mixed-case and styles them uppercase (structure lane read the transform, visual lane confirmed the caps render; Bubble, bound to Labels/Default, renders mixed-case with no transform). Both styles now carry textTransform:true and emit type-button-label / type-micro-label utilities. STILL OPEN for Eyebrow, Data Key, Tag & Pill, and the Lockup styles — resolve per component the same way.",
       "ERROR BINDING SLIP (upgraded from open question): a full Error ramp EXISTS (#c0362c with Text/BG/Ring/Stroke/Stroke-Hover) but is applied nowhere — the field components' Error=Yes variants bind Warning/Base instead. Now clearly an authoring slip to raise with the designer; implement error states against the Error ramp only after they confirm.",
       "Action/Pressed and Action/Active are distinct variables with the identical value #1a1a1a14 — possibly one is legacy. Both extracted.",
       "Success/Base and Success/Text are distinct variables with the identical value #2e6e4e. Both extracted (the dashboard's Approved ramp split the same way with different values, so this may diverge later).",
@@ -297,7 +297,8 @@
       "size": 9,
       "weight": 600,
       "lineHeight": 12,
-      "letterSpacingPercent": 8
+      "letterSpacingPercent": 8,
+      "textTransform": true
     },
     "Labels, links & UI/Button Label": {
       "family": "Inter",
@@ -305,7 +306,8 @@
       "size": 14,
       "weight": 600,
       "lineHeight": 20,
-      "letterSpacingPercent": 10
+      "letterSpacingPercent": 10,
+      "textTransform": true
     },
     "Labels, links & UI/Link": {
       "family": "Inter",

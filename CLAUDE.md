@@ -23,6 +23,76 @@ then stop — I write all commit messages and commit myself.
 
 ### Available Components
 
+#### Button
+
+Extracted from Figma Button (1:218) — 16 variants across `Type` {Primary,
+Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
+`Mobile` axis was removed by the designer (caught by the Gate-0 metadata sweep).
+
+- **Base**: `.btn` — layout only, **a type class is required** (Figma names no
+  default Type; the Alert/Tabs lesson)
+- **Types**: `.btn-primary`, `.btn-secondary`, `.btn-micro`, `.btn-bubble`
+- **States**: `:hover`, `:active`, `:disabled` (Figma's `Inactive`),
+  `:focus-visible`
+- **Icon slots**: plain `svg` children (18px; 12px in Micro), painted by the
+  button. Figma's layout per Type: Primary trailing only, Secondary/Micro both
+  sides, Bubble leading only — documented, not enforced.
+- **Width is the caller's** — Figma's 239px is the sample hug; add `w-full`
+  in full-width forms. Heights pinned: 48 / 48 / 12 / 34.
+
+| Type | box | type style | rest → hover → pressed → disabled |
+| --- | --- | --- | --- |
+| `-primary` | 48px, 4px radius, filled | `type-button-label` (14/600, 10%, **uppercase**) | fill `Primary → Hover → Focus → Disabled`; white ink **never fades** |
+| `-secondary` | 48px, 4px radius, 1px border | same | border `Stroke/Border → Hover → (pressed adds Action/Hover wash) → Divider`; ink `Secondary → Primary → · → Tertiary` |
+| `-micro` | 12px bare row, no box | `type-micro-label` (9/600, 8%, **uppercase**) | ink `Secondary → Primary (hover **= pressed**) → Tertiary` |
+| `-bubble` | 34px pill | `text-label` (14/400, **mixed case**) | ink ramp + fill `none → Action/Hover → Action/Pressed → none` |
+
+> **Casing is a styled transform, not typed caps** — the Figma samples are
+> "Button" mixed-case; Primary/Secondary/Micro carry an uppercase transform,
+> Bubble doesn't. This resolved the token file's casing question for `Button
+> Label` and `Micro-Label` (both now carry `textTransform` and emit `type-*`
+> utilities); Eyebrow/Data Key/Tag & Pill remain open.
+
+> **Secondary's hover changes the border only** — the fill wash appears only
+> at pressed, and binds the token literally named `Action/Hover` (where
+> Bubble's pressed binds `Action/Pressed`). Verbatim; designer list.
+
+> **`Primary/Focus` is Figma's literal name for the Primary PRESSED fill** —
+> wired to `:active`, never `:focus-visible` (same pattern as Checkbox).
+
+> **Micro's hover and pressed are pixel-identical in Figma** (0/696 diff —
+> measured, not assumed) — reproduced as one rule. Designer list, same defect
+> class as the dashboard's TextButton.
+
+> **Primary's height math is 2px short** (13+13+20 = 46 vs the 48px frame;
+> Secondary closes exactly via its border-box 1px border) — resolved by frame
+> authority (`h-12` pinned), not by inventing padding. Designer list.
+
+> **Secondary's border is a real 1px border** — pixel-aligned, not fractional,
+> so the Radio/Checkbox inset-shadow trick is deliberately NOT used here.
+
+```html
+<button class="btn btn-primary">
+  Continue
+  <svg aria-hidden="true"><use href="#arrow-right" /></svg>
+</button>
+
+<button class="btn btn-secondary">
+  <svg aria-hidden="true"><use href="#arrow-left" /></svg>
+  Back
+</button>
+
+<button class="btn btn-micro">
+  View all
+  <svg aria-hidden="true"><use href="#arrow-right" /></svg>
+</button>
+
+<button class="btn btn-bubble">Skip</button>
+
+<!-- Full width is the caller's -->
+<button class="btn btn-primary w-full">Submit application</button>
+```
+
 #### Radio
 
 Radio button control for single selection from a group. Extracted from Figma

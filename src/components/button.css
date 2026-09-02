@@ -1,0 +1,162 @@
+/**
+ * Button Component
+ *
+ * Extracted from Figma Button (1:218) — 16 variants across Type {Primary,
+ * Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
+ * Mobile axis was removed by the designer before extraction.
+ *
+ * A TYPE CLASS IS REQUIRED — Figma names no default Type, and a bare .btn is
+ * layout-only (the Alert/Tabs lesson: baking in a default invites `:not()`
+ * chains and silently-wrong bare usage).
+ *
+ *   <button class="btn btn-primary">Continue</button>
+ *
+ * The four Types are genuinely different controls sharing one state grammar:
+ *
+ *   .btn-primary     48px filled crimson box, white uppercase Button Label.
+ *                    Fill ramps Primary → Hover → Focus(pressed) → Disabled;
+ *                    the WHITE INK NEVER FADES, even disabled.
+ *   .btn-secondary   48px outlined box, same type. Hover changes the BORDER
+ *                    ONLY (Stroke/Border → Stroke/Hover) + ink; the
+ *                    Action/Hover wash appears only at pressed, over the
+ *                    hover border. Disabled steps both to Divider/Tertiary.
+ *   .btn-micro       12px bare uppercase Micro-Label row — no box, no
+ *                    padding, ink-only ramp. Hover and pressed are ONE rule:
+ *                    Figma draws them pixel-identical (0/696 diff — a
+ *                    confirmed no-op pair, reproduced not fixed).
+ *   .btn-bubble      34px pill, mixed-case Labels/Default (400) — the only
+ *                    Type with no uppercase transform. Fill is INVISIBLE at
+ *                    rest/disabled; hover/pressed tint Action/Hover →
+ *                    Action/Pressed.
+ *
+ * Casing is a STYLED transform, not typed-in caps — the Figma samples are
+ * "Button" mixed-case with an uppercase transform on three of the four Types.
+ * That finding lives in the token file (Button Label and Micro-Label carry
+ * textTransform), so the type-button-label / type-micro-label utilities
+ * bundle it here.
+ *
+ * Geometry notes:
+ *   - Heights are PINNED (48/12/34) per the authored frames. Secondary's math
+ *     closes exactly (13+13+20+1+1 border-box); Primary's is 2px short
+ *     (13+13+20=46 vs 48) — an authoring gap on the designer list, resolved
+ *     by frame authority, not by inventing different padding.
+ *   - Width is content-driven; Figma's 239px is the sample hug. Use w-full at
+ *     the call site for full-width forms.
+ *   - Radius is a raw 4px (coincides with rounded-sm's value; Figma binds no
+ *     Radius variable). Bubble is a true pill.
+ *   - Secondary's border is a clean pixel-aligned 1px — a real border is
+ *     safe here; the inset-shadow trick is for FRACTIONAL strokes only
+ *     (Radio/Checkbox). Do not copy it where it isn't needed.
+ *
+ * Icon slots — plain svg children, painted and sized by the button (the
+ * sprite's symbols carry no paint attributes). Figma's slot layout per Type,
+ * documented not enforced: Primary trailing only (default shown), Secondary
+ * and Micro both sides (leading hidden by default), Bubble leading only.
+ * 18px glyphs everywhere except Micro's 12px.
+ *
+ * Verbatim Figma names, reproduced not corrected (designer list): the Primary
+ * pressed fill is the token literally named Primary/Focus (wired to :active,
+ * never :focus-visible), and Secondary's pressed wash binds Action/HOVER
+ * where Bubble's binds Action/Pressed.
+ *
+ * Not modelled, not invented: Inactive+Hover, Focus (library focus-ring),
+ * any size axis beyond the four Types.
+ */
+
+@layer components {
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center select-none;
+    @apply m-0 border-0 bg-transparent p-0;
+    transition:
+      background-color 150ms,
+      border-color 150ms,
+      color 150ms;
+  }
+
+  .btn:focus-visible {
+    @apply focus-ring;
+  }
+
+  .btn:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  /* Icon slots — any sprite symbol; the button supplies the Lucide paint. */
+  .btn svg {
+    @apply size-4.5 shrink-0; /* 18px */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- Primary ------------------------------------------------------------ */
+
+  .btn-primary {
+    @apply h-12 gap-2.5 rounded-sm px-3.5 type-button-label;
+    @apply bg-primary text-content-contrast;
+  }
+  .btn-primary:hover:not(:disabled) {
+    @apply bg-primary-hover;
+  }
+  /* Figma's literal token name for the PRESSED fill is Primary/Focus. */
+  .btn-primary:active:not(:disabled) {
+    @apply bg-primary-focus;
+  }
+  /* Translucent fill token as-is; the white ink deliberately does not fade. */
+  .btn-primary:disabled {
+    @apply bg-primary-disabled;
+  }
+
+  /* --- Secondary ----------------------------------------------------------- */
+
+  .btn-secondary {
+    @apply h-12 gap-2.5 rounded-sm px-3.5 type-button-label;
+    @apply border border-stroke-border text-content-secondary;
+  }
+  /* Hover changes the border and ink ONLY — no fill until pressed. */
+  .btn-secondary:hover:not(:disabled) {
+    @apply border-stroke-hover text-content-primary;
+  }
+  /* The wash appears only at pressed, and binds Action/HOVER verbatim. */
+  .btn-secondary:active:not(:disabled) {
+    @apply border-stroke-hover bg-action-hover text-content-primary;
+  }
+  .btn-secondary:disabled {
+    @apply border-stroke-divider text-content-tertiary;
+  }
+
+  /* --- Micro ---------------------------------------------------------------- */
+
+  .btn-micro {
+    @apply h-3 gap-1 type-micro-label text-content-secondary;
+  }
+  .btn-micro svg {
+    @apply size-3; /* 12px */
+  }
+  /* One rule for hover AND pressed — Figma draws them pixel-identical. */
+  .btn-micro:hover:not(:disabled),
+  .btn-micro:active:not(:disabled) {
+    @apply text-content-primary;
+  }
+  .btn-micro:disabled {
+    @apply text-content-tertiary;
+  }
+
+  /* --- Bubble --------------------------------------------------------------- */
+
+  .btn-bubble {
+    @apply h-8.5 gap-1 rounded-full px-2 text-label text-content-secondary;
+  }
+  .btn-bubble:hover:not(:disabled) {
+    @apply bg-action-hover text-content-primary;
+  }
+  .btn-bubble:active:not(:disabled) {
+    @apply bg-action-pressed text-content-primary;
+  }
+  /* Ink dims and nothing else — the fill stays invisible, as at rest. */
+  .btn-bubble:disabled {
+    @apply text-content-tertiary;
+  }
+}

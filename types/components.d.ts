@@ -22,5 +22,8 @@ export type CheckboxClass = "checkbox";
 // Switch component classes
 export type SwitchClass = "switch";
 
+// Button component classes
+export type ButtonClass = "button";
+
 // Union of all component classes
-export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass;
+export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass;
