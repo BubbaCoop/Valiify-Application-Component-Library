@@ -2,7 +2,7 @@
 
 Complete installation guide for all build setups.
 
-> **Note**: The Short App component set has not been extracted from Figma yet.
+> **Note**: 21 components are shipped (see the Quick Reference in CLAUDE.md); the remaining Figma sets (Address Super entry, Layer field, Disclaimer container, User, Confirmation Modal, Portal Specific) are pending extraction.
 > Component class names used in the snippets below (e.g. `.btn`, `.chip`) are
 > illustrative of how the library is consumed — the real class reference will
 > live in [CLAUDE.md](CLAUDE.md) as components land.

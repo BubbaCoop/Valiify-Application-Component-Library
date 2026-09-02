@@ -1,0 +1,109 @@
+/**
+ * TextArea Component
+ *
+ * Labeled multi-line text input. Extracted from Figma Text Area Field
+ * (199:12523) — 6 variants (Filled × Hover × Focus), all 413×104: the field
+ * family's 25px label row over a 79px box. NO Error axis exists (unlike the
+ * sibling fields) — none is invented; designer list.
+ *
+ *   <div class="text-area">
+ *     <div class="text-area-title-row">
+ *       <label class="text-area-title" for="notes">Notes</label>
+ *     </div>
+ *     <textarea id="notes" class="text-area-input" placeholder="Anything else?"></textarea>
+ *   </div>
+ *
+ * The native <textarea> IS the box (no icon slots to host, unlike
+ * TextField's wrapper): h-[79px] pinned (79 is off Tailwind's scale —
+ * arbitrary on purpose), py-2.5/px-3 — THE 10px Y-PADDING IS AUTHORED,
+ * a real family inconsistency vs the siblings' taller centering (designer
+ * list) — text top-anchored (padding does it; items-start from the Figma
+ * frame is meaningless on a real textarea), 1px border inside border-box,
+ * rounded-sm, fill BG/Paper constant in every state.
+ *
+ * STATE MODEL — identical to the family (border-only; token-verified match
+ * to Plain Text Field, zero deviations):
+ *   rest Stroke/Border → hover Stroke/Hover → :focus Primary + Primary Ring
+ * Hover+focus undrawn; focus wins by source order.
+ *
+ * TWO LABELED CORRECTIONS of Figma authoring defects:
+ * - The value node carries the Input style's single-line nowrap/ellipsis
+ *   (copy-paste artifact — no variant demonstrates wrapping). A real
+ *   textarea wraps; native behaviour ships, the defect does not.
+ * - No overflow-clip: Figma's frame clip must not suppress the scrollbar a
+ *   fixed-height textarea needs (unlike DropdownList's deliberate clip).
+ *
+ * RESIZE: none by default — a library decision, flagged as such: Figma
+ * draws no grabber in any variant and no overflow state. Callers opt in
+ * with a resize utility.
+ *
+ * Optional slots per the family (hidden in every Figma variant): the label
+ * row's right-aligned optional text and 18px helper icon-button, and
+ * .text-area-hint below in normal flow (broken bottomContent geometry, the
+ * family defect, corrected as in TextField).
+ *
+ * Not modelled, not invented: Error, disabled, hover+focus.
+ */
+
+@layer components {
+  .text-area {
+    @apply flex w-full flex-col;
+  }
+
+  /* --- Label row (25 = 20 line + 5px pb) --------------------------------- */
+
+  .text-area-title-row {
+    @apply flex items-center gap-1 pb-1.25;
+  }
+
+  .text-area-title {
+    @apply text-label-strong text-content-secondary; /* never recolours */
+  }
+
+  .text-area-optional {
+    @apply ml-auto text-help-caption text-content-tertiary; /* inferred ink */
+  }
+
+  .text-area-help {
+    @apply ml-auto size-4.5 shrink-0 cursor-pointer border-0 bg-transparent p-0 text-neutral-disabled;
+  }
+  .text-area-help svg {
+    @apply size-4.5;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- The box: the textarea itself (79px pinned, top-anchored) ----------- */
+
+  .text-area-input {
+    @apply block h-[79px] w-full appearance-none resize-none;
+    @apply rounded-sm border border-stroke-border bg-surface-paper px-3 py-2.5;
+    @apply text-input text-content-primary outline-none;
+    transition: border-color 150ms;
+  }
+
+  .text-area-input::placeholder {
+    @apply text-content-hint;
+    opacity: 1; /* Firefox dims ::placeholder by default */
+  }
+
+  /* --- States (focus after hover — source order resolves the undrawn
+     hover+focus combo in focus's favour) ----------------------------------- */
+
+  .text-area-input:hover:not(:focus):not(:disabled) {
+    @apply border-stroke-hover;
+  }
+
+  .text-area-input:focus {
+    @apply focus-ring border-primary;
+  }
+
+  /* --- Hint (normal-flow correction, family pattern) ----------------------- */
+
+  .text-area-hint {
+    @apply m-0 pt-1.25 text-help-caption text-content-secondary;
+  }
+}

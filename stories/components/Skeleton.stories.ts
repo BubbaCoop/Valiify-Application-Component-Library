@@ -38,12 +38,17 @@ export const AllShapes: Story = {
   `,
 };
 
-/** The three sizes of a shape — dimensions are a matrix, not a scale. */
+/** The full 16-shape × 3-size matrix — dimensions are a matrix, not a
+ * scale, and the visual spec sweeps every cell of it. */
 export const AllSizes: Story = {
   render: () => `
-    <div role="status" aria-busy="true" aria-label="Loading" style="display: flex; gap: 24px; align-items: end;">
-      ${sk("avatar", "sm")}${sk("avatar", "md")}${sk("avatar", "lg")}
-      ${sk("button", "sm")}${sk("button", "md")}${sk("button", "lg")}
+    <div role="status" aria-busy="true" aria-label="Loading" style="display: flex; flex-direction: column; gap: 16px;">
+      ${SHAPES.map(
+        (s) => `<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: end;">
+        <span style="width: 80px; font-size: 10px; color: #54565b;">${s}</span>
+        ${sk(s, "sm")}${sk(s, "md")}${sk(s, "lg")}
+      </div>`,
+      ).join("")}
     </div>
   `,
 };

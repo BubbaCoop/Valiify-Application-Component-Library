@@ -1,0 +1,144 @@
+/**
+ * TextField Component
+ *
+ * Labeled single-line text input. Extracted from Figma Plain Text Field
+ * (1:291) — 9 variants on a partial Filled × Hover × Focus × Error matrix,
+ * all 413×73 (width is the caller's; 413 is the sample).
+ *
+ *   <div class="text-field">
+ *     <div class="text-field-title-row">
+ *       <label class="text-field-title" for="fname">First name</label>
+ *     </div>
+ *     <div class="text-field-box">
+ *       <input id="fname" class="text-field-input" type="text" placeholder="Jane" />
+ *     </div>
+ *   </div>
+ *
+ * ANATOMY — title row 25px (20px text-label-strong line + 5px pb; NOT the
+ * text-field-label TOKEN — the Figma label verbatim binds Labels/Strong
+ * 14/20/500, designer list. The part class is .text-field-title because a
+ * .text-field-label class would collide with that token's generated utility
+ * — the .list-item lesson; RadioField's -title naming adopted family-wide)
+ * over a 48px box (h-12 pinned, 1px border inside
+ * border-box; 12+24+12 closes against text-input's 24px line). The BOX is a
+ * wrapper div, not the input itself — a native input cannot hold the 18px
+ * icon slots; all state styling hangs off the box via :has().
+ *
+ * STATE MODEL — border-only; fill (BG/Paper), label ink and value ink never
+ * change in ANY state (pixel-verified across all nine variants):
+ *   rest    border Stroke/Border
+ *   hover   border Stroke/Hover
+ *   focus   border Primary + the 3px Primary Ring (:has(:focus) — the Figma
+ *           Focus axis is the caret state, so any focus, not focus-visible)
+ *   error   border Warning/Base — aria-invalid="true" drives it
+ *
+ * ERROR BINDS THE WARNING RAMP, VERBATIM — all three Error=Yes variants bind
+ * Warning/Base (#b4791c amber); no Error/* token appears anywhere in the set
+ * (variable + pixel verified). The unused-Error-ramp slip is now confirmed
+ * for the field family; rebind to the Error ramp only when the designer does.
+ *
+ * ERROR+HOVER IS UNWIRED in Figma (byte-identical variable maps) — the hover
+ * rule excludes invalid fields by name. ERROR+FOCUS is a real compound: the
+ * border STAYS amber while the CRIMSON ring still fires (pixel-confirmed) —
+ * the error rule sorts after focus so its border wins while focus's ring
+ * persists. Hover+focus is undrawn; focus wins by source order (library
+ * decision, designer list).
+ *
+ * The placeholder/value ink swap (Text/Hint → Text/Primary) is Figma's
+ * Filled axis — a native ::placeholder handles it with no class.
+ *
+ * Slots, all optional (hidden in every drawn variant): leading/trailing
+ * 18px icons (.text-field-icon — Figma's placeholders are dollar glyphs,
+ * caller passes real ones), an 18px helper icon-button in the label row
+ * (.text-field-help — Figma's glyph is the misnamed ChevronLeft placeholder,
+ * RadioField pattern), and .text-field-hint below. THE HINT SHIPS IN NORMAL
+ * FLOW — Figma's bottomContent geometry is broken (absolute −19px/−313%,
+ * the RadioField defect verbatim) — as a labeled correction; help-caption
+ * type, Text/Secondary, Warning/Text when the field is invalid (inferred —
+ * the row is hidden in every drawn variant; designer to confirm).
+ *
+ * Not modelled, not invented: disabled (none exists — flagged as a priority
+ * gap for real forms), empty+error, hover+focus variants.
+ */
+
+@layer components {
+  .text-field {
+    @apply flex w-full flex-col; /* no gap — the label row's pb is the 5px seam */
+  }
+
+  .text-field-title-row {
+    @apply flex items-center gap-1 pb-1.25; /* 20 + 5 = 25px row */
+  }
+
+  .text-field-title {
+    @apply text-label-strong text-content-secondary; /* never recolours, even on error */
+  }
+
+  /* Optional helper icon-button beside the label (RadioField precedent). */
+  .text-field-help {
+    @apply ml-auto size-4.5 shrink-0 cursor-pointer border-0 bg-transparent p-0 text-neutral-disabled;
+  }
+  .text-field-help svg {
+    @apply size-4.5;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The bordered box — 48px pinned via height (never min-height), the 1px
+     border absorbed by border-box (Secondary-button closure). */
+  .text-field-box {
+    @apply flex h-12 w-full items-center gap-2 rounded-sm border p-3;
+    @apply border-stroke-border bg-surface-paper;
+    transition: border-color 150ms;
+  }
+
+  .text-field-icon {
+    @apply size-4.5 shrink-0 text-content-secondary;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .text-field-input {
+    @apply min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 outline-none;
+    @apply text-input text-content-primary;
+  }
+  .text-field-input::placeholder {
+    @apply text-content-hint;
+    opacity: 1; /* Firefox dims ::placeholder by default */
+  }
+
+  .text-field-hint {
+    @apply m-0 pt-1.25 text-help-caption text-content-secondary;
+  }
+
+  /* --- States — order is load-bearing: error sorts last so its border wins
+     over hover AND focus, while focus's ring (outline) persists on
+     error+focus (the amber-border/crimson-ring compound Figma draws). --- */
+
+  /* Hover excludes focus by name too — the :not() chain out-specifies the
+     focus rule, so without this guard a hovered+focused box would paint the
+     hover border (Figma draws no hover+focus; focus wins, library decision). */
+  .text-field-box:hover:not(:has(.text-field-input:focus)):not(:has(.text-field-input[aria-invalid="true"])) {
+    @apply border-stroke-hover;
+  }
+
+  .text-field-box:has(.text-field-input:focus) {
+    @apply focus-ring border-primary;
+  }
+
+  .text-field-box:has(.text-field-input[aria-invalid="true"]) {
+    @apply border-warning;
+  }
+
+  /* Inferred (row hidden in every drawn variant; Warning/Text per the
+     error-variant binding) — designer to confirm. */
+  .text-field:has(.text-field-input[aria-invalid="true"]) .text-field-hint {
+    @apply text-warning-text;
+  }
+}

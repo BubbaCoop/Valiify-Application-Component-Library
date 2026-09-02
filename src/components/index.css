@@ -16,6 +16,7 @@
 @import "./box-action.css";
 @import "./button.css";
 @import "./checkbox.css";
+@import "./dropdown-field.css";
 @import "./dropdown-list.css";
 @import "./header.css";
 @import "./icon-button.css";
@@ -28,4 +29,6 @@
 @import "./skeleton.css";
 @import "./switch.css";
 @import "./tabs.css";
+@import "./text-area.css";
+@import "./text-field.css";
 @import "./text-selector.css";

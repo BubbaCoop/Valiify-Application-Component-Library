@@ -39,3 +39,4 @@ pnpm-debug.log*
 val/runs/*
 !val/runs/.gitkeep
 .claude/scheduled_tasks.lock
+.verify-tmp/

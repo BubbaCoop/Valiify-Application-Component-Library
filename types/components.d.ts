@@ -72,5 +72,39 @@ export type OwnerContainerClass =
   | "owner-container-contact-text"
   | "owner-container-actions";
 
+// TextField component classes
+export type TextFieldClass =
+  | "text-field"
+  | "text-field-title-row"
+  | "text-field-title"
+  | "text-field-help"
+  | "text-field-box"
+  | "text-field-icon"
+  | "text-field-input"
+  | "text-field-hint";
+
+// DropdownField component classes
+export type DropdownFieldClass =
+  | "dropdown-field"
+  | "dropdown-field-title-row"
+  | "dropdown-field-title"
+  | "dropdown-field-optional"
+  | "dropdown-field-help"
+  | "dropdown-field-trigger"
+  | "dropdown-field-value"
+  | "dropdown-field-value-placeholder"
+  | "dropdown-field-chevron"
+  | "dropdown-field-hint";
+
+// TextArea component classes
+export type TextAreaClass =
+  | "text-area"
+  | "text-area-title-row"
+  | "text-area-title"
+  | "text-area-optional"
+  | "text-area-help"
+  | "text-area-input"
+  | "text-area-hint";
+
 // Union of all component classes
-export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass | TabsClass | HeaderClass | RadioFieldClass | SkeletonClass | OwnerClass | OwnerContainerClass;
+export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass | TabsClass | HeaderClass | RadioFieldClass | SkeletonClass | OwnerClass | OwnerContainerClass | TextFieldClass | DropdownFieldClass | TextAreaClass;

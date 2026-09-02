@@ -33,6 +33,12 @@ jobs:
       - name: verify:layers
         run: npm run verify:layers
 
+      # Bundle integrity: undefined var() refs (the surface-frame bug class)
+      # and component-class/utility collisions (the .list-item bug class).
+      # Reads dist, so it follows build.
+      - name: verify:bundle
+        run: npm run verify:bundle
+
       - name: audit
         run: npm run audit
 
@@ -67,6 +73,12 @@ jobs:
 
       - name: verify:visual
         run: npm run verify:visual -- --url http://127.0.0.1:6007
+
+      # axe over every story — reuses the Chromium install and the served
+      # static Storybook from the steps above. Known design defects are
+      # waived (and printed) via KNOWN_ISSUES in scripts/a11y-scan.mjs.
+      - name: verify:a11y
+        run: npm run verify:a11y -- --url http://127.0.0.1:6007
 
 # Deliberately not here yet: `prettier --check`, which fails on 35 prose files
 # (docs/*.md, CLAUDE.md, SKILL.md). Adding it now would ship CI red. Separate
