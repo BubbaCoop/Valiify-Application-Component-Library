@@ -3,9 +3,10 @@
 #   npm version patch            # bumps package.json + creates the tag
 #   git push origin main --follow-tags
 #
-# Requires the NPM_TOKEN repo secret (a granular automation token with
-# read/write on @valiify/shortapp-ui). Publishes with npm provenance, which
-# cryptographically links the package to this repo + workflow run.
+# Auth: npm TRUSTED PUBLISHING — npmjs.com is configured to trust this
+# repo + workflow via OIDC, so there is no token and no secret to rotate.
+# Publishes with npm provenance, which cryptographically links the package
+# to this repo + workflow run.
 #
 # The full verification battery (visual/a11y/static/bundle) runs on the
 # branch push via ci.yml; this workflow re-runs the fast gates plus the
@@ -62,7 +63,10 @@ jobs:
       - name: verify:package
         run: npm run verify:package
 
+      # Auth is npm TRUSTED PUBLISHING (OIDC via id-token: write above) — no
+      # token, no secret. Configured on npmjs.com under the package's
+      # Trusted Publisher settings (this repo + this workflow filename).
+      # A token here would take precedence and reintroduce the EOTP 2FA
+      # failure that killed Release #1.
       - name: publish
         run: npm publish --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -172,8 +172,8 @@ Releases are tag-driven. After merging to a green main:
 
 The Release workflow re-runs the fast gates plus the packaging smoke test
 (`npm run verify:package` — the real tarball in a real Vite consumer build,
-both entry points), then publishes to npm with provenance. Requires the
-`NPM_TOKEN` repo secret.
+both entry points), then publishes to npm with provenance via **trusted
+publishing** (OIDC — no token, configured in the package's npm settings).
 
 ## Links
 
