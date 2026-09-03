@@ -7,6 +7,19 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.1.1] — 2026-09-02
+
+### Fixed
+
+- README currency: the published 0.1.0 README still described the
+  bootstrap-era empty library ("component set is currently empty") — now
+  reflects the 27 shipped components, the complete token set, and the
+  verification gates. Docs-only patch; no CSS changes.
+
+## [0.1.0] — 2026-09-02
+
 ### Added
 
 - **2026-09-02** — `UtilityButton` (Button / Utility 24:4382): the

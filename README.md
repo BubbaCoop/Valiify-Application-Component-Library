@@ -7,12 +7,10 @@ CSS-only, framework-agnostic, zero JavaScript dependencies. Components are
 extracted from the Short App Figma component library and verified against it
 with an automated visual harness.
 
-> **Status: infrastructure setup.** This library was bootstrapped from the
-> [Valiify Dashboard UI](https://github.com/BubbaCoop/Valiify-dashboard-ui)
-> library's build and verification infrastructure. Short App design tokens and
-> components have not been extracted yet — the component set is currently
-> empty. The dashboard library's components are preserved for pattern reference
-> in `_dashboard-archive/` and are not part of this package.
+> **Status: 27 components shipped**, extracted from the Short App Figma file
+> and verified against it — 603 computed-style assertions, axe-core clean
+> across every story. The complete design-token set (58 colors, 24 text
+> styles, effects) ships as Tailwind v4 `@theme` tokens.
 
 ## ⚠️ Important: Read This First
 
@@ -94,9 +92,33 @@ See [GETTING_STARTED.md](GETTING_STARTED.md) for the complete setup guide and
 
 ## Components
 
-**None yet** — the Short App component set is being extracted from Figma.
-Each component will be documented in [CLAUDE.md](CLAUDE.md) as it lands, with
-class reference, states, and copy-pasteable HTML.
+27 components, each documented in [CLAUDE.md](CLAUDE.md)'s Quick Reference
+with class API, state tables, and copy-pasteable HTML:
+
+- **Controls** — Button (Standard: Primary/Secondary/Micro/Bubble),
+  UtilityButton (Empty/Filled/Rounded/Text), IconButton, Radio, Checkbox,
+  Switch, Tabs, TextSelector
+- **Fields** — TextField, DropdownField, TextArea, RadioField
+- **Selection & lists** — SelectCard, BoxAction, ListItem (`.list-option`),
+  DropdownList, Action
+- **Feedback & overlays** — Modal (native `<dialog>`-first), Toast, Tooltip,
+  Skeleton, StatusTracker
+- **Identity & structure** — Avatar, Badge, Owner, OwnerContainer, Header
+
+Quick taste:
+
+```html
+<button class="btn btn-primary">Continue</button>
+
+<div class="text-field">
+  <div class="text-field-title-row">
+    <label class="text-field-title" for="name">First name</label>
+  </div>
+  <div class="text-field-box">
+    <input id="name" class="text-field-input" type="text" placeholder="Jane" />
+  </div>
+</div>
+```
 
 ## Development
 
@@ -115,23 +137,22 @@ The component development process is documented in
 
 ## Development Status
 
-**Current Phase**: Infrastructure Setup Complete
-**Next Phase**: Figma Token Extraction & Component Development
+**Current Phase**: Component build-out — 27 shipped, published to npm
 
 Completed:
 
-- ✅ Project infrastructure migrated from the dashboard library
-- ✅ Build pipeline and verification tools ready
-- ✅ Storybook configured
-- ✅ Icon sprite system (Lucide, shared with the dashboard library)
-- ✅ Package renamed and rebranded
+- ✅ Complete design-token extraction (58 colors, 8 radii, 13 spacing steps,
+  24 text styles, 2 effects — full Figma Plugin-API enumeration)
+- ✅ 27 components with visual specs (603 assertions), a11y scans, and
+  static/bundle gates — all running in CI
+- ✅ Published to npm as `@valiify/shortapp-ui`
 
 Next steps:
 
-- ⏳ Extract design tokens from the Short App Figma file
-- ⏳ Build first components
+- ⏳ Remaining Figma sets: Address Super entry, Layer field, Disclaimer
+  container, User
 - ⏳ Chromatic visual regression (after the full library is complete)
-- ⏳ NPM publishing and Storybook deployment
+- ⏳ Storybook deployment
 
 ## Architecture
 
@@ -142,6 +163,7 @@ Next steps:
 
 ## Links
 
+- **npm**: https://www.npmjs.com/package/@valiify/shortapp-ui
 - **Repository**: https://github.com/BubbaCoop/Valiify-Application-Component-Library
 - **Dashboard library (predecessor)**: https://github.com/BubbaCoop/Valiify-dashboard-ui
 
