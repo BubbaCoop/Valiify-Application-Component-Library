@@ -21,8 +21,10 @@ route. You are the only participant who sees every handoff; act like it.
    { "runId", "input": { "figmaUrl", "exportScale": 2, "frame": null },
      "gates": [], "reworkCount": 0,
      "final": { "accuracy": null, "qaPass": null, "signedOff": false } }
-4. If val/registry/components.json is missing, run
-   node val/registry/generate-registry.mjs first.
+4. If val/registry/components.json is missing, OR older than the newest
+   file in stories/components/, run
+   node val/registry/generate-registry.mjs first (hand-added figmaNodeIds,
+   figmaNames, behaviors and tokens survive regeneration).
 
 ## Pipeline
 Invoke, in order (2 and 3 may run after 1 in either order):
@@ -45,13 +47,41 @@ At each gate:
   the extraction actually achieved (exportScaleAchieved). The downstream
   raster pipeline reads exportScale; a mismatch wastes an entire accuracy
   run on a normalization failure.
-- If Gate 3 surfaced open questions that block correctness (contradictory
-  navigation, unknown state to depict, ANY ambiguity about what is
-  interactive or which disclosure level operates), STOP after Gate 3 and
-  ask the requester before building. Ambiguities that don't block get
-  listed in the final writeup instead — but interactivity ambiguities are
-  never defaultable: a wrong default there cost a prior run its entire
-  interaction model.
+- If Gate 3 surfaced BLOCKING open questions, or Gate 4 reports
+  BUILD: BLOCKED, enter the Clarification protocol below before
+  proceeding. Non-blocking ambiguities get their proposed defaults
+  applied and are listed in the final writeup instead.
+
+## Clarification protocol (asking the requester)
+
+You — the orchestrator — are the ONLY participant who talks to the
+requester. Subagents surface questions in the structured format
+(Q / NEEDED-FOR / CHECKED / COST-OF-GUESSING / ACCEPTABLE-ANSWER); you
+relay them. The canonical case: "what does the expansion area look like?"
+— expandable content with no expanded-state reference anywhere.
+
+When a gate surfaces blocking questions (Gate 3's BLOCKING list, or a
+Gate 4 BUILD: BLOCKED with 04-build/questions.md):
+
+1. Pause the run. Set manifest "status": "awaiting-requester" and record
+   the questions in manifest.gates for the gate that raised them.
+2. Ask the requester IN CHAT, all questions in one message — never one at
+   a time across multiple turns. For each: the question, which
+   component/region it blocks, and what answering unblocks. State plainly
+   that the run is paused and everything determinable has already been
+   done (extraction and mapping are complete; on a Gate 4 pause the build
+   exists with <!-- val:awaiting-answer --> placeholders).
+3. Never guess your way past a blocking question to keep the run moving —
+   a wrong invented expansion area costs a full rework cycle plus an
+   accuracy run; the requester's answer costs one message.
+4. When answers arrive: save them verbatim to 00-input/answers-<n>.md,
+   clear "awaiting-requester", and re-invoke the stage that raised the
+   questions with a pointer to the answers file (val-context refreshes
+   03-requirements.md; val-build resumes in rework mode with the answers
+   as its fix list). Then continue the pipeline from that gate.
+5. If an answer contradicts the Figma, that is a new Gate 3 open question
+   — record it; ask the follow-up in the same thread rather than silently
+   preferring either source.
 
 ## Rework loop
 If Gate 5 fails, or Gate 6 fails its verdict:

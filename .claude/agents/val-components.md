@@ -33,8 +33,11 @@ For EVERY component instance in structure.md, write an entry in
 
 Confidence rules:
 - exact: figmaComponentKey appears in a registry entry's figmaNodeIds.
-- name-match: Figma component name equals a registry key (normalize
-  case/spaces). Record the normalization in notes.
+- name-match: Figma component name equals a registry key OR appears in
+  that entry's `figmaNames` alias list (the file's set names often differ:
+  "Button / Standard"→Button, "Card"→SelectCard, "Application Status"→
+  StatusTracker, "Box action"→BoxAction…). Normalize case/spaces; record
+  the normalization in notes.
 - visual-guess: structure and styling clearly match a registry entry but
   neither key nor name links them. Justify in notes.
 - none: no plausible library component. In notes, describe what it is and

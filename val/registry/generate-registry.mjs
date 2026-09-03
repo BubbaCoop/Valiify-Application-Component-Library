@@ -11,9 +11,12 @@
  *   - There are no Code Connect (*.figma.ts) files yet, so figmaNodeIds
  *     stay [] until mappings are added by hand or Code Connect lands.
  *
- * Merge contract: on regeneration, hand-added `behaviors`, `tokens`, and
- * `figmaNodeIds` in an existing components.json are MERGED (union), never
- * overwritten. Generated fields (path, story, variants, props) are refreshed.
+ * Merge contract: on regeneration, hand-added `behaviors`, `tokens`,
+ * `figmaNodeIds`, and `figmaNames` (Figma set-name aliases for components
+ * whose Figma names don't equal the registry key — "Button / Standard",
+ * "Box action", "Application Status"…) in an existing components.json are
+ * MERGED (union), never overwritten. Generated fields (path, story,
+ * variants, props) are refreshed.
  *
  * Extraction is deliberately partial rather than clever: variants come from
  * argTypes `options` arrays, props from argTypes/args keys, behaviors from
@@ -242,7 +245,7 @@ if (existsSync(outPath)) {
       continue;
     }
     const next = registry[name];
-    for (const field of ["behaviors", "tokens", "figmaNodeIds"]) {
+    for (const field of ["behaviors", "tokens", "figmaNodeIds", "figmaNames"]) {
       const merged = [...new Set([...(next[field] ?? []), ...(prev[field] ?? [])])];
       next[field] = merged;
     }
