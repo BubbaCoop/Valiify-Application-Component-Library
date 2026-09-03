@@ -1,0 +1,161 @@
+/**
+ * Modal Component
+ *
+ * Confirmation dialog card. Extracted from Figma Modal (557:5127) — 3
+ * variants on a Type axis {Destructive, Neutral, Success}, 480 wide,
+ * 308/196/308 tall. The library's FIRST overlay — it consumes the z-index
+ * scale from CLAUDE.md's Library Contracts (backdrop 50, modal 60) and the
+ * new tokenized Basic Drop Shadow (--shadow-basic, added with this
+ * component; DropdownList rebound to it the same day).
+ *
+ *   <dialog class="modal" aria-labelledby="m-title" aria-describedby="m-desc">
+ *     <div class="modal-header">
+ *       <h2 id="m-title" class="modal-title">Confirm Action</h2>
+ *       <button class="icon-button" aria-label="Close">
+ *         <svg aria-hidden="true"><use href="#x" /></svg>
+ *       </button>
+ *     </div>
+ *     <p id="m-desc" class="modal-description">Are you sure you want to proceed?</p>
+ *     <div class="modal-notice modal-notice-destructive">
+ *       <span class="modal-notice-label">Critical warning</span>
+ *       <span class="modal-notice-body">This cannot be undone.</span>
+ *     </div>
+ *     <div class="modal-actions">
+ *       <button class="btn btn-secondary">Cancel</button>
+ *       <button class="btn btn-primary">Confirm</button>
+ *     </div>
+ *   </dialog>
+ *
+ * PURE COMPOSITION FOR EVERYTHING INTERACTIVE — close is the shipped
+ * .icon-button (md Icon Only — the 18px box/glyph matches exactly) with #x (Figma's close master is a misnamed
+ * "ChevronLeft" duplicate of IconButton — designer list; composing the real
+ * one forks nothing). Actions are the shipped .btn-secondary / .btn-primary,
+ * hug width, right-aligned.
+ *
+ * NO TYPE CLASSES ON THE CARD — Figma's Type axis IS the notice banner:
+ * Neutral omits it structurally (no boolean exists), Destructive/Success
+ * include their variant. The caller composes .modal-notice + a variant class
+ * or leaves it out. The height math proves it: 196 (Neutral) + 88 (banner)
+ * + 24 (its gap) = 308, exact.
+ *
+ * BOTH RINGS ARE INSET BOX-SHADOWS, NOT BORDERS — the card's 1px
+ * Stroke/Divider and the banner's 1px accent are Figma inside strokes on
+ * CONTENT-DRIVEN heights (Tabs-Application precedent: a real border would
+ * render the drawn 308 as 310). The card ring rides in the same declaration
+ * as --shadow-basic. Heights are NOT pinned (unlike Button) — 308/196 are
+ * emergent from padding/gaps/line boxes, and long copy must be free to grow
+ * the card.
+ *
+ * DESTRUCTIVE BINDS THE PRIMARY (CRIMSON) TINTS, NOT THE ERROR RAMP —
+ * verbatim (Primary/BG fill, Primary border, Primary/Text ink; label and
+ * body inherit one currentColor). The Error ramp remains unused everywhere
+ * in the file; designer list.
+ *
+ * THE SUCCESS BANNER IS RAW, UNBOUND HEX IN FIGMA (#f0fdf4 / #16a34a /
+ * #15803d / #166534 — Tailwind-palette greens, visibly NOT the tokenized
+ * Success ramp #2e6e4e). Reproduced verbatim with static-ok waivers — the
+ * values diverge too much from the ramp for a RadioField-style near-identity
+ * substitution. Top designer-list item.
+ *
+ * UNTOKENIZED TYPE (raw in Figma, no --text-* match — designer list):
+ * title 18/24/600 (closest token is title-medium 16/20/500), notice label
+ * 12/16/600 uppercase, notice body 13/18/400. Description IS token-valued
+ * (text-label 14/20/400). Figma's title carries whitespace-nowrap — an
+ * overflow defect NOT reproduced; titles wrap (ListItem precedent).
+ *
+ * THE BACKDROP IS A LIBRARY EXTENSION — no scrim layer exists anywhere in
+ * Figma (Canvas 557:5013 holds only the cards). The wash value is UNSOURCED
+ * (Text/Primary at 45%); designer to confirm. Two shipped paths:
+ *   PRIMARY  <dialog class="modal"> + dialog.showModal() — native focus
+ *            trap, Escape, restore-on-close, ::backdrop, top layer.
+ *   FALLBACK <div class="modal-backdrop"><div class="modal" role="dialog"
+ *            aria-modal="true">…</div></div> — the consumer supplies the
+ *            focus trap and Escape (the library ships no JS).
+ * Backdrop-click dismissal is consumer JS in both paths.
+ *
+ * Not modelled, not invented: hover/focus/disabled on the card (composed
+ * children carry their own), sizes, a stray cursor-pointer Figma draws on
+ * the actions ROW (defect, excluded).
+ */
+
+@layer components {
+  .modal {
+    @apply m-auto flex w-[480px] flex-col gap-6 rounded-2xl border-0 bg-surface-paper p-7 text-left;
+    @apply z-60;
+    /* 1px inside ring (a border would grow the content-driven 308 to 310)
+       + the tokenized Basic Drop Shadow, one declaration. */
+    box-shadow:
+      inset 0 0 0 1px var(--color-stroke-divider),
+      var(--shadow-basic);
+    /* Library extension: the banner/hover fills must not poke past the
+       12px corner (DropdownList precedent). */
+    overflow: clip;
+  }
+
+  .modal-header {
+    @apply flex items-center justify-between gap-4;
+  }
+
+  /* Raw 18/24/600 — no --text-* token models it (designer list). Figma's
+     whitespace-nowrap is an overflow defect, not reproduced: titles wrap. */
+  .modal-title {
+    @apply m-0 text-[18px] leading-6 font-semibold text-content-primary;
+  }
+
+  .modal-description {
+    @apply m-0 text-label text-content-secondary;
+  }
+
+  /* --- Notice banner (Figma's Type axis) ----------------------------------- */
+
+  .modal-notice {
+    @apply flex flex-col gap-1 rounded-md p-4;
+  }
+
+  .modal-notice-label {
+    @apply text-[12px] leading-4 font-semibold uppercase; /* raw; ink inherits */
+  }
+
+  .modal-notice-body {
+    @apply text-[13px] leading-[18px] font-normal; /* raw; ink inherits */
+  }
+
+  .modal-notice-destructive {
+    @apply bg-primary-bg text-primary-text;
+    box-shadow: inset 0 0 0 1px var(--color-primary); /* inside ring, see header */
+  }
+
+  /* Raw, unbound in Figma — verbatim; see header. */
+  .modal-notice-success {
+    /* static-ok(hardcoded-color): Success banner is raw unbound hex in Figma (≠ the Success ramp) — top designer-list item */
+    background-color: #f0fdf4;
+    /* static-ok(hardcoded-color): raw unbound body ink, same designer-list item */
+    color: #166534;
+    /* static-ok(hardcoded-color): raw unbound border, same designer-list item */
+    box-shadow: inset 0 0 0 1px #16a34a;
+  }
+  .modal-notice-success .modal-notice-label {
+    /* static-ok(hardcoded-color): raw unbound label ink (differs from the body ink, unlike Destructive's single currentColor) */
+    color: #15803d;
+  }
+
+  /* --- Actions -------------------------------------------------------------- */
+
+  /* Figma draws cursor-pointer on this ROW — a defect, excluded; only the
+     nested buttons are interactive. */
+  .modal-actions {
+    @apply flex items-center justify-end gap-4;
+  }
+
+  /* --- Overlay plumbing (library extension — no scrim exists in Figma) ------ */
+
+  .modal-backdrop {
+    @apply fixed inset-0 z-50 flex items-center justify-center;
+    /* UNSOURCED wash: Text/Primary at 45% — designer to confirm. */
+    background-color: color-mix(in oklab, var(--color-content-primary) 45%, transparent);
+  }
+
+  dialog.modal::backdrop {
+    background-color: color-mix(in oklab, var(--color-content-primary) 45%, transparent);
+  }
+}

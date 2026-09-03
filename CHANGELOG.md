@@ -9,6 +9,43 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ### Added
 
+- **2026-09-02** — `UtilityButton` (Button / Utility 24:4382): the
+  non-inline button family — Empty / Filled / Rounded / Text types, SM/MD,
+  Field Label natural-case convention. Button (1:218) is now "Button /
+  Standard" (inline uses); its rework formalized Pressed into an axis with
+  values identical to the shipped :active treatments (no CSS change).
+
+- **2026-09-02** — `Toast` (582:9325), `StatusTracker` (Application Status
+  64:4623) and `Action` (71:848), all inline fast-path. Toast marks the
+  status ramps' first bindings (Success/Base, Info/Base — while Type
+  "error" binds Warning/Base verbatim, the file-wide slip's sharpest
+  instance); Action's Done chip adds Success/Text. New a11y waiver for the
+  Action pending chip (Text/Hint-on-Paper contrast family).
+
+- **2026-09-02** — `Tooltip` (582:9178, inline fast-path): dark contrast
+  tooltip with optional muted title. First use of the NEW `BG/Contrast`
+  variable (token 58, `--color-surface-contrast`) and of the
+  `text-field-label` style (whose real consumer is tooltip titles, not
+  field labels — designer list). Third consumer of `--shadow-basic`.
+
+- **2026-09-02** — `Modal` (557:5127): the library's first overlay — card +
+  Type-bound notice banners (Destructive/Success; Neutral = no banner),
+  composed close (IconButton) and actions (Buttons), `<dialog>`-first overlay
+  plumbing with a styled `::backdrop` plus a `.modal-backdrop` div fallback
+  (unsourced scrim, designer list), on the Library Contracts z-scale. New
+  **`--shadow-basic`** token from Figma's new "Basic Drop Shadow" effect
+  style (0 8px 24px −4px).
+
+### Changed
+
+- **2026-09-02** — `DropdownList` shadow rebound from its raw
+  `0 2px 5px 10%` to the tokenized `--shadow-basic` (designer direction —
+  a value change), now a real `box-shadow`: the −4px spread is
+  inexpressible as a `filter: drop-shadow()`, and the dashboard-era
+  "overflow-clip eats box-shadow" claim was re-tested and is false.
+
+### Added
+
 - **2026-09-02** — Field family: `TextField` (Plain Text Field 1:291),
   `DropdownField` (1:358, listbox-trigger composing DropdownList), `TextArea`
   (199:12523). Settled the Error-ramp question: field errors bind

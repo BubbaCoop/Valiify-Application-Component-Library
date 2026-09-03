@@ -78,7 +78,7 @@ export const SPECS = {
 
   // ------------------------------------------------------------------ Button
   Button: {
-    figma: "Button 1:218 — 16 variants: Type {Primary, Secondary, Micro, Bubble} × states",
+    figma: "Button / Standard 1:218 — 16 variants (Pressed formalized into an axis 2026-09-02; values unchanged, variable-diffed)",
     variants: 16,
     stories: {
       // AllTypes grid order: 0 primary · 1 primary disabled · 2 secondary ·
@@ -968,14 +968,21 @@ export const SPECS = {
           get: "overflow-x",
           expect: "clip",
         },
-        // filter, not box-shadow: overflow-clip eats a box's own box-shadow;
-        // drop-shadow() applies to the clipped composite and survives.
+        // Rebound 2026-09-02 to the tokenized Basic Drop Shadow (a real
+        // box-shadow — the −4px spread is inexpressible as a filter, and the
+        // clip-eats-shadow claim was re-tested and is false).
         {
-          label: "shadow ships as filter drop-shadow (raw, unbound in Figma)",
+          label: "shadow is the tokenized Basic Drop Shadow (box-shadow, not filter)",
+          sel: ".dropdown-list",
+          get: "box-shadow",
+          contains: true,
+          expect: "24px",
+        },
+        {
+          label: "no filter shadow remains",
           sel: ".dropdown-list",
           get: "filter",
-          contains: true,
-          expect: "drop-shadow",
+          expect: "none",
         },
       ],
     },
@@ -2327,6 +2334,629 @@ export const SPECS = {
 
       // NOT ASSERTED: Error (no axis exists — none invented); disabled;
       // hover+focus (undrawn; focus wins by source order).
+    },
+  },
+
+  // ------------------------------------------------------------------- Modal
+  Modal: {
+    figma:
+      "Modal 557:5127 — Type {Destructive, Neutral, Success}, 480 wide, 308/196/308 (heights emergent, not pinned)",
+    variants: 3,
+    stories: {
+      "components-modal--destructive": [
+        { label: "card width 480 fixed", sel: ".modal", get: "width", expect: 480 },
+        { label: "card radius 12 (rounded-2xl override)", sel: ".modal", get: "border-radius", expect: "12px" },
+        {
+          label: "card ring is an inset shadow, not a border (content-driven height)",
+          sel: ".modal",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        {
+          label: "ring carries Stroke/Divider",
+          sel: ".modal",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "shadow is the tokenized Basic Drop Shadow (24px blur present)",
+          sel: ".modal",
+          get: "box-shadow",
+          contains: true,
+          expect: "24px",
+        },
+        { label: "card fill Paper", sel: ".modal", get: "background-color", expect: { token: "--color-surface-paper" } },
+        { label: "padding 28", sel: ".modal", get: "padding-top", expect: "28px" },
+        { label: "body gap 24", sel: ".modal", get: "row-gap", expect: "24px" },
+        { label: "modal z-60 (Library Contracts scale)", sel: ".modal", get: "z-index", expect: "60" },
+        {
+          label: "card height 308 — EMERGENT from the default-copy fixture (1-line title/desc, 2-line banner), not pinned CSS",
+          sel: ".modal",
+          get: "height",
+          expect: 308,
+        },
+        { label: "title 18px (raw — no token models 18/24/600; designer list)", sel: ".modal-title", get: "font-size", expect: "18px" },
+        { label: "title weight 600", sel: ".modal-title", get: "font-weight", expect: "600" },
+        {
+          label: "title wraps (Figma's nowrap overflow defect corrected)",
+          sel: ".modal-title",
+          get: "white-space",
+          expect: "normal",
+        },
+        { label: "description text-label 14", sel: ".modal-description", get: "font-size", expect: "14px" },
+        {
+          label: "description ink Secondary",
+          sel: ".modal-description",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        { label: "close composes the bare IconButton (md Icon Only, 18px)", sel: ".modal-header .icon-button", get: "width", expect: 18 },
+        { label: "notice radius 6", sel: ".modal-notice", get: "border-radius", expect: "6px" },
+        { label: "notice padding 16", sel: ".modal-notice", get: "padding-top", expect: "16px" },
+        {
+          label: "destructive fill Primary/BG (crimson tints, NOT the Error ramp — verbatim)",
+          sel: ".modal-notice-destructive",
+          get: "background-color",
+          expect: { token: "--color-primary-bg" },
+        },
+        {
+          label: "destructive ring Primary (inset shadow)",
+          sel: ".modal-notice-destructive",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "destructive ink Primary/Text (label+body inherit one currentColor)",
+          sel: ".modal-notice-destructive",
+          get: "color",
+          expect: { token: "--color-primary-text" },
+        },
+        { label: "notice label uppercase styled", sel: ".modal-notice-label", get: "text-transform", expect: "uppercase" },
+        { label: "actions gap 16", sel: ".modal-actions", get: "column-gap", expect: "16px" },
+        {
+          label: "actions row carries no pointer cursor (Figma defect excluded)",
+          sel: ".modal-actions",
+          get: "cursor",
+          expect: "auto",
+        },
+        { label: "composed Cancel is the shipped Secondary (48px)", sel: ".modal-actions .btn-secondary", get: "height", expect: 48 },
+        { label: "composed Confirm is the shipped Primary (48px)", sel: ".modal-actions .btn-primary", get: "height", expect: 48 },
+      ],
+      "components-modal--neutral": [
+        { label: "Neutral has NO notice (Type = banner presence, no boolean)", sel: ".modal-notice", absent: true },
+        {
+          label: "Neutral height 196 — emergent: 308 − 88 banner − 24 gap, exact",
+          sel: ".modal",
+          get: "height",
+          expect: 196,
+        },
+      ],
+      "components-modal--success": [
+        // Literal colours ON PURPOSE — these are raw, unbound hex in Figma
+        // (≠ the tokenized Success ramp); the one place literals are correct.
+        {
+          label: "success fill raw #f0fdf4 (unbound in Figma — designer list)",
+          sel: ".modal-notice-success",
+          get: "background-color",
+          expect: "rgb(240, 253, 244)",
+        },
+        {
+          label: "success ring raw #16a34a",
+          sel: ".modal-notice-success",
+          get: "box-shadow",
+          contains: true,
+          expect: "rgb(22, 163, 74)",
+        },
+        {
+          label: "success label ink raw #15803d (differs from body, unlike Destructive)",
+          sel: ".modal-notice-success .modal-notice-label",
+          get: "color",
+          expect: "rgb(21, 128, 61)",
+        },
+        {
+          label: "success body ink raw #166534",
+          sel: ".modal-notice-success .modal-notice-body",
+          get: "color",
+          expect: "rgb(22, 101, 52)",
+        },
+        { label: "Success height 308 (symmetric with Destructive)", sel: ".modal", get: "height", expect: 308 },
+      ],
+      "components-modal--with-backdrop": [
+        { label: "backdrop z-50 (Library Contracts scale)", sel: ".modal-backdrop", get: "z-index", expect: "50" },
+        {
+          label: "backdrop washes with Content/Primary at 45% (UNSOURCED — no scrim exists in Figma; designer list)",
+          sel: ".modal-backdrop",
+          get: "background-color",
+          contains: true,
+          expect: "0.45",
+        },
+      ],
+
+      // NOT ASSERTED: hover/focus/disabled on the card (none modelled — the
+      // composed IconButton/Buttons carry their own); the native <dialog>
+      // path (display:none until showModal(); exercised by the NativeDialog
+      // story's play wiring, not measurable statically).
+    },
+  },
+
+  // ----------------------------------------------------------------- Tooltip
+  Tooltip: {
+    figma: "tooltip 582:9178 — single symbol, no axes, 280×128 sample. First use of BG/Contrast + Field Label.",
+    variants: 1,
+    stories: {
+      "components-tooltip--with-title": [
+        {
+          label: "width 280 at the max (Figma sample copy fills it)",
+          sel: ".tooltip",
+          get: "width",
+          expect: 280,
+        },
+        { label: "radius 8 (rounded-lg)", sel: ".tooltip", get: "border-radius", expect: "8px" },
+        {
+          label: "fill the NEW BG/Contrast token",
+          sel: ".tooltip",
+          get: "background-color",
+          expect: { token: "--color-surface-contrast" },
+        },
+        {
+          label: "shadow is the tokenized Basic Drop Shadow",
+          sel: ".tooltip",
+          get: "box-shadow",
+          contains: true,
+          expect: "24px",
+        },
+        { label: "padding x 16", sel: ".tooltip", get: "padding-left", expect: "16px" },
+        { label: "padding y 12", sel: ".tooltip", get: "padding-top", expect: "12px" },
+        { label: "gap 8", sel: ".tooltip", get: "row-gap", expect: "8px" },
+        {
+          label: "title is Field Label 13/16/500 (the token's FIRST consumer)",
+          sel: ".tooltip-title",
+          get: "font-size",
+          expect: "13px",
+        },
+        { label: "title weight 500", sel: ".tooltip-title", get: "font-weight", expect: "500" },
+        {
+          label: "title ink Text/Hint (muted over the dark ground)",
+          sel: ".tooltip-title",
+          get: "color",
+          expect: { token: "--color-content-hint" },
+        },
+        {
+          label: "body text-body-content 13/16",
+          sel: ".tooltip-body",
+          get: "line-height",
+          expect: "16px",
+        },
+        {
+          label: "body ink Text/Contrast",
+          sel: ".tooltip-body",
+          get: "color",
+          expect: { token: "--color-content-contrast" },
+        },
+        {
+          label: "word-break authored",
+          sel: ".tooltip",
+          get: "word-break",
+          expect: "break-word",
+        },
+        { label: "no border", sel: ".tooltip", get: "border-top-width", expect: "0px" },
+      ],
+      "components-tooltip--short": [
+        {
+          label: "short content hugs under the 280 max (labeled library reading of the fixed sample frame)",
+          sel: ".tooltip",
+          get: "width",
+          not: true,
+          expect: 280,
+        },
+      ],
+
+      // NOT ASSERTED: arrow/caret, placement, states (none modelled — none
+      // invented); z-index (caller's stacking context).
+    },
+  },
+
+  // ------------------------------------------------------------------- Toast
+  Toast: {
+    figma:
+      "Toast 582:9325 — partial Type {success, error, info} × Style {Full, Simple}. First status-ramp bindings; 'error' binds Warning verbatim.",
+    variants: 4,
+    stories: {
+      // AllTypes order: 0 success · 1 error · 2 info
+      "components-toast--all-types": [
+        { label: "card radius 8", sel: ".toast", get: "border-radius", expect: "8px" },
+        {
+          label: "ring is an inset shadow, not a border (content-driven 66)",
+          sel: ".toast",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        {
+          label: "ring carries Stroke/Divider",
+          sel: ".toast",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "shadow is the tokenized Basic Drop Shadow",
+          sel: ".toast",
+          get: "box-shadow",
+          contains: true,
+          expect: "24px",
+        },
+        { label: "fill Paper", sel: ".toast", get: "background-color", expect: { token: "--color-surface-paper" } },
+        { label: "padding 16", sel: ".toast", get: "padding-top", expect: "16px" },
+        { label: "icon↔content gap 12", sel: ".toast", get: "column-gap", expect: "12px" },
+        { label: "title↔body gap 4", sel: ".toast-content", get: "row-gap", expect: "4px" },
+        {
+          label: "height 66 emergent (16+34+16, default copy single lines)",
+          sel: ".toast",
+          get: "height",
+          expect: 66,
+        },
+        { label: "toast z-70 (Library Contracts scale)", sel: ".toast", get: "z-index", expect: "70" },
+        { label: "status icon 18", sel: ".toast-icon", get: "width", expect: 18 },
+        {
+          label: "title Field Label 13 (the token's second consumer)",
+          sel: ".toast-title",
+          get: "font-size",
+          expect: "13px",
+        },
+        {
+          label: "title ink Text/Primary (constant across Types)",
+          sel: ".toast-title",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        { label: "body help-caption 12", sel: ".toast-body", get: "font-size", expect: "12px" },
+        {
+          label: "body ink Text/Secondary",
+          sel: ".toast-body",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "success icon Success/Base — the ramp's first binding",
+          sel: ".toast-success .toast-icon",
+          get: "color",
+          expect: { token: "--color-success" },
+        },
+        {
+          label: "'error' icon Warning/Base VERBATIM (the file-wide slip, sharpest instance)",
+          sel: ".toast-error .toast-icon",
+          get: "color",
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "info icon Info/Base — the ramp's first binding",
+          sel: ".toast-info .toast-icon",
+          get: "color",
+          expect: { token: "--color-info" },
+        },
+        {
+          label: "error title ink UNCHANGED (Type paints the icon only)",
+          sel: ".toast-title",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        { label: "close composes the bare IconButton (18px)", sel: ".toast .icon-button", get: "width", expect: 18 },
+      ],
+      "components-toast--simple": [
+        // rounded-full computes to calc(infinity*1px) — assert non-square
+        // like Avatar's circle check rather than pinning the clamped value.
+        { label: "pill is fully round", sel: ".toast-simple", get: "border-radius", not: true, expect: "0px" },
+        {
+          label: "pill ground BG/Contrast (the Tooltip's dark token)",
+          sel: ".toast-simple",
+          get: "background-color",
+          expect: { token: "--color-surface-contrast" },
+        },
+        { label: "pill height 36 (10+16+10, no ring)", sel: ".toast-simple", get: "height", expect: 36 },
+        { label: "pill padding x 16", sel: ".toast-simple", get: "padding-left", expect: "16px" },
+        { label: "pill padding y 10", sel: ".toast-simple", get: "padding-top", expect: "10px" },
+        { label: "pill gap 8", sel: ".toast-simple", get: "column-gap", expect: "8px" },
+        {
+          label: "pill text Content 13 in Text/Contrast",
+          sel: ".toast-simple",
+          get: "color",
+          expect: { token: "--color-content-contrast" },
+        },
+        {
+          label: "pill glyph authored 15px (off the icon grid — designer list)",
+          sel: ".toast-simple svg",
+          get: "width",
+          expect: 15,
+        },
+        {
+          label: "pill hugs (w-max — width grows with copy, no fixed 280)",
+          sel: ".toast-simple",
+          get: "width",
+          not: true,
+          expect: 280,
+        },
+      ],
+
+      // NOT ASSERTED: success/error Simple (undrawn — the Simple style is
+      // status-less, no ramp token binds it); hover/timers/positioning
+      // (consumer's); the whitespace-nowrap defect (corrected — wraps).
+    },
+  },
+
+  // ----------------------------------------------------------- StatusTracker
+  StatusTracker: {
+    figma: "Application Status 64:4623 — Active {no, yes}, 93×16. Ink swap only.",
+    variants: 2,
+    stories: {
+      // AllStates order: 0 active · 1 inactive
+      "components-statustracker--all-states": [
+        { label: "row 16 tall", sel: ".status-tracker", get: "height", expect: 16 },
+        { label: "gap 8", sel: ".status-tracker", get: "column-gap", expect: "8px" },
+        { label: "glyph 14 (IconButton sm-glyph size)", sel: ".status-tracker svg", get: "width", expect: 14 },
+        { label: "type Field Label 13", sel: ".status-tracker", get: "font-size", expect: "13px" },
+        {
+          label: "active ink Text/Primary",
+          sel: ".status-tracker",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "inactive ink Text/Tertiary (the whole Active axis)",
+          sel: ".status-tracker",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+      ],
+
+      // NOT ASSERTED: hover/focus (not interactive in Figma), connectors
+      // (none modelled).
+    },
+  },
+
+  // ------------------------------------------------------------------ Action
+  Action: {
+    figma: "Action 71:848 — Pending / rest / Done, 720×84. Done binds Success/Text.",
+    variants: 3,
+    stories: {
+      // AllStates order: 0 done · 1 rest · 2 pending
+      "components-action--all-states": [
+        { label: "row fill Paper", sel: ".action", get: "background-color", expect: { token: "--color-surface-paper" } },
+        { label: "row padding 20", sel: ".action", get: "padding-top", expect: "20px" },
+        { label: "row gap 16", sel: ".action", get: "column-gap", expect: "16px" },
+        { label: "row height 84 emergent (20+44+20)", sel: ".action", get: "height", expect: 84 },
+        {
+          label: "hairline is an inset shadow (OwnerContainer pattern)",
+          sel: ".action",
+          get: "border-bottom-width",
+          expect: "0px",
+        },
+        {
+          label: "hairline carries Stroke/Divider",
+          sel: ".action",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        { label: "leading icon 18", sel: ".action-icon", get: "width", expect: 18 },
+        {
+          label: "icon ink Text/Secondary (constant)",
+          sel: ".action-icon",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        { label: "title title-medium 16", sel: ".action-title", get: "font-size", expect: "16px" },
+        {
+          label: "done title DEMOTED to Secondary",
+          sel: ".action-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "rest title Text/Primary (the actionable row is prominent)",
+          sel: ".action-title",
+          nth: 1,
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "description body-content 13 in Tertiary",
+          sel: ".action-description",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        { label: "status chip 34 pinned", sel: ".action-status", get: "height", expect: 34 },
+        { label: "chip glyph 12", sel: ".action-status svg", get: "width", expect: 12 },
+        { label: "chip type micro-label 9", sel: ".action-status", get: "font-size", expect: "9px" },
+        { label: "chip uppercase styled", sel: ".action-status", get: "text-transform", expect: "uppercase" },
+        {
+          label: "DONE chip Success/Text — status-ramp adoption",
+          sel: ".action-done .action-status",
+          get: "color",
+          expect: { token: "--color-success-text" },
+        },
+        {
+          label: "PENDING chip Text/Hint",
+          sel: ".action-pending .action-status",
+          get: "color",
+          expect: { token: "--color-content-hint" },
+        },
+        { label: "CTA 34 pinned", sel: ".action-cta", get: "height", expect: 34 },
+        { label: "CTA border 1px Stroke/Divider", sel: ".action-cta", get: "border-top-color", expect: { token: "--color-stroke-divider" } },
+        { label: "CTA label Field Label 13", sel: ".action-cta", get: "font-size", expect: "13px" },
+        {
+          label: "CTA ink Text/Primary",
+          sel: ".action-cta",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        { label: "CTA arrow 18", sel: ".action-cta svg", get: "width", expect: 18 },
+      ],
+      "components-action--with-badge": [
+        { label: "badge boolean composes the shipped Badge (16px pill)", sel: ".action .badge", get: "height", expect: 16 },
+      ],
+
+      // NOT ASSERTED: hover/pressed (none drawn, none invented — only the
+      // CTA is interactive and it gets the library focus-ring); disabled;
+      // the misnamed "AttachMoneyRounded" arrow layer (ships #arrow-right).
+    },
+  },
+
+  // ----------------------------------------------------------- UtilityButton
+  UtilityButton: {
+    figma:
+      "Button / Utility 24:4382 — 18 variants, partial Size {MD, SM} × Type {Empty, Filled, Rounded, Text} × Hover × Pressed",
+    variants: 18,
+    stories: {
+      // AllTypes order: 0 empty · 1 filled · 2 rounded · 3 text
+      "components-utilitybutton--all-types": [
+        { label: "SM height 34", sel: ".utility-button-empty", get: "height", expect: 34 },
+        { label: "radius 4", sel: ".utility-button-empty", get: "border-radius", expect: "4px" },
+        { label: "px 12", sel: ".utility-button-empty", get: "padding-left", expect: "12px" },
+        { label: "gap 8", sel: ".utility-button-empty", get: "column-gap", expect: "8px" },
+        { label: "label Field Label 13", sel: ".utility-button-empty", get: "font-size", expect: "13px" },
+        {
+          label: "natural case — never the Standard set's uppercase",
+          sel: ".utility-button-empty",
+          get: "text-transform",
+          expect: "none",
+        },
+        { label: "icon slot 18", sel: ".utility-button-empty svg", get: "width", expect: 18 },
+        // Empty
+        {
+          label: "empty rest fill Paper",
+          sel: ".utility-button-empty",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "empty rest border Stroke/Divider",
+          sel: ".utility-button-empty",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "empty rest ink Secondary",
+          sel: ".utility-button-empty",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "empty hover fill Action/Hover (Paper drops)",
+          sel: ".utility-button-empty",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-action-hover" },
+        },
+        {
+          label: "empty hover border DROPS to transparent (pixel-proven rest-only border)",
+          sel: ".utility-button-empty",
+          get: "border-top-color",
+          hover: true,
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "empty hover ink Primary",
+          sel: ".utility-button-empty",
+          get: "color",
+          hover: true,
+          expect: { token: "--color-content-primary" },
+        },
+        // Filled
+        {
+          label: "filled rest Primary",
+          sel: ".utility-button-filled",
+          get: "background-color",
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "filled ink Contrast (never fades)",
+          sel: ".utility-button-filled",
+          get: "color",
+          expect: { token: "--color-content-contrast" },
+        },
+        {
+          label: "filled hover Primary/Hover",
+          sel: ".utility-button-filled",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-primary-hover" },
+        },
+        {
+          label: "filled has no border",
+          sel: ".utility-button-filled",
+          get: "border-top-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        // Rounded
+        {
+          label: "rounded is a pill",
+          sel: ".utility-button-rounded",
+          get: "border-radius",
+          not: true,
+          expect: "4px",
+        },
+        {
+          label: "rounded rest paints NOTHING (ghost)",
+          sel: ".utility-button-rounded",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "rounded rest has no border (never, unlike empty)",
+          sel: ".utility-button-rounded",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        {
+          label: "rounded hover wash Action/Hover",
+          sel: ".utility-button-rounded",
+          get: "background-color",
+          hover: true,
+          expect: { token: "--color-action-hover" },
+        },
+        // Text
+        { label: "text row 16", sel: ".utility-button-text", get: "height", expect: 16 },
+        {
+          label: "text type Content 13/400",
+          sel: ".utility-button-text",
+          get: "font-weight",
+          expect: "400",
+        },
+        {
+          label: "text rest ink Tertiary (the raw #6f7276 IS this token's value)",
+          sel: ".utility-button-text",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label: "text always underlined",
+          sel: ".utility-button-text",
+          get: "text-decoration-line",
+          expect: "underline",
+        },
+        {
+          label: "text hover ink Primary (hover = pressed, byte-identical variants)",
+          sel: ".utility-button-text",
+          get: "color",
+          hover: true,
+          expect: { token: "--color-content-primary" },
+        },
+        { label: "text glyph 16", sel: ".utility-button-text svg", get: "width", expect: 16 },
+        { label: "text has no box", sel: ".utility-button-text", get: "padding-left", expect: "0px" },
+      ],
+      "components-utilitybutton--medium-empty": [
+        { label: "MD height 54", sel: ".utility-button-md", get: "height", expect: 54 },
+        { label: "MD px 16", sel: ".utility-button-md", get: "padding-left", expect: "16px" },
+      ],
+
+      // NOT ASSERTED: pressed fills (the harness cannot hold :active —
+      // pinned from the variable diff: Action/Pressed washes, Primary/Focus
+      // for filled); disabled (no axis — cursor only); MD Filled/Rounded
+      // (undrawn); the Text Size axis (unwired in Figma, 0-pixel diff).
     },
   },
 };

@@ -1,0 +1,124 @@
+/**
+ * Toast Component
+ *
+ * Transient floating notification (Figma's own description: "brief status
+ * feedback"). Extracted (inline fast-path) from Figma Toast (582:9325) — 4
+ * variants on a PARTIAL Type {success, error, info} × Style {Full, Simple}
+ * matrix: Full exists for all three Types, Simple only as info.
+ *
+ * TWO SHAPES, NOT ONE AT TWO SIZES:
+ *
+ *   FULL — a Paper card (356×66 sample; width is the caller's):
+ *   <div class="toast toast-success" role="status">
+ *     <svg class="toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
+ *     <div class="toast-content">
+ *       <span class="toast-title">Document request sent</span>
+ *       <span class="toast-body">Client has been notified to upload their W-9.</span>
+ *     </div>
+ *     <button class="icon-button" aria-label="Dismiss">
+ *       <svg aria-hidden="true"><use href="#x" /></svg>
+ *     </button>
+ *   </div>
+ *
+ *   SIMPLE — a dark BG/Contrast full-radius pill (280×36 sample), STATUS-LESS:
+ *   <div class="toast-simple" role="status">
+ *     <svg aria-hidden="true"><use href="#check" /></svg>
+ *     Template Saved
+ *   </div>
+ *
+ * THE STATUS RAMPS FINALLY BIND — success → Success/Base, info → Info/Base
+ * — BUT THE "error" TYPE BINDS Warning/Base (amber), VERBATIM. This is now
+ * the sharpest instance of the file-wide slip: the sibling variants prove
+ * the designer wires ramps deliberately, and the Type literally named
+ * "error" still gets amber. .toast-error paints text-warning faithfully;
+ * rebind when the designer does. Top designer-list item.
+ *
+ * The Type class paints ONLY the status icon (title/body inks are constant
+ * Text/Primary / Text/Secondary); the icon is a caller slot — pass the
+ * matching glyph (#circle-check / #circle-alert / #info). The close is the
+ * composed bare .icon-button (Figma's close master is the same misnamed
+ * "ChevronLeft"-renders-X duplicate as Modal's — designer list).
+ *
+ * THE FULL CARD'S RING IS AN INSET BOX-SHADOW sharing one declaration with
+ * --shadow-basic (Modal precedent): the 1px Stroke/Divider is an inside
+ * stroke on a CONTENT-DRIVEN height (16+34+16 = 66 exact; a border renders
+ * 68). Toasts grow with copy — Figma's whitespace-nowrap on the text layers
+ * is the Modal-title defect again, corrected: text wraps.
+ *
+ * SIMPLE'S TYPE AXIS IS MEANINGLESS — no status token binds it and only
+ * info is drawn; it ships as one status-less class. Its glyph is authored
+ * 15px (off the icon grid — designer list) and its text is Content 13/16 in
+ * Text/Contrast on the Tooltip's BG/Contrast ground.
+ *
+ * Both carry z-70 (Library Contracts: toast layer). Positioning, stacking,
+ * timers and dismissal are the consumer's — the library ships no JS. Use
+ * role="status" (polite) for confirmations; role="alert" for failures.
+ *
+ * Not modelled, not invented: success/error Simple variants, hover/states,
+ * progress bars, action links.
+ */
+
+@layer components {
+  /* --- Full ----------------------------------------------------------------- */
+
+  .toast {
+    @apply z-70 flex w-full items-start gap-3 rounded-lg bg-surface-paper p-4;
+    /* 1px inside ring (content-driven height — a border would render 68,
+       not the drawn 66) + the tokenized Basic Drop Shadow. */
+    box-shadow:
+      inset 0 0 0 1px var(--color-stroke-divider),
+      var(--shadow-basic);
+  }
+
+  /* Status icon — a caller slot, painted by the Type class below. */
+  .toast-icon {
+    @apply size-4.5 shrink-0; /* 18px */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .toast-content {
+    @apply flex min-w-0 flex-1 flex-col gap-1;
+  }
+
+  /* Field Label type — its second consumer (after the Tooltip title). */
+  .toast-title {
+    @apply text-field-label text-content-primary;
+  }
+
+  .toast-body {
+    @apply text-help-caption text-content-secondary;
+  }
+
+  /* Type paints the ICON only (inks are constant across Types). */
+  .toast-success .toast-icon {
+    @apply text-success;
+  }
+  /* VERBATIM: Figma's "error" Type binds Warning/Base (amber), not the
+     Error ramp — the file-wide slip; rebind when the designer does. */
+  .toast-error .toast-icon {
+    @apply text-warning;
+  }
+  .toast-info .toast-icon {
+    @apply text-info;
+  }
+
+  /* --- Simple (status-less dark pill) ---------------------------------------- */
+
+  .toast-simple {
+    @apply z-70 flex w-max items-center justify-center gap-2 rounded-full px-4 py-2.5;
+    @apply bg-surface-contrast text-body-content text-content-contrast shadow-basic;
+  }
+
+  .toast-simple svg {
+    @apply size-[15px] shrink-0; /* authored 15px, off the icon grid — designer list */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+}

@@ -408,6 +408,11 @@ const SHADOW_NAMES = {
   // Short App: the focus ring is authored as a spread-only drop shadow
   // (offset 0/0, blur 0, spread 3, Primary/Ring at 22% alpha).
   "Primary Ring": "focus-ring",
+  // Overlay elevation (Modal, DropdownList) — added 2026-09-02 with the
+  // Modal. The −4 spread means filter: drop-shadow() CANNOT express it;
+  // consume via box-shadow (the shadow-basic utility). Its color is raw
+  // in Figma (bound to no color variable) — tokenized here.
+  "Basic Drop Shadow": "basic",
   // Dashboard-era names, kept harmlessly for reference; absent from the
   // Short App tokens so they emit nothing.
   "General Drop Shadow": "panel",

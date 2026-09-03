@@ -1,0 +1,145 @@
+/**
+ * UtilityButton Component
+ *
+ * The non-inline / special-use button family. Extracted from Figma
+ * Button / Utility (24:4382) — 18 variants on a PARTIAL Size {MD, SM} ×
+ * Type {Empty, Filled, Rounded, Text} × Hover × Pressed matrix (MD exists
+ * only for Empty and Text; the Text "MD" is byte-identical to SM — 0/1376
+ * pixel diff, an unwired axis).
+ *
+ * SIBLING OF, NOT A SKIN ON, Button / Standard (1:218): a deliberately
+ * different label convention — Field Label 13/500 natural case (Text type:
+ * Content 13/400), never the Standard set's uppercase Button Label.
+ *
+ *   <button class="utility-button utility-button-empty">
+ *     <svg aria-hidden="true"><use href="#dollar-sign" /></svg>
+ *     Add Funds
+ *   </button>
+ *
+ * BASE + A TYPE CLASS IS REQUIRED (Figma names no default — the Standard
+ * button's rule). SM (34px) is the bare default — the only size all four
+ * types share; `.utility-button-md` (54px) exists for Empty per Figma
+ * (documented, not enforced). MD's authored w-214 is the sample-hug trap
+ * (Standard's 239 precedent) — width is the caller's.
+ *
+ * | type      | box                                   | rest → hover → pressed |
+ * | -empty    | Paper + 1px Stroke/Divider border, 4px | ink Secondary → Primary (hover = pressed ink); fill Paper → Action/Hover → Action/Pressed |
+ * | -filled   | solid, 4px, no border                  | fill Primary → Primary/Hover → Primary/Focus; white ink never fades |
+ * | -rounded  | ghost pill (no border ever)            | fill none → Action/Hover → Action/Pressed; ink Secondary → Primary |
+ * | -text     | no box, 16px row, ALWAYS underlined    | ink Tertiary → Primary (hover = pressed, byte-identical variants) |
+ *
+ * THE EMPTY BORDER IS REST-ONLY — pixel-proven: at hover/pressed the Paper
+ * fill AND the border both drop, and the Action wash composites directly
+ * over the page (the wash hexes solve over white, not Paper; the hover/
+ * pressed variants' Stroke/Divider binding is a dedup ghost). Shipped as
+ * border-color: transparent at hover/pressed so the border-box geometry
+ * never shifts. Designer list.
+ *
+ * TEXT TYPE'S REST INK: the Figma node stacks a bound Text/Secondary under
+ * a raw #6f7276 override that wins — and #6f7276 IS Text/Tertiary's value
+ * (also bound on the node). Shipped as text-content-tertiary; the
+ * stacked-ink authoring is on the designer list. Hover and pressed are
+ * byte-identical (Text/Primary) — one rule, the Micro-button pattern.
+ *
+ * `Primary/Focus` is again Figma's literal name for a PRESSED fill — wired
+ * to :active, never :focus-visible (Button/Checkbox precedent).
+ *
+ * Icon slots: plain svg children (18px; 16px in Text), painted by the
+ * button's currentColor so they ride the ink ramps. Figma's trailing glyph
+ * layer is named "AttachMoneyRounded" (the naming-lies family) and hidden
+ * by default in the box types; the Text type's trailing chevron defaults ON.
+ *
+ * Not modelled, not invented: disabled/inactive (unlike Standard — cursor
+ * only), focus (library focus-ring), MD Filled/Rounded, hover+pressed
+ * compounds.
+ */
+
+@layer components {
+  .utility-button {
+    @apply inline-flex h-[34px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-sm px-3;
+    @apply m-0 border border-transparent bg-transparent p-0 px-3;
+    @apply text-field-label text-content-secondary;
+    transition:
+      color 150ms,
+      background-color 150ms,
+      border-color 150ms;
+  }
+
+  /* Icon slots — painted by the button, riding the ink ramp. */
+  .utility-button svg {
+    @apply size-4.5 shrink-0; /* 18px */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* --- Size (MD exists for Empty in Figma; Text's Size axis is unwired) --- */
+
+  .utility-button-md {
+    @apply h-[54px] px-4;
+  }
+
+  /* --- Empty: bordered Paper box; border is REST-ONLY (pixel-proven) ------- */
+
+  .utility-button-empty {
+    @apply border-stroke-divider bg-surface-paper;
+  }
+  .utility-button-empty:hover:not(:disabled) {
+    @apply border-transparent bg-action-hover text-content-primary;
+  }
+  .utility-button-empty:active:not(:disabled) {
+    @apply border-transparent bg-action-pressed text-content-primary;
+  }
+
+  /* --- Filled: the Primary ramp; white ink never fades ---------------------- */
+
+  .utility-button-filled {
+    @apply bg-primary text-content-contrast;
+  }
+  .utility-button-filled:hover:not(:disabled) {
+    @apply bg-primary-hover;
+  }
+  /* Primary/Focus = Figma's literal name for the pressed fill. */
+  .utility-button-filled:active:not(:disabled) {
+    @apply bg-primary-focus;
+  }
+
+  /* --- Rounded: ghost pill, no border in any state --------------------------- */
+
+  .utility-button-rounded {
+    @apply rounded-full border-0;
+  }
+  .utility-button-rounded:hover:not(:disabled) {
+    @apply bg-action-hover text-content-primary;
+  }
+  .utility-button-rounded:active:not(:disabled) {
+    @apply bg-action-pressed text-content-primary;
+  }
+
+  /* --- Text: bare underlined row (16px); hover = pressed ---------------------- */
+
+  .utility-button-text {
+    @apply h-4 gap-1 rounded-none border-0 px-0 underline;
+    @apply text-body-content text-content-tertiary;
+    text-decoration-thickness: from-font;
+  }
+  .utility-button-text svg {
+    @apply size-4; /* 16px trailing chevron, default-on in Figma */
+  }
+  .utility-button-text:hover:not(:disabled),
+  .utility-button-text:active:not(:disabled) {
+    @apply text-content-primary;
+  }
+
+  /* --- Shared -------------------------------------------------------------- */
+
+  .utility-button:focus-visible {
+    @apply focus-ring;
+  }
+
+  .utility-button:disabled {
+    @apply cursor-not-allowed;
+  }
+}

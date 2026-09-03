@@ -106,5 +106,58 @@ export type TextAreaClass =
   | "text-area-input"
   | "text-area-hint";
 
+// Modal component classes
+export type ModalClass =
+  | "modal"
+  | "modal-header"
+  | "modal-title"
+  | "modal-description"
+  | "modal-notice"
+  | "modal-notice-destructive"
+  | "modal-notice-success"
+  | "modal-notice-label"
+  | "modal-notice-body"
+  | "modal-actions"
+  | "modal-backdrop";
+
+// Tooltip component classes
+export type TooltipClass = "tooltip" | "tooltip-title" | "tooltip-body";
+
+// Toast component classes
+export type ToastClass =
+  | "toast"
+  | "toast-success"
+  | "toast-error"
+  | "toast-info"
+  | "toast-icon"
+  | "toast-content"
+  | "toast-title"
+  | "toast-body"
+  | "toast-simple";
+
+// StatusTracker component classes
+export type StatusTrackerClass = "status-tracker" | "status-tracker-active";
+
+// Action component classes
+export type ActionClass =
+  | "action"
+  | "action-pending"
+  | "action-done"
+  | "action-icon"
+  | "action-content"
+  | "action-title"
+  | "action-description"
+  | "action-status"
+  | "action-cta";
+
+// UtilityButton component classes
+export type UtilityButtonClass =
+  | "utility-button"
+  | "utility-button-empty"
+  | "utility-button-filled"
+  | "utility-button-rounded"
+  | "utility-button-text"
+  | "utility-button-md";
+
 // Union of all component classes
-export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass | TabsClass | HeaderClass | RadioFieldClass | SkeletonClass | OwnerClass | OwnerContainerClass | TextFieldClass | DropdownFieldClass | TextAreaClass;
+export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass | TabsClass | HeaderClass | RadioFieldClass | SkeletonClass | OwnerClass | OwnerContainerClass | TextFieldClass | DropdownFieldClass | TextAreaClass | ModalClass | TooltipClass | ToastClass | StatusTrackerClass | ActionClass | UtilityButtonClass;
