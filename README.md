@@ -146,12 +146,13 @@ Completed:
 - ✅ 27 components with visual specs (603 assertions), a11y scans, and
   static/bundle gates — all running in CI
 - ✅ Published to npm as `@valiify/shortapp-ui`
+- ✅ Chromatic visual regression in CI; tag-driven release workflow with
+  npm provenance and a real-consumer packaging smoke test
 
 Next steps:
 
 - ⏳ Remaining Figma sets: Address Super entry, Layer field, Disclaimer
   container, User
-- ⏳ Chromatic visual regression (after the full library is complete)
 - ⏳ Storybook deployment
 
 ## Architecture
@@ -160,6 +161,19 @@ Next steps:
 - **Tailwind v4 `@theme`** — tokens generate utilities automatically
 - **Framework-agnostic** — works with React, Vue, Svelte, vanilla HTML
 - **Verified** — every component carries a visual spec asserted against Figma
+
+## Releasing
+
+Releases are tag-driven. After merging to a green main:
+
+1. Cut the CHANGELOG: retitle `[Unreleased]` to the new version + date.
+2. `npm version patch` (or `minor`) — bumps package.json and creates the tag.
+3. `git push origin main --follow-tags`.
+
+The Release workflow re-runs the fast gates plus the packaging smoke test
+(`npm run verify:package` — the real tarball in a real Vite consumer build,
+both entry points), then publishes to npm with provenance. Requires the
+`NPM_TOKEN` repo secret.
 
 ## Links
 

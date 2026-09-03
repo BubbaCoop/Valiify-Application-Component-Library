@@ -7,7 +7,23 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
-_Nothing yet._
+### Added
+
+- **2026-09-02** — Deployment hardening: `verify:package` packaging smoke
+  test (packs the real tarball, installs it into a scratch Vite app, builds
+  both entry points, and asserts the two-entry contract — token utilities
+  present via `/source`, absent via prebuilt), wired into CI; tag-driven
+  Release workflow (`npm version` + push tag → gated publish with npm
+  provenance, requires the `NPM_TOKEN` secret); Chromatic in CI
+  (`CHROMATIC_PROJECT_TOKEN` secret, reuses the CI Storybook build).
+
+### Fixed
+
+- **2026-09-02** — Example starters carried the dashboard-era
+  `--color-surface-frame` dead token (the base-layer bug's surviving
+  sibling) and a JetBrains Mono font import; the vite-starter's setup check
+  is now a component sampler built from the shipped library classes, and
+  all "component set not yet extracted" copy is gone.
 
 ## [0.1.1] — 2026-09-02
 
