@@ -15,16 +15,18 @@ MCP for adjacent-frame names if needed).
 
 Write <run-dir>/03-requirements.md covering:
 
-1. Purpose & audience — what this page is for; reviewer-facing or
-   applicant-facing (this selects the design language register).
+1. Purpose & audience — what this page is for; applicant-facing (the
+   Short App application flow — fields, cards, actions) or portal/
+   reviewer-facing (the Portal Specific set: StatusTracker, Action,
+   UtilityButton). This selects which component families apply.
 2. Navigation — every outbound connection: trigger element → destination,
    from prototype links and the writeup.
 3. States — conditional/empty/error states described in annotations or
    writeup (e.g. KYC match/unverified/mismatch/N-A), and which state the
    static design depicts.
 4. Data semantics — which fields are verifiable data (IDs, amounts,
-   percentages) → JetBrains Mono + tabular-nums per the design system;
-   which are labels/UI → Inter.
+   percentages) → tabular-nums (the Short App system is Inter-only; no
+   mono register exists); which are labels/UI → the token text styles.
 5. Writeup-only requirements — anything required that the static design
    does not show.
 6. Open questions — every contradiction between the writeup and the Figma,

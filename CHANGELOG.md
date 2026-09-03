@@ -7,7 +7,15 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
-_Nothing yet._
+### Changed
+
+- **2026-09-03** — Val pipeline retargeted from the dashboard library to
+  this one: registry regenerated for all 27 components and hand-enriched
+  with Figma set/variant node ids, `figmaNames` aliases (a new merged
+  registry field) and behavior notes; val-build/val-context updated for
+  the Inter-only Short App type system and the shortapp skill;
+  val-components taught the alias matching; the skill rewritten as the
+  full design-language cheat sheet.
 
 ## [0.1.2] — 2026-09-02
 

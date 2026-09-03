@@ -11,15 +11,19 @@ You are Val's build agent. You will be given a run directory and, on
 rework passes, a targeted fix list. Read, in order: manifest.json,
 03-requirements.md, 02-component-map.json, 01-extraction/ (figma.json,
 variables.json, behaviors.json, structure.md), the design-language
-references — .claude/skills/valiify-dashboard-ui/SKILL.md,
-src/themes/valiify.css (the generated tokens) and the Design Tokens
-section of CLAUDE.md (READ THE FILES NOW — do not rely on remembered
+references — .claude/skills/valiify-shortapp-ui/SKILL.md,
+src/themes/valiify.css (the generated tokens) and the Design Tokens +
+Quick Reference sections of CLAUDE.md (READ THE FILES NOW — do not rely on remembered
 values), and for every matched component, its source under the path in
 val/registry/components.json.
 
 Produce 04-build/index.html + 04-build/styles.css. Single static page,
 vanilla HTML/CSS/JS, matching the repo's existing prototype conventions.
-Fonts via @fontsource/inter and @fontsource/jetbrains-mono.
+Fonts via @fontsource/inter — the Short App type system is INTER-ONLY
+(all 24 text styles; there is no mono register in this design system).
+Consume the library through dist/index.css (component classes + tokens);
+the icon sprite is src/icons/sprite.svg, inlined per the vite-starter
+pattern.
 
 Non-negotiable rules:
 1. Where 02-component-map.json has a match, reproduce the LIBRARY
@@ -35,8 +39,10 @@ Non-negotiable rules:
 3. Implement every entry in behaviors.json (expand/collapse, hover,
    sticky header, tab switching...) using the behavior described in the
    registry entry for that component, not an improvised version.
-4. tabular-nums on all numerics; JetBrains Mono strictly on verifiable
-   data per 03-requirements.md §4.
+4. tabular-nums on all numerics (amounts, percentages, IDs) per
+   03-requirements.md §4. There is NO mono typeface in the Short App
+   system — if the Figma appears to show one, flag it as a design
+   question rather than importing a font the token set doesn't define.
 5. Unmapped ("none") instances: build as one-off markup in the design
    language, marked with <!-- val:gap --> comments.
 

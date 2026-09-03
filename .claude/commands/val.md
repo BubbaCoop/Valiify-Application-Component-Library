@@ -21,8 +21,10 @@ route. You are the only participant who sees every handoff; act like it.
    { "runId", "input": { "figmaUrl", "exportScale": 2, "frame": null },
      "gates": [], "reworkCount": 0,
      "final": { "accuracy": null, "qaPass": null, "signedOff": false } }
-4. If val/registry/components.json is missing, run
-   node val/registry/generate-registry.mjs first.
+4. If val/registry/components.json is missing, OR older than the newest
+   file in stories/components/, run
+   node val/registry/generate-registry.mjs first (hand-added figmaNodeIds,
+   figmaNames, behaviors and tokens survive regeneration).
 
 ## Pipeline
 Invoke, in order (2 and 3 may run after 1 in either order):
