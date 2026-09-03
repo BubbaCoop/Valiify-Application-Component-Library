@@ -7,6 +7,10 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.1.2] — 2026-09-02
+
 ### Added
 
 - **2026-09-02** — Deployment hardening: `verify:package` packaging smoke
