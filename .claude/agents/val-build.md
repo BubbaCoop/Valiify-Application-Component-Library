@@ -44,7 +44,21 @@ Non-negotiable rules:
    system — if the Figma appears to show one, flag it as a design
    question rather than importing a font the token set doesn't define.
 5. Unmapped ("none") instances: build as one-off markup in the design
-   language, marked with <!-- val:gap --> comments.
+   language, marked with <!-- val:gap --> comments — PROVIDED the design
+   shows you what to build. A gap is markup you can see; a QUESTION is
+   content you would have to invent.
+6. NEVER INVENT UNSEEN CONTENT. If implementing any element requires
+   information that exists in neither the extraction, the requirements,
+   nor the component registry — the inside of an expanded area no frame
+   depicts, a state the writeup names but nothing shows, a variant choice
+   nothing determines — do NOT improvise it. Write each such item to
+   04-build/questions.md in the clarification format (Q / NEEDED-FOR /
+   CHECKED / COST-OF-GUESSING / ACCEPTABLE-ANSWER), build everything that
+   IS determined (leave a clearly-marked <!-- val:awaiting-answer -->
+   placeholder region sized from the frame geometry), and report BLOCKED
+   so the orchestrator can ask the requester. Requirements §6 should have
+   caught these at Gate 3 — reaching this rule means one slipped through;
+   say so in questions.md so Gate 3's checklist can improve.
 
 Self-check before finishing: walk 02-component-map.json top to bottom and
 confirm each mapped instance appears in the HTML with the right variant
@@ -70,5 +84,5 @@ your self-check then flags. Do not refactor passing regions.
 Definition of done: page opens with zero console errors; self-check.md is
 all ✓.
 
-End with exactly one line:
-BUILD: OK | COMPONENTS: <n> | BEHAVIORS-WIRED: <n> | GAPS: <n>
+End with exactly one line — BLOCKED when questions.md is non-empty:
+BUILD: OK|BLOCKED | COMPONENTS: <n> | BEHAVIORS-WIRED: <n> | GAPS: <n> | QUESTIONS: <n>
