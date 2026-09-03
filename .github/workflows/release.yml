@@ -1,17 +1,21 @@
-# Tag-driven npm publish. Push a version tag and the release ships itself:
+# Tag-driven RELEASE VERIFICATION. Publishing is done LOCALLY (decision
+# 2026-09-03): npm requires interactive 2FA for this account's writes, so
+# CI publish needs the package's npmjs.com "Trusted Publisher" form filled
+# in (owner BubbaCoop, repo Valiify-Application-Component-Library, workflow
+# release.yml) — until someone does that one-time config, the local ritual
+# is the release path:
 #
-#   npm version patch            # bumps package.json + creates the tag
-#   git push origin main --follow-tags
+#   # on a green, merged main:
+#   <cut CHANGELOG [Unreleased] -> [x.y.z]>; git commit
+#   npm version patch                      # bumps + tags
+#   npm publish                            # browser 2FA prompt, local only
+#   git push origin main --follow-tags     # triggers this verification
+#   npm run restore-examples               # undo prepack's example rewrite
 #
-# Auth: npm TRUSTED PUBLISHING — npmjs.com is configured to trust this
-# repo + workflow via OIDC, so there is no token and no secret to rotate.
-# Publishes with npm provenance, which cryptographically links the package
-# to this repo + workflow run.
-#
-# The full verification battery (visual/a11y/static/bundle) runs on the
-# branch push via ci.yml; this workflow re-runs the fast gates plus the
-# packaging smoke test, then publishes. The tag's version must match
-# package.json — mismatches fail before publish.
+# This workflow gates every tag: version-match + fast gates + the packaging
+# smoke test. TO RE-ENABLE CI PUBLISHING: fill in the Trusted Publisher
+# form on npmjs.com, then restore the publish step documented at the bottom
+# of this file.
 
 name: Release
 
@@ -66,10 +70,10 @@ jobs:
       - name: verify:package
         run: npm run verify:package
 
-      # Auth is npm TRUSTED PUBLISHING (OIDC via id-token: write above) — no
-      # token, no secret. Configured on npmjs.com under the package's
-      # Trusted Publisher settings (this repo + this workflow filename).
-      # A token here would take precedence and reintroduce the EOTP 2FA
-      # failure that killed Release #1.
-      - name: publish
-        run: npm publish --provenance
+      # Publishing happens LOCALLY (see header). To re-enable CI publishing
+      # after configuring the npmjs.com Trusted Publisher, replace this step
+      # with:
+      #   - name: publish
+      #     run: npm publish --provenance
+      - name: release verified (publish is local — see workflow header)
+        run: echo "All release gates passed for ${GITHUB_REF_NAME}. Publish locally with npm publish."

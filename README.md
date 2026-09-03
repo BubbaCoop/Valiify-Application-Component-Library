@@ -166,14 +166,17 @@ Next steps:
 
 Releases are tag-driven. After merging to a green main:
 
-1. Cut the CHANGELOG: retitle `[Unreleased]` to the new version + date.
+1. Cut the CHANGELOG: retitle `[Unreleased]` to the new version + date; commit.
 2. `npm version patch` (or `minor`) — bumps package.json and creates the tag.
-3. `git push origin main --follow-tags`.
+3. `npm publish` — the browser 2FA prompt makes this a local step.
+4. `git push origin main --follow-tags`, then `npm run restore-examples`.
 
-The Release workflow re-runs the fast gates plus the packaging smoke test
-(`npm run verify:package` — the real tarball in a real Vite consumer build,
-both entry points), then publishes to npm with provenance via **trusted
-publishing** (OIDC — no token, configured in the package's npm settings).
+Publishing is done **locally** (`npm publish`, with the browser 2FA prompt);
+the tag push triggers the Release workflow as a verification gate — it
+re-runs the fast gates plus the packaging smoke test (`npm run
+verify:package` — the real tarball in a real Vite consumer build, both
+entry points). CI publishing can be enabled later via npm Trusted
+Publishing; see the notes in `.github/workflows/release.yml`.
 
 ## Links
 
