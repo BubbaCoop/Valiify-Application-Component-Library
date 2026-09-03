@@ -42,6 +42,11 @@ jobs:
       - name: verify:bundle
         run: npm run verify:bundle
 
+      # The packed tarball in a real consumer Vite build (both entry points).
+      # Catches exports-map/files-whitelist breakage nothing else can see.
+      - name: verify:package
+        run: npm run verify:package
+
       - name: audit
         run: npm run audit
 

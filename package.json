@@ -45,7 +45,8 @@
     "verify:a11y": "node scripts/a11y-scan.mjs",
     "audit": "node scripts/audit-components.mjs",
     "chromatic": "chromatic",
-    "verify:bundle": "node scripts/verify-bundle.mjs"
+    "verify:bundle": "node scripts/verify-bundle.mjs",
+    "verify:package": "node scripts/verify-package.mjs"
   },
   "keywords": [
     "tailwind",
@@ -91,5 +92,9 @@
   },
   "peerDependencies": {
     "tailwindcss": ">=4.0.0"
+  },
+  "homepage": "https://github.com/BubbaCoop/Valiify-Application-Component-Library#readme",
+  "bugs": {
+    "url": "https://github.com/BubbaCoop/Valiify-Application-Component-Library/issues"
   }
 }

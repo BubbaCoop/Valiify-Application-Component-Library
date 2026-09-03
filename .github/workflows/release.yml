@@ -1,0 +1,68 @@
+# Tag-driven npm publish. Push a version tag and the release ships itself:
+#
+#   npm version patch            # bumps package.json + creates the tag
+#   git push origin main --follow-tags
+#
+# Requires the NPM_TOKEN repo secret (a granular automation token with
+# read/write on @valiify/shortapp-ui). Publishes with npm provenance, which
+# cryptographically links the package to this repo + workflow run.
+#
+# The full verification battery (visual/a11y/static/bundle) runs on the
+# branch push via ci.yml; this workflow re-runs the fast gates plus the
+# packaging smoke test, then publishes. The tag's version must match
+# package.json — mismatches fail before publish.
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # npm provenance
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.14.0"
+          cache: npm
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm ci
+
+      - name: tag matches package.json version
+        run: |
+          set -euo pipefail
+          PKG="v$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "Tag $TAG does not match package.json $PKG — bump the version before tagging."
+            exit 1
+          fi
+
+      - name: typecheck
+        run: npm run typecheck
+
+      - name: build
+        run: npm run build
+
+      - name: verify:layers
+        run: npm run verify:layers
+
+      - name: verify:bundle
+        run: npm run verify:bundle
+
+      # The real tarball in a real consumer Vite build, both entry points.
+      - name: verify:package
+        run: npm run verify:package
+
+      - name: publish
+        run: npm publish --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
