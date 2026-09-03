@@ -29,11 +29,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # NO registry-url here: setup-node's registry-url writes an .npmrc
+      # with _authToken=${NODE_AUTH_TOKEN}, which breaks token-less OIDC
+      # publishing ("Failed to replace env in config"). Trusted publishing
+      # needs a clean npm config.
       - uses: actions/setup-node@v4
         with:
           node-version: "24.14.0"
           cache: npm
-          registry-url: "https://registry.npmjs.org"
 
       - run: npm ci
 
