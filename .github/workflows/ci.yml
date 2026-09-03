@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Chromatic needs full git history to find baseline commits.
+          fetch-depth: 0
 
       # Pinned to the version these gates are green on locally (931/931).
       # Bump deliberately, not by inheriting whatever the runner ships.
@@ -79,6 +82,17 @@ jobs:
       # waived (and printed) via KNOWN_ISSUES in scripts/a11y-scan.mjs.
       - name: verify:a11y
         run: npm run verify:a11y -- --url http://127.0.0.1:6007
+
+      # Visual regression review. Reuses the storybook-static build from
+      # above (no second build). --exit-zero-on-changes: diffs are reviewed
+      # and accepted in the Chromatic UI, not failed in CI. Requires the
+      # CHROMATIC_PROJECT_TOKEN repo secret; skipped on forks where the
+      # secret is absent.
+      - name: chromatic
+        if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' }}
+        run: npx chromatic --storybook-build-dir storybook-static --exit-zero-on-changes
+        env:
+          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
 # Deliberately not here yet: `prettier --check`, which fails on 35 prose files
 # (docs/*.md, CLAUDE.md, SKILL.md). Adding it now would ship CI red. Separate
