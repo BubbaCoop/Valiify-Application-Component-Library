@@ -8,6 +8,10 @@ on:
 jobs:
   gates:
     runs-on: ubuntu-latest
+    env:
+      # Exposed at job level so the chromatic step's `if` can test it —
+      # the `secrets` context is not valid in a step-level `if`.
+      CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -94,10 +98,8 @@ jobs:
       # CHROMATIC_PROJECT_TOKEN repo secret; skipped on forks where the
       # secret is absent.
       - name: chromatic
-        if: ${{ secrets.CHROMATIC_PROJECT_TOKEN != '' }}
+        if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' }}
         run: npx chromatic --storybook-build-dir storybook-static --exit-zero-on-changes
-        env:
-          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
 # Deliberately not here yet: `prettier --check`, which fails on 35 prose files
 # (docs/*.md, CLAUDE.md, SKILL.md). Adding it now would ship CI red. Separate
