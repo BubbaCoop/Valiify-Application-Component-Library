@@ -3,23 +3,23 @@
     "description": "Raw design token extraction from Figma. Source of truth for scripts/build-theme.mjs, which generates src/themes/valiify.css from this file.",
     "figmaFile": "Updated-Short-App",
     "fileKey": "PA5pr1Q8KLfbjTxdAbFm0V",
-    "extractedVia": "Figma Plugin API via use_figma (figma.variables.getLocalVariableCollectionsAsync — the COMPLETE local set, applied or not) + get_variable_defs sweeps for typography and effects",
+    "extractedVia": "Figma Plugin API via use_figma (figma.variables.getLocalVariableCollectionsAsync \u2014 the COMPLETE local set, applied or not) + get_variable_defs sweeps for typography and effects",
     "extractedFrom": [
       {
         "nodeId": "1:2",
-        "name": "Section 1 (text-style preview) — AUTHORITATIVE for typography"
+        "name": "Section 1 (text-style preview) \u2014 AUTHORITATIVE for typography"
       },
       {
         "nodeId": "1:217",
-        "name": "Components (section) — full subtree sweep, plus per-frame sweeps of every component set inside it (fields incl. Error variants, Radio, Checkbox, iconbutton, Switch, Disclaimer, Header, List Item, Select Card, Badge, Box, Skeleton, Owner Container)"
+        "name": "Components (section) \u2014 full subtree sweep, plus per-frame sweeps of every component set inside it (fields incl. Error variants, Radio, Checkbox, iconbutton, Switch, Disclaimer, Header, List Item, Select Card, Badge, Box, Skeleton, Owner Container)"
       },
       {
         "nodeId": "25:359",
-        "name": "Portal Specific (section) — Buttons, Application Status, Action"
+        "name": "Portal Specific (section) \u2014 Buttons, Application Status, Action"
       },
       {
         "nodeId": "(file-level)",
-        "name": "Local variable collection 'Collection 1' (Mode 1) — all 77 variables enumerated via the Plugin API, 2026-09-02"
+        "name": "Local variable collection 'Collection 1' (Mode 1) \u2014 all 77 variables enumerated via the Plugin API, 2026-09-02"
       },
       {
         "nodeId": "(file-level)",
@@ -29,25 +29,25 @@
     "extractedOn": "2026-09-01, completed via Plugin API enumeration 2026-09-02",
     "status": "COMPLETE variable enumeration. 56 colors / 13 spacing / 8 radius from the local collection via the Plugin API; 24 text styles from the type-preview + component sweeps; 1 effect (Primary Ring). The earlier applied-only sweep had missed 26 unapplied colors (the entire Error and Info ramps, the Success/Warning/Neutral tint sets, BG/Page and BG/Card) plus ALL spacing and radius variables.",
     "limitations": [
-      "get_variable_defs returns only variables APPLIED to a layer — the applied-only sweep missed 26 of 56 colors and all spacing/radius variables. The Plugin API enumeration (use_figma -> figma.variables.getLocalVariableCollectionsAsync) is the authoritative completeness source; re-run it when the designer adds tokens.",
-      "search_design_system indexes published LIBRARIES, not this file's local collection, and returns names without values — not useful for this file's token audit.",
+      "get_variable_defs returns only variables APPLIED to a layer \u2014 the applied-only sweep missed 26 of 56 colors and all spacing/radius variables. The Plugin API enumeration (use_figma -> figma.variables.getLocalVariableCollectionsAsync) is the authoritative completeness source; re-run it when the designer adds tokens.",
+      "search_design_system indexes published LIBRARIES, not this file's local collection, and returns names without values \u2014 not useful for this file's token audit.",
       "DUPLICATE NAMES SILENTLY DROP STYLES in get_variable_defs' keyed response. The Plugin API enumeration does not have this problem; typography (which still comes from get_variable_defs) keeps the textKey collision guard as backstop."
     ],
     "resolved": [
-      "lineHeight: UNLIKE the dashboard file, this file authors explicit px line heights on nearly every style (e.g. 28/34, 15/20). The API's Auto sentinel 100 appears only on Labels, links & UI/Link — recorded as the string \"AUTO\" and emitted as line-height: normal.",
+      "lineHeight: UNLIKE the dashboard file, this file authors explicit px line heights on nearly every style (e.g. 28/34, 15/20). The API's Auto sentinel 100 appears only on Labels, links & UI/Link \u2014 recorded as the string \"AUTO\" and emitted as line-height: normal.",
       "letterSpacing: EVERY value this API returns is a PERCENTAGE, not px (dashboard-verified reading). Stored as letterSpacingPercent and emitted as em: 10 -> 0.1em, 8 -> 0.08em, 16 -> 0.16em, 5 -> 0.05em.",
-      "Figma group 'Text' maps to the public prefix 'content' and 'BG' to 'surface' (COLOR_GROUPS in the generator) — avoids text-text-* / bg-bg-* utilities and matches the dashboard library's public API shape.",
+      "Figma group 'Text' maps to the public prefix 'content' and 'BG' to 'surface' (COLOR_GROUPS in the generator) \u2014 avoids text-text-* / bg-bg-* utilities and matches the dashboard library's public API shape.",
       "'Base' is treated as a ramp's main shade (Neutral/Base -> --color-neutral), same as 'Main' and the group-named form (Primary/Primary -> --color-primary).",
       "Spacing: 13 whole-px variables (2..64) exist and ALL map exactly to Tailwind native steps (2 -> p-0.5 ... 64 -> p-16), so no --spacing-* tokens are emitted, same rule as the dashboard."
     ],
     "openQuestions": [
-      "CASING, PARTIALLY RESOLVED (Button extraction, 2026-09-02): Button Label and Micro-Label carry a REAL uppercase transform — the Button set types its samples 'Button' mixed-case and styles them uppercase (structure lane read the transform, visual lane confirmed the caps render; Bubble, bound to Labels/Default, renders mixed-case with no transform). Both styles now carry textTransform:true and emit type-button-label / type-micro-label utilities. Eyebrow ALSO RESOLVED (Badge 28:507 and Avatar 23:670 both apply an explicit uppercase transform to Eyebrow-bound text — textTransform:true, emits type-eyebrow). STILL OPEN for Data Key, Tag & Pill, and the Lockup styles — resolve per component the same way.",
-      "ERROR BINDING SLIP (upgraded from open question): a full Error ramp EXISTS (#c0362c with Text/BG/Ring/Stroke/Stroke-Hover) but is applied nowhere — the field components' Error=Yes variants bind Warning/Base instead. Now clearly an authoring slip to raise with the designer; implement error states against the Error ramp only after they confirm.",
-      "Action/Pressed and Action/Active are distinct variables with the identical value #1a1a1a14 — possibly one is legacy. Both extracted.",
+      "CASING, PARTIALLY RESOLVED (Button extraction, 2026-09-02): Button Label and Micro-Label carry a REAL uppercase transform \u2014 the Button set types its samples 'Button' mixed-case and styles them uppercase (structure lane read the transform, visual lane confirmed the caps render; Bubble, bound to Labels/Default, renders mixed-case with no transform). Both styles now carry textTransform:true and emit type-button-label / type-micro-label utilities. Eyebrow ALSO RESOLVED (Badge 28:507 and Avatar 23:670 both apply an explicit uppercase transform to Eyebrow-bound text \u2014 textTransform:true, emits type-eyebrow). STILL OPEN for Data Key, Tag & Pill, and the Lockup styles \u2014 resolve per component the same way.",
+      "ERROR BINDING SLIP (upgraded from open question): a full Error ramp EXISTS (#c0362c with Text/BG/Ring/Stroke/Stroke-Hover) but is applied nowhere \u2014 the field components' Error=Yes variants bind Warning/Base instead. Now clearly an authoring slip to raise with the designer; implement error states against the Error ramp only after they confirm.",
+      "Action/Pressed and Action/Active are distinct variables with the identical value #1a1a1a14 \u2014 possibly one is legacy. Both extracted.",
       "Success/Base and Success/Text are distinct variables with the identical value #2e6e4e. Both extracted (the dashboard's Approved ramp split the same way with different values, so this may diverge later).",
       "Primary/Primary and Primary/Text are distinct variables with the identical value #a6192e. Both extracted.",
       "Radius/xl (10px) and Radius/2xl (12px) deliberately override Tailwind v4's defaults (12px/16px) in the emitted theme; xs/sm/md/lg are byte-identical to Tailwind's so those are no-ops. Radius/none and Radius/full are not emitted (native rounded-none / rounded-full already match).",
-      "All 77 variables carry scope ALL_SCOPES — no scoping discipline in the file yet; harmless for CSS emission."
+      "All 77 variables carry scope ALL_SCOPES \u2014 no scoping discipline in the file yet; harmless for CSS emission."
     ]
   },
   "color": {
@@ -77,6 +77,7 @@
     "BG/App Page": "#fafaf9",
     "BG/Page": "#fdf8f5",
     "BG/Card": "#f1f0ee",
+    "BG/Contrast": "#1a1a1a",
     "Stroke/Border": "#1a1a1a2b",
     "Stroke/Divider": "#1a1a1a1c",
     "Stroke/Hover": "#1a1a1a8f",
@@ -339,6 +340,13 @@
       "blur": 0,
       "spread": 3,
       "color": "#a6192e38"
+    },
+    "Basic Drop Shadow": {
+      "offsetX": 0,
+      "offsetY": 8,
+      "blur": 24,
+      "spread": -4,
+      "color": "#00000010"
     }
   },
   "focusRing": {

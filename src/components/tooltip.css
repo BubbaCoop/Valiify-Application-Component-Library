@@ -1,0 +1,59 @@
+/**
+ * Tooltip Component
+ *
+ * Dark contrast tooltip with an optional muted title. Extracted (inline
+ * fast-path) from Figma tooltip (582:9178) — a single symbol, no variant
+ * axes, 280×128 sample.
+ *
+ *   <div class="tooltip" role="tooltip">
+ *     <span class="tooltip-title">Title</span>
+ *     <span class="tooltip-body">Explanatory copy that wraps.</span>
+ *   </div>
+ *
+ * FIRST USE OF TWO TOKENS:
+ *   - `BG/Contrast` (#1a1a1a) — a NEW variable the designer added with this
+ *     component (absent from the same-day full enumeration; now token 58).
+ *     Emitted as --color-surface-contrast.
+ *   - `text-field-label` (13/16/500) — the previously-orphaned "Field Label"
+ *     style finally has a consumer: the tooltip TITLE (not field labels,
+ *     which bind Labels/Strong). Designer-list item updated.
+ * Also the second consumer of --shadow-basic (after DropdownList/Modal).
+ *
+ * Title ink is Text/Hint (muted gray over the dark ground); body is
+ * text-body-content (13/16/400) in Text/Contrast. Geometry: px-4/py-3,
+ * gap-2, rounded-lg (8px). word-break is authored in Figma and shipped.
+ *
+ * WIDTH: Figma authors a fixed 280 sample frame; shipped as max-w-[280px]
+ * with content hug — a LABELED LIBRARY READING (a two-word tooltip should
+ * not be 280 wide; the authored word-break implies wrap-at-limit
+ * semantics). Override at the call site if a fixed width is wanted.
+ *
+ * Not modelled, not invented: arrow/caret, placement, states, sizes.
+ * Positioning is the consumer's (title/see DropdownList posture) — pair
+ * with the native Popover API or the consumer's positioning library;
+ * anchoring and show/hide are JS the library does not ship. No z-index is
+ * baked (the Library Contracts scale tops at toast z-70; a tooltip usually
+ * rides its trigger's stacking context — set one at the call site if it
+ * must escape).
+ *
+ * Accessibility: give the element role="tooltip" and reference it from the
+ * trigger with aria-describedby. The title is presentational structure, not
+ * the accessible name.
+ */
+
+@layer components {
+  .tooltip {
+    @apply flex w-max max-w-[280px] flex-col gap-2 rounded-lg px-4 py-3;
+    @apply bg-surface-contrast shadow-basic;
+    word-break: break-word; /* authored in Figma */
+  }
+
+  /* Field Label type (13/16/500) — this style's first consumer. */
+  .tooltip-title {
+    @apply text-field-label text-content-hint;
+  }
+
+  .tooltip-body {
+    @apply text-body-content text-content-contrast;
+  }
+}

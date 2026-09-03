@@ -12,17 +12,20 @@
  * BG/Paper fill · 1px Stroke/Divider border · 4px radius (raw in Figma,
  * equals Radius/sm — visual's coarse 1x corner-fit read 7–8 but the authored
  * literal wins, Switch-knob precedent) · zero padding and zero gap (row
- * separation is the rows' own dividers) · raw drop shadow 0 2px 5px 10%
- * (binds no effect variable; deliberately not tokenised until a second raw
- * shadow recurs).
+ * separation is the rows' own dividers).
  *
- * TWO NON-OBVIOUS PAIRED CHOICES — do not "fix" either independently:
- *   1. overflow-clip is a LABELED LIBRARY EXTENSION, not in Figma — without
- *      it a hovered first/last row's fill pokes past the rounded corners
- *      (a real bug in the design file; designer list).
- *   2. The shadow is filter: drop-shadow(), NOT box-shadow — overflow-clip
- *      clips a box's own box-shadow on some engines, while drop-shadow()
- *      applies to the already-clipped composite and survives.
+ * SHADOW REBOUND 2026-09-02 (designer direction, with the Modal): the panel
+ * now carries the tokenized "Basic Drop Shadow" (--shadow-basic, 0 8px 24px
+ * −4px) instead of its original raw 0 2px 5px 10% — a deliberate VALUE
+ * change, not a rename. Two consequences:
+ *   1. It ships as a real box-shadow. The −4px spread cannot be expressed
+ *      by filter: drop-shadow() (filters have no spread parameter), and the
+ *      dashboard-era claim that overflow-clip eats an element's own
+ *      box-shadow was RE-TESTED and is false — an element's own shadow is
+ *      not content overflow (pixel-verified in headless Chromium).
+ *   2. overflow-clip REMAINS load-bearing on its own: without it a hovered
+ *      first/last row's fill pokes past the rounded corners (a real bug in
+ *      the design file; designer list).
  *
  * Width is the consumer's — Figma's 154px is the sample hug; the panel spans
  * its trigger (DropdownMenu ancestry). FIGMA NAMING TRAP: the set's
@@ -36,11 +39,9 @@
 
 @layer components {
   .dropdown-list {
-    @apply flex flex-col rounded-sm;
+    @apply flex flex-col rounded-sm shadow-basic;
     @apply border border-stroke-divider bg-surface-paper;
-    /* Library extension + its required shadow strategy — see header. */
+    /* Library extension (hover fills at the corners) — see header. */
     overflow: clip;
-    /* static-ok(hardcoded-color): the Figma shadow is raw — bound to no effect variable (designer list); no token exists to use */
-    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
   }
 }

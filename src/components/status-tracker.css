@@ -1,0 +1,45 @@
+/**
+ * StatusTracker Component
+ *
+ * One step marker in the portal's application-status track. Extracted
+ * (inline fast-path) from Figma Application Status (64:4623) — 2 variants
+ * on a single Active axis, both 93×16.
+ *
+ *   <span class="status-tracker status-tracker-active">
+ *     <svg aria-hidden="true"><use href="#check" /></svg>
+ *     Application
+ *   </span>
+ *
+ * The Active axis is an INK SWAP ONLY: rest Text/Tertiary → active
+ * Text/Primary, on Field Label type (13/16/500 — the style's third
+ * consumer). The 14px glyph is a caller slot painted by currentColor, so
+ * it swaps with the label for free.
+ *
+ * The glyph renders 14px — IconButton's sm glyph size, off the 12/16/18
+ * grid the other components use but precedented. Labels are short step
+ * names; Figma's nowrap ships (no long-copy risk).
+ *
+ * Not modelled, not invented: hover/focus (not interactive in Figma — if a
+ * consumer makes steps clickable, compose a button and add the focus-ring),
+ * a connector line between steps, error/warning step states.
+ */
+
+@layer components {
+  .status-tracker {
+    @apply inline-flex items-center gap-2 whitespace-nowrap;
+    @apply text-field-label text-content-tertiary;
+  }
+
+  .status-tracker svg {
+    @apply size-3.5 shrink-0; /* 14px */
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .status-tracker-active {
+    @apply text-content-primary;
+  }
+}

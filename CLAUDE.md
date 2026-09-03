@@ -25,7 +25,8 @@ then stop — I write all commit messages and commit myself.
 
 #### Button
 
-Extracted from Figma Button (1:218) — 16 variants across `Type` {Primary,
+Extracted from Figma **Button / Standard** (1:218; renamed 2026-09-02 — the
+INLINE set; Button / Utility covers non-inline) — 16 variants across `Type` {Primary,
 Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
 `Mobile` axis was removed by the designer (caught by the Gate-0 metadata sweep).
 
@@ -885,6 +886,256 @@ Labeled multi-line text input. Extracted from Figma Text Area Field
 </div>
 ```
 
+#### Modal
+
+Confirmation dialog card — the library's first overlay. Extracted from Figma
+Modal (557:5127) — 3 variants on a `Type` axis {Destructive, Neutral,
+Success}, 480 wide, 308/196/308 (heights emergent, not pinned).
+
+- **Parts**: `.modal` (the card — works as a `<dialog>` or a div) ›
+  `.modal-header` (`.modal-title` + a composed bare `.icon-button` close with
+  `#x`) › `.modal-description` › optional `.modal-notice` +
+  `.modal-notice-destructive` / `-success` (`.modal-notice-label`,
+  `.modal-notice-body`) › `.modal-actions` (shipped `.btn-secondary` +
+  `.btn-primary`, hug, right-aligned) — plus `.modal-backdrop` and
+  `dialog.modal::backdrop`
+- **No Type classes on the card** — Figma's Type axis IS the notice banner
+  (Neutral omits it structurally; no boolean exists). The height math proves
+  it: 196 + 88 banner + 24 gap = 308 exact.
+- **Geometry**: `rounded-2xl` (12px), `p-7`/`gap-6`, notice `rounded-md p-4`
+
+> **Both rings are inset box-shadows** — the card's 1px `Stroke/Divider` and
+> the banner's 1px accent are inside strokes on CONTENT-DRIVEN heights (a
+> real border renders the drawn 308 as 310 — Tabs-Application precedent).
+> The card ring shares one declaration with **`--shadow-basic`** (the new
+> tokenized "Basic Drop Shadow", 0 8px 24px −4px — also on DropdownList).
+> **Destructive binds the PRIMARY (crimson) tints, not the Error ramp** —
+> verbatim; the Error ramp remains unused everywhere in the file.
+> **The Success banner is raw, unbound hex in Figma** (#f0fdf4/#16a34a/
+> #15803d/#166534 — Tailwind-palette greens ≠ the tokenized Success ramp) —
+> reproduced verbatim under static-ok waivers; top designer-list item.
+> **Untokenized type**: title 18/24/600, notice label 12/16/600 uppercase,
+> notice body 13/18 — raw in Figma, no `--text-*` matches (designer list).
+> Figma's title `whitespace-nowrap` is an overflow defect, corrected: titles
+> wrap. A stray `cursor-pointer` on the actions ROW is excluded.
+> **The backdrop is a labeled library extension** — no scrim exists anywhere
+> in Figma; the wash (Content/Primary at 45% via color-mix) is unsourced.
+> Z-scale per Library Contracts: backdrop z-50, modal z-60.
+> **Primary path is the native `<dialog>` + `showModal()`** (free focus trap,
+> Escape, restore-on-close, `::backdrop`); the `.modal-backdrop` div fallback
+> requires the consumer's own focus trap and Escape — the library ships no
+> JS. Backdrop-click dismissal is consumer JS in both paths.
+
+```html
+<dialog class="modal" aria-labelledby="m-t" aria-describedby="m-d">
+  <div class="modal-header">
+    <h2 id="m-t" class="modal-title">Delete this application?</h2>
+    <button class="icon-button" aria-label="Close">
+      <svg aria-hidden="true"><use href="#x" /></svg>
+    </button>
+  </div>
+  <p id="m-d" class="modal-description">Are you sure you want to proceed?</p>
+  <div class="modal-notice modal-notice-destructive">
+    <span class="modal-notice-label">Critical warning</span>
+    <span class="modal-notice-body">This action cannot be undone.</span>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-secondary">Cancel</button>
+    <button class="btn btn-primary">Confirm</button>
+  </div>
+</dialog>
+<!-- open with dialog.showModal(); ::backdrop is pre-styled -->
+```
+
+#### Tooltip
+
+Dark contrast tooltip with an optional muted title. Extracted (inline
+fast-path) from Figma tooltip (582:9178) — a single symbol, no variant axes.
+
+- **Parts**: `.tooltip` (`BG/Contrast` ground, `rounded-lg`, `px-4 py-3`,
+  `gap-2`, `shadow-basic`, authored `word-break`), `.tooltip-title`
+  (optional — `text-field-label` in `Text/Hint`), `.tooltip-body`
+  (`text-body-content` in `Text/Contrast`)
+
+> **Two token firsts**: `BG/Contrast` (#1a1a1a) is a NEW variable added with
+> this component (token 58, `--color-surface-contrast`), and the tooltip
+> title is the previously-orphaned **`text-field-label` token's first
+> consumer** (field labels themselves bind Labels/Strong — the token's name
+> lies; designer list updated).
+> **`max-w-[280px]` with content hug is a labeled library reading** —
+> Figma's frame is a fixed 280 sample, but the authored word-break implies
+> wrap-at-limit semantics; short tooltips hug.
+> **Not modelled, not invented**: arrow/caret, placement, states. Anchoring
+> and show/hide are the consumer's (Popover API pairs well); no z-index is
+> baked. Wire `role="tooltip"` + the trigger's `aria-describedby`.
+
+```html
+<button class="icon-button" aria-label="What is a routing number?" aria-describedby="tip-1">
+  <svg aria-hidden="true"><use href="#circle-help" /></svg>
+</button>
+<div class="tooltip" role="tooltip" id="tip-1">
+  <span class="tooltip-title">Routing number</span>
+  <span class="tooltip-body">The nine-digit code on the bottom left of your checks.</span>
+</div>
+```
+
+#### Toast
+
+Transient floating notification. Extracted (inline fast-path) from Figma
+Toast (582:9325) — a PARTIAL `Type` {success, error, info} × `Style` {Full,
+Simple} matrix (Simple exists only as info).
+
+- **Full**: `.toast` (Paper card, `rounded-lg`, `p-4`, inset Stroke/Divider
+  ring + `shadow-basic` in one declaration — content-driven 66px, Modal
+  precedent) + type class + `.toast-icon` (18px caller slot) +
+  `.toast-content` (`.toast-title` Field Label / `.toast-body` help-caption)
+  + a composed bare `.icon-button` dismiss
+- **Simple**: `.toast-simple` — a STATUS-LESS dark `BG/Contrast` full-radius
+  pill (15px glyph — off the icon grid, designer list; Content 13/16 in
+  Text/Contrast). The Type axis is meaningless for it: no ramp token binds.
+- Both carry `z-70` (Library Contracts). Positioning/timers/dismissal are
+  the consumer's; `role="status"` for confirmations, `role="alert"` for
+  failures.
+
+> **THE STATUS RAMPS FINALLY BIND** — success → `Success/Base`, info →
+> `Info/Base` — **but the Type literally named "error" binds `Warning/Base`
+> (amber), verbatim**. The sharpest instance of the file-wide slip: the
+> sibling variants prove ramps are wired deliberately. `.toast-error` paints
+> `text-warning` faithfully; rebind when the designer does.
+> The Type class paints ONLY the icon (title/body inks constant). Pass the
+> matching glyph: `#circle-check` / `#circle-alert` / `#info`.
+
+```html
+<div class="toast toast-success" role="status">
+  <svg class="toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
+  <div class="toast-content">
+    <span class="toast-title">Document request sent</span>
+    <span class="toast-body">Client has been notified to upload their W-9.</span>
+  </div>
+  <button class="icon-button" aria-label="Dismiss">
+    <svg aria-hidden="true"><use href="#x" /></svg>
+  </button>
+</div>
+
+<div class="toast-simple" role="status">
+  <svg aria-hidden="true"><use href="#check" /></svg>
+  Template Saved
+</div>
+```
+
+#### StatusTracker
+
+One step marker in the portal's application-status track. Extracted (inline
+fast-path) from Figma Application Status (64:4623) — `Active` {no, yes},
+93×16.
+
+- **Base**: `.status-tracker` (Field Label type, `Text/Tertiary`, 14px glyph
+  slot painted by currentColor, `gap-2`) + `.status-tracker-active`
+  (`Text/Primary`) — **the Active axis is an ink swap only**
+
+> Not modelled, not invented: hover/focus (not interactive in Figma),
+> connectors between steps, error/warning step states. Compose the track at
+> the call site.
+
+```html
+<span class="status-tracker status-tracker-active">
+  <svg aria-hidden="true"><use href="#check" /></svg>
+  Application
+</span>
+```
+
+#### Action
+
+One row in the portal's action list. Extracted (inline fast-path) from Figma
+Action (71:848) — 3 states: Pending / actionable rest / Done, 720×84 samples
+(width the caller's, height emergent 20+44+20).
+
+- **Parts**: `.action` (Paper row, `p-5`/`gap-4`, the OwnerContainer 0.5px
+  inset-shadow hairline) + `.action-icon` (18px slot, constant
+  Text/Secondary) + `.action-content` (`.action-title` title-medium /
+  `.action-description` body-content Tertiary) + optional composed `.badge`
+  + a trailing affordance per state
+- **States**: rest (no class) — title `Text/Primary` + `.action-cta` (a real
+  34px mini button: Paper, 1px Stroke/Divider border, Field Label + 18px
+  `#arrow-right` — NOT any shipped `.btn` type); `.action-pending` — title
+  demoted to Secondary + `.action-status` chip (12px `#lock` + micro-label
+  in `Text/Hint`); `.action-done` — demoted title + chip (12px `#check` +
+  micro-label in **`Success/Text`** — more status-ramp adoption)
+
+> **The PENDING chip's Text/Hint-on-Paper fails WCAG (3.11:1)** — the same
+> authored-ink defect as the field placeholders, waived in KNOWN_ISSUES;
+> designer list. **Figma's arrow layer is named "AttachMoneyRounded"** and
+> renders a forward arrow (the naming-lies family); ships `#arrow-right`.
+> Not modelled, not invented: hover/pressed (only the CTA is interactive —
+> library focus-ring covers it), disabled, compound states.
+
+```html
+<div class="action">
+  <svg class="action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
+  <div class="action-content">
+    <span class="action-title">Identity</span>
+    <span class="action-description">Verify who you are</span>
+  </div>
+  <button class="action-cta">Verify <svg aria-hidden="true"><use href="#arrow-right" /></svg></button>
+</div>
+
+<div class="action action-done">
+  …
+  <span class="action-status"><svg aria-hidden="true"><use href="#check" /></svg>Done</span>
+</div>
+```
+
+#### UtilityButton
+
+The non-inline / special-use button family — a SIBLING of Button / Standard,
+not a skin on it. Extracted from Figma Button / Utility (24:4382) — 18
+variants on a partial `Size` {MD, SM} × `Type` {Empty, Filled, Rounded,
+Text} × `Hover` × `Pressed` matrix.
+
+- **Base**: `.utility-button` — layout only, **a type class is required**
+  (the Standard button's rule); SM (34px) is the bare default,
+  `.utility-button-md` (54px, drawn for Empty) modifies
+- **Types**: `.utility-button-empty` / `-filled` / `-rounded` / `-text`
+- **Label convention**: Field Label 13/500 **natural case** (Text type:
+  Content 13/400) — never the Standard set's uppercase Button Label
+- **Icon slots**: plain `svg` children (18px; 16px in Text), painted by
+  currentColor so they ride the ink ramps
+
+| type | box | rest → hover → pressed |
+| --- | --- | --- |
+| `-empty` | Paper + 1px Stroke/Divider, 4px | ink Secondary → Primary; fill Paper → `Action/Hover` → `Action/Pressed`; **border drops at hover/pressed** |
+| `-filled` | solid, 4px, no border | `Primary → Primary/Hover → Primary/Focus`; white ink never fades |
+| `-rounded` | ghost pill, no border ever | none → `Action/Hover` → `Action/Pressed`; ink Secondary → Primary |
+| `-text` | bare 16px underlined row | ink Tertiary → Primary (**hover = pressed**, byte-identical) |
+
+> **The Empty border is REST-ONLY** — pixel-proven: at hover/pressed both
+> Paper and the border drop and the wash composites over the page (the
+> hover-variant hexes solve over white, not Paper; the Stroke/Divider
+> binding on those variants is a dedup ghost). Ships as border-color
+> transparent so geometry never shifts. Designer list.
+> **The Text type's Size axis is unwired** (MD ≡ SM, 0/1376 pixel diff) and
+> its rest ink is a raw #6f7276 override stacked on a bound Text/Secondary —
+> the raw value IS Text/Tertiary's hex, shipped as the token. Designer list.
+> **`Primary/Focus` is the pressed fill name again** — wired to `:active`.
+> MD's authored w-214 is the sample-hug trap; width is the caller's.
+> Not modelled, not invented: disabled (cursor only — unlike Standard, no
+> Inactive axis exists), MD Filled/Rounded, focus variants (library ring).
+
+```html
+<button class="utility-button utility-button-empty">
+  <svg aria-hidden="true"><use href="#dollar-sign" /></svg>
+  Add Funds
+</button>
+
+<button class="utility-button utility-button-filled utility-button-md">Add Funds</button>
+<button class="utility-button utility-button-rounded">Add Funds</button>
+
+<button class="utility-button utility-button-text">
+  View statements
+  <svg aria-hidden="true"><use href="#chevron-right" /></svg>
+</button>
+```
+
 ---
 
 Further components will be documented here as they are extracted from the
@@ -893,8 +1144,8 @@ Short App Figma file, one section per component, following the format used in
 
 ### Design Tokens (complete enumeration 2026-09-02)
 
-**56 colors, 8 radii, 13 spacing values, 24 text styles, 1 effect (the focus
-ring).** Colors/spacing/radii come from a **complete Plugin API enumeration of
+**58 colors, 8 radii, 13 spacing values, 24 text styles, 2 effects (the focus
+ring and Basic Drop Shadow).** Colors/spacing/radii come from a **complete Plugin API enumeration of
 the file's local variable collection** (`use_figma` →
 `figma.variables.getLocalVariableCollectionsAsync` — all 77 variables, applied
 or not); typography from the type-preview section (1:2) plus component sweeps.
@@ -915,7 +1166,8 @@ Browse them rendered in Storybook under **Foundations → Design Tokens**.
 - Content (Figma group **Text**): `--color-content-primary` / `-secondary` /
   `-tertiary` / `-hint` / `-contrast`
 - Surface (Figma group **BG**): `--color-surface-paper` (#fffdfb) /
-  `-app-page` (#fafaf9) / `-page` (#fdf8f5) / `-card` (#f1f0ee)
+  `-app-page` (#fafaf9) / `-page` (#fdf8f5) / `-card` (#f1f0ee) /
+  `-contrast` (#1a1a1a, added with Tooltip)
 - Stroke: `--color-stroke-border` / `-divider` / `-hover` (all translucent ink)
 - Action: `--color-action-hover` / `-pressed` / `-active` / `-focused`
 - Status — **four full ramps**, each Base + Text + BG/Ring/Stroke/Stroke-Hover

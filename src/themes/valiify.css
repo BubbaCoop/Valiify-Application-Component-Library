@@ -56,6 +56,7 @@
   --color-surface-app-page: oklch(0.9848 0.0013 106.42); /* #fafaf9 */
   --color-surface-page: oklch(0.9821 0.0067 53.45); /* #fdf8f5 */
   --color-surface-card: oklch(0.9553 0.0029 84.56); /* #f1f0ee */
+  --color-surface-contrast: oklch(0.2178 0 0); /* #1a1a1a */
 
   /* Stroke colors */
   --color-stroke-border: oklch(0.2178 0 0 / 0.169); /* #1a1a1a2b */
@@ -227,6 +228,7 @@
 
   /* Effects */
   --shadow-focus-ring: 0 0px 0px 3px oklch(0.4697 0.1733 20.42 / 0.22); /* Primary Ring #a6192e38 */
+  --shadow-basic: 0 8px 24px -4px oklch(0 0 0 / 0.063); /* Basic Drop Shadow #00000010 */
 
   /*
    * Keyboard focus ring — Figma's "Primary Ring" effect: a spread-only
