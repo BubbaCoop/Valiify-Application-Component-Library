@@ -27,6 +27,14 @@ jobs:
 
       - run: npm ci
 
+      # .claude/agents/*.md and .claude/commands/{val,extract}.md are GENERATED
+      # by @valiify/val-core from its templates + val/config.json. This fails if
+      # any of them is stale or hand-edited — including after a val-core
+      # version bump, because the version is stamped into every header. Fix:
+      # `npm run val:init`, review, commit.
+      - name: val:check
+        run: npm run val:check
+
       # Cheap gates first, so a typo fails in seconds rather than after the
       # 11MB Storybook build.
       - name: typecheck

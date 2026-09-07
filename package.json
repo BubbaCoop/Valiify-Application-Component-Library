@@ -46,7 +46,9 @@
     "audit": "node scripts/audit-components.mjs",
     "chromatic": "chromatic",
     "verify:bundle": "node scripts/verify-bundle.mjs",
-    "verify:package": "node scripts/verify-package.mjs"
+    "verify:package": "node scripts/verify-package.mjs",
+    "val:check": "val-init --check",
+    "val:init": "val-init"
   },
   "keywords": [
     "tailwind",
