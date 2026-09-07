@@ -19,6 +19,19 @@ treated as a spec for this library.
 **Never run `git commit` or `git push`.** Stage changes with `git add` if asked,
 then stop — I write all commit messages and commit myself.
 
+## Val agents are generated — do not hand-edit them
+
+`.claude/agents/*.md` and `.claude/commands/{val,extract}.md` are **generated**
+by `@valiify/val-core` (`npx val-init`) from its templates plus this repo's
+[val/config.json](val/config.json). Each file carries a header saying so. To
+change agent behaviour, edit the template in the val-core repo
+(`~/Desktop/val-core`, published to npm as `@valiify/val-core`), release it, then
+bump the devDependency here and rerun `npx val-init`; to change a path, font rule
+or audience sentence, edit `val/config.json`, then run `npx val-init` and stage
+the output. `npx val-init --check` fails when the generated files
+drift from their sources. `val/tools` is a symlink into the package; the
+methodology skills live at `node_modules/@valiify/val-core/skills/`.
+
 ## Quick Reference
 
 ### Available Components
