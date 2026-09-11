@@ -1,0 +1,114 @@
+{
+  "kind": "design",
+  "runId": "2026-09-11-design-primary-contact",
+  "library": "shortapp",
+  "surface": "short-app",
+  "methodology": "design-methodology/short-app.md",
+  "output": "SvelteKit + Svelte 5 (runes)",
+  "model": "claude-opus-5",
+  "gates": [
+    {
+      "gate": 1,
+      "agent": "design-brief-intake",
+      "status": "pass",
+      "at": "2026-09-11T00:00:00Z",
+      "notes": "01-brief.md complete \u2014 all schema headings present, Source map cites the brief and 00-input/answers-1.md. Both Gate-1 questions resolved: Q1 (s13-open-item, loading state) answered by requester \u2014 no loading state, save immediate and synchronous, Continue stays actionable, no skeleton composition sanctioned. Q2 (help text) took its proposed default \u2014 omitted, nothing drafted. Open questions empty. Handoff to stage 2: carry BACK/CONTINUE as typed sentence case with type-button-label supplying the caps.",
+      "questions": [
+        {
+          "id": "Q1",
+          "blocking": true,
+          "trigger": "s13-open-item",
+          "summary": "What shows while Continue's save is in flight? s13 lists loading state as undrawn and says do not infer it."
+        },
+        {
+          "id": "Q2",
+          "blocking": false,
+          "trigger": "missing non-legal copy",
+          "summary": "Help text above the button row?",
+          "proposedDefault": "omit the block entirely, draft nothing"
+        }
+      ],
+      "answered": "00-input/answers-1.md"
+    },
+    {
+      "gate": 2,
+      "agent": "design-concept-architect",
+      "status": "pass",
+      "at": "2026-09-11T00:00:00Z",
+      "notes": "concept.v1 \u2014 archetype Form (s2 row 3). 12 blocks, 12 mapped, 6 composed, 0 DRAFT copy, 0 questions. Both viewports present; concept.md carries mapping and copy tables. Orchestrator re-ran class-audit independently: PASS 53/53 sanctioned, 0 unsanctioned, 0 violations, 36 utilities compiled. Delivery note: the first dispatch of this stage was killed by a stream watchdog after 600s with concept.md unwritten; the stage was re-dispatched once per dispatch discipline and both deliverables were regenerated together rather than patched.",
+      "attempts": 2
+    },
+    {
+      "gate": 3,
+      "agent": "design-critic",
+      "status": "fail",
+      "at": "2026-09-11T00:00:00Z",
+      "loop": 1,
+      "notes": "Critique 1 on v1 \u2014 10 findings, 1 blocking, 9 advisory. Written to 03-critique-1.md. F1 blocking: w-67 declared on the b05 row bag instead of on b06/b07 each, so a compliant build renders a 268px name row inside the 560 column; concept.md's mapping row is correct and the markup contract contradicts it. No finding is a stop-trigger question, so no clarification round. F7 (two-up name row not evidenced on frame 172:10673) and F8 (no mobile offset under the 76px sticky footer) are explicitly record-only and are the reviewer's to settle at Gate 4. Architect's four flagged judgement calls: button casing, eyebrow slash separator and s11-interim/s12-planned footer all adjudicated correct as drawn.",
+      "findings": {
+        "total": 10,
+        "blocking": 1,
+        "advisory": 9
+      }
+    },
+    {
+      "gate": 3,
+      "agent": "design-critic",
+      "status": "pass",
+      "at": "2026-09-11T00:00:00Z",
+      "loop": 1,
+      "concept": "02-concept/concept.v2.html",
+      "notes": "Critique 2 on v2 \u2014 PASS, 0 blocking, 1 advisory (F11). Written to 03-critique-2.md. F1 verified landed by data-class diff v1->v2, which contains only the F1/F3/F4 edits. New b13 block sound: w-[343px] gone, b13 web bag matches s11 Page shell body half verbatim, b02 is the canvas half alone, no ids renumbered, c01-c20 unchanged plus c21. F7/F8 confirmed not designed away. F2 residual accepted in the architect's favour. F11 advisory open for the reviewer: b02's element identity is half-named \u2014 s11 gives the canvas no height, so a content-height section can leave the viewport below it unpainted, and s11's '.header as a direct child of the scroll container' clause is unresolved with the header drawn as b02's sibling. Fix is a label/Unsure line naming the canvas as page root, NOT a height class.",
+      "findings": {
+        "total": 1,
+        "blocking": 0,
+        "advisory": 1
+      }
+    },
+    {
+      "gate": "4b",
+      "agent": "orchestrator",
+      "status": "pass",
+      "at": "2026-09-11T16:02:03Z",
+      "notes": "Approval sealed by the reviewer invoking /design build. 04-approval.md written with the concept name, sha256, ISO time and the verbatim invoking message. Three reviewer decisions recorded and passed to the builder: (1) two-up name row RESOLVED, stands as drawn, frame 172:10673 confirmed, closing critique F7; (2) mobile footer offset classified a s1.2 methodology gap to be fixed in short-app.md separately, stays recorded, builder must not invent a padding, carries to the writeup as methodology-gap; (3) critique F11 label fix carried into the build with no rework \u2014 name the canvas as page root in mapping and HANDOFF, explicitly NOT a height class. No concept edit was made, so the sealed hash remains valid."
+    },
+    {
+      "gate": 5,
+      "agent": "design-page-builder",
+      "status": "pass",
+      "at": "2026-09-11T00:00:00Z",
+      "notes": "BUILD: OK \u2014 9 files, 13/13 blocks, 4 states, 1 planned composition, 0 questions. Builder verified the approval hash itself before starting; orchestrator re-confirmed concept.v2.html still hashes to b1cc6bb0... so the seal holds. Package has the route, 5 components, mapping.md, contract.json, HANDOFF.md. Orchestrator re-ran both tools independently: class-audit PASS 51/51 sanctioned 0 violations; handoff-check PASS 13/13 blocks, 4 states, 21 copy, 0 failures, 0 warnings (re-run with --sprite src/icons/sprite.svg, so icon existence IS checked and every referenced icon exists). All three reviewer decisions built in: name row stands as drawn and HANDOFF states it settled; footer offset recorded as open item O1 classified s1.2 methodology-gap with no padding invented; b02 named page root in mapping.md and HANDOFF as a label only, no height class. FLAGGED FOR GATE 6 \u2014 builder judgement call D1: the concept declares a class bag per viewport but the package is one artifact, so bags merge mobile-first over md. Every merge is a plain md: prefix except b13's 16px mobile gutter, which the builder MOVED to b02 as px-4, on the reasoning that md:px-0 is unsanctioned and leaving p-4 on b13 would give the web column 528px inside w-140 instead of the 560 that s1.1/s4 and the w-67+gap-6+w-67 name row require exactly. Needs adversarial review. Also flagged: contract.copy rows carry verbatimInMarkup:false because the concept's copy elements append spec prose after the string."
+    },
+    {
+      "gate": 6,
+      "agent": "design-handoff-verifier",
+      "status": "pass",
+      "at": "2026-09-11T00:00:00Z",
+      "loop": 0,
+      "notes": "VERIFY: PASS \u2014 0 blocking, 4 advisories, all document accuracy. Written to 06-verify-1.md. D1 gutter move independently checked at both viewports and sound: at 375 px-4 on b02 gives 343 with b13 declaring no width (identical to the concept); at >=md b13 is md:w-140 with no x-padding so the name row closes at 268+24+268, and b02's inset never touches the centred column. Rejected alternatives confirmed worse (p-4 on b13 yields 528 at md; md:px-0 unsanctioned; w-[343px] overflows at 320). Copy byte-compared against 01-brief.md \u2014 every rendered string matches exactly, spec prose never reaches markup. All three reviewer decisions honoured. Advisories carried to the writeup, not fixed: verification passed and rework is mandated only on FAIL.",
+      "findings": {
+        "total": 4,
+        "blocking": 0,
+        "advisory": 4
+      }
+    },
+    {
+      "gate": 7,
+      "agent": "orchestrator",
+      "status": "pass",
+      "at": "2026-09-11T00:00:00Z",
+      "notes": "07-writeup.md written \u2014 build summary, concept/class/file mapping, verification record, aggregated methodology rules and Unsure, 4 open questions for the dev team, and a 7-row divergence ledger: 4 methodology-gap (D1 gutter placement, D2 footer offset, D5 interim mobile bar, D6 class-audit PLANNED blind spot), 2 brief-gap (D3 eyebrow separator, D4 button casing), 1 agent-error (D7 contract.copy verbatimInMarkup, design-concept-architect). None affects what renders."
+    }
+  ],
+  "loops": {
+    "critic": 1,
+    "verify": 0
+  },
+  "approval": {
+    "concept": "02-concept/concept.v2.html",
+    "sha256": "b1cc6bb0a3788d8da2df74c914df56134b3d69b73b33299c546a10f8ac7d59be",
+    "at": "2026-09-11T16:02:03Z"
+  },
+  "status": "signed-off",
+  "notes": "All gates in this run are dispatched on Opus 5 with model set explicitly per dispatch. An earlier pass of gates 1-2 ran on Sonnet 4.5 and is preserved for comparison only at the sibling path val/runs/2026-09-11-design-primary-contact-sonnet/; it is not part of this run. Sonnet gate-2 findings for comparison: 8 blocks, 8 mapped, 2 s11 compositions, 0 DRAFT copy, class-audit PASS 43/43 sanctioned 0 violations. A first Opus gate-1 pass was discarded unused in favour of a clean re-dispatch at the requester's instruction."
+}

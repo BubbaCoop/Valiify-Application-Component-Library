@@ -1,0 +1,586 @@
+{
+  "target": "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html",
+  "library": ".",
+  "methodology": "design-methodology/short-app.md",
+  "rules": {
+    "forbidden": [
+      "avatar",
+      "btn-bubble",
+      "tab-portal",
+      "text-area",
+      "box-action-switch",
+      "toast",
+      "status-tracker",
+      "action",
+      "utility-button-rounded",
+      "icon-button-subtle"
+    ],
+    "planned": [],
+    "monoTokens": []
+  },
+  "files": [
+    "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html"
+  ],
+  "vocabulary": {
+    "componentClasses": 146,
+    "utilities": [
+      "type-eyebrow",
+      "type-micro-label",
+      "type-button-label",
+      "focus-ring"
+    ],
+    "tokens": {
+      "color": 58,
+      "text": 24,
+      "radius": 6,
+      "shadow": 2
+    },
+    "citedMethodology": 259,
+    "citedClaudeMd": 276
+  },
+  "summary": {
+    "classes": 52,
+    "sanctioned": 52,
+    "unsanctioned": 0,
+    "violations": 0
+  },
+  "classes": [
+    {
+      "cls": "bg-surface-app-page",
+      "kind": "token",
+      "source": "color:surface-app-page · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:17",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:107"
+      ]
+    },
+    {
+      "cls": "bg-surface-paper",
+      "kind": "token",
+      "source": "color:surface-paper · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "border-stroke-divider",
+      "kind": "token",
+      "source": "color:stroke-divider · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "border-t",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "bottom-0",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "btn",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:87",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "btn-primary",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:87",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "btn-secondary",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:87",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "flex",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:22",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:35",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:40",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:87",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:112",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:125",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:130",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "flex-1",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:87",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "flex-col",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:22",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:35",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:112",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:125",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:130"
+      ]
+    },
+    {
+      "cls": "focus-ring",
+      "kind": "utility",
+      "source": "@utility",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:62",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:70",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:78",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:87",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:152",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:160",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:168",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "gap-10",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:22"
+      ]
+    },
+    {
+      "cls": "gap-2",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "gap-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:112"
+      ]
+    },
+    {
+      "cls": "gap-5",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:35",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:125",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:130",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "gap-6",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:40",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:87"
+      ]
+    },
+    {
+      "cls": "h-19",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "header",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "header-desktop",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "header-logo",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "header-mobile",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "md:flex-row",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:130"
+      ]
+    },
+    {
+      "cls": "md:gap-6",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:130"
+      ]
+    },
+    {
+      "cls": "md:w-67",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143"
+      ]
+    },
+    {
+      "cls": "mx-auto",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:22"
+      ]
+    },
+    {
+      "cls": "p-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:112"
+      ]
+    },
+    {
+      "cls": "px-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "py-12",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:22"
+      ]
+    },
+    {
+      "cls": "py-3.5",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "sticky",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    },
+    {
+      "cls": "text-content-primary",
+      "kind": "token",
+      "source": "color:content-primary · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "text-content-secondary",
+      "kind": "token",
+      "source": "color:content-secondary · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "text-content-tertiary",
+      "kind": "token",
+      "source": "color:content-tertiary · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "text-display",
+      "kind": "token",
+      "source": "text:display · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "text-field",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:62",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:70",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:78",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:152",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:160",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:168"
+      ]
+    },
+    {
+      "cls": "text-field-box",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:62",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:70",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:78",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:152",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:160",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:168"
+      ]
+    },
+    {
+      "cls": "text-field-hint",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:62",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:70",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:78",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:152",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:160",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:168"
+      ]
+    },
+    {
+      "cls": "text-field-input",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:62",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:70",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:78",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:152",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:160",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:168"
+      ]
+    },
+    {
+      "cls": "text-field-title",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:62",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:70",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:78",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:152",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:160",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:168"
+      ]
+    },
+    {
+      "cls": "text-field-title-row",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:62",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:70",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:78",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:135",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:143",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:152",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:160",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:168"
+      ]
+    },
+    {
+      "cls": "text-input",
+      "kind": "token",
+      "source": "text:input · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "text-primary-text",
+      "kind": "token",
+      "source": "color:primary-text · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "text-selector",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "text-selector-chevron",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "text-selector-icon",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "text-selector-label",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "top-0",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101"
+      ]
+    },
+    {
+      "cls": "type-eyebrow",
+      "kind": "utility",
+      "source": "@utility",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:27",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:117"
+      ]
+    },
+    {
+      "cls": "w-140",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:22"
+      ]
+    },
+    {
+      "cls": "w-67",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:45",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:53"
+      ]
+    },
+    {
+      "cls": "z-40",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:10",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:101",
+        "val/runs/2026-09-11-design-primary-contact/02-concept/concept.v2.html:179"
+      ]
+    }
+  ],
+  "planned": [],
+  "issues": [],
+  "tailwind": {
+    "checked": true,
+    "tailwind": "4.3.3",
+    "candidates": 35,
+    "nonCompiling": []
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,15 @@
+{
+  "runDir": "val/runs/2026-09-11-design-primary-contact",
+  "package": "05-package",
+  "concept": "02-concept/concept.v2.html",
+  "counts": {
+    "svelteFiles": 6,
+    "conceptBlocks": 13,
+    "contractBlocks": 13,
+    "states": 4,
+    "copy": 21,
+    "props": 20
+  },
+  "findings": [],
+  "verdict": "PASS"
+}

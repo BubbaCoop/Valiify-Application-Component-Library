@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Concept — primary-contact v2</title>
+<link rel="stylesheet" href="../../../tools/design/concept.css">
+</head><body>
+
+<main data-concept data-viewport="web" data-title="Primary contact — business step 3 of 10">
+
+  <section data-block="b01" data-region="header" data-archetype="form"
+           data-class=".header .header-logo .header-desktop .header-mobile .text-selector .text-selector-icon .text-selector-label .text-selector-chevron sticky top-0 z-40"
+           data-methodology="§1.1 §7 §10" data-states="rest" data-copy="c21">
+    <p data-label>Header — 60 tall, logo centred, language selector right; sticky, no progress bar and no back control (§9.2)</p>
+    <p data-label data-role="control" data-copy-id="c21">Language selector — label "English" (§1.1), button, aria-haspopup="listbox", aria-expanded="false". The label is methodology-sourced copy, not drafted and not the build's to invent</p>
+  </section>
+
+  <section data-block="b02" data-region="shell" data-archetype="form"
+           data-class="bg-surface-app-page"
+           data-methodology="§1.1 §9.2 §11" data-states="rest">
+    <p data-label>Canvas — the full-bleed page ground. §11 "Page shell" names two things and this is the first: the warm `bg-surface-app-page` fill belongs to the PAGE, not to the 560 column, so the area either side of the column is painted and never left white (§9.2 "never pure white")</p>
+
+    <section data-block="b13" data-region="shell" data-archetype="form"
+             data-class="w-140 mx-auto py-12 flex flex-col gap-10"
+             data-methodology="§1.1 §11" data-states="rest">
+      <p data-label>Body column — the second half of §11's page shell: one centred 560 column, 48 top/bottom, 40 between title block · content · button row. Carries no fill of its own (b02 paints under it)</p>
+
+      <section data-block="b03" data-region="title-block" data-archetype="form"
+               data-class="flex flex-col gap-2 type-eyebrow text-content-tertiary text-primary-text text-display text-content-primary text-input text-content-secondary"
+               data-methodology="§1.1 §3 §8 §10" data-states="rest" data-copy="c20 c01 c02">
+        <p data-label data-role="eyebrow" data-copy-id="c20">Step 3 of 10 / <span data-label data-role="section">Primary contact</span> — typed sentence case; `type-eyebrow` supplies the caps, so it renders STEP 3 OF 10 / PRIMARY CONTACT (§0, §8 casing is a transform)</p>
+        <p data-label data-role="title" data-copy-id="c01">Who should we contact?</p>
+        <p data-label data-role="description" data-copy-id="c02">We'll use these details for anything we need to ask you about this application.</p>
+      </section>
+
+      <section data-block="b04" data-region="content" data-archetype="form"
+               data-class="flex flex-col gap-5"
+               data-methodology="§2 §4 §11" data-states="rest">
+        <p data-label>Content — five labelled text fields on one topic, 20 between fields. No sub-section label, no conditional reveal, no disclaimer row, no help text (brief: single topic; help text omitted by decision)</p>
+
+        <section data-block="b05" data-region="field-group" data-archetype="form"
+                 data-class="flex gap-6"
+                 data-methodology="§1.2 §4 §11" data-states="rest">
+          <p data-label>Name row — the two-up WRAPPER only: `flex gap-6`. The 268 widths belong to the two fields (b06, b07), not to this row: 268 + 24 + 268 = 560</p>
+
+          <section data-block="b06" data-region="field-group" data-archetype="form"
+                   data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring w-67"
+                   data-methodology="§4 §5 §6 §10 §11" data-states="empty error" data-copy="c03 c08 c15">
+            <p data-label data-role="label" data-copy-id="c03">First name</p>
+            <p data-label>Text input, required, 48 box, `w-67` = 268 wide (§11 two-up, `w-67` each) — placeholder <span data-copy-id="c08">Jane</span></p>
+            <p data-label data-role="error" data-copy-id="c15">Enter the contact's first name. — shown on blur and on Continue; input carries aria-invalid="true", box border goes amber, hint ink amber</p>
+          </section>
+
+          <section data-block="b07" data-region="field-group" data-archetype="form"
+                   data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring w-67"
+                   data-methodology="§4 §5 §6 §10 §11" data-states="empty error" data-copy="c04 c09 c16">
+            <p data-label data-role="label" data-copy-id="c04">Last name</p>
+            <p data-label>Text input, required, 48 box, `w-67` = 268 wide — placeholder <span data-copy-id="c09">Doe</span></p>
+            <p data-label data-role="error" data-copy-id="c16">Enter the contact's last name. — on blur and on Continue; aria-invalid drives the amber display</p>
+          </section>
+        </section>
+
+        <section data-block="b08" data-region="field-group" data-archetype="form"
+                 data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring"
+                 data-methodology="§4 §5 §6 §10" data-states="empty error" data-copy="c05 c10 c17">
+          <p data-label data-role="label" data-copy-id="c05">Job title</p>
+          <p data-label>Text input, required, full 560 — placeholder <span data-copy-id="c10">Chief Financial Officer</span></p>
+          <p data-label data-role="error" data-copy-id="c17">Enter the contact's job title. — on blur and on Continue</p>
+        </section>
+
+        <section data-block="b09" data-region="field-group" data-archetype="form"
+                 data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring"
+                 data-methodology="§4 §5 §6 §10" data-states="empty error" data-copy="c06 c11 c18">
+          <p data-label data-role="label" data-copy-id="c06">Email address</p>
+          <p data-label>Email input (type="email"), required, full 560 — placeholder <span data-copy-id="c11">jane@company.com</span></p>
+          <p data-label data-role="error" data-copy-id="c18">Enter a valid email address. — on blur and on Continue</p>
+        </section>
+
+        <section data-block="b10" data-region="field-group" data-archetype="form"
+                 data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring"
+                 data-methodology="§4 §5 §6 §8 §10" data-states="empty error" data-copy="c07 c12 c19">
+          <p data-label data-role="label" data-copy-id="c07">Mobile phone</p>
+          <p data-label>Tel input (type="tel"), required, 10 digits, full 560 — format placeholder <span data-copy-id="c12">(555) 555-5555</span></p>
+          <p data-label data-role="error" data-copy-id="c19">Enter a 10-digit mobile number. — on blur and on Continue</p>
+        </section>
+      </section>
+
+      <section data-block="b11" data-region="button-row" data-archetype="form"
+               data-class="flex gap-6 .btn .btn-secondary .btn-primary flex-1 focus-ring"
+               data-methodology="§1.1 §2 §5 §6 §7 §11" data-states="disabled enabled" data-copy="c13 c14">
+        <p data-label>Button row — in flow, 560 wide, 48 tall: Back (99, hug, leading #arrow-left) + 24 + Continue (flex-1, 437, trailing #arrow-right)</p>
+        <span data-control="secondary" data-copy-id="c13">Back</span>
+        <span data-control="primary" data-copy-id="c14" data-disabled="true">Continue</span>
+        <p data-label>Primary is disabled (brand at 30%, white ink kept) until all five fields are present and valid; then enabled. Back is always actionable and runs no validation. No in-flight / loading display — the save is immediate and synchronous (brief, answers-1.md Q1)</p>
+      </section>
+    </section>
+  </section>
+</main>
+
+<main data-concept data-viewport="mobile" data-title="Primary contact — business step 3 of 10">
+
+  <section data-block="b01" data-region="header" data-archetype="form"
+           data-class=".header .header-logo .header-desktop .header-mobile .text-selector .text-selector-icon .text-selector-label .text-selector-chevron sticky top-0 z-40"
+           data-methodology="§1.2 §7 §10" data-states="rest" data-copy="c21">
+    <p data-label>Header — the same 60 component at 375; the .header-mobile wrapper swaps the selector label to <span data-copy-id="c21">EN</span> below md (768). Label copy is §1.2's, not the build's to invent</p>
+  </section>
+
+  <section data-block="b02" data-region="shell" data-archetype="form"
+           data-class="bg-surface-app-page"
+           data-methodology="§1.2 §9.2 §11" data-states="rest">
+    <p data-label>Canvas — the same page ground at 375; the fill is on the page element, not on the content column (§9.2)</p>
+
+    <section data-block="b13" data-region="shell" data-archetype="form"
+             data-class="p-4 flex flex-col gap-4"
+             data-methodology="§1.2 §11" data-states="rest">
+      <p data-label>Body column — the 375-wide shell padded `p-4`; 343 is the RESULT of that padding, not a declared width, so no `w-[343px]` is written. 16 between blocks; the button row leaves the flow and becomes the sticky footer (b12)</p>
+
+      <section data-block="b03" data-region="title-block" data-archetype="form"
+               data-class="flex flex-col gap-2 type-eyebrow text-content-tertiary text-primary-text text-display text-content-primary text-input text-content-secondary"
+               data-methodology="§1.2 §3 §8 §10" data-states="rest" data-copy="c20 c01 c02">
+        <p data-label data-role="eyebrow" data-copy-id="c20">Step 3 of 10 / <span data-label data-role="section">Primary contact</span> — caps supplied by `type-eyebrow`</p>
+        <p data-label data-role="title" data-copy-id="c01">Who should we contact?</p>
+        <p data-label data-role="description" data-copy-id="c02">We'll use these details for anything we need to ask you about this application. — description wraps; the title block collapses to ~96</p>
+      </section>
+
+      <section data-block="b04" data-region="content" data-archetype="form"
+               data-class="flex flex-col gap-5"
+               data-methodology="§1.2 §2 §4" data-states="rest">
+        <p data-label>Content — the same five fields, one per row, at the standard 20 field pitch</p>
+
+        <section data-block="b05" data-region="field-group" data-archetype="form"
+                 data-class="flex flex-col gap-5 md:flex-row md:gap-6"
+                 data-methodology="§1.2 §4 §11" data-states="rest">
+          <p data-label>Name row — the wrapper stacks below md (§1.2) and becomes the two-up row at md; it carries no width at either size</p>
+
+          <section data-block="b06" data-region="field-group" data-archetype="form"
+                   data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring md:w-67"
+                   data-methodology="§1.2 §4 §5 §6 §10 §11" data-states="empty error" data-copy="c03 c08 c15">
+            <p data-label data-role="label" data-copy-id="c03">First name</p>
+            <p data-label>Text input, required, 48 box; full width of the 343 column below md, `md:w-67` = 268 at md and above — placeholder <span data-copy-id="c08">Jane</span></p>
+            <p data-label data-role="error" data-copy-id="c15">Enter the contact's first name.</p>
+          </section>
+
+          <section data-block="b07" data-region="field-group" data-archetype="form"
+                   data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring md:w-67"
+                   data-methodology="§1.2 §4 §5 §6 §10 §11" data-states="empty error" data-copy="c04 c09 c16">
+            <p data-label data-role="label" data-copy-id="c04">Last name</p>
+            <p data-label>Text input, required, 48 box; full 343 below md, `md:w-67` at md and above — placeholder <span data-copy-id="c09">Doe</span></p>
+            <p data-label data-role="error" data-copy-id="c16">Enter the contact's last name.</p>
+          </section>
+        </section>
+
+        <section data-block="b08" data-region="field-group" data-archetype="form"
+                 data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring"
+                 data-methodology="§4 §5 §6 §10" data-states="empty error" data-copy="c05 c10 c17">
+          <p data-label data-role="label" data-copy-id="c05">Job title</p>
+          <p data-label>Text input, required — placeholder <span data-copy-id="c10">Chief Financial Officer</span></p>
+          <p data-label data-role="error" data-copy-id="c17">Enter the contact's job title.</p>
+        </section>
+
+        <section data-block="b09" data-region="field-group" data-archetype="form"
+                 data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring"
+                 data-methodology="§4 §5 §6 §10" data-states="empty error" data-copy="c06 c11 c18">
+          <p data-label data-role="label" data-copy-id="c06">Email address</p>
+          <p data-label>Email input, required — placeholder <span data-copy-id="c11">jane@company.com</span></p>
+          <p data-label data-role="error" data-copy-id="c18">Enter a valid email address.</p>
+        </section>
+
+        <section data-block="b10" data-region="field-group" data-archetype="form"
+                 data-class=".text-field .text-field-title-row .text-field-title .text-field-box .text-field-input .text-field-hint focus-ring"
+                 data-methodology="§4 §5 §6 §8 §10" data-states="empty error" data-copy="c07 c12 c19">
+          <p data-label data-role="label" data-copy-id="c07">Mobile phone</p>
+          <p data-label>Tel input, required, 10 digits — format placeholder <span data-copy-id="c12">(555) 555-5555</span></p>
+          <p data-label data-role="error" data-copy-id="c19">Enter a 10-digit mobile number.</p>
+        </section>
+      </section>
+    </section>
+  </section>
+
+  <section data-block="b12" data-region="mobile-footer" data-archetype="form"
+           data-class="h-19 py-3.5 px-4 flex gap-5 bg-surface-paper border-t border-stroke-divider sticky bottom-0 z-40 .btn .btn-secondary .btn-primary flex-1 focus-ring"
+           data-methodology="§1.2 §11 §12" data-states="disabled enabled" data-copy="c13 c14">
+    <p data-label>Sticky action bar — 76 tall, paper, top hairline, pinned to the bottom below md. Interim §11 recipe; the component itself is a §12 planned addition</p>
+    <span data-control="secondary" data-copy-id="c13">Back</span>
+    <span data-control="primary" data-copy-id="c14" data-disabled="true">Continue</span>
+    <p data-label>Same two states as the web row: primary disabled until all five fields are valid, then enabled. No loading display</p>
+    <p data-label>Open value: nothing offsets b13's content from under this 76px bar. §1.2 specifies the footer but no bottom offset and §13 lists none, so no padding is inferred here — see concept.md Unsure</p>
+  </section>
+</main>
+
+</body></html>

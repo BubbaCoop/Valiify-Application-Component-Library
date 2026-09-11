@@ -1,0 +1,462 @@
+{
+  "route": "/business/primary-contact",
+  "surface": "short-app",
+  "step": {
+    "n": 3,
+    "m": 10,
+    "section": "PRIMARY CONTACT"
+  },
+  "archetype": "form",
+  "blocks": [
+    {
+      "id": "b01",
+      "region": "header",
+      "component": "StepHeader",
+      "file": "src/lib/components/StepHeader.svelte",
+      "classes": [
+        "header",
+        "header-logo",
+        "header-desktop",
+        "header-mobile",
+        "text-selector",
+        "text-selector-icon",
+        "text-selector-label",
+        "text-selector-chevron"
+      ]
+    },
+    {
+      "id": "b02",
+      "region": "shell",
+      "file": "src/routes/business/primary-contact/+page.svelte",
+      "classes": [
+        "bg-surface-app-page",
+        "px-4"
+      ]
+    },
+    {
+      "id": "b13",
+      "region": "shell",
+      "file": "src/routes/business/primary-contact/+page.svelte",
+      "classes": [
+        "py-4",
+        "flex",
+        "flex-col",
+        "gap-4",
+        "mx-auto",
+        "md:w-140",
+        "md:py-12",
+        "md:gap-10"
+      ]
+    },
+    {
+      "id": "b03",
+      "region": "title-block",
+      "component": "TitleBlock",
+      "file": "src/lib/components/TitleBlock.svelte",
+      "classes": [
+        "flex",
+        "flex-col",
+        "gap-2",
+        "type-eyebrow",
+        "text-content-tertiary",
+        "text-primary-text",
+        "text-display",
+        "text-content-primary",
+        "text-input",
+        "text-content-secondary"
+      ]
+    },
+    {
+      "id": "b04",
+      "region": "content",
+      "file": "src/routes/business/primary-contact/+page.svelte",
+      "classes": [
+        "flex",
+        "flex-col",
+        "gap-5"
+      ]
+    },
+    {
+      "id": "b05",
+      "region": "field-group",
+      "file": "src/routes/business/primary-contact/+page.svelte",
+      "classes": [
+        "flex",
+        "flex-col",
+        "gap-5",
+        "md:flex-row",
+        "md:gap-6"
+      ]
+    },
+    {
+      "id": "b06",
+      "region": "field-group",
+      "component": "TextField",
+      "file": "src/lib/components/TextField.svelte",
+      "classes": [
+        "text-field",
+        "text-field-title-row",
+        "text-field-title",
+        "text-field-box",
+        "text-field-input",
+        "text-field-hint",
+        "md:w-67"
+      ]
+    },
+    {
+      "id": "b07",
+      "region": "field-group",
+      "component": "TextField",
+      "file": "src/lib/components/TextField.svelte",
+      "classes": [
+        "text-field",
+        "text-field-title-row",
+        "text-field-title",
+        "text-field-box",
+        "text-field-input",
+        "text-field-hint",
+        "md:w-67"
+      ]
+    },
+    {
+      "id": "b08",
+      "region": "field-group",
+      "component": "TextField",
+      "file": "src/lib/components/TextField.svelte",
+      "classes": [
+        "text-field",
+        "text-field-title-row",
+        "text-field-title",
+        "text-field-box",
+        "text-field-input",
+        "text-field-hint"
+      ]
+    },
+    {
+      "id": "b09",
+      "region": "field-group",
+      "component": "TextField",
+      "file": "src/lib/components/TextField.svelte",
+      "classes": [
+        "text-field",
+        "text-field-title-row",
+        "text-field-title",
+        "text-field-box",
+        "text-field-input",
+        "text-field-hint"
+      ]
+    },
+    {
+      "id": "b10",
+      "region": "field-group",
+      "component": "TextField",
+      "file": "src/lib/components/TextField.svelte",
+      "classes": [
+        "text-field",
+        "text-field-title-row",
+        "text-field-title",
+        "text-field-box",
+        "text-field-input",
+        "text-field-hint"
+      ]
+    },
+    {
+      "id": "b11",
+      "region": "button-row",
+      "component": "StepButtonRow",
+      "file": "src/lib/components/StepButtonRow.svelte",
+      "classes": [
+        "hidden",
+        "md:flex",
+        "gap-6",
+        "btn",
+        "btn-secondary",
+        "btn-primary",
+        "flex-1"
+      ]
+    },
+    {
+      "id": "b12",
+      "region": "mobile-footer",
+      "component": "MobileActionBar",
+      "file": "src/lib/components/MobileActionBar.svelte",
+      "classes": [
+        "h-19",
+        "py-3.5",
+        "px-4",
+        "flex",
+        "gap-5",
+        "bg-surface-paper",
+        "border-t",
+        "border-stroke-divider",
+        "sticky",
+        "bottom-0",
+        "z-40",
+        "md:hidden",
+        "btn",
+        "btn-secondary",
+        "btn-primary",
+        "flex-1"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "id": "firstName",
+      "label": "First name",
+      "type": "text",
+      "format": "free",
+      "required": true,
+      "placeholder": "Jane",
+      "bind": "values.firstName"
+    },
+    {
+      "id": "lastName",
+      "label": "Last name",
+      "type": "text",
+      "format": "free",
+      "required": true,
+      "placeholder": "Doe",
+      "bind": "values.lastName"
+    },
+    {
+      "id": "jobTitle",
+      "label": "Job title",
+      "type": "text",
+      "format": "free",
+      "required": true,
+      "placeholder": "Chief Financial Officer",
+      "bind": "values.jobTitle"
+    },
+    {
+      "id": "email",
+      "label": "Email address",
+      "type": "email",
+      "format": "email address",
+      "required": true,
+      "placeholder": "jane@company.com",
+      "bind": "values.email"
+    },
+    {
+      "id": "mobile",
+      "label": "Mobile phone",
+      "type": "tel",
+      "format": "10 digits after formatting characters are ignored",
+      "required": true,
+      "placeholder": "(555) 555-5555",
+      "bind": "values.mobile"
+    }
+  ],
+  "states": [
+    {
+      "id": "empty",
+      "when": "value === \"\"",
+      "prop": "value",
+      "blocks": [
+        "b06",
+        "b07",
+        "b08",
+        "b09",
+        "b10"
+      ]
+    },
+    {
+      "id": "error",
+      "when": "touched && error !== \"\"",
+      "prop": "touched",
+      "blocks": [
+        "b06",
+        "b07",
+        "b08",
+        "b09",
+        "b10"
+      ]
+    },
+    {
+      "id": "disabled",
+      "when": "continueEnabled === false",
+      "prop": "continueEnabled",
+      "blocks": [
+        "b11",
+        "b12"
+      ]
+    },
+    {
+      "id": "enabled",
+      "when": "continueEnabled === true",
+      "prop": "continueEnabled",
+      "blocks": [
+        "b11",
+        "b12"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "id": "back",
+      "label": "Back",
+      "kind": "back",
+      "emits": "onback"
+    },
+    {
+      "id": "continue",
+      "label": "Continue",
+      "kind": "continue",
+      "enabledWhen": "isValid",
+      "emits": "oncontinue"
+    }
+  ],
+  "copy": [
+    {
+      "id": "c01",
+      "role": "title",
+      "text": "Who should we contact?",
+      "source": "brief"
+    },
+    {
+      "id": "c02",
+      "role": "description",
+      "text": "We'll use these details for anything we need to ask you about this application.",
+      "source": "brief"
+    },
+    {
+      "id": "c03",
+      "role": "field label (First name)",
+      "text": "First name",
+      "source": "brief"
+    },
+    {
+      "id": "c04",
+      "role": "field label (Last name)",
+      "text": "Last name",
+      "source": "brief"
+    },
+    {
+      "id": "c05",
+      "role": "field label (Job title)",
+      "text": "Job title",
+      "source": "brief"
+    },
+    {
+      "id": "c06",
+      "role": "field label (Email address)",
+      "text": "Email address",
+      "source": "brief"
+    },
+    {
+      "id": "c07",
+      "role": "field label (Mobile phone)",
+      "text": "Mobile phone",
+      "source": "brief"
+    },
+    {
+      "id": "c08",
+      "role": "placeholder (First name)",
+      "text": "Jane",
+      "source": "brief"
+    },
+    {
+      "id": "c09",
+      "role": "placeholder (Last name)",
+      "text": "Doe",
+      "source": "brief"
+    },
+    {
+      "id": "c10",
+      "role": "placeholder (Job title)",
+      "text": "Chief Financial Officer",
+      "source": "brief"
+    },
+    {
+      "id": "c11",
+      "role": "placeholder (Email address)",
+      "text": "jane@company.com",
+      "source": "brief"
+    },
+    {
+      "id": "c12",
+      "role": "placeholder (Mobile phone)",
+      "text": "(555) 555-5555",
+      "source": "brief"
+    },
+    {
+      "id": "c13",
+      "role": "button label (secondary)",
+      "text": "Back",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c14",
+      "role": "button label (primary)",
+      "text": "Continue",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c15",
+      "role": "error message (First name)",
+      "text": "Enter the contact's first name. — shown on blur and on Continue; input carries aria-invalid=\"true\", box border goes amber, hint ink amber",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c16",
+      "role": "error message (Last name)",
+      "text": "Enter the contact's last name. — on blur and on Continue; aria-invalid drives the amber display",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c17",
+      "role": "error message (Job title)",
+      "text": "Enter the contact's job title. — on blur and on Continue",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c18",
+      "role": "error message (Email address)",
+      "text": "Enter a valid email address. — on blur and on Continue",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c19",
+      "role": "error message (Mobile phone)",
+      "text": "Enter a 10-digit mobile number. — on blur and on Continue",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c20",
+      "role": "eyebrow",
+      "text": "Step 3 of 10 / Primary contact — typed sentence case; `type-eyebrow` supplies the caps, so it renders STEP 3 OF 10 / PRIMARY CONTACT (§0, §8 casing is a transform)",
+      "source": "brief",
+      "verbatimInMarkup": false
+    },
+    {
+      "id": "c21",
+      "role": "header language label",
+      "text": "Language selector — label \"English\" (§1.1), button, aria-haspopup=\"listbox\", aria-expanded=\"false\". The label is methodology-sourced copy, not drafted and not the build's to invent",
+      "source": "methodology",
+      "verbatimInMarkup": false
+    }
+  ],
+  "icons": [
+    "globe",
+    "chevron-down",
+    "arrow-left",
+    "arrow-right"
+  ],
+  "planned": [
+    {
+      "class": "h-19 py-3.5 px-4 flex gap-5 bg-surface-paper border-t border-stroke-divider sticky bottom-0 z-40",
+      "value": "Mobile sticky action bar — 76 tall, bg-surface-paper, top hairline, pinned below md; .btn btn-secondary 99 + gap-5 + .btn btn-primary flex-1",
+      "ref": "methodology §12 Mobile sticky action bar (interim recipe: §11 Mobile footer)",
+      "blocks": [
+        "b12"
+      ]
+    }
+  ]
+}

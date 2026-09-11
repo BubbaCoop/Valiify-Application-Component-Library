@@ -1,0 +1,491 @@
+{
+  "target": "val/runs/2026-09-11-design-primary-contact/05-package",
+  "library": ".",
+  "methodology": "design-methodology/short-app.md",
+  "rules": {
+    "forbidden": [
+      "avatar",
+      "btn-bubble",
+      "tab-portal",
+      "text-area",
+      "box-action-switch",
+      "toast",
+      "status-tracker",
+      "action",
+      "utility-button-rounded",
+      "icon-button-subtle"
+    ],
+    "planned": [],
+    "monoTokens": []
+  },
+  "files": [
+    "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte",
+    "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte",
+    "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte",
+    "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TextField.svelte",
+    "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte",
+    "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte"
+  ],
+  "vocabulary": {
+    "componentClasses": 146,
+    "utilities": [
+      "type-eyebrow",
+      "type-micro-label",
+      "type-button-label",
+      "focus-ring"
+    ],
+    "tokens": {
+      "color": 58,
+      "text": 24,
+      "radius": 6,
+      "shadow": 2
+    },
+    "citedMethodology": 259,
+    "citedClaudeMd": 276
+  },
+  "summary": {
+    "classes": 51,
+    "sanctioned": 51,
+    "unsanctioned": 0,
+    "violations": 0
+  },
+  "classes": [
+    {
+      "cls": "bg-surface-app-page",
+      "kind": "token",
+      "source": "color:surface-app-page · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:95"
+      ]
+    },
+    {
+      "cls": "bg-surface-paper",
+      "kind": "token",
+      "source": "color:surface-paper · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "border-stroke-divider",
+      "kind": "token",
+      "source": "color:stroke-divider · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "border-t",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "bottom-0",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "btn",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:18",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:22",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:18",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:22"
+      ]
+    },
+    {
+      "cls": "btn-primary",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:22",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:22"
+      ]
+    },
+    {
+      "cls": "btn-secondary",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:18",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:18"
+      ]
+    },
+    {
+      "cls": "flex",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:11",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:104",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:105"
+      ]
+    },
+    {
+      "cls": "flex-1",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:22",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:22"
+      ]
+    },
+    {
+      "cls": "flex-col",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:11",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:104",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:105"
+      ]
+    },
+    {
+      "cls": "gap-2",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:11"
+      ]
+    },
+    {
+      "cls": "gap-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96"
+      ]
+    },
+    {
+      "cls": "gap-5",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:104",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:105"
+      ]
+    },
+    {
+      "cls": "gap-6",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:17"
+      ]
+    },
+    {
+      "cls": "h-19",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "header",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:11"
+      ]
+    },
+    {
+      "cls": "header-desktop",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:13"
+      ]
+    },
+    {
+      "cls": "header-logo",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:12"
+      ]
+    },
+    {
+      "cls": "header-mobile",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:20"
+      ]
+    },
+    {
+      "cls": "hidden",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:17"
+      ]
+    },
+    {
+      "cls": "md:flex",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepButtonRow.svelte:17"
+      ]
+    },
+    {
+      "cls": "md:flex-row",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:105"
+      ]
+    },
+    {
+      "cls": "md:gap-10",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96"
+      ]
+    },
+    {
+      "cls": "md:gap-6",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:105"
+      ]
+    },
+    {
+      "cls": "md:hidden",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "md:py-12",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96"
+      ]
+    },
+    {
+      "cls": "md:w-140",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96"
+      ]
+    },
+    {
+      "cls": "mx-auto",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96"
+      ]
+    },
+    {
+      "cls": "px-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:95"
+      ]
+    },
+    {
+      "cls": "py-3.5",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "py-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/routes/business/primary-contact/+page.svelte:96"
+      ]
+    },
+    {
+      "cls": "sticky",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    },
+    {
+      "cls": "text-content-primary",
+      "kind": "token",
+      "source": "color:content-primary · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:15"
+      ]
+    },
+    {
+      "cls": "text-content-secondary",
+      "kind": "token",
+      "source": "color:content-secondary · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:16"
+      ]
+    },
+    {
+      "cls": "text-content-tertiary",
+      "kind": "token",
+      "source": "color:content-tertiary · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:12"
+      ]
+    },
+    {
+      "cls": "text-display",
+      "kind": "token",
+      "source": "text:display · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:15"
+      ]
+    },
+    {
+      "cls": "text-field",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TextField.svelte:36"
+      ]
+    },
+    {
+      "cls": "text-field-box",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TextField.svelte:40"
+      ]
+    },
+    {
+      "cls": "text-field-hint",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TextField.svelte:54"
+      ]
+    },
+    {
+      "cls": "text-field-input",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TextField.svelte:43"
+      ]
+    },
+    {
+      "cls": "text-field-title",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TextField.svelte:38"
+      ]
+    },
+    {
+      "cls": "text-field-title-row",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TextField.svelte:37"
+      ]
+    },
+    {
+      "cls": "text-input",
+      "kind": "token",
+      "source": "text:input · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:16"
+      ]
+    },
+    {
+      "cls": "text-primary-text",
+      "kind": "token",
+      "source": "color:primary-text · cited",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:13"
+      ]
+    },
+    {
+      "cls": "text-selector",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:14",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:21"
+      ]
+    },
+    {
+      "cls": "text-selector-chevron",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:17",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:24"
+      ]
+    },
+    {
+      "cls": "text-selector-icon",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:15",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:22"
+      ]
+    },
+    {
+      "cls": "text-selector-label",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:16",
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/StepHeader.svelte:23"
+      ]
+    },
+    {
+      "cls": "type-eyebrow",
+      "kind": "utility",
+      "source": "@utility",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/TitleBlock.svelte:12"
+      ]
+    },
+    {
+      "cls": "z-40",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/runs/2026-09-11-design-primary-contact/05-package/src/lib/components/MobileActionBar.svelte:15"
+      ]
+    }
+  ],
+  "planned": [],
+  "issues": [],
+  "tailwind": {
+    "checked": true,
+    "tailwind": "4.3.3",
+    "candidates": 34,
+    "nonCompiling": []
+  },
+  "verdict": "PASS"
+}
