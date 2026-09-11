@@ -1,0 +1,42 @@
+{
+  "kind": "design",
+  "runId": "2026-09-11-design-business-documents",
+  "library": "shortapp",
+  "surface": "short-app",
+  "methodology": "design-methodology/short-app.md",
+  "output": "SvelteKit + Svelte 5 (runes)",
+  "model": "claude-opus-5",
+  "gates": [
+    {
+      "gate": 1,
+      "agent": "design-brief-intake",
+      "status": "blocked",
+      "at": "2026-09-11T00:00:00Z",
+      "notes": "01-brief.md written; all schema headings present with Source map. Brief itself is complete \u2014 every star heading filled, every validation rule carries its message, legal/consent c17 supplied by Legal \u2014 so NO brief-missing-field and NO non-blocking copy question. Both blocks come from the surface, not the brief. s9 swept in full (9.1-9.3): no forbidden ask.",
+      "questions": [
+        {
+          "id": "Q1",
+          "blocking": true,
+          "trigger": "archetype-not-in-s2",
+          "summary": "Content block is three file-upload slots with per-slot empty/uploading/uploaded/error states and a Remove control. None of s2's eight archetypes has a file-upload content block; the surface's stop triggers name 'a file upload' explicitly. No substitute archetype proposed."
+        },
+        {
+          "id": "Q2",
+          "blocking": true,
+          "trigger": "s13-open-item",
+          "summary": "The uploading state lands on s13's Loading state (none drawn, composition unconfirmed) and would also land on Progress-bar track colour (no token)."
+        }
+      ],
+      "unsureForLater": [
+        "Step position: s2's business sequence has 9 = Additional business details; brief says BUSINESS DOCUMENTS at same n/m. Internally consistent, recorded verbatim, architect must not silently renumber.",
+        "Read-only entity block (Legal business name / EIN) sits between s2's Form and Review rows \u2014 possible no-component call for the architect."
+      ]
+    }
+  ],
+  "loops": {
+    "critic": 0,
+    "verify": 0
+  },
+  "approval": null,
+  "status": "awaiting-requester"
+}
