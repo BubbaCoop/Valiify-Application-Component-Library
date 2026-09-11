@@ -252,3 +252,35 @@ Concept sections — concept.md opens with these, in order, before the generic s
 1. Archetype — the §2 row and why
 2. Step position + eyebrow text — STEP n OF m / SECTION
 3. Mobile behaviour per §1.2 — what stacks, what stays three-up, the sticky footer
+
+### Surface `applicant-portal` — Applicant Portal
+Methodology: `design-methodology/applicant-portal.md` (read in full; its §12 interim-class column and §10 unused-component line are binding).
+Viewports — one `<main data-concept data-viewport="<id>">` each, all mandatory: `web` — 1920 canvas, 720 column at x 600 (§1) — web only; mobile is out of scope for v1 (§13.1)
+Region vocabulary (`data-region`): `header` · `nav-tabs` · `account-chip` · `back-pill` · `page-header` · `section-label` · `section-card` · `action-row` · `status-tracker` · `metric-strip` · `account-card` · `field-row` · `owners-roster` · `progress-bar` · `commit`
+Brief schema — 01-brief.md body headings in this order (★ = required; missing → `brief-missing-field`), then the trailer from the skill:
+```
+## Archetype ★   hub | section-index | application-detail | record-detail | task-flow (the §2 row)
+## User ★   who, in one sentence — a signed-in member, not an applicant
+## Job to be done ★   what the member came to this page to find out or finish
+## Entry point   which nav tab, section link, or to-do row leads here
+## Sections & order ★   | section label | what it holds | why it sits there | — ordered by what blocks the member first (§3); finished groups last
+## Section counters ★   | section | counter or link | — every section label needs its right-hand partner (§3): a fraction like "1 of 4 verified" or a link like "All Applications ›"
+## Data displayed ★   | item | source | format | — the portal is mostly read; masked ids use the bullet form (§8)
+## Data collected ★   | field | type | required | format / placeholder | options source | — task-flow only; mark "none" for the other four archetypes
+## Actions & consequences ★   | control | verb | result | destination | — one action per row plus at most one link (§5); name which single control, if any, is the commit
+## Status vocabulary ★   | state | which of the three forms (§6): row-level 12/16 · emphatic eyebrow UPPER · task chip micro-label | colour | — every status is a word; colour is added to the word
+## States ★   | state (empty / blocked / done / error / …) | trigger | what shows | — empty renders as a to-do row, never a blank (§6)
+## Blocked-on   | item | person | artifact | — a blocked item names the person and the thing (§6); say "none" if nothing blocks
+## Copy supplied ★   | id | role | text | — list EVERY role explicitly or mark it "not supplied": title · subtitle · meta · section labels · counters · row titles · descriptions · button labels · status words · empty-state text · legal/consent
+## Compliance / business constraints
+## Out of scope
+```
+Surface stop triggers (all BLOCKING, in addition to the five generic ones):
+- `archetype-not-in-§2` — the page is none of the five §2 archetypes (a table, a settings form, a chart, a wizard…)
+- `§9-forbidden` — a STEP n OF m eyebrow, a progress bar used as sequence position, a Back/Continue footer row, the 560 column, a .btn family control for an inline action, an uppercase button label, a table or column-headed grid, a sidebar/breadcrumb/sub-nav, monospace, a shadow on a card, a rule between rows inside a card, a filled button that is not a commit, or a bare number without its unit or denominator
+- `§13-open-item` — quick-action button height, nav-tab height, header stickiness, loading or error/validation states, post-commit success
+- `brief-missing-field` — legal / consent copy is missing (never drafted), or a section label has no counter or link partner
+Concept sections — concept.md opens with these, in order, before the generic sections:
+1. Archetype — the §2 row and why
+2. Section order — what blocks the member first (§3), and each label's counter or link partner
+3. Status vocabulary — which of the three §6 forms each state uses, and its token

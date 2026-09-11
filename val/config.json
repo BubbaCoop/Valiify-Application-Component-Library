@@ -161,6 +161,127 @@
           "Step position + eyebrow text — STEP n OF m / SECTION",
           "Mobile behaviour per §1.2 — what stacks, what stays three-up, the sticky footer"
         ]
+      },
+      "applicant-portal": {
+        "displayName": "Applicant Portal",
+        "methodology": "applicant-portal.md",
+        "viewports": [
+          {
+            "id": "web",
+            "note": "1920 canvas, 720 column at x 600 (§1) — web only; mobile is out of scope for v1 (§13.1)"
+          }
+        ],
+        "regions": [
+          "header",
+          "nav-tabs",
+          "account-chip",
+          "back-pill",
+          "page-header",
+          "section-label",
+          "section-card",
+          "action-row",
+          "status-tracker",
+          "metric-strip",
+          "account-card",
+          "field-row",
+          "owners-roster",
+          "progress-bar",
+          "commit"
+        ],
+        "briefSchema": [
+          {
+            "heading": "Archetype",
+            "hint": "hub | section-index | application-detail | record-detail | task-flow (the §2 row)",
+            "required": true
+          },
+          {
+            "heading": "User",
+            "hint": "who, in one sentence — a signed-in member, not an applicant",
+            "required": true
+          },
+          {
+            "heading": "Job to be done",
+            "hint": "what the member came to this page to find out or finish",
+            "required": true
+          },
+          {
+            "heading": "Entry point",
+            "hint": "which nav tab, section link, or to-do row leads here"
+          },
+          {
+            "heading": "Sections & order",
+            "hint": "| section label | what it holds | why it sits there | — ordered by what blocks the member first (§3); finished groups last",
+            "required": true
+          },
+          {
+            "heading": "Section counters",
+            "hint": "| section | counter or link | — every section label needs its right-hand partner (§3): a fraction like \"1 of 4 verified\" or a link like \"All Applications ›\"",
+            "required": true
+          },
+          {
+            "heading": "Data displayed",
+            "hint": "| item | source | format | — the portal is mostly read; masked ids use the bullet form (§8)",
+            "required": true
+          },
+          {
+            "heading": "Data collected",
+            "hint": "| field | type | required | format / placeholder | options source | — task-flow only; mark \"none\" for the other four archetypes",
+            "required": true
+          },
+          {
+            "heading": "Actions & consequences",
+            "hint": "| control | verb | result | destination | — one action per row plus at most one link (§5); name which single control, if any, is the commit",
+            "required": true
+          },
+          {
+            "heading": "Status vocabulary",
+            "hint": "| state | which of the three forms (§6): row-level 12/16 · emphatic eyebrow UPPER · task chip micro-label | colour | — every status is a word; colour is added to the word",
+            "required": true
+          },
+          {
+            "heading": "States",
+            "hint": "| state (empty / blocked / done / error / …) | trigger | what shows | — empty renders as a to-do row, never a blank (§6)",
+            "required": true
+          },
+          {
+            "heading": "Blocked-on",
+            "hint": "| item | person | artifact | — a blocked item names the person and the thing (§6); say \"none\" if nothing blocks"
+          },
+          {
+            "heading": "Copy supplied",
+            "hint": "| id | role | text | — list EVERY role explicitly or mark it \"not supplied\": title · subtitle · meta · section labels · counters · row titles · descriptions · button labels · status words · empty-state text · legal/consent",
+            "required": true
+          },
+          {
+            "heading": "Compliance / business constraints"
+          },
+          {
+            "heading": "Out of scope"
+          }
+        ],
+        "stopTriggers": [
+          {
+            "trigger": "archetype-not-in-§2",
+            "when": "the page is none of the five §2 archetypes (a table, a settings form, a chart, a wizard…)"
+          },
+          {
+            "trigger": "§9-forbidden",
+            "when": "a STEP n OF m eyebrow, a progress bar used as sequence position, a Back/Continue footer row, the 560 column, a .btn family control for an inline action, an uppercase button label, a table or column-headed grid, a sidebar/breadcrumb/sub-nav, monospace, a shadow on a card, a rule between rows inside a card, a filled button that is not a commit, or a bare number without its unit or denominator"
+          },
+          {
+            "trigger": "§13-open-item",
+            "when": "quick-action button height, nav-tab height, header stickiness, loading or error/validation states, post-commit success"
+          },
+          {
+            "trigger": "brief-missing-field",
+            "when": "legal / consent copy is missing (never drafted), or a section label has no counter or link partner"
+          }
+        ],
+        "conceptSections": [
+          "Archetype — the §2 row and why",
+          "Section order — what blocks the member first (§3), and each label's counter or link partner",
+          "Status vocabulary — which of the three §6 forms each state uses, and its token"
+        ]
       }
     },
     "output": {

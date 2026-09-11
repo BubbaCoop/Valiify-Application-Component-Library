@@ -25,6 +25,7 @@ Surfaces:
 | id | surface | methodology | viewports | flows |
 |---|---|---|---|---|
 | short-app | Short App | design-methodology/short-app.md | web, mobile | consumer, business, auto-loan |
+| applicant-portal | Applicant Portal | design-methodology/applicant-portal.md | web | — |
 
 Methodology files live under `design-methodology/`. Their companion
 `*-decisions.md` files are history — no participant reads them.
