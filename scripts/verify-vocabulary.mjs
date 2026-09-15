@@ -102,10 +102,18 @@ function scan(rel, text, { requirePrefix = prefixRequired(rel) } = {}) {
     if (COMPONENTS.has(name) || FILE_EXT.test(name) || KNOWN_ABSENT.has(name)) continue;
     findings.push({ rel, line: lineOf(m.index), token: "." + name, why: "no such component class in the published bundle" });
   }
-  for (const m of text.matchAll(/\b(?:data-)?class\s*=\s*"([^"]*)"/g)) {
+  // Plain `class="…"` and `data-class="…"` only. A framework BINDING — Vue's
+  // `:class="['icon', x]"`, Angular's `[class]`/`[ngClass]`, `v-bind:class` — holds an
+  // expression, not a class list, and splitting it on whitespace invents tokens like
+  // `['icon',` and `className]`. The lookbehind rejects a `class` preceded by `:`, `[`,
+  // a word character or `-`; `data-` is matched explicitly so `data-class` still counts.
+  for (const m of text.matchAll(/(?<![:\[\w-])(?:data-)?class\s*=\s*"([^"]*)"/g)) {
     for (const tok of m[1].split(/\s+/).filter(Boolean)) {
       const t = tok.replace(/^\./, "");
       if (t.includes("${") || t.startsWith("__")) continue;
+      // Quotes and commas never appear in a class token. Arbitrary values legitimately
+      // carry brackets (`w-[343px]`), so brackets alone are NOT a rejection.
+      if (/["',]/.test(t)) continue;
       if (COMPONENTS.has(t) || UTILITIES.has(t) || KNOWN_ABSENT.has(t)) continue;
       if (UNPREFIXED.has(t)) findings.push({ rel, line: lineOf(m.index), token: t, why: `needs the prefix — write ${UNPREFIXED.get(t)}` });
       else findings.push({ rel, line: lineOf(m.index), token: t, why: "not in the published bundle" });
@@ -136,6 +144,24 @@ if (canary.length < 2) {
   process.exit(1);
 }
 
+// Second canary, the other direction: the extractor must NOT invent findings out of a
+// framework binding. Over-reporting is as corrosive as under-reporting — noise is how a
+// gate gets ignored, and this one shipped reporting `['icon',` and `className]` as
+// missing classes.
+{
+  const before = findings.length;
+  scan("<canary>", `<svg :class="['icon', className]" /><i [ngClass]="{'x': y}" /><b v-bind:class="z" />`, {
+    requirePrefix: false,
+  });
+  const invented = findings.splice(before);
+  if (invented.length) {
+    console.error(`${RED}  FAIL  canary self-test: the matcher invented ${invented.length} finding(s) from a framework binding.${OFF}`);
+    for (const f of invented) console.error(`        ${f.token}`);
+    console.error(`        A binding holds an expression, not a class list — fix the extractor.`);
+    process.exit(1);
+  }
+}
+
 console.log(`\n  ${DIM}vocabulary: ${COMPONENTS.size} component classes, ${UTILITIES.size} utilities (class-manifest.json)${OFF}`);
 console.log(`  ${DIM}excluded:${OFF}`);
 for (const [p, why] of EXCLUDED) console.log(`    ${DIM}${p.padEnd(22)} ${why}${OFF}`);
@@ -145,7 +171,7 @@ if (KNOWN_ABSENT.size) {
 }
 console.log(`  ${DIM}prefix required in:${OFF}`);
 for (const [p, why] of PREFIX_REQUIRED) console.log(`    ${DIM}${p.padEnd(22)} ${why}${OFF}`);
-console.log(`  ${GRN}PASS${OFF}  canary self-test  ${DIM}2 unshipped classes flagged as expected${OFF}`);
+console.log(`  ${GRN}PASS${OFF}  canary self-test  ${DIM}2 unshipped classes flagged; 0 invented from framework bindings${OFF}`);
 
 if (!findings.length) {
   console.log(`\n  ${GRN}No vocabulary drift${OFF} across the scanned docs and agent files.\n`);
