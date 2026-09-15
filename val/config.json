@@ -5,6 +5,7 @@
     "displayName": "Short App",
     "figmaFileKey": "PA5pr1Q8KLfbjTxdAbFm0V",
     "figmaFileName": "Updated-Short-App",
+    "classPrefix": "va",
     "package": "@valiify/shortapp-ui"
   },
   "paths": {
