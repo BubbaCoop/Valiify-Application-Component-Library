@@ -102,7 +102,7 @@ CSS classes that enforce consistent sizing:
 </button>
 
 <!-- Icon-only button (requires aria-label) -->
-<button class="va-btn btn-outline" aria-label="Close">
+<button class="va-btn" aria-label="Close">
   <svg class="icon icon-size-13" aria-hidden="true">
     <use href="#x" />
   </svg>
@@ -151,7 +151,7 @@ CSS classes that enforce consistent sizing:
 
 ```html
 <!-- Small button (13px icons) -->
-<button class="va-btn btn-outline btn-sm">
+<button class="va-btn">
   <svg class="icon icon-size-13" aria-hidden="true">
     <use href="#filter" />
   </svg>

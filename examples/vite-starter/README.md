@@ -78,7 +78,7 @@ See `src/main.js` for a minimal dropdown implementation.
 import "./styles.css";
 
 function App() {
-  return <button className="btn btn-primary">Click me</button>;
+  return <button className="va-btn va-btn-primary">Click me</button>;
 }
 ```
 
@@ -89,7 +89,7 @@ import "./styles.css";
 </script>
 
 <template>
-  <button class="btn btn-primary">Click me</button>
+  <button class="va-btn va-btn-primary">Click me</button>
 </template>
 ```
 
@@ -99,7 +99,7 @@ import "./styles.css";
   import "./styles.css";
 </script>
 
-<button class="btn btn-primary">Click me</button>
+<button class="va-btn va-btn-primary">Click me</button>
 ```
 
 ## Troubleshooting
@@ -116,7 +116,7 @@ import "./styles.css";
 
 ### Components look broken
 - Check that you're using the full markup structure (see CLAUDE.md in the repo)
-- Many components need wrapper elements (e.g., `.input-container` > `.input-field` > `.input`)
+- Many components need wrapper elements (e.g., `.va-text-field` > `.va-text-field-box` > `.va-text-field-input`)
 - Verify you're using the correct variant/size classes
 
 ## Learn More

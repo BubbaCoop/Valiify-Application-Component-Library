@@ -209,14 +209,14 @@ Missing wrapper elements or incorrect markup structure.
 
 ❌ **Wrong:**
 ```html
-<input class="input" />
+<input class="va-text-field-input" />
 ```
 
 ✅ **Correct:**
 ```html
-<div class="input-container">
-  <div class="input-field">
-    <input class="input" />
+<div class="va-text-field">
+  <div class="va-text-field-box">
+    <input class="va-text-field-input" />
   </div>
 </div>
 ```
@@ -387,7 +387,7 @@ Designer-blocked. This is a token-level issue, not a CSS bug. See `docs/accessib
 For critical labels that must pass AA, override with a darker color:
 
 ```html
-<span class="input-label" style="color: var(--color-content-secondary);">
+<span class="va-text-field-title" style="color: var(--color-content-secondary);">
   Required Field
 </span>
 ```

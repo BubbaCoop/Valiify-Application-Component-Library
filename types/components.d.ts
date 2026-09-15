@@ -23,7 +23,7 @@ export type CheckboxClass = "checkbox";
 export type SwitchClass = "va-switch";
 
 // Button component classes
-export type ButtonClass = "button";
+export type ButtonClass = "va-btn";
 
 // ListItem component classes
 export type ListItemClass = "va-list-option";
