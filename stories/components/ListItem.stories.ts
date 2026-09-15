@@ -5,9 +5,9 @@
 import type { Meta, StoryObj } from "@storybook/html";
 
 const item = (size: string, label: string, selected = false) => `
-  <button class="list-option list-option-${size}" role="option" aria-selected="${selected}">
-    <span class="list-option-text">${label}</span>
-    <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
+  <button class="va-list-option va-list-option-${size}" role="option" aria-selected="${selected}">
+    <span class="va-list-option-text">${label}</span>
+    <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
   </button>`;
 
 const meta: Meta = {

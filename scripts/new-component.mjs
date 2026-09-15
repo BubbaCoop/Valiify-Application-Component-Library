@@ -22,6 +22,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { slug, className } from "./lib/naming.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -70,8 +71,17 @@ if (!/^[A-Za-z][A-Za-z0-9]*$/.test(input)) {
 
 /** Badge -> Badge, iconButton -> IconButton */
 const pascal = input[0].toUpperCase() + input.slice(1);
-/** IconButton -> icon-button */
-const kebab = pascal.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+/** IconButton -> icon-button. The FILE slug — never namespaced. */
+const kebab = slug(pascal);
+/**
+ * IconButton -> va-icon-button. The CSS class.
+ *
+ * File slug and class name diverge: the library namespaces its component
+ * classes so they cannot collide with daisyUI 4 or Tailwind's own utilities
+ * (see scripts/lib/naming.mjs). A component born without the namespace is the
+ * bug this scaffold exists to prevent.
+ */
+const cls = className(pascal);
 
 const cssPath = join(ROOT, `src/components/${kebab}.css`);
 const storyPath = join(ROOT, `stories/components/${pascal}.stories.ts`);
@@ -96,7 +106,7 @@ const changes = [];
 
 const css = readFileSync(TEMPLATE, "utf8")
   .replaceAll("__NAME__", pascal)
-  .replaceAll("__CLASS__", kebab);
+  .replaceAll("__CLASS__", cls);
 
 writeFileSync(cssPath, css);
 changes.push(["created", `src/components/${kebab}.css`, "from _template.css"]);
@@ -155,7 +165,7 @@ const meta: Meta<${pascal}Args> = {
   args: {
     label: "${pascal}",
   },
-  render: ({ label }) => \`<div class="${kebab}">\${label}</div>\`,
+  render: ({ label }) => \`<div class="${cls}">\${label}</div>\`,
 };
 
 export default meta;
@@ -189,7 +199,7 @@ if (typesSrc.includes(`export type ${typeName}`)) {
     `anchor comment missing — add ${typeName} by hand`,
   ]);
 } else {
-  const block = `// ${pascal} component classes\nexport type ${typeName} = "${kebab}";\n\n`;
+  const block = `// ${pascal} component classes\nexport type ${typeName} = "${cls}";\n\n`;
   let next = typesSrc.replace(TYPES_ANCHOR, block + TYPES_ANCHOR);
 
   // Extend the union so the new type is actually reachable. Matches the whole
@@ -225,6 +235,6 @@ console.log(`
        (delete the house-style comment block once done)
     2. Add variants to stories/components/${pascal}.stories.ts and
        types/components.d.ts
-    3. Document .${kebab} in CLAUDE.md under Quick Reference
+    3. Document .${cls} in CLAUDE.md under Quick Reference
     4. npm run build && npm run storybook
 `);

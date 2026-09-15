@@ -4,7 +4,7 @@
  * The panel that holds ListItem rows. Extracted from Figma Dropdown List
  * (1:480) — 2 variants.
  *
- *   <div class="dropdown-list" role="listbox">
+ *   <div class="va-dropdown-list" role="listbox">
  *     <button class="list-item list-item-sm" role="option" aria-selected="true">…</button>
  *     …
  *   </div>
@@ -38,7 +38,7 @@
  */
 
 @layer components {
-  .dropdown-list {
+  .va-dropdown-list {
     @apply flex flex-col rounded-sm shadow-basic;
     @apply border border-stroke-divider bg-surface-paper;
     /* Library extension (hover fills at the corners) — see header. */

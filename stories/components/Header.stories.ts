@@ -7,24 +7,24 @@
 import type { Meta, StoryObj } from "@storybook/html";
 
 const selector = (label: string) => `
-  <button class="text-selector" aria-haspopup="listbox" aria-expanded="false">
-    <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
-    <span class="text-selector-label">${label}</span>
-    <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+  <button class="va-text-selector" aria-haspopup="listbox" aria-expanded="false">
+    <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+    <span class="va-text-selector-label">${label}</span>
+    <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
   </button>`;
 
 // Placeholder logo — real apps pass their brand asset.
 const logo = `
-  <svg class="header-logo" viewBox="0 0 95 30" role="img" aria-label="Valiify">
+  <svg class="va-header-logo" viewBox="0 0 95 30" role="img" aria-label="Valiify">
     <rect x="0" y="4" width="22" height="22" rx="4" fill="#a6192e" />
     <text x="30" y="21" font-family="Inter, sans-serif" font-size="13" font-weight="600" letter-spacing="1.3" fill="#a6192e">VALIIFY</text>
   </svg>`;
 
 const header = () => `
-  <header class="header">
+  <header class="va-header">
     ${logo}
-    <span class="header-desktop">${selector("English")}</span>
-    <span class="header-mobile">${selector("EN")}</span>
+    <span class="va-header-desktop">${selector("English")}</span>
+    <span class="va-header-mobile">${selector("EN")}</span>
   </header>`;
 
 const meta: Meta = {

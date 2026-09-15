@@ -1,0 +1,43 @@
+<!doctype html>
+<!--
+  Fixture for scripts/verify-markup.mjs — stands in for a /design-generated page.
+
+  The real input is the newest val/runs/*/05-package/, but runs are gitignored, so CI
+  needs a committed page that exercises the same contract: a page that loads ONLY
+  dist/shortapp-ui.css, compiles no Tailwind, and therefore renders unstyled for any
+  class the bundle does not ship.
+
+  It deliberately mixes both halves of the vocabulary and all four registration paths,
+  because they can fail independently:
+    component classes (va-)      from src/components/*.css
+    structural utilities (va:)   from Tailwind's own
+    token utilities (va:)        from the @theme block
+    @utility type-* (va:)        emitted by build-theme.mjs into src/themes/
+    @utility focus-ring (va:)    hand-authored in src/utilities/
+-->
+<link rel="stylesheet" href="../../dist/shortapp-ui.css" />
+<main class="va:flex va:flex-col va:gap-6 va:p-5 va:bg-surface-app-page">
+  <span class="va:type-eyebrow va:text-content-tertiary">Step 1 of 3</span>
+  <h1 class="va:text-display va:text-content-primary">Where do you live?</h1>
+  <div class="va-text-field">
+    <div class="va-text-field-title-row">
+      <label class="va-text-field-title" for="a">Street address</label>
+    </div>
+    <div class="va-text-field-box">
+      <input id="a" class="va-text-field-input va:focus-ring" type="text" placeholder="123 Main St" />
+    </div>
+    <p class="va-text-field-hint">We use this to verify your identity.</p>
+  </div>
+  <label class="va-box-action va-box-action-checkbox">
+    <span class="va-checkbox-control">
+      <input type="checkbox" class="va-checkbox-input" />
+      <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+    </span>
+    <span class="va-box-action-label">Paperless statements</span>
+  </label>
+  <div class="va:flex va:gap-6 va:justify-between">
+    <button class="va-btn va-btn-secondary">Back</button>
+    <button class="va-btn va-btn-primary va:flex-1">Continue</button>
+  </div>
+  <span class="va-badge">Optional</span>
+</main>

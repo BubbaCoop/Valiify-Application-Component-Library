@@ -172,7 +172,7 @@ export default {
 ### Vanilla HTML/CSS (Framework-agnostic)
 ```html
 <!-- Just use SVG directly -->
-<button class="btn btn-primary">
+<button class="va-btn va-btn-primary">
   <svg class="icon" width="20" height="20" aria-hidden="true">
     <use href="#search" />
   </svg>

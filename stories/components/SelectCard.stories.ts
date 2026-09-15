@@ -5,21 +5,21 @@
 import type { Meta, StoryObj } from "@storybook/html";
 
 const radioCard = (checked = false, name = "sc", title = "Family Connection", desc = "A relative is already a member") => `
-  <label class="select-card" style="max-width: 415px;">
-    <input type="radio" name="${name}" class="radio" ${checked ? "checked" : ""} />
-    <span class="select-card-text">
-      <span class="select-card-title">${title}</span>
-      <span class="select-card-description">${desc}</span>
+  <label class="va-select-card" style="max-width: 415px;">
+    <input type="radio" name="${name}" class="va-radio" ${checked ? "checked" : ""} />
+    <span class="va-select-card-text">
+      <span class="va-select-card-title">${title}</span>
+      <span class="va-select-card-description">${desc}</span>
     </span>
   </label>`;
 
 const chevronCard = (title = "Family Connection", desc = "A relative is already a member") => `
-  <button class="select-card" style="max-width: 415px;">
-    <span class="select-card-text" style="text-align: left;">
-      <span class="select-card-title">${title}</span>
-      <span class="select-card-description">${desc}</span>
+  <button class="va-select-card" style="max-width: 415px;">
+    <span class="va-select-card-text" style="text-align: left;">
+      <span class="va-select-card-title">${title}</span>
+      <span class="va-select-card-description">${desc}</span>
     </span>
-    <svg class="select-card-chevron" aria-hidden="true"><use href="#chevron-right" /></svg>
+    <svg class="va-select-card-chevron" aria-hidden="true"><use href="#chevron-right" /></svg>
   </button>`;
 
 const meta: Meta = {
@@ -65,10 +65,10 @@ export const AsAGroup: Story = {
 /** Description is optional (Figma's subtitle boolean). */
 export const TitleOnly: Story = {
   render: () => `
-    <label class="select-card" style="max-width: 415px;">
-      <input type="radio" name="to" class="radio" />
-      <span class="select-card-text">
-        <span class="select-card-title">Family Connection</span>
+    <label class="va-select-card" style="max-width: 415px;">
+      <input type="radio" name="to" class="va-radio" />
+      <span class="va-select-card-text">
+        <span class="va-select-card-title">Family Connection</span>
       </span>
     </label>
   `,

@@ -15,22 +15,22 @@ interface OwnerContainerArgs {
 }
 
 const row = ({ name, percent, contact, icon, badge }: OwnerContainerArgs) => `
-  <div class="owner-container">
-    <span class="owner"><svg aria-hidden="true"><use href="#${icon}" /></svg></span>
-    <div class="owner-container-info">
-      <div class="owner-container-title">
-        <span class="owner-container-name">${name}</span>
-        <span class="badge" ${badge ? "" : "hidden"}>Optional</span>
-        <span class="owner-container-percent">${percent}</span>
+  <div class="va-owner-container">
+    <span class="va-owner"><svg aria-hidden="true"><use href="#${icon}" /></svg></span>
+    <div class="va-owner-container-info">
+      <div class="va-owner-container-title">
+        <span class="va-owner-container-name">${name}</span>
+        <span class="va-badge" ${badge ? "" : "hidden"}>Optional</span>
+        <span class="va-owner-container-percent">${percent}</span>
       </div>
-      <div class="owner-container-contact">
-        <span class="owner-container-contact-text">${contact}</span>
-        <div class="owner-container-actions">
-          <button class="btn btn-micro" type="button">
+      <div class="va-owner-container-contact">
+        <span class="va-owner-container-contact-text">${contact}</span>
+        <div class="va-owner-container-actions">
+          <button class="va-btn va-btn-micro" type="button">
             Edit
             <svg aria-hidden="true"><use href="#pencil" /></svg>
           </button>
-          <button class="icon-button icon-button-sm icon-button-state" type="button" aria-label="Remove ${name}">
+          <button class="va-icon-button va-icon-button-sm va-icon-button-state" type="button" aria-label="Remove ${name}">
             <svg aria-hidden="true"><use href="#trash-2" /></svg>
           </button>
         </div>

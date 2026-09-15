@@ -16,14 +16,14 @@ let uid = 0;
 const field = ({ label, placeholder, value, hint }: Partial<TextAreaArgs>) => {
   const id = `ta-${uid++}`;
   return `
-  <div class="text-area">
-    <div class="text-area-title-row">
-      <label class="text-area-title" for="${id}">${label ?? "Notes"}</label>
+  <div class="va-text-area">
+    <div class="va-text-area-title-row">
+      <label class="va-text-area-title" for="${id}">${label ?? "Notes"}</label>
     </div>
-    <textarea id="${id}" class="text-area-input"
+    <textarea id="${id}" class="va-text-area-input"
       ${placeholder ? `placeholder="${placeholder}"` : ""}
       ${hint ? `aria-describedby="${id}-hint"` : ""}>${value ?? ""}</textarea>
-    ${hint ? `<p id="${id}-hint" class="text-area-hint">${hint}</p>` : ""}
+    ${hint ? `<p id="${id}-hint" class="va-text-area-hint">${hint}</p>` : ""}
   </div>`;
 };
 

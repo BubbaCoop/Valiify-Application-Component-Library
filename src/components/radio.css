@@ -7,7 +7,7 @@
  * The Figma component is the bare 20px control — no label, no slots. Apply the
  * class directly to a native input and compose your own label markup:
  *
- *   <input type="radio" name="plan" class="radio" />
+ *   <input type="radio" name="plan" class="va-radio" />
  *
  * Geometry (all from the exported vectors):
  *   frame        20×20, true circle, edge to edge (no padding)
@@ -33,7 +33,7 @@
  */
 
 @layer components {
-  .radio {
+  .va-radio {
     /* A real <input type="radio"> — native semantics, form participation and
        keyboard behaviour for free. */
     @apply relative m-0 inline-block shrink-0 cursor-pointer appearance-none p-0;
@@ -53,30 +53,30 @@
 
   /* Hover and pressed tint the whole circle, under the ring. Figma draws no
      checked+hover or checked+pressed variant, so both exclude :checked. */
-  .radio:hover:not(:disabled):not(:checked) {
+  .va-radio:hover:not(:disabled):not(:checked) {
     @apply bg-action-hover;
   }
 
-  .radio:active:not(:disabled):not(:checked) {
+  .va-radio:active:not(:disabled):not(:checked) {
     @apply bg-action-pressed;
   }
 
   /* Checked: ring steps to Primary/Primary, same 1.5px inside stroke. */
-  .radio:checked {
+  .va-radio:checked {
     box-shadow: inset 0 0 0 1.5px var(--color-primary);
   }
 
   /* Inner dot — 10×10 Primary/Primary circle, centered in the 20px frame. */
-  .radio:checked::before {
+  .va-radio:checked::before {
     @apply absolute inset-0 m-auto size-2.5 rounded-full bg-primary content-[''];
   }
 
-  .radio:focus-visible {
+  .va-radio:focus-visible {
     @apply focus-ring;
   }
 
   /* Figma models no disabled variant; nothing visual is invented here. */
-  .radio:disabled {
+  .va-radio:disabled {
     @apply cursor-not-allowed;
   }
 }

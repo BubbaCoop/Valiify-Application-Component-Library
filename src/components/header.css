@@ -5,13 +5,13 @@
  * 2 variants: Web (1410×60) / Mobile (375×60), which differ ONLY by frame
  * width and the TextSelector's label ("English" → "EN").
  *
- *   <header class="header">
- *     <img class="header-logo" src="/logo.svg" alt="Alabama Credit Union" />
- *     <span class="header-desktop">
- *       <button class="text-selector" …>…English…</button>
+ *   <header class="va-header">
+ *     <img class="va-header-logo" src="/logo.svg" alt="Alabama Credit Union" />
+ *     <span class="va-header-desktop">
+ *       <button class="va-text-selector" …>…English…</button>
  *     </span>
- *     <span class="header-mobile">
- *       <button class="text-selector" …>…EN…</button>
+ *     <span class="va-header-mobile">
+ *       <button class="va-text-selector" …>…EN…</button>
  *     </span>
  *   </header>
  *
@@ -23,18 +23,18 @@
  * The logo is a CALLER ASSET SLOT (30px tall, width intrinsic), absolutely
  * centered so it holds true center regardless of the right cluster — its
  * crimson (#CD1041) is the client brand asset's own, deliberately not a
- * theme token. The language control is the shipped .text-selector.
+ * theme token. The language control is the shipped .va-text-selector.
  *
  * THREE LABELED LIBRARY EXTENSIONS (the consumer contract; Figma models
  * none of them — designer list):
  *   - position: sticky, top 0, z-40 (no z-scale exists yet; revisit when
  *     overlay components land)
  *   - full width (Figma's 1410/375 are artboards)
- *   - the 768px breakpoint: .header-desktop / .header-mobile wrappers show
- *     one of two .text-selector instances. display:contents keeps the
+ *   - the 768px breakpoint: .va-header-desktop / .va-header-mobile wrappers show
+ *     one of two .va-text-selector instances. display:contents keeps the
  *     visible wrapper out of the flex box-model; display:none removes the
  *     hidden one from render AND the a11y tree. Wrappers, not classes on
- *     .text-selector itself — header.css sorts before text-selector.css,
+ *     .va-text-selector itself — header.css sorts before text-selector.css,
  *     so equal-specificity display rules on the same element would lose
  *     to its inline-flex by import order.
  *
@@ -46,7 +46,7 @@
  */
 
 @layer components {
-  .header {
+  .va-header {
     position: sticky;
     top: 0;
     z-index: 40; /* library decision — no z-scale exists yet */
@@ -56,7 +56,7 @@
 
   /* Caller asset slot — 30px tall, intrinsic width, true-centered. The
      sticky header is itself positioned, so it is the containing block. */
-  .header-logo {
+  .va-header-logo {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -67,18 +67,18 @@
   /* --- Breakpoint helpers (library extension, 768px — a library decision;
      Figma names no breakpoint) --------------------------------------------- */
 
-  .header-desktop {
+  .va-header-desktop {
     display: contents;
   }
-  .header-mobile {
+  .va-header-mobile {
     display: none;
   }
 
   @media (max-width: 767px) {
-    .header-desktop {
+    .va-header-desktop {
       display: none;
     }
-    .header-mobile {
+    .va-header-mobile {
       display: contents;
     }
   }

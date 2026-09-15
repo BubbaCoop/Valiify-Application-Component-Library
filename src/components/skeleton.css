@@ -7,9 +7,9 @@
  * matrix, per-shape radii, and the animation contract.
  *
  *   <div role="status" aria-busy="true" aria-label="Loading profile">
- *     <span class="skeleton skeleton-circle skeleton-lg" aria-hidden="true"></span>
- *     <span class="skeleton skeleton-heading skeleton-lg" aria-hidden="true"></span>
- *     <span class="skeleton skeleton-text skeleton-md" aria-hidden="true"></span>
+ *     <span class="va-skeleton va-skeleton-circle va-skeleton-lg" aria-hidden="true"></span>
+ *     <span class="va-skeleton va-skeleton-heading va-skeleton-lg" aria-hidden="true"></span>
+ *     <span class="va-skeleton va-skeleton-text va-skeleton-md" aria-hidden="true"></span>
  *   </div>
  *
  * BOTH a shape and a size class are required — 16 shapes × 3 sizes, and the
@@ -45,7 +45,7 @@
  * outrank consumer utilities (the dashboard's one cascade leak, not
  * repeated). @keyframes stay outside — they are name-scoped, not cascaded.
  *
- * Accessibility (library decision, as the dashboard's): each .skeleton is
+ * Accessibility (library decision, as the dashboard's): each .va-skeleton is
  * aria-hidden decoration; the CONTAINER carries role="status",
  * aria-busy="true" and a label — one announcement, not N grey boxes.
  */
@@ -61,7 +61,7 @@
 }
 
 @layer components {
-  .skeleton {
+  .va-skeleton {
     /* static-ok(hardcoded-color): the written spec's "Surface/Neutral" variable does not exist in the file (designer list); tokenize when it lands */
     --skeleton-fill: #f1f1f4;
     @apply block;
@@ -70,102 +70,102 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .skeleton {
+    .va-skeleton {
       animation: none;
     }
   }
 
   /* --- Shapes (radius) ------------------------------------------------------ */
 
-  .skeleton-text,
-  .skeleton-heading,
-  .skeleton-checkbox {
+  .va-skeleton-text,
+  .va-skeleton-heading,
+  .va-skeleton-checkbox {
     @apply rounded-sm;
   }
-  .skeleton-button,
-  .skeleton-input,
-  .skeleton-textarea,
-  .skeleton-tab,
-  .skeleton-dropdown {
+  .va-skeleton-button,
+  .va-skeleton-input,
+  .va-skeleton-textarea,
+  .va-skeleton-tab,
+  .va-skeleton-dropdown {
     @apply rounded-md;
   }
-  .skeleton-rectangle,
-  .skeleton-card {
+  .va-skeleton-rectangle,
+  .va-skeleton-card {
     @apply rounded-lg;
   }
-  .skeleton-badge,
-  .skeleton-switch {
+  .va-skeleton-badge,
+  .va-skeleton-switch {
     @apply rounded-xl;
   }
-  .skeleton-circle,
-  .skeleton-avatar,
-  .skeleton-radio {
+  .va-skeleton-circle,
+  .va-skeleton-avatar,
+  .va-skeleton-radio {
     @apply rounded-full;
   }
 
   /* --- Dimensions: shape × size matrix (written-spec defaults) ------------- */
 
-  .skeleton-text.skeleton-sm      { @apply h-3 w-30; }      /* 120×12 */
-  .skeleton-text.skeleton-md      { @apply h-4 w-50; }      /* 200×16 */
-  .skeleton-text.skeleton-lg      { @apply h-5 w-80; }      /* 320×20 */
+  .va-skeleton-text.va-skeleton-sm      { @apply h-3 w-30; }      /* 120×12 */
+  .va-skeleton-text.va-skeleton-md      { @apply h-4 w-50; }      /* 200×16 */
+  .va-skeleton-text.va-skeleton-lg      { @apply h-5 w-80; }      /* 320×20 */
 
-  .skeleton-heading.skeleton-sm   { @apply h-5 w-40; }      /* 160×20 */
-  .skeleton-heading.skeleton-md   { @apply h-6 w-60; }      /* 240×24 */
-  .skeleton-heading.skeleton-lg   { @apply h-8 w-90; }      /* 360×32 */
+  .va-skeleton-heading.va-skeleton-sm   { @apply h-5 w-40; }      /* 160×20 */
+  .va-skeleton-heading.va-skeleton-md   { @apply h-6 w-60; }      /* 240×24 */
+  .va-skeleton-heading.va-skeleton-lg   { @apply h-8 w-90; }      /* 360×32 */
 
-  .skeleton-circle.skeleton-sm    { @apply size-8; }        /* 32 */
-  .skeleton-circle.skeleton-md    { @apply size-10; }       /* 40 */
-  .skeleton-circle.skeleton-lg    { @apply size-14; }       /* 56 */
+  .va-skeleton-circle.va-skeleton-sm    { @apply size-8; }        /* 32 */
+  .va-skeleton-circle.va-skeleton-md    { @apply size-10; }       /* 40 */
+  .va-skeleton-circle.va-skeleton-lg    { @apply size-14; }       /* 56 */
 
-  .skeleton-rectangle.skeleton-sm { @apply h-20 w-30; }     /* 120×80 */
-  .skeleton-rectangle.skeleton-md { @apply h-30 w-50; }     /* 200×120 */
-  .skeleton-rectangle.skeleton-lg { @apply h-45 w-80; }     /* 320×180 */
+  .va-skeleton-rectangle.va-skeleton-sm { @apply h-20 w-30; }     /* 120×80 */
+  .va-skeleton-rectangle.va-skeleton-md { @apply h-30 w-50; }     /* 200×120 */
+  .va-skeleton-rectangle.va-skeleton-lg { @apply h-45 w-80; }     /* 320×180 */
 
-  .skeleton-button.skeleton-sm    { @apply h-8 w-16; }      /* 64×32 */
-  .skeleton-button.skeleton-md    { @apply h-9 w-24; }      /* 96×36 */
-  .skeleton-button.skeleton-lg    { @apply h-10 w-32; }     /* 128×40 */
+  .va-skeleton-button.va-skeleton-sm    { @apply h-8 w-16; }      /* 64×32 */
+  .va-skeleton-button.va-skeleton-md    { @apply h-9 w-24; }      /* 96×36 */
+  .va-skeleton-button.va-skeleton-lg    { @apply h-10 w-32; }     /* 128×40 */
 
-  .skeleton-input.skeleton-sm     { @apply h-12 w-70; }     /* 280×48 */
-  .skeleton-input.skeleton-md     { @apply h-15 w-82.5; }   /* 330×60 */
-  .skeleton-input.skeleton-lg     { @apply h-18 w-105; }    /* 420×72 */
+  .va-skeleton-input.va-skeleton-sm     { @apply h-12 w-70; }     /* 280×48 */
+  .va-skeleton-input.va-skeleton-md     { @apply h-15 w-82.5; }   /* 330×60 */
+  .va-skeleton-input.va-skeleton-lg     { @apply h-18 w-105; }    /* 420×72 */
 
-  .skeleton-textarea.skeleton-sm  { @apply h-20 w-70; }     /* 280×80 */
-  .skeleton-textarea.skeleton-md  { @apply h-25 w-82.5; }   /* 330×100 */
-  .skeleton-textarea.skeleton-lg  { @apply h-32 w-105; }    /* 420×128 */
+  .va-skeleton-textarea.va-skeleton-sm  { @apply h-20 w-70; }     /* 280×80 */
+  .va-skeleton-textarea.va-skeleton-md  { @apply h-25 w-82.5; }   /* 330×100 */
+  .va-skeleton-textarea.va-skeleton-lg  { @apply h-32 w-105; }    /* 420×128 */
 
-  .skeleton-card.skeleton-sm      { @apply h-35 w-70; }     /* 280×140 */
-  .skeleton-card.skeleton-md      { @apply h-39.5 w-82.5; } /* 330×158 */
-  .skeleton-card.skeleton-lg      { @apply h-50 w-105; }    /* 420×200 */
+  .va-skeleton-card.va-skeleton-sm      { @apply h-35 w-70; }     /* 280×140 */
+  .va-skeleton-card.va-skeleton-md      { @apply h-39.5 w-82.5; } /* 330×158 */
+  .va-skeleton-card.va-skeleton-lg      { @apply h-50 w-105; }    /* 420×200 */
 
-  .skeleton-switch.skeleton-sm    { @apply h-4 w-7; }       /* 28×16 */
-  .skeleton-switch.skeleton-md    { @apply h-5 w-9; }       /* 36×20 */
-  .skeleton-switch.skeleton-lg    { @apply h-6 w-11; }      /* 44×24 */
+  .va-skeleton-switch.va-skeleton-sm    { @apply h-4 w-7; }       /* 28×16 */
+  .va-skeleton-switch.va-skeleton-md    { @apply h-5 w-9; }       /* 36×20 */
+  .va-skeleton-switch.va-skeleton-lg    { @apply h-6 w-11; }      /* 44×24 */
 
-  .skeleton-checkbox.skeleton-sm  { @apply size-3.5; }      /* 14 */
-  .skeleton-checkbox.skeleton-md  { @apply size-4.5; }      /* 18 */
-  .skeleton-checkbox.skeleton-lg  { @apply size-5.5; }      /* 22 */
+  .va-skeleton-checkbox.va-skeleton-sm  { @apply size-3.5; }      /* 14 */
+  .va-skeleton-checkbox.va-skeleton-md  { @apply size-4.5; }      /* 18 */
+  .va-skeleton-checkbox.va-skeleton-lg  { @apply size-5.5; }      /* 22 */
 
-  .skeleton-badge.skeleton-sm     { @apply h-4 w-15; }      /* 60×16 */
-  .skeleton-badge.skeleton-md     { @apply h-5 w-20; }      /* 80×20 */
-  .skeleton-badge.skeleton-lg     { @apply h-6 w-25; }      /* 100×24 */
+  .va-skeleton-badge.va-skeleton-sm     { @apply h-4 w-15; }      /* 60×16 */
+  .va-skeleton-badge.va-skeleton-md     { @apply h-5 w-20; }      /* 80×20 */
+  .va-skeleton-badge.va-skeleton-lg     { @apply h-6 w-25; }      /* 100×24 */
 
-  .skeleton-listitem.skeleton-sm  { @apply h-7 w-70; }      /* 280×28 */
-  .skeleton-listitem.skeleton-md  { @apply h-8 w-82.5; }    /* 330×32 */
-  .skeleton-listitem.skeleton-lg  { @apply h-10 w-105; }    /* 420×40 */
+  .va-skeleton-listitem.va-skeleton-sm  { @apply h-7 w-70; }      /* 280×28 */
+  .va-skeleton-listitem.va-skeleton-md  { @apply h-8 w-82.5; }    /* 330×32 */
+  .va-skeleton-listitem.va-skeleton-lg  { @apply h-10 w-105; }    /* 420×40 */
 
-  .skeleton-tab.skeleton-sm       { @apply h-7 w-20; }      /* 80×28 */
-  .skeleton-tab.skeleton-md       { @apply h-8 w-25; }      /* 100×32 */
-  .skeleton-tab.skeleton-lg       { @apply h-9 w-30; }      /* 120×36 */
+  .va-skeleton-tab.va-skeleton-sm       { @apply h-7 w-20; }      /* 80×28 */
+  .va-skeleton-tab.va-skeleton-md       { @apply h-8 w-25; }      /* 100×32 */
+  .va-skeleton-tab.va-skeleton-lg       { @apply h-9 w-30; }      /* 120×36 */
 
-  .skeleton-avatar.skeleton-sm    { @apply size-8; }        /* 32 */
-  .skeleton-avatar.skeleton-md    { @apply size-10; }       /* 40 */
-  .skeleton-avatar.skeleton-lg    { @apply size-14; }       /* 56 */
+  .va-skeleton-avatar.va-skeleton-sm    { @apply size-8; }        /* 32 */
+  .va-skeleton-avatar.va-skeleton-md    { @apply size-10; }       /* 40 */
+  .va-skeleton-avatar.va-skeleton-lg    { @apply size-14; }       /* 56 */
 
-  .skeleton-dropdown.skeleton-sm  { @apply h-12 w-70; }     /* 280×48 */
-  .skeleton-dropdown.skeleton-md  { @apply h-15 w-82.5; }   /* 330×60 */
-  .skeleton-dropdown.skeleton-lg  { @apply h-18 w-105; }    /* 420×72 */
+  .va-skeleton-dropdown.va-skeleton-sm  { @apply h-12 w-70; }     /* 280×48 */
+  .va-skeleton-dropdown.va-skeleton-md  { @apply h-15 w-82.5; }   /* 330×60 */
+  .va-skeleton-dropdown.va-skeleton-lg  { @apply h-18 w-105; }    /* 420×72 */
 
-  .skeleton-radio.skeleton-sm     { @apply size-4; }        /* 16 */
-  .skeleton-radio.skeleton-md     { @apply size-5; }        /* 20 */
-  .skeleton-radio.skeleton-lg     { @apply size-6; }        /* 24 */
+  .va-skeleton-radio.va-skeleton-sm     { @apply size-4; }        /* 16 */
+  .va-skeleton-radio.va-skeleton-md     { @apply size-5; }        /* 20 */
+  .va-skeleton-radio.va-skeleton-lg     { @apply size-6; }        /* 24 */
 }

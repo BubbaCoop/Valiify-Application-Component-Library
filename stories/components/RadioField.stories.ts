@@ -1,25 +1,25 @@
 /**
  * RadioField — labeled radio-group form field.
  * Figma: Radio Fields (123:6059), 6 declared variants whose state axes are
- * unwired (all render identically) — real states come from the composed .radio.
+ * unwired (all render identically) — real states come from the composed .va-radio.
  */
 import type { Meta, StoryObj } from "@storybook/html";
 
 const field = (title = "Title", checked: number | null = null, hint = "") => `
-  <fieldset class="radio-field" style="max-width: 413px;">
-    <legend class="radio-field-title">${title}</legend>
-    <div class="radio-field-options">
+  <fieldset class="va-radio-field" style="max-width: 413px;">
+    <legend class="va-radio-field-title">${title}</legend>
+    <div class="va-radio-field-options">
       ${["Yes", "No"]
         .map(
           (label, i) => `
-        <label class="radio-field-option">
-          <input type="radio" name="rf-${title.replace(/\W/g, "")}" class="radio" ${checked === i ? "checked" : ""} />
+        <label class="va-radio-field-option">
+          <input type="radio" name="rf-${title.replace(/\W/g, "")}" class="va-radio" ${checked === i ? "checked" : ""} />
           ${label}
         </label>`,
         )
         .join("")}
     </div>
-    ${hint ? `<p class="radio-field-hint">${hint}</p>` : ""}
+    ${hint ? `<p class="va-radio-field-hint">${hint}</p>` : ""}
   </fieldset>`;
 
 const meta: Meta = {
@@ -41,22 +41,22 @@ export const Filled: Story = {
 /** With the optional helper icon slot and a hint line. */
 export const WithHelperAndHint: Story = {
   render: () => `
-    <fieldset class="radio-field" style="max-width: 413px;">
-      <legend class="radio-field-title">
+    <fieldset class="va-radio-field" style="max-width: 413px;">
+      <legend class="va-radio-field-title">
         Are you a U.S. citizen?
-        <svg class="radio-field-help" role="img" aria-label="Help"><use href="#circle-help" /></svg>
+        <svg class="va-radio-field-help" role="img" aria-label="Help"><use href="#circle-help" /></svg>
       </legend>
-      <div class="radio-field-options">
-        <label class="radio-field-option">
-          <input type="radio" name="rf-help" class="radio" checked />
+      <div class="va-radio-field-options">
+        <label class="va-radio-field-option">
+          <input type="radio" name="rf-help" class="va-radio" checked />
           Yes
         </label>
-        <label class="radio-field-option">
-          <input type="radio" name="rf-help" class="radio" />
+        <label class="va-radio-field-option">
+          <input type="radio" name="rf-help" class="va-radio" />
           No
         </label>
       </div>
-      <p class="radio-field-hint">Required for federal reporting.</p>
+      <p class="va-radio-field-hint">Required for federal reporting.</p>
     </fieldset>
   `,
 };

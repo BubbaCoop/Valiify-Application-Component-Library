@@ -13,7 +13,7 @@ const meta: Meta<BadgeArgs> = {
   tags: ["autodocs"],
   argTypes: { label: { control: "text" } },
   args: { label: "Optional" },
-  render: ({ label }) => `<span class="badge">${label}</span>`,
+  render: ({ label }) => `<span class="va-badge">${label}</span>`,
 };
 
 export default meta;
@@ -26,7 +26,7 @@ export const InContext: Story = {
   render: () => `
     <div style="display: flex; align-items: center; gap: 8px;">
       <span style="font-size: 13px; font-weight: 500; color: #1a1a1a;">Middle name</span>
-      <span class="badge">Optional</span>
+      <span class="va-badge">Optional</span>
     </div>
   `,
 };

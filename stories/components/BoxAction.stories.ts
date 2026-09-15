@@ -5,18 +5,18 @@
 import type { Meta, StoryObj } from "@storybook/html";
 
 const checkboxRow = (label: string, checked = false, disabled = false) => `
-  <label class="box-action box-action-checkbox" style="max-width: 423px;">
-    <span class="checkbox-control">
-      <input type="checkbox" class="checkbox-input" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />
-      <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+  <label class="va-box-action va-box-action-checkbox" style="max-width: 423px;">
+    <span class="va-checkbox-control">
+      <input type="checkbox" class="va-checkbox-input" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />
+      <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
     </span>
-    <span class="box-action-label">${label}</span>
+    <span class="va-box-action-label">${label}</span>
   </label>`;
 
 const switchRow = (label: string, checked = false, disabled = false) => `
-  <label class="box-action box-action-switch" style="max-width: 423px;">
-    <input type="checkbox" role="switch" class="switch" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />
-    <span class="box-action-label">${label}</span>
+  <label class="va-box-action va-box-action-switch" style="max-width: 423px;">
+    <input type="checkbox" role="switch" class="va-switch" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />
+    <span class="va-box-action-label">${label}</span>
   </label>`;
 
 const meta: Meta = {

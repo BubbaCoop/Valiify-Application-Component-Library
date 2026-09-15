@@ -19,13 +19,13 @@ const ICONS: Record<string, string> = {
 };
 
 const full = ({ type, title, body }: Partial<ToastArgs>) => `
-  <div class="toast toast-${type}" role="status" style="max-width: 356px;">
-    <svg class="toast-icon" aria-hidden="true"><use href="#${ICONS[type ?? "info"]}" /></svg>
-    <div class="toast-content">
-      <span class="toast-title">${title}</span>
-      <span class="toast-body">${body}</span>
+  <div class="va-toast va-toast-${type}" role="status" style="max-width: 356px;">
+    <svg class="va-toast-icon" aria-hidden="true"><use href="#${ICONS[type ?? "info"]}" /></svg>
+    <div class="va-toast-content">
+      <span class="va-toast-title">${title}</span>
+      <span class="va-toast-body">${body}</span>
     </div>
-    <button class="icon-button" type="button" aria-label="Dismiss">
+    <button class="va-icon-button" type="button" aria-label="Dismiss">
       <svg aria-hidden="true"><use href="#x" /></svg>
     </button>
   </div>`;
@@ -70,7 +70,7 @@ export const AllTypes: Story = {
  * info, with no status token bound). */
 export const Simple: Story = {
   render: () => `
-    <div class="toast-simple" role="status">
+    <div class="va-toast-simple" role="status">
       <svg aria-hidden="true"><use href="#check" /></svg>
       Template Saved
     </div>

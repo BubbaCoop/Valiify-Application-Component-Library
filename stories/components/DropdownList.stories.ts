@@ -6,16 +6,16 @@
 import type { Meta, StoryObj } from "@storybook/html";
 
 const item = (label: string, selected = false, size = "sm") => `
-  <button class="list-option list-option-${size}" role="option" aria-selected="${selected}">
-    <span class="list-option-text">${label}</span>
-    <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
+  <button class="va-list-option va-list-option-${size}" role="option" aria-selected="${selected}">
+    <span class="va-list-option-text">${label}</span>
+    <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
   </button>`;
 
 const meta: Meta = {
   title: "Components/DropdownList",
   tags: ["autodocs"],
   render: () => `
-    <div class="dropdown-list" role="listbox" aria-label="Language" style="width: 154px;">
+    <div class="va-dropdown-list" role="listbox" aria-label="Language" style="width: 154px;">
       ${item("English", true)}
       ${item("Spanish")}
       ${item("German")}
@@ -32,10 +32,10 @@ export const Interactive: Story = {};
 export const BothSamples: Story = {
   render: () => `
     <div style="display: flex; gap: 32px;">
-      <div class="dropdown-list" role="listbox" aria-label="Language" style="width: 154px;">
+      <div class="va-dropdown-list" role="listbox" aria-label="Language" style="width: 154px;">
         ${item("English", true)}${item("Spanish")}${item("German")}
       </div>
-      <div class="dropdown-list" role="listbox" aria-label="Language" style="width: 154px;">
+      <div class="va-dropdown-list" role="listbox" aria-label="Language" style="width: 154px;">
         ${item("English")}${item("Spanish")}${item("German")}
       </div>
     </div>
@@ -45,7 +45,7 @@ export const BothSamples: Story = {
 /** Width is the consumer's — the panel spans its trigger. */
 export const WiderPanel: Story = {
   render: () => `
-    <div class="dropdown-list" role="listbox" aria-label="Language" style="width: 280px;">
+    <div class="va-dropdown-list" role="listbox" aria-label="Language" style="width: 280px;">
       ${item("English (United States)", true, "md")}
       ${item("Español (Latinoamérica)", false, "md")}
       ${item("Deutsch", false, "md")}
@@ -57,12 +57,12 @@ export const WiderPanel: Story = {
 export const WithTrigger: Story = {
   render: () => `
     <div style="position: relative; display: inline-block;">
-      <button class="text-selector" aria-haspopup="listbox" aria-expanded="true">
-        <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
-        <span class="text-selector-label">English</span>
-        <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+      <button class="va-text-selector" aria-haspopup="listbox" aria-expanded="true">
+        <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+        <span class="va-text-selector-label">English</span>
+        <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
       </button>
-      <div class="dropdown-list" role="listbox" aria-label="Language" style="position: absolute; top: calc(100% + 6px); left: 0; width: 154px;">
+      <div class="va-dropdown-list" role="listbox" aria-label="Language" style="position: absolute; top: calc(100% + 6px); left: 0; width: 154px;">
         ${item("English", true)}${item("Spanish")}${item("German")}
       </div>
     </div>

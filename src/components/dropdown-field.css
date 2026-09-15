@@ -6,17 +6,17 @@
  * matrix as Plain Text Field, all 413×73 (25px label row + 48px trigger).
  *
  * NOT a native <select> — a button trigger that composes the shipped
- * .dropdown-list panel (TextSelector's aria-haspopup / aria-expanded
+ * .va-dropdown-list panel (TextSelector's aria-haspopup / aria-expanded
  * precedent). Part naming mirrors the TextField family.
  *
- *   <div class="dropdown-field">
- *     <div class="dropdown-field-title-row">
- *       <span id="x-label" class="dropdown-field-title">Account type</span>
+ *   <div class="va-dropdown-field">
+ *     <div class="va-dropdown-field-title-row">
+ *       <span id="x-label" class="va-dropdown-field-title">Account type</span>
  *     </div>
- *     <button id="x-trigger" class="dropdown-field-trigger" type="button"
+ *     <button id="x-trigger" class="va-dropdown-field-trigger" type="button"
  *             aria-haspopup="listbox" aria-expanded="false"
  *             aria-labelledby="x-label">
- *       <span id="x-value" class="dropdown-field-value dropdown-field-value-placeholder"
+ *       <span id="x-value" class="va-dropdown-field-value va-dropdown-field-value-placeholder"
  *             aria-hidden="true">
  *         Select an account type
  *       </span>
@@ -25,7 +25,7 @@
  *            the announced name is "label, value". The unselected prompt is
  *            decorative (name = label alone) — and its Text/Hint ink fails
  *            WCAG contrast (3.11:1) as authored; designer list. -->
- *       <svg class="dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+ *       <svg class="va-dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
  *     </button>
  *   </div>
  *
@@ -55,7 +55,7 @@
  * (even error). Tailwind v4's rotate-180 sets the CSS `rotate` property —
  * the transition targets `rotate`, not `transform`.
  *
- * The panel is the shipped .dropdown-list + .list-option rows, composed by
+ * The panel is the shipped .va-dropdown-list + .va-list-option rows, composed by
  * the consumer; positioning and open/close JS are the consumer's (the
  * library ships no JS). Optional slots per the family: right-aligned
  * optional text and an 18px helper icon-button in the label row (both
@@ -67,29 +67,29 @@
  */
 
 @layer components {
-  .dropdown-field {
+  .va-dropdown-field {
     @apply flex w-full min-w-0 flex-col;
   }
 
   /* --- Label row (25 = 20 line + 5px pb) --------------------------------- */
 
-  .dropdown-field-title-row {
+  .va-dropdown-field-title-row {
     @apply flex items-center gap-1 pb-1.25;
   }
 
-  .dropdown-field-title {
+  .va-dropdown-field-title {
     @apply text-label-strong text-content-secondary; /* never recolours */
   }
 
   /* Right-aligned optional text — ink inferred (hidden in every variant). */
-  .dropdown-field-optional {
+  .va-dropdown-field-optional {
     @apply ml-auto text-help-caption text-content-tertiary;
   }
 
-  .dropdown-field-help {
+  .va-dropdown-field-help {
     @apply ml-auto size-4.5 shrink-0 cursor-pointer border-0 bg-transparent p-0 text-neutral-disabled;
   }
-  .dropdown-field-help svg {
+  .va-dropdown-field-help svg {
     @apply size-4.5;
     fill: none;
     stroke: currentColor;
@@ -100,21 +100,21 @@
 
   /* --- Trigger (48px pinned) ---------------------------------------------- */
 
-  .dropdown-field-trigger {
+  .va-dropdown-field-trigger {
     @apply m-0 flex h-12 w-full min-w-0 appearance-none items-center gap-2 px-3;
     @apply cursor-pointer rounded-sm border border-stroke-border bg-surface-paper text-left;
     transition: border-color 150ms;
   }
 
-  .dropdown-field-value {
+  .va-dropdown-field-value {
     @apply min-w-0 flex-1 truncate text-input text-content-primary;
   }
 
-  .dropdown-field-value-placeholder {
+  .va-dropdown-field-value-placeholder {
     @apply text-content-hint;
   }
 
-  .dropdown-field-chevron {
+  .va-dropdown-field-chevron {
     @apply size-4.5 shrink-0 text-neutral; /* constant ink, every state */
     fill: none;
     stroke: currentColor;
@@ -126,33 +126,33 @@
 
   /* --- States (order load-bearing — see header) --------------------------- */
 
-  .dropdown-field-trigger:hover:not(:focus-visible):not([aria-expanded="true"]):not([aria-invalid="true"]) {
+  .va-dropdown-field-trigger:hover:not(:focus-visible):not([aria-expanded="true"]):not([aria-invalid="true"]) {
     @apply border-stroke-hover;
   }
 
-  .dropdown-field-trigger:focus-visible,
-  .dropdown-field-trigger[aria-expanded="true"] {
+  .va-dropdown-field-trigger:focus-visible,
+  .va-dropdown-field-trigger[aria-expanded="true"] {
     @apply focus-ring border-primary;
   }
 
   /* Rotation tracks the PANEL, never bare keyboard focus. */
-  .dropdown-field-trigger[aria-expanded="true"] .dropdown-field-chevron {
+  .va-dropdown-field-trigger[aria-expanded="true"] .va-dropdown-field-chevron {
     @apply rotate-180;
   }
 
   /* After the open rule on purpose: amber wins the border tie on
      error+open; the ring and rotation still apply. */
-  .dropdown-field-trigger[aria-invalid="true"] {
+  .va-dropdown-field-trigger[aria-invalid="true"] {
     @apply border-warning;
   }
 
   /* --- Hint (normal-flow correction, family pattern) ----------------------- */
 
-  .dropdown-field-hint {
+  .va-dropdown-field-hint {
     @apply m-0 pt-1.25 text-help-caption text-content-secondary;
   }
 
-  .dropdown-field:has(.dropdown-field-trigger[aria-invalid="true"]) .dropdown-field-hint {
+  .va-dropdown-field:has(.va-dropdown-field-trigger[aria-invalid="true"]) .va-dropdown-field-hint {
     @apply text-warning-text; /* inferred — designer to confirm */
   }
 }

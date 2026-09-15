@@ -5,7 +5,7 @@
  * (inline fast-path) from Figma Application Status (64:4623) — 2 variants
  * on a single Active axis, both 93×16.
  *
- *   <span class="status-tracker status-tracker-active">
+ *   <span class="va-status-tracker va-status-tracker-active">
  *     <svg aria-hidden="true"><use href="#check" /></svg>
  *     Application
  *   </span>
@@ -25,12 +25,12 @@
  */
 
 @layer components {
-  .status-tracker {
+  .va-status-tracker {
     @apply inline-flex items-center gap-2 whitespace-nowrap;
     @apply text-field-label text-content-tertiary;
   }
 
-  .status-tracker svg {
+  .va-status-tracker svg {
     @apply size-3.5 shrink-0; /* 14px */
     fill: none;
     stroke: currentColor;
@@ -39,7 +39,7 @@
     stroke-linejoin: round;
   }
 
-  .status-tracker-active {
+  .va-status-tracker-active {
     @apply text-content-primary;
   }
 }

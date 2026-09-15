@@ -10,6 +10,9 @@
   "exports": {
     ".": "./dist/index.css",
     "./index.css": "./dist/index.css",
+    "./styles.css": "./dist/shortapp-ui.css",
+    "./reset.css": "./src/reset.css",
+    "./manifest": "./class-manifest.json",
     "./fonts": "./src/fonts.css",
     "./source": "./src/library.css",
     "./icons/sprite.svg": "./src/icons/sprite.svg",
@@ -17,6 +20,7 @@
   },
   "files": [
     "dist",
+    "class-manifest.json",
     "src",
     "types",
     "examples",
@@ -28,12 +32,15 @@
     "CLAUDE.md"
   ],
   "scripts": {
-    "build": "npm run build:theme && npm run build:icons && postcss src/index.css -o dist/index.css",
+    "build": "npm run build:theme && npm run build:icons && npm run build:utility-surface && postcss src/index.css -o dist/index.css && npm run build:styles && npm run build:manifest",
     "prepack": "npm run build && npm run fix-examples",
     "fix-examples": "node scripts/fix-example-deps.mjs",
     "restore-examples": "node scripts/restore-example-deps.mjs",
     "build:theme": "node scripts/build-theme.mjs",
     "build:icons": "node scripts/build-sprite.mjs",
+    "build:utility-surface": "node scripts/build-utility-surface.mjs",
+    "build:styles": "node scripts/build-styles.mjs",
+    "build:manifest": "node scripts/build-manifest.mjs",
     "dev": "postcss src/index.css -o dist/index.css --watch",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
@@ -47,6 +54,8 @@
     "audit": "node scripts/audit-components.mjs",
     "chromatic": "chromatic",
     "verify:bundle": "node scripts/verify-bundle.mjs",
+    "verify:vocabulary": "node scripts/verify-vocabulary.mjs",
+    "verify:markup": "node scripts/verify-markup.mjs",
     "verify:package": "node scripts/verify-package.mjs",
     "val:check": "val-init --check",
     "val:init": "val-init"
@@ -80,7 +89,7 @@
     "@storybook/addon-themes": "^10.5.10",
     "@storybook/html-vite": "^10.5.10",
     "@tailwindcss/postcss": "^4.3.3",
-    "@valiify/val-core": "^0.4.0",
+    "@valiify/val-core": "^0.5.0",
     "chromatic": "^18.6.0",
     "lucide-static": "^1.33.0",
     "pixelmatch": "^7.2.0",
@@ -93,9 +102,6 @@
     "storybook": "^10.5.10",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
-  },
-  "peerDependencies": {
-    "tailwindcss": ">=4.0.0"
   },
   "homepage": "https://github.com/BubbaCoop/Valiify-Application-Component-Library#readme",
   "bugs": {

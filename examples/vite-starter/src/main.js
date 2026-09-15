@@ -19,58 +19,58 @@ fetch(spriteUrl)
 // (flex, gap-*, max-w-*) come from YOUR Tailwind build via the /source entry.
 const app = document.getElementById("app");
 app.innerHTML = `
-  <main class="mx-auto flex max-w-md flex-col gap-6 p-8">
+  <main class="va:mx-auto va:flex max-w-md va:flex-col va:gap-6 p-8">
     <div>
-      <h1 class="text-display text-content-primary">Open an account</h1>
-      <p class="text-body text-content-secondary">
+      <h1 class="va:text-display va:text-content-primary">Open an account</h1>
+      <p class="text-body va:text-content-secondary">
         A sampler of @valiify/shortapp-ui components.
-        <span class="badge">v0.1</span>
+        <span class="va-badge">v0.1</span>
       </p>
     </div>
 
-    <div class="toast toast-success" role="status">
-      <svg class="toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
-      <div class="toast-content">
-        <span class="toast-title">Setup complete</span>
-        <span class="toast-body">The stylesheet compiled and the sprite loaded.</span>
+    <div class="va-toast va-toast-success" role="status">
+      <svg class="va-toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
+      <div class="va-toast-content">
+        <span class="va-toast-title">Setup complete</span>
+        <span class="va-toast-body">The stylesheet compiled and the sprite loaded.</span>
       </div>
-      <button class="icon-button" aria-label="Dismiss">
+      <button class="va-icon-button" aria-label="Dismiss">
         <svg aria-hidden="true"><use href="#x" /></svg>
       </button>
     </div>
 
-    <div class="text-field">
-      <div class="text-field-title-row">
-        <label class="text-field-title" for="fname">First name</label>
+    <div class="va-text-field">
+      <div class="va-text-field-title-row">
+        <label class="va-text-field-title" for="fname">First name</label>
       </div>
-      <div class="text-field-box">
-        <input id="fname" class="text-field-input" type="text" placeholder="Jane" />
+      <div class="va-text-field-box">
+        <input id="fname" class="va-text-field-input" type="text" placeholder="Jane" />
       </div>
     </div>
 
-    <fieldset class="radio-field">
-      <legend class="radio-field-title">Do you have an existing account?</legend>
-      <div class="radio-field-options">
-        <label class="radio-field-option">
-          <input type="radio" name="existing" class="radio" checked /> Yes
+    <fieldset class="va-radio-field">
+      <legend class="va-radio-field-title">Do you have an existing account?</legend>
+      <div class="va-radio-field-options">
+        <label class="va-radio-field-option">
+          <input type="radio" name="existing" class="va-radio" checked /> Yes
         </label>
-        <label class="radio-field-option">
-          <input type="radio" name="existing" class="radio" /> No
+        <label class="va-radio-field-option">
+          <input type="radio" name="existing" class="va-radio" /> No
         </label>
       </div>
     </fieldset>
 
-    <label class="flex items-center justify-between">
-      <span class="text-label text-content-secondary">Email notifications</span>
-      <input type="checkbox" role="switch" class="switch" checked />
+    <label class="va:flex va:items-center va:justify-between">
+      <span class="va:text-label va:text-content-secondary">Email notifications</span>
+      <input type="checkbox" role="switch" class="va-switch" checked />
     </label>
 
-    <div class="flex justify-end gap-4">
-      <button class="btn btn-secondary">
+    <div class="va:flex justify-end va:gap-4">
+      <button class="va-btn va-btn-secondary">
         <svg aria-hidden="true"><use href="#arrow-left" /></svg>
         Back
       </button>
-      <button class="btn btn-primary">
+      <button class="va-btn va-btn-primary">
         Continue
         <svg aria-hidden="true"><use href="#arrow-right" /></svg>
       </button>

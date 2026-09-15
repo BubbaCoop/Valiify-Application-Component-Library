@@ -11,14 +11,14 @@
  * different label convention — Field Label 13/500 natural case (Text type:
  * Content 13/400), never the Standard set's uppercase Button Label.
  *
- *   <button class="utility-button utility-button-empty">
+ *   <button class="va-utility-button va-utility-button-empty">
  *     <svg aria-hidden="true"><use href="#dollar-sign" /></svg>
  *     Add Funds
  *   </button>
  *
  * BASE + A TYPE CLASS IS REQUIRED (Figma names no default — the Standard
  * button's rule). SM (34px) is the bare default — the only size all four
- * types share; `.utility-button-md` (54px) exists for Empty per Figma
+ * types share; `.va-utility-button-md` (54px) exists for Empty per Figma
  * (documented, not enforced). MD's authored w-214 is the sample-hug trap
  * (Standard's 239 precedent) — width is the caller's.
  *
@@ -55,7 +55,7 @@
  */
 
 @layer components {
-  .utility-button {
+  .va-utility-button {
     @apply inline-flex h-[34px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-sm px-3;
     @apply m-0 border border-transparent bg-transparent p-0 px-3;
     @apply text-field-label text-content-secondary;
@@ -66,7 +66,7 @@
   }
 
   /* Icon slots — painted by the button, riding the ink ramp. */
-  .utility-button svg {
+  .va-utility-button svg {
     @apply size-4.5 shrink-0; /* 18px */
     fill: none;
     stroke: currentColor;
@@ -77,69 +77,69 @@
 
   /* --- Size (MD exists for Empty in Figma; Text's Size axis is unwired) --- */
 
-  .utility-button-md {
+  .va-utility-button-md {
     @apply h-[54px] px-4;
   }
 
   /* --- Empty: bordered Paper box; border is REST-ONLY (pixel-proven) ------- */
 
-  .utility-button-empty {
+  .va-utility-button-empty {
     @apply border-stroke-divider bg-surface-paper;
   }
-  .utility-button-empty:hover:not(:disabled) {
+  .va-utility-button-empty:hover:not(:disabled) {
     @apply border-transparent bg-action-hover text-content-primary;
   }
-  .utility-button-empty:active:not(:disabled) {
+  .va-utility-button-empty:active:not(:disabled) {
     @apply border-transparent bg-action-pressed text-content-primary;
   }
 
   /* --- Filled: the Primary ramp; white ink never fades ---------------------- */
 
-  .utility-button-filled {
+  .va-utility-button-filled {
     @apply bg-primary text-content-contrast;
   }
-  .utility-button-filled:hover:not(:disabled) {
+  .va-utility-button-filled:hover:not(:disabled) {
     @apply bg-primary-hover;
   }
   /* Primary/Focus = Figma's literal name for the pressed fill. */
-  .utility-button-filled:active:not(:disabled) {
+  .va-utility-button-filled:active:not(:disabled) {
     @apply bg-primary-focus;
   }
 
   /* --- Rounded: ghost pill, no border in any state --------------------------- */
 
-  .utility-button-rounded {
+  .va-utility-button-rounded {
     @apply rounded-full border-0;
   }
-  .utility-button-rounded:hover:not(:disabled) {
+  .va-utility-button-rounded:hover:not(:disabled) {
     @apply bg-action-hover text-content-primary;
   }
-  .utility-button-rounded:active:not(:disabled) {
+  .va-utility-button-rounded:active:not(:disabled) {
     @apply bg-action-pressed text-content-primary;
   }
 
   /* --- Text: bare underlined row (16px); hover = pressed ---------------------- */
 
-  .utility-button-text {
+  .va-utility-button-text {
     @apply h-4 gap-1 rounded-none border-0 px-0 underline;
     @apply text-body-content text-content-tertiary;
     text-decoration-thickness: from-font;
   }
-  .utility-button-text svg {
+  .va-utility-button-text svg {
     @apply size-4; /* 16px trailing chevron, default-on in Figma */
   }
-  .utility-button-text:hover:not(:disabled),
-  .utility-button-text:active:not(:disabled) {
+  .va-utility-button-text:hover:not(:disabled),
+  .va-utility-button-text:active:not(:disabled) {
     @apply text-content-primary;
   }
 
   /* --- Shared -------------------------------------------------------------- */
 
-  .utility-button:focus-visible {
+  .va-utility-button:focus-visible {
     @apply focus-ring;
   }
 
-  .utility-button:disabled {
+  .va-utility-button:disabled {
     @apply cursor-not-allowed;
   }
 }

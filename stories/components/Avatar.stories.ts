@@ -11,7 +11,7 @@ interface AvatarArgs {
 }
 
 const av = ({ initials = "NC", size = "md", feint = false }) =>
-  `<span class="avatar${size === "sm" ? " avatar-sm" : ""}${feint ? " avatar-feint" : ""}">${initials}</span>`;
+  `<span class="va-avatar${size === "sm" ? " va-avatar-sm" : ""}${feint ? " va-avatar-feint" : ""}">${initials}</span>`;
 
 const meta: Meta<AvatarArgs> = {
   title: "Components/Avatar",

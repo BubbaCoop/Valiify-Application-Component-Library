@@ -1,0 +1,15 @@
+/**
+ * Uppercase type utilities. GENERATED — see scripts/build-theme.mjs.
+ */
+@utility type-eyebrow {
+  @apply text-eyebrow uppercase; /* Labels, links & UI/Eyebrow */
+}
+
+@utility type-micro-label {
+  @apply text-micro-label uppercase; /* Labels, links & UI/Micro-Label */
+}
+
+@utility type-button-label {
+  @apply text-button-label uppercase; /* Labels, links & UI/Button Label */
+}
+

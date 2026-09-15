@@ -1,0 +1,77 @@
+/**
+ * Minimal reset for the prebuilt bundle — opt-in.
+ *
+ *   @import "@valiify/shortapp-ui/reset.css";   <- first
+ *   @import "@valiify/shortapp-ui/styles.css";
+ *
+ * dist/shortapp-ui.css deliberately ships no preflight, so it cannot fight the
+ * reset of a host that already has one (daisyUI, Bootstrap, a house reset). The
+ * cost is that a page with NO other stylesheet gets the browser defaults, and
+ * three of those break this library's geometry. Measured on a bare HTML page
+ * loading only the bundle:
+ *
+ *   .va-owner-container      92.5px designed  ->  124.5px actual
+ *   va:w-[343px] va:p-4      343px designed   ->  375px actual
+ *   body                     Times, 8px margin
+ *
+ * This file is that floor and nothing more. It is NOT preflight: it does not
+ * touch headings, lists, tables, form-control appearance, borders, or anything
+ * else a host is entitled to own. Every rule below exists because a measured
+ * value was wrong without it.
+ *
+ * Use it when the bundle is the ONLY stylesheet on the page. Skip it inside an
+ * app that already resets — importing it there is harmless but redundant.
+ */
+
+/*
+ * 1. border-box. The single load-bearing rule.
+ *
+ * Every fixed dimension in this library is authored border-box: the methodology's
+ * arbitrary widths (w-[343px], w-140), and component heights that include their
+ * own border — CLAUDE.md records .va-btn-secondary's 48px as closing exactly
+ * "13+13+20+1+1 border-box". Under content-box each of those renders larger than
+ * designed by its padding and border. Form controls already default to border-box
+ * in the UA stylesheet, which is why buttons looked right and everything else
+ * did not.
+ */
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+/*
+ * 2. The body's 8px UA margin. Every full-bleed surface in the methodology
+ * (the app-page ground, the sticky header, the mobile action bar) assumes the
+ * page starts at the viewport edge.
+ */
+body {
+  margin: 0;
+}
+
+/*
+ * 3. Font family. The bundle defines --font-sans as a token but binds it to
+ * nothing — preflight is what normally applies it — so text falls back to the
+ * UA serif. Bound here to the token, so a consumer overriding --font-sans still
+ * wins.
+ */
+html {
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+}
+
+/*
+ * 4. Form controls do not inherit font from their ancestors; the UA gives them
+ * its own. Our button and input classes set size and weight but never family,
+ * because preflight normally supplies the inheritance.
+ */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}

@@ -6,7 +6,7 @@
 import type { Meta, StoryObj } from "@storybook/html";
 
 const sk = (shape: string, size = "md") =>
-  `<span class="skeleton skeleton-${shape} skeleton-${size}" aria-hidden="true"></span>`;
+  `<span class="va-skeleton va-skeleton-${shape} va-skeleton-${size}" aria-hidden="true"></span>`;
 
 const SHAPES = [
   "text", "heading", "circle", "rectangle", "button", "input", "textarea",
@@ -59,8 +59,8 @@ export const CardPattern: Story = {
     <div role="status" aria-busy="true" aria-label="Loading card" style="display: flex; flex-direction: column; gap: 12px; width: 200px;">
       ${sk("rectangle")}
       ${sk("heading", "sm")}
-      <span class="skeleton skeleton-text skeleton-md w-full" aria-hidden="true"></span>
-      <span class="skeleton skeleton-text skeleton-md w-full" aria-hidden="true"></span>
+      <span class="va-skeleton va-skeleton-text va-skeleton-md w-full" aria-hidden="true"></span>
+      <span class="va-skeleton va-skeleton-text va-skeleton-md w-full" aria-hidden="true"></span>
       ${sk("text", "sm")}
     </div>
   `,
@@ -81,9 +81,9 @@ export const FormPattern: Story = {
 export const Resizing: Story = {
   render: () => `
     <div role="status" aria-busy="true" aria-label="Loading" style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 480px;">
-      <span class="skeleton skeleton-heading skeleton-md w-full" aria-hidden="true"></span>
-      <span class="skeleton skeleton-text skeleton-md w-full" aria-hidden="true"></span>
-      <span class="skeleton skeleton-text skeleton-md" aria-hidden="true" style="width: 60%;"></span>
+      <span class="va-skeleton va-skeleton-heading va-skeleton-md w-full" aria-hidden="true"></span>
+      <span class="va-skeleton va-skeleton-text va-skeleton-md w-full" aria-hidden="true"></span>
+      <span class="va-skeleton va-skeleton-text va-skeleton-md" aria-hidden="true" style="width: 60%;"></span>
     </div>
   `,
 };

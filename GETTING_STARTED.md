@@ -3,7 +3,7 @@
 Complete installation guide for all build setups.
 
 > **Note**: 21 components are shipped (see the Quick Reference in CLAUDE.md); the remaining Figma sets (Address Super entry, Layer field, Disclaimer container, User, Confirmation Modal, Portal Specific) are pending extraction.
-> Component class names used in the snippets below (e.g. `.btn`, `.chip`) are
+> Component class names used in the snippets below (e.g. `.va-btn`, `.va-text-field`) are
 > illustrative of how the library is consumed — the real class reference will
 > live in [CLAUDE.md](CLAUDE.md) as components land.
 
@@ -176,11 +176,11 @@ fetch(spriteUrl)
 ### Step 6: Use Components
 
 ```html
-<button class="btn btn-primary">Click me</button>
+<button class="va-btn va-btn-primary">Click me</button>
 
-<div class="input-container">
-  <div class="input-field">
-    <input type="text" class="input" placeholder="Enter text..." />
+<div class="va-text-field">
+  <div class="va-text-field-box">
+    <input type="text" class="va-text-field-input" placeholder="Enter text..." />
   </div>
 </div>
 
@@ -250,15 +250,15 @@ Many components require wrapper elements:
 **This looks broken:**
 
 ```html
-<input class="input" />
+<input class="va-text-field-input" />
 ```
 
 **This works:**
 
 ```html
-<div class="input-container">
-  <div class="input-field">
-    <input class="input" />
+<div class="va-text-field">
+  <div class="va-text-field-box">
+    <input class="va-text-field-input" />
   </div>
 </div>
 ```
@@ -275,7 +275,7 @@ import "./styles.css";
 
 function App() {
   return (
-    <button className="btn btn-primary">
+    <button className="va-btn va-btn-primary">
       Click me
     </button>
   );
@@ -290,7 +290,7 @@ import "./styles.css";
 </script>
 
 <template>
-  <button class="btn btn-primary">Click me</button>
+  <button class="va-btn va-btn-primary">Click me</button>
 </template>
 ```
 
@@ -301,7 +301,7 @@ import "./styles.css";
   import "./styles.css";
 </script>
 
-<button class="btn btn-primary">Click me</button>
+<button class="va-btn va-btn-primary">Click me</button>
 ```
 
 ### Next.js (App Router)

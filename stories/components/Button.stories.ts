@@ -2,7 +2,7 @@
  * Button — the four Short App button types.
  *
  * Figma: Button (1:218), 16 variants across Type × {rest, hover, pressed,
- * inactive}. A type class is required — bare .btn is layout-only.
+ * inactive}. A type class is required — bare .va-btn is layout-only.
  */
 import type { Meta, StoryObj } from "@storybook/html";
 
@@ -26,7 +26,7 @@ const btn = ({
   leading?: string;
   trailing?: string;
 }) => `
-  <button class="btn btn-${type}" ${disabled ? "disabled" : ""}>
+  <button class="va-btn va-btn-${type}" ${disabled ? "disabled" : ""}>
     ${leading ? `<svg aria-hidden="true"><use href="#${leading}" /></svg>` : ""}
     ${label}
     ${trailing ? `<svg aria-hidden="true"><use href="#${trailing}" /></svg>` : ""}
@@ -101,11 +101,11 @@ export const IconSlots: Story = {
 export const FullWidth: Story = {
   render: () => `
     <div style="width: 360px; display: flex; flex-direction: column; gap: 12px;">
-      <button class="btn btn-primary" style="width: 100%;">
+      <button class="va-btn va-btn-primary" style="width: 100%;">
         Submit application
         <svg aria-hidden="true"><use href="#arrow-right" /></svg>
       </button>
-      <button class="btn btn-secondary" style="width: 100%;">Save for later</button>
+      <button class="va-btn va-btn-secondary" style="width: 100%;">Save for later</button>
     </div>
   `,
 };

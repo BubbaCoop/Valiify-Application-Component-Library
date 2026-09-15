@@ -6,13 +6,13 @@
  * fast-path) from Figma Action (71:848) — 3 variants: Pending / actionable
  * rest / Done, all 720×84 samples (width is the caller's).
  *
- *   <div class="action">
- *     <svg class="action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
- *     <div class="action-content">
- *       <span class="action-title">Identity</span>
- *       <span class="action-description">Verify who you are</span>
+ *   <div class="va-action">
+ *     <svg class="va-action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
+ *     <div class="va-action-content">
+ *       <span class="va-action-title">Identity</span>
+ *       <span class="va-action-description">Verify who you are</span>
  *     </div>
- *     <button class="action-cta" type="button">
+ *     <button class="va-action-cta" type="button">
  *       Verify
  *       <svg aria-hidden="true"><use href="#arrow-right" /></svg>
  *     </button>
@@ -20,14 +20,14 @@
  *
  * STATE MODEL — a state class on the row swaps the title ink and the
  * trailing treatment; everything else is constant:
- *   rest (no class)   title Text/Primary; trailing = .action-cta (a real
+ *   rest (no class)   title Text/Primary; trailing = .va-action-cta (a real
  *                     34px mini button: Paper fill, 1px Stroke/Divider
  *                     border, Field Label label + 18px trailing arrow —
- *                     NOT any shipped .btn type; Figma's arrow layer is
+ *                     NOT any shipped .va-btn type; Figma's arrow layer is
  *                     named "AttachMoneyRounded", ships #arrow-right)
- *   .action-pending   title Text/Secondary; trailing = .action-status with
+ *   .va-action-pending   title Text/Secondary; trailing = .va-action-status with
  *                     a 12px lock + micro-label in Text/Hint
- *   .action-done      title Text/Secondary; trailing = .action-status with
+ *   .va-action-done      title Text/Secondary; trailing = .va-action-status with
  *                     a 12px check + micro-label in Success/Text — more
  *                     Success-ramp adoption (with Toast)
  *
@@ -36,7 +36,7 @@
  * floors to 1px and grows the emergent 84px row). Height is content-driven
  * (20+44+20), not pinned.
  *
- * The optional badge is the shipped .badge, composed between content and
+ * The optional badge is the shipped .va-badge, composed between content and
  * the trailing slot (Figma's `badge` boolean, default off).
  *
  * The leading icon is a caller slot in constant Text/Secondary; the title
@@ -49,13 +49,13 @@
  */
 
 @layer components {
-  .action {
+  .va-action {
     @apply flex w-full items-center gap-4 bg-surface-paper p-5;
     /* 0.5px bottom hairline — OwnerContainer precedent; never a border. */
     box-shadow: inset 0 -0.5px 0 var(--color-stroke-divider);
   }
 
-  .action-icon {
+  .va-action-icon {
     @apply size-4.5 shrink-0 text-content-secondary; /* 18px, constant */
     fill: none;
     stroke: currentColor;
@@ -64,31 +64,31 @@
     stroke-linejoin: round;
   }
 
-  .action-content {
+  .va-action-content {
     @apply flex min-w-0 flex-1 flex-col gap-2;
   }
 
-  .action-title {
+  .va-action-title {
     @apply text-title-medium text-content-primary; /* rest: actionable, prominent */
   }
 
-  .action-description {
+  .va-action-description {
     @apply text-body-content text-content-tertiary;
   }
 
   /* Pending/Done demote the title; the trailing chip carries the state. */
-  .action-pending .action-title,
-  .action-done .action-title {
+  .va-action-pending .va-action-title,
+  .va-action-done .va-action-title {
     @apply text-content-secondary;
   }
 
   /* --- Trailing state chip (pending/done) ----------------------------------- */
 
-  .action-status {
+  .va-action-status {
     @apply flex h-[34px] shrink-0 items-center gap-2 rounded-sm px-3;
     @apply type-micro-label; /* 9/12/600 +8%, styled uppercase */
   }
-  .action-status svg {
+  .va-action-status svg {
     @apply size-3 shrink-0; /* 12px */
     fill: none;
     stroke: currentColor;
@@ -97,21 +97,21 @@
     stroke-linejoin: round;
   }
 
-  .action-pending .action-status {
+  .va-action-pending .va-action-status {
     @apply text-content-hint;
   }
-  .action-done .action-status {
+  .va-action-done .va-action-status {
     @apply text-success-text;
   }
 
-  /* --- Trailing CTA (rest) — its own mini button, not a shipped .btn type --- */
+  /* --- Trailing CTA (rest) — its own mini button, not a shipped .va-btn type --- */
 
-  .action-cta {
+  .va-action-cta {
     @apply flex h-[34px] shrink-0 cursor-pointer items-center gap-2 rounded-sm px-3;
     @apply border border-stroke-divider bg-surface-paper;
     @apply text-field-label text-content-primary;
   }
-  .action-cta svg {
+  .va-action-cta svg {
     @apply size-4.5 shrink-0; /* 18px arrow */
     fill: none;
     stroke: currentColor;
@@ -119,7 +119,7 @@
     stroke-linecap: round;
     stroke-linejoin: round;
   }
-  .action-cta:focus-visible {
+  .va-action-cta:focus-visible {
     @apply focus-ring;
   }
 }

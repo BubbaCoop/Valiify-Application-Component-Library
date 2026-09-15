@@ -19,24 +19,24 @@ const card = ({ title, description, notice, noticeLabel, noticeBody }: Partial<M
   const id = `modal-${uid++}`;
   const banner =
     notice && notice !== "none"
-      ? `<div class="modal-notice modal-notice-${notice}">
-          <span class="modal-notice-label">${noticeLabel}</span>
-          <span class="modal-notice-body">${noticeBody}</span>
+      ? `<div class="va-modal-notice va-modal-notice-${notice}">
+          <span class="va-modal-notice-label">${noticeLabel}</span>
+          <span class="va-modal-notice-body">${noticeBody}</span>
         </div>`
       : "";
   return `
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="${id}-t" aria-describedby="${id}-d">
-    <div class="modal-header">
-      <h2 id="${id}-t" class="modal-title">${title ?? "Confirm Action"}</h2>
-      <button class="icon-button" type="button" aria-label="Close">
+  <div class="va-modal" role="dialog" aria-modal="true" aria-labelledby="${id}-t" aria-describedby="${id}-d">
+    <div class="va-modal-header">
+      <h2 id="${id}-t" class="va-modal-title">${title ?? "Confirm Action"}</h2>
+      <button class="va-icon-button" type="button" aria-label="Close">
         <svg aria-hidden="true"><use href="#x" /></svg>
       </button>
     </div>
-    <p id="${id}-d" class="modal-description">${description ?? "Are you sure you want to proceed?"}</p>
+    <p id="${id}-d" class="va-modal-description">${description ?? "Are you sure you want to proceed?"}</p>
     ${banner}
-    <div class="modal-actions">
-      <button class="btn btn-secondary" type="button">Cancel</button>
-      <button class="btn btn-primary" type="button">Confirm</button>
+    <div class="va-modal-actions">
+      <button class="va-btn va-btn-secondary" type="button">Cancel</button>
+      <button class="va-btn va-btn-primary" type="button">Confirm</button>
     </div>
   </div>`;
 };
@@ -98,7 +98,7 @@ export const WithBackdrop: Story = {
   render: () => `
     <div style="position: relative; height: 480px;">
       <p style="margin: 16px; color: #54565b;">Page content behind the overlay…</p>
-      <div class="modal-backdrop" style="position: absolute;">
+      <div class="va-modal-backdrop" style="position: absolute;">
         ${card(destructive)}
       </div>
     </div>
@@ -109,23 +109,23 @@ export const WithBackdrop: Story = {
  * Escape, and ::backdrop. Click the button to open. */
 export const NativeDialog: Story = {
   render: () => `
-    <button class="btn btn-primary" type="button" data-open>Open modal</button>
-    <dialog class="modal" aria-labelledby="nd-t">
-      <div class="modal-header">
-        <h2 id="nd-t" class="modal-title">Delete this application?</h2>
-        <button class="icon-button" type="button" aria-label="Close" data-close>
+    <button class="va-btn va-btn-primary" type="button" data-open>Open modal</button>
+    <dialog class="va-modal" aria-labelledby="nd-t">
+      <div class="va-modal-header">
+        <h2 id="nd-t" class="va-modal-title">Delete this application?</h2>
+        <button class="va-icon-button" type="button" aria-label="Close" data-close>
           <svg aria-hidden="true"><use href="#x" /></svg>
         </button>
       </div>
-      <p class="modal-description">Are you sure you want to proceed?</p>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" type="button" data-close>Cancel</button>
-        <button class="btn btn-primary" type="button" data-close>Confirm</button>
+      <p class="va-modal-description">Are you sure you want to proceed?</p>
+      <div class="va-modal-actions">
+        <button class="va-btn va-btn-secondary" type="button" data-close>Cancel</button>
+        <button class="va-btn va-btn-primary" type="button" data-close>Confirm</button>
       </div>
     </dialog>
   `,
   play: async ({ canvasElement }) => {
-    const dialog = canvasElement.querySelector<HTMLDialogElement>("dialog.modal");
+    const dialog = canvasElement.querySelector<HTMLDialogElement>("dialog.va-modal");
     canvasElement.querySelector("[data-open]")?.addEventListener("click", () => dialog?.showModal());
     canvasElement.querySelectorAll("[data-close]").forEach((el) => {
       el.addEventListener("click", () => dialog?.close());

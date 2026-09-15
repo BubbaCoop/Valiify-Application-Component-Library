@@ -1,0 +1,590 @@
+{
+  "target": "val/fixtures/va-tolerance/concept.va.html",
+  "library": ".",
+  "methodology": "design-methodology/short-app.md",
+  "rules": {
+    "forbidden": [
+      "avatar",
+      "btn-bubble",
+      "tab-portal",
+      "text-area",
+      "box-action-switch",
+      "toast",
+      "status-tracker",
+      "action",
+      "utility-button-rounded",
+      "icon-button-subtle"
+    ],
+    "planned": [],
+    "monoTokens": [],
+    "classPrefix": "va",
+    "classNamespace": "va-",
+    "classSpelling": "tolerant",
+    "plannedDiagnostic": "§12 lists 2 planned addition(s) but its table has no interim/class column (headers: Addition | Spec from the frames | Library home), so no interim class is sanctioned. A page composing one of these writes a class the audit cannot recognise as planned. Add the column, or move the row to §10 once it ships."
+  },
+  "files": [
+    "val/fixtures/va-tolerance/concept.va.html"
+  ],
+  "vocabulary": {
+    "componentClasses": 146,
+    "utilities": [
+      "type-eyebrow",
+      "type-micro-label",
+      "type-button-label",
+      "focus-ring"
+    ],
+    "tokens": {
+      "color": 58,
+      "text": 24,
+      "radius": 6,
+      "shadow": 2
+    },
+    "citedMethodology": 259,
+    "citedClaudeMd": 276
+  },
+  "summary": {
+    "classes": 52,
+    "sanctioned": 52,
+    "unsanctioned": 0,
+    "violations": 0
+  },
+  "classes": [
+    {
+      "cls": "va-btn",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:92",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va-btn-primary",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:92",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va-btn-secondary",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:92",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va-header",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va-header-desktop",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va-header-logo",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va-header-mobile",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va-text-field",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58",
+        "val/fixtures/va-tolerance/concept.va.html:67",
+        "val/fixtures/va-tolerance/concept.va.html:75",
+        "val/fixtures/va-tolerance/concept.va.html:83",
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148",
+        "val/fixtures/va-tolerance/concept.va.html:157",
+        "val/fixtures/va-tolerance/concept.va.html:165",
+        "val/fixtures/va-tolerance/concept.va.html:173"
+      ]
+    },
+    {
+      "cls": "va-text-field-box",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58",
+        "val/fixtures/va-tolerance/concept.va.html:67",
+        "val/fixtures/va-tolerance/concept.va.html:75",
+        "val/fixtures/va-tolerance/concept.va.html:83",
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148",
+        "val/fixtures/va-tolerance/concept.va.html:157",
+        "val/fixtures/va-tolerance/concept.va.html:165",
+        "val/fixtures/va-tolerance/concept.va.html:173"
+      ]
+    },
+    {
+      "cls": "va-text-field-hint",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58",
+        "val/fixtures/va-tolerance/concept.va.html:67",
+        "val/fixtures/va-tolerance/concept.va.html:75",
+        "val/fixtures/va-tolerance/concept.va.html:83",
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148",
+        "val/fixtures/va-tolerance/concept.va.html:157",
+        "val/fixtures/va-tolerance/concept.va.html:165",
+        "val/fixtures/va-tolerance/concept.va.html:173"
+      ]
+    },
+    {
+      "cls": "va-text-field-input",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58",
+        "val/fixtures/va-tolerance/concept.va.html:67",
+        "val/fixtures/va-tolerance/concept.va.html:75",
+        "val/fixtures/va-tolerance/concept.va.html:83",
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148",
+        "val/fixtures/va-tolerance/concept.va.html:157",
+        "val/fixtures/va-tolerance/concept.va.html:165",
+        "val/fixtures/va-tolerance/concept.va.html:173"
+      ]
+    },
+    {
+      "cls": "va-text-field-title",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58",
+        "val/fixtures/va-tolerance/concept.va.html:67",
+        "val/fixtures/va-tolerance/concept.va.html:75",
+        "val/fixtures/va-tolerance/concept.va.html:83",
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148",
+        "val/fixtures/va-tolerance/concept.va.html:157",
+        "val/fixtures/va-tolerance/concept.va.html:165",
+        "val/fixtures/va-tolerance/concept.va.html:173"
+      ]
+    },
+    {
+      "cls": "va-text-field-title-row",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58",
+        "val/fixtures/va-tolerance/concept.va.html:67",
+        "val/fixtures/va-tolerance/concept.va.html:75",
+        "val/fixtures/va-tolerance/concept.va.html:83",
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148",
+        "val/fixtures/va-tolerance/concept.va.html:157",
+        "val/fixtures/va-tolerance/concept.va.html:165",
+        "val/fixtures/va-tolerance/concept.va.html:173"
+      ]
+    },
+    {
+      "cls": "va-text-selector",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va-text-selector-chevron",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va-text-selector-icon",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va-text-selector-label",
+      "kind": "component",
+      "source": "src/components",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va:bg-surface-app-page",
+      "kind": "token",
+      "source": "color:surface-app-page · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:22",
+        "val/fixtures/va-tolerance/concept.va.html:112"
+      ]
+    },
+    {
+      "cls": "va:bg-surface-paper",
+      "kind": "token",
+      "source": "color:surface-paper · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:border-stroke-divider",
+      "kind": "token",
+      "source": "color:stroke-divider · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:border-t",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:bottom-0",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:flex",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:27",
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:40",
+        "val/fixtures/va-tolerance/concept.va.html:45",
+        "val/fixtures/va-tolerance/concept.va.html:92",
+        "val/fixtures/va-tolerance/concept.va.html:117",
+        "val/fixtures/va-tolerance/concept.va.html:122",
+        "val/fixtures/va-tolerance/concept.va.html:130",
+        "val/fixtures/va-tolerance/concept.va.html:135",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:flex-1",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:92",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:flex-col",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:27",
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:40",
+        "val/fixtures/va-tolerance/concept.va.html:117",
+        "val/fixtures/va-tolerance/concept.va.html:122",
+        "val/fixtures/va-tolerance/concept.va.html:130",
+        "val/fixtures/va-tolerance/concept.va.html:135"
+      ]
+    },
+    {
+      "cls": "va:focus-ring",
+      "kind": "utility",
+      "source": "@utility",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58",
+        "val/fixtures/va-tolerance/concept.va.html:67",
+        "val/fixtures/va-tolerance/concept.va.html:75",
+        "val/fixtures/va-tolerance/concept.va.html:83",
+        "val/fixtures/va-tolerance/concept.va.html:92",
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148",
+        "val/fixtures/va-tolerance/concept.va.html:157",
+        "val/fixtures/va-tolerance/concept.va.html:165",
+        "val/fixtures/va-tolerance/concept.va.html:173",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:gap-10",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:27"
+      ]
+    },
+    {
+      "cls": "va:gap-2",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:gap-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:117"
+      ]
+    },
+    {
+      "cls": "va:gap-5",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:40",
+        "val/fixtures/va-tolerance/concept.va.html:130",
+        "val/fixtures/va-tolerance/concept.va.html:135",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:gap-6",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:45",
+        "val/fixtures/va-tolerance/concept.va.html:92"
+      ]
+    },
+    {
+      "cls": "va:h-19",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:md:flex-row",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:135"
+      ]
+    },
+    {
+      "cls": "va:md:gap-6",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:135"
+      ]
+    },
+    {
+      "cls": "va:md:w-67",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:140",
+        "val/fixtures/va-tolerance/concept.va.html:148"
+      ]
+    },
+    {
+      "cls": "va:mx-auto",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:27"
+      ]
+    },
+    {
+      "cls": "va:p-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:117"
+      ]
+    },
+    {
+      "cls": "va:px-4",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:py-12",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:27"
+      ]
+    },
+    {
+      "cls": "va:py-3.5",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:sticky",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    },
+    {
+      "cls": "va:text-content-primary",
+      "kind": "token",
+      "source": "color:content-primary · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:text-content-secondary",
+      "kind": "token",
+      "source": "color:content-secondary · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:text-content-tertiary",
+      "kind": "token",
+      "source": "color:content-tertiary · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:text-display",
+      "kind": "token",
+      "source": "text:display · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:text-input",
+      "kind": "token",
+      "source": "text:input · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:text-primary-text",
+      "kind": "token",
+      "source": "color:primary-text · cited",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:top-0",
+      "kind": "structural",
+      "source": "fixed list",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106"
+      ]
+    },
+    {
+      "cls": "va:type-eyebrow",
+      "kind": "utility",
+      "source": "@utility",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:32",
+        "val/fixtures/va-tolerance/concept.va.html:122"
+      ]
+    },
+    {
+      "cls": "va:w-140",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:27"
+      ]
+    },
+    {
+      "cls": "va:w-67",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:50",
+        "val/fixtures/va-tolerance/concept.va.html:58"
+      ]
+    },
+    {
+      "cls": "va:z-40",
+      "kind": "cited",
+      "source": "methodology",
+      "where": [
+        "val/fixtures/va-tolerance/concept.va.html:15",
+        "val/fixtures/va-tolerance/concept.va.html:106",
+        "val/fixtures/va-tolerance/concept.va.html:184"
+      ]
+    }
+  ],
+  "planned": [],
+  "issues": [],
+  "tailwind": {
+    "checked": true,
+    "tailwind": "4.3.3",
+    "candidates": 35,
+    "nonCompiling": []
+  },
+  "verdict": "PASS"
+}

@@ -9,19 +9,19 @@
  * TWO SHAPES, NOT ONE AT TWO SIZES:
  *
  *   FULL — a Paper card (356×66 sample; width is the caller's):
- *   <div class="toast toast-success" role="status">
- *     <svg class="toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
- *     <div class="toast-content">
- *       <span class="toast-title">Document request sent</span>
- *       <span class="toast-body">Client has been notified to upload their W-9.</span>
+ *   <div class="va-toast va-toast-success" role="status">
+ *     <svg class="va-toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
+ *     <div class="va-toast-content">
+ *       <span class="va-toast-title">Document request sent</span>
+ *       <span class="va-toast-body">Client has been notified to upload their W-9.</span>
  *     </div>
- *     <button class="icon-button" aria-label="Dismiss">
+ *     <button class="va-icon-button" aria-label="Dismiss">
  *       <svg aria-hidden="true"><use href="#x" /></svg>
  *     </button>
  *   </div>
  *
  *   SIMPLE — a dark BG/Contrast full-radius pill (280×36 sample), STATUS-LESS:
- *   <div class="toast-simple" role="status">
+ *   <div class="va-toast-simple" role="status">
  *     <svg aria-hidden="true"><use href="#check" /></svg>
  *     Template Saved
  *   </div>
@@ -30,13 +30,13 @@
  * — BUT THE "error" TYPE BINDS Warning/Base (amber), VERBATIM. This is now
  * the sharpest instance of the file-wide slip: the sibling variants prove
  * the designer wires ramps deliberately, and the Type literally named
- * "error" still gets amber. .toast-error paints text-warning faithfully;
+ * "error" still gets amber. .va-toast-error paints text-warning faithfully;
  * rebind when the designer does. Top designer-list item.
  *
  * The Type class paints ONLY the status icon (title/body inks are constant
  * Text/Primary / Text/Secondary); the icon is a caller slot — pass the
  * matching glyph (#circle-check / #circle-alert / #info). The close is the
- * composed bare .icon-button (Figma's close master is the same misnamed
+ * composed bare .va-icon-button (Figma's close master is the same misnamed
  * "ChevronLeft"-renders-X duplicate as Modal's — designer list).
  *
  * THE FULL CARD'S RING IS AN INSET BOX-SHADOW sharing one declaration with
@@ -61,7 +61,7 @@
 @layer components {
   /* --- Full ----------------------------------------------------------------- */
 
-  .toast {
+  .va-toast {
     @apply z-70 flex w-full items-start gap-3 rounded-lg bg-surface-paper p-4;
     /* 1px inside ring (content-driven height — a border would render 68,
        not the drawn 66) + the tokenized Basic Drop Shadow. */
@@ -71,7 +71,7 @@
   }
 
   /* Status icon — a caller slot, painted by the Type class below. */
-  .toast-icon {
+  .va-toast-icon {
     @apply size-4.5 shrink-0; /* 18px */
     fill: none;
     stroke: currentColor;
@@ -80,40 +80,40 @@
     stroke-linejoin: round;
   }
 
-  .toast-content {
+  .va-toast-content {
     @apply flex min-w-0 flex-1 flex-col gap-1;
   }
 
   /* Field Label type — its second consumer (after the Tooltip title). */
-  .toast-title {
+  .va-toast-title {
     @apply text-field-label text-content-primary;
   }
 
-  .toast-body {
+  .va-toast-body {
     @apply text-help-caption text-content-secondary;
   }
 
   /* Type paints the ICON only (inks are constant across Types). */
-  .toast-success .toast-icon {
+  .va-toast-success .va-toast-icon {
     @apply text-success;
   }
   /* VERBATIM: Figma's "error" Type binds Warning/Base (amber), not the
      Error ramp — the file-wide slip; rebind when the designer does. */
-  .toast-error .toast-icon {
+  .va-toast-error .va-toast-icon {
     @apply text-warning;
   }
-  .toast-info .toast-icon {
+  .va-toast-info .va-toast-icon {
     @apply text-info;
   }
 
   /* --- Simple (status-less dark pill) ---------------------------------------- */
 
-  .toast-simple {
+  .va-toast-simple {
     @apply z-70 flex w-max items-center justify-center gap-2 rounded-full px-4 py-2.5;
     @apply bg-surface-contrast text-body-content text-content-contrast shadow-basic;
   }
 
-  .toast-simple svg {
+  .va-toast-simple svg {
     @apply size-[15px] shrink-0; /* authored 15px, off the icon grid — designer list */
     fill: none;
     stroke: currentColor;

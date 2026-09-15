@@ -4,9 +4,9 @@
  * Binary selection control. Extracted from Figma Checkbox (1:424) — 8 variants
  * across Active × Hover × Pressed × Disabled, all 18×18.
  *
- *   <span class="checkbox-control">
- *     <input type="checkbox" class="checkbox-input" />
- *     <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+ *   <span class="va-checkbox-control">
+ *     <input type="checkbox" class="va-checkbox-input" />
+ *     <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
  *   </span>
  *
  * The wrapper exists because the checkmark is the sprite's #check glyph — a
@@ -48,12 +48,12 @@
  */
 
 @layer components {
-  .checkbox-control {
+  .va-checkbox-control {
     /* Shared 18px positioning context for the input and the sprite glyph. */
     @apply relative inline-flex size-4.5 shrink-0 items-center justify-center;
   }
 
-  .checkbox-input {
+  .va-checkbox-input {
     @apply absolute inset-0 m-0 cursor-pointer appearance-none p-0;
     /* Raw 3px — deliberately not rounded-xs (2) or rounded-sm (4). */
     @apply rounded-[3px] bg-surface-paper;
@@ -65,52 +65,52 @@
 
   /* --- Unchecked ramp ----------------------------------------------------- */
 
-  .checkbox-input:hover:not(:disabled):not(:checked) {
+  .va-checkbox-input:hover:not(:disabled):not(:checked) {
     @apply bg-action-hover;
   }
 
-  .checkbox-input:active:not(:disabled):not(:checked) {
+  .va-checkbox-input:active:not(:disabled):not(:checked) {
     @apply bg-action-pressed;
   }
 
   /* Disabled unchecked: ring thins to 1px AND swaps to Stroke/Divider —
      a colour-only :disabled rule would under-reproduce the design. */
-  .checkbox-input:disabled {
+  .va-checkbox-input:disabled {
     @apply cursor-not-allowed;
   }
-  .checkbox-input:disabled:not(:checked) {
+  .va-checkbox-input:disabled:not(:checked) {
     box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
   }
 
   /* --- Checked ramp ------------------------------------------------------- */
 
   /* Figma draws no ring on any checked variant — drop it, don't recolour it. */
-  .checkbox-input:checked {
+  .va-checkbox-input:checked {
     @apply bg-primary;
     box-shadow: none;
   }
 
-  .checkbox-input:checked:hover:not(:disabled) {
+  .va-checkbox-input:checked:hover:not(:disabled) {
     @apply bg-primary-hover;
   }
 
   /* Figma's token for checked+pressed is literally Primary/Focus. */
-  .checkbox-input:checked:active:not(:disabled) {
+  .va-checkbox-input:checked:active:not(:disabled) {
     @apply bg-primary-focus;
   }
 
   /* Translucent token, composited as-is (renders ~#e5bbc1 over paper). */
-  .checkbox-input:checked:disabled {
+  .va-checkbox-input:checked:disabled {
     @apply bg-primary-disabled;
   }
 
-  .checkbox-input:focus-visible {
+  .va-checkbox-input:focus-visible {
     @apply focus-ring;
   }
 
   /* --- Check glyph -------------------------------------------------------- */
 
-  .checkbox-check {
+  .va-checkbox-check {
     @apply pointer-events-none absolute inset-0 m-auto size-4 opacity-0;
     /* White is unbound in Figma; Text/Contrast matches exactly. */
     @apply text-content-contrast;
@@ -124,7 +124,7 @@
     stroke-linejoin: round;
   }
 
-  .checkbox-input:checked ~ .checkbox-check {
+  .va-checkbox-input:checked ~ .va-checkbox-check {
     @apply opacity-100;
   }
 }
