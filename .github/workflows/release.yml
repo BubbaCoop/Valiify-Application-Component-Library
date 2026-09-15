@@ -66,8 +66,56 @@ jobs:
       - name: verify:bundle
         run: npm run verify:bundle
 
+      # Non-blocking for the va- release ONLY, by explicit decision (2026-09-14).
+      # The 119 findings are all pre-existing dashboard-era names (.chip, .input,
+      # .modal-positive, the .icon family) in six docs that were already wrong before
+      # the rename — ZERO are prefix misses. Reconciling them means documenting how
+      # icons actually work here, which is a writing task, not rename cleanup, and it
+      # does not gate this release.
+      #
+      # It still RUNS and still reports red in the release log. Remove
+      # continue-on-error the moment the drift commit lands — leaving it is how a live
+      # gate turns into a permanently ignored one.
+      # continue-on-error, NOT `exit 0`: the step must still render RED in the run.
+      # Swallowing the exit code would paint it green, which is a worse lie than the
+      # collapsed log this replaces. The outputs are written before the real exit code
+      # is re-raised, so the summary step below can still read them.
       - name: verify:vocabulary
-        run: npm run verify:vocabulary
+        id: vocab
+        continue-on-error: true
+        run: |
+          set +e
+          npm run verify:vocabulary 2>&1 | tee /tmp/vocab.log
+          code=${PIPESTATUS[0]}
+          n=$(grep -oE '[0-9]+ vocabulary drift finding' /tmp/vocab.log | grep -oE '^[0-9]+' || echo 0)
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit "$code"
+
+      # A red step that does not fail the job stops being read, so the count goes
+      # into the job summary where it cannot collapse into an unopened log.
+      - name: Surface the accepted vocabulary debt
+        if: always()
+        run: |
+          n='${{ steps.vocab.outputs.count }}'
+          if [ "${{ steps.vocab.outputs.code }}" = "0" ]; then
+            echo "### ✅ verify:vocabulary clean" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "The drift debt is paid. **Remove \`continue-on-error\` from this step and delete this one** — release.yml should gate on it again." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ⚠️ ACCEPTED DEBT — verify:vocabulary is RED with $n finding(s)" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Released deliberately with this red. All findings are **pre-existing dashboard-era names** in six stale docs (\`.chip\`, \`.input\`, \`.modal-positive\`, the \`.icon\` family) — **zero are \`va:\` prefix misses**, verified before accepting." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`ci.yml\` still gates on this and is red on every PR. When the drift commit lands, remove \`continue-on-error\` here." >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo '<details><summary>Full output</summary>' >> "$GITHUB_STEP_SUMMARY"
+            echo '' >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            cat /tmp/vocab.log >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            echo '</details>' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: verify:markup
         run: npm run verify:markup

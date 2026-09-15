@@ -27,7 +27,54 @@ See [Installation](#installation) below.
 
 ## Installation
 
+### No build step? Use `./styles.css`
+
+```html
+<link rel="stylesheet" href="node_modules/@valiify/shortapp-ui/src/reset.css" />
+<link rel="stylesheet" href="node_modules/@valiify/shortapp-ui/dist/shortapp-ui.css" />
+```
+
+```bash
+npm install @valiify/shortapp-ui     # that is the whole install — no Tailwind
+```
+
+`./styles.css` is component classes + tokens + a `va:`-prefixed utility layer,
+prebuilt. Your app never compiles our classes, so **your Tailwind version does not
+matter** — including no Tailwind at all, or Tailwind v3 alongside daisyUI.
+
+Three things to know before using it:
+
+1. **The entries are alternatives, never companions.** Import exactly one of `.`,
+   `./index.css`, `./styles.css`. Importing `.` *and* `./styles.css` brings
+   preflight back and defines every component rule twice.
+2. **Import `./reset.css` first when it is the only stylesheet on the page.**
+   `./styles.css` ships no preflight on purpose, so it cannot fight a host's reset
+   — but standalone that means no `box-sizing: border-box`, and every fixed
+   dimension renders larger than designed (`.va-owner-container` measures 124.5px
+   instead of 92.5px). `./reset.css` is four measured rules, not preflight. Skip it
+   inside an app that already resets.
+3. **The utility layer is a closed set — and so are its variants.** Only the 280
+   utilities the design methodology uses are shipped: each base plus its **`md:`
+   form only**. `va:mt-7` is not one. Neither is `va:lg:py-12`, `va:sm:gap-4` or
+   `va:hover:bg-primary`. They produce **no rule at all** — no error, no warning,
+   no style.
+
+   - **Add a utility:** use it in the methodology, then
+     `npm run build:utility-surface && npm run build`, and commit the regenerated
+     `src/utility-surface.css`.
+   - **Add a variant:** extend `RESPONSIVE` in `scripts/build-utility-surface.mjs`
+     and rebuild. Each one multiplies the surface by the number of bases.
+   - **Or skip the whole trade-off:** use `./source` with your own Tailwind v4 and
+     get the full scale, compiled by your build.
+
+   `npm run verify:markup` fails on any class in generated markup with no rule in
+   the bundle — it is how `va:md:*` was found missing. It cannot see a page edited
+   by hand outside the repo; there the symptom is an element that looks unstyled.
+
 ### Step 1: Install Packages
+
+*(The rest of this section is the `./source` path — for consumers on Tailwind v4
+who want our `@theme` processed by their own build.)*
 
 Choose based on your build tool:
 

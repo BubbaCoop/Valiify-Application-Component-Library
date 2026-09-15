@@ -69,6 +69,32 @@ const ds = await tw.__unstable__loadDesignSystem(
   },
 );
 
+/**
+ * Responsive variants of every sanctioned base.
+ *
+ * The methodology cites base utilities (`va:py-12`), and a page composes the
+ * responsive form from them (`va:md:py-12`) — §1.1 web vs §1.2 mobile is exactly
+ * that. class-audit sanctions the composed form, because it strips variants before
+ * classifying; without this the bundle would not SHIP it, and the two gates would
+ * disagree. The first real /design run after the rename hit precisely that:
+ * class-audit PASS on va:md:py-12, va:md:w-140, va:md:gap-10 while verify:markup
+ * correctly reported them as having no rule.
+ *
+ * `md` only. It is the single breakpoint this design system sanctions — CLAUDE.md
+ * "Library Contracts" pins it to Header's 768px switch and says new responsive
+ * behaviour uses Tailwind's breakpoints, never new raw values. Emitting every
+ * variant class-audit allows (hover, focus-visible, aria-*, …) would multiply the
+ * surface ~15x for combinations components already handle internally; if generated
+ * output ever needs one, verify:markup fails and names it, which is how this rule
+ * was found.
+ */
+const RESPONSIVE = ["md"];
+for (const c of [...found]) {
+  const bare = c.slice(PREFIX.length + 1);
+  if (RESPONSIVE.some((v) => bare.startsWith(`${v}:`))) continue; // already responsive
+  for (const v of RESPONSIVE) found.add(`${PREFIX}:${v}:${bare}`);
+}
+
 const all = [...found].sort();
 const css = ds.candidatesToCss(all);
 const keep = all.filter((_, i) => css[i] !== null);
@@ -88,7 +114,8 @@ writeFileSync(
     " * a page using it renders unstyled with nothing failing. This file is committed so",
     " * that set is reviewable in a diff.",
     " *",
-    ` * ${keep.length} utilities. Candidates that do not compile are dropped by the generator.`,
+    ` * ${keep.length} utilities — each base plus its \`md:\` form (the one sanctioned`,
+    " * breakpoint). Candidates that do not compile are dropped by the generator.",
     " */",
     "",
     ...keep.map((c) => `@source inline("${c}");`),

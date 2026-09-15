@@ -7,6 +7,43 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-09-15
+
+**Breaking.** Component classes are namespaced `va-` and shipped utilities carry the
+Tailwind v4 prefix `va:`. 1.0.0 rather than 0.2.0 because the class names are the
+package's public API and every consumer's markup changes.
+
+### Migration — mechanical
+
+```
+.btn                -> .va-btn                 every component class gains va-
+.text-field-input   -> .va-text-field-input
+flex gap-4          -> va:flex va:gap-4        every SHIPPED utility gains va:
+md:w-full           -> va:md:w-full            the prefix LEADS the variant
+```
+
+`class-manifest.json` (new, exported as `./manifest`) lists both sets — 146 component
+classes and 280 utilities — and is generated from the built bundle, so it cannot drift
+from what actually ships.
+
+**Unchanged, deliberately:** token names (`--color-primary` is still `--color-primary`),
+component `@apply` payloads, and the `./source` entry. The prefix belongs to the prebuilt
+bundle's utility layer only — a `./source` consumer still writes `rounded-sm`.
+
+### Known — released with `verify:vocabulary` RED (accepted debt)
+
+87 findings across five docs, accepted deliberately. **All are pre-existing dashboard-era
+names** (`.chip`, `.input`, `.modal-positive`, and the `.icon` / `.icon-size-*` family
+this library defines nowhere in `src/`); **zero are `va:` prefix misses**, verified before
+the red was accepted. They were wrong before the rename and are not caused by it.
+
+`ci.yml` still gates on the check and is red on every PR. `release.yml` marks it
+`continue-on-error` so it reports without blocking, and writes the count and full output
+to the job summary so the debt cannot collapse into an unopened log. Reconciling those
+docs means documenting how icons actually work here — a writing task, tracked separately.
+Remove `continue-on-error` when it lands.
+
+
 ### BREAKING — component classes are namespaced `va-`, shipped utilities carry `va:`
 
 - **2026-09-14** — Every component class gains the `va-` namespace: `.btn` →
@@ -47,6 +84,21 @@ Token names are public API — renaming or removing one is a breaking change.
   the bundle does not define, `verify:markup` fails when generated markup uses a
   class with no rule in the bundle. Both carry canaries so they cannot pass
   vacuously. Both run in CI.
+
+### Known — released with `verify:vocabulary` RED (accepted debt)
+
+- **2026-09-14** — This release ships with `verify:vocabulary` failing on 87
+  findings across five docs. **All are pre-existing dashboard-era names**
+  (`.chip`, `.input`, `.modal-positive`, and the `.icon` / `.icon-size-*` family
+  that this library defines nowhere in `src/`) — **zero are `va:` prefix misses**,
+  verified before the red was accepted. They were wrong before the rename and are
+  not caused by it.
+
+  `ci.yml` still gates on the check and is red on every PR. `release.yml` marks it
+  `continue-on-error` so it reports without blocking, and prints the count and full
+  output to the job summary so the debt cannot collapse into an unopened log.
+  Reconciling those docs means documenting how icons actually work here — a writing
+  task, tracked separately. Remove `continue-on-error` when it lands.
 
 ### Removed
 

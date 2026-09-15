@@ -1386,6 +1386,17 @@ CSS-only — there is no Tailwind plugin to register, and no `tailwind.config.js
 | `@valiify/shortapp-ui` (prebuilt) | component classes + tokens as CSS custom properties  | token-derived utilities |
 | `@valiify/shortapp-ui/source`     | the above **plus** token-generated utility classes   | —                       |
 
+> ### ⚠️ The three entries are ALTERNATIVES, never companions
+>
+> Import exactly one of `.`, `./index.css` or `./styles.css`. Nothing stops a
+> consumer importing `.` **and** `./styles.css`, and the result is quietly wrong:
+> preflight comes back (the thing `./styles.css` exists to avoid, so it fights
+> the host's reset again) **and** every component rule is defined twice. The
+> package cannot enforce this — exports have no mutual exclusion — so it is
+> stated here and in the README.
+>
+> `./reset.css` is the one entry that pairs with another; see below.
+
 **`./styles.css` is the entry for a host that should never compile our classes.**
 It ships `dist/shortapp-ui.css`: component classes, tokens under both spellings,
 and a closed set of `va:`-prefixed utilities — with **preflight deliberately
@@ -1393,10 +1404,68 @@ excluded**, so it cannot fight the host's own reset. It needs no Tailwind at all
 which makes the host's Tailwind version irrelevant. That is what makes it safe to
 drop into an app on Tailwind v3 + daisyUI 4.
 
-The trade is that the utility layer is a **closed set**: `src/utility-surface.css`
-is generated from `design-methodology/*.md`, so a utility that surface never uses
-is not in the bundle, and markup using it renders unstyled. `verify:markup` is the
-gate that makes that loud instead of silent.
+> ### ⚠️ The utility layer is a CLOSED SET — an unlisted utility silently does nothing
+>
+> `src/utility-surface.css` is generated from `design-methodology/*.md`, so the
+> bundle ships only the ~140 utilities that surface actually uses. A developer
+> hand-editing a page who writes `va:mt-7` gets **no rule at all** — no error, no
+> warning, no style. This is the one sharp edge of prebuilding, and it is the
+> direct cost of the host never compiling our classes.
+>
+> **Variants are closed too, and this is the sharper half.** The surface ships each
+> base utility **and its `md:` form only** — `va:md:py-12` works, `va:lg:py-12`,
+> `va:sm:py-12`, `va:xl:py-12`, `va:hover:bg-primary` and `va:focus:*` **do not**.
+> They no-op exactly as an unlisted base does. `md` is the single breakpoint this
+> design system sanctions (Library Contracts, pinned to Header's 768px switch), and
+> component interaction states are handled inside the component classes rather than
+> by utilities.
+>
+> This is not theoretical: the first `/design` run after the rename emitted
+> `va:md:py-12`, `va:md:w-140` and `va:md:gap-10`, class-audit sanctioned all three
+> (it strips variants before classifying), and the bundle shipped none of them.
+> `verify:markup` caught it; `RESPONSIVE` in the generator is the fix.
+>
+> **To add a utility:** use it in the methodology (the honest route — the surface is
+> the source of truth), then
+> `npm run build:utility-surface && npm run build`, and commit the regenerated
+> `src/utility-surface.css`. It is committed precisely so the shipped set is
+> reviewable in a diff.
+>
+> **To add a variant:** extend `RESPONSIVE` in
+> [scripts/build-utility-surface.mjs](scripts/build-utility-surface.mjs) and
+> rebuild. Each variant added multiplies the surface by the number of bases (280
+> today), so add one because generated output needs it — which `verify:markup` will
+> tell you — not pre-emptively.
+>
+> **To find out you hit this:** `npm run verify:markup` fails on any class in
+> generated markup with no rule in the bundle. It cannot see a page you edited by
+> hand outside the repo — there, the symptom is an element that simply looks
+> unstyled.
+>
+> Consumers who need the full utility scale should use `./source` with their own
+> Tailwind v4 instead.
+
+> ### ⚠️ No preflight means no `box-sizing: border-box` — import `./reset.css` when standalone
+>
+> Measured on a bare HTML page loading only `dist/shortapp-ui.css`:
+>
+> | | bundle alone | + `./reset.css` | designed |
+> | --- | --- | --- | --- |
+> | `.va-owner-container` height | **124.5px** | 92.5px | 92.5px |
+> | `va:w-[343px] va:p-4` | **375px** | 343px | 343px |
+> | `body` margin / font | 8px / Times | 0 / Inter | 0 / Inter |
+>
+> Every fixed dimension here is authored border-box — `.va-btn-secondary`'s 48px
+> closes as `13+13+20+1+1 border-box` — so under the browser default each renders
+> larger than designed by its own padding and border. Form controls escape it
+> because the UA stylesheet already gives them border-box, which is why buttons
+> look right and nothing else does.
+>
+> `@valiify/shortapp-ui/reset.css` is the measured floor and **not** preflight:
+> `box-sizing`, the body margin, the font family, and form-control font
+> inheritance. Four rules, each one there because a value was measurably wrong
+> without it. Import it FIRST, and skip it inside an app that already resets
+> (daisyUI, Bootstrap, a house reset) — harmless there, just redundant.
 
 `.` and `./index.css` are unchanged — still the preflight-bearing `dist/index.css`.
 `./source` still requires the consumer to be on Tailwind v4; the package no longer
@@ -1407,7 +1476,9 @@ declares a peer dependency, so nothing enforces that but this sentence.
 @import "tailwindcss";
 @import "@valiify/shortapp-ui";
 
-/* self-contained — no Tailwind in the host, no reset shipped */
+/* self-contained — no Tailwind in the host, no reset shipped.
+   Import ONE of the three entries, never two. */
+@import "@valiify/shortapp-ui/reset.css";   /* only when standalone; must be first */
 @import "@valiify/shortapp-ui/styles.css";
 
 /* source — consumer's Tailwind processes our @theme */

@@ -11,6 +11,7 @@
     ".": "./dist/index.css",
     "./index.css": "./dist/index.css",
     "./styles.css": "./dist/shortapp-ui.css",
+    "./reset.css": "./src/reset.css",
     "./manifest": "./class-manifest.json",
     "./fonts": "./src/fonts.css",
     "./source": "./src/library.css",
