@@ -5,9 +5,9 @@
  * fast-path) from Figma tooltip (582:9178) — a single symbol, no variant
  * axes, 280×128 sample.
  *
- *   <div class="tooltip" role="tooltip">
- *     <span class="tooltip-title">Title</span>
- *     <span class="tooltip-body">Explanatory copy that wraps.</span>
+ *   <div class="va-tooltip" role="tooltip">
+ *     <span class="va-tooltip-title">Title</span>
+ *     <span class="va-tooltip-body">Explanatory copy that wraps.</span>
  *   </div>
  *
  * FIRST USE OF TWO TOKENS:
@@ -42,18 +42,18 @@
  */
 
 @layer components {
-  .tooltip {
+  .va-tooltip {
     @apply flex w-max max-w-[280px] flex-col gap-2 rounded-lg px-4 py-3;
     @apply bg-surface-contrast shadow-basic;
     word-break: break-word; /* authored in Figma */
   }
 
   /* Field Label type (13/16/500) — this style's first consumer. */
-  .tooltip-title {
+  .va-tooltip-title {
     @apply text-field-label text-content-hint;
   }
 
-  .tooltip-body {
+  .va-tooltip-body {
     @apply text-body-content text-content-contrast;
   }
 }

@@ -4,7 +4,7 @@
  * Circular initials marker. Extracted inline from Figma Avatar (23:670) —
  * 4 variants: Property 1 {MD 24px, SM 20px} × Feint {No, Yes}.
  *
- *   <span class="avatar">NC</span>
+ *   <span class="va-avatar">NC</span>
  *
  * | variant  | fill                      | initials              | type              |
  * | -------- | ------------------------- | --------------------- | ----------------- |
@@ -22,18 +22,18 @@
  */
 
 @layer components {
-  .avatar {
+  .va-avatar {
     @apply inline-flex shrink-0 items-center justify-center rounded-full;
     @apply size-6 select-none; /* MD 24px */
     @apply bg-neutral text-content-contrast type-eyebrow;
   }
 
-  .avatar-sm {
+  .va-avatar-sm {
     @apply size-5 type-micro-label; /* SM 20px, 9/600 */
   }
 
   /* Feint: 8% neutral tint, secondary ink — fill and ink change, type doesn't. */
-  .avatar-feint {
+  .va-avatar-feint {
     @apply bg-neutral-bg text-content-secondary;
   }
 }

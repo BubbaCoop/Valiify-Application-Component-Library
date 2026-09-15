@@ -5,7 +5,7 @@
 import type { Meta, StoryObj } from "@storybook/html";
 
 const tab = (type: string, label: string, selected = false, icon = "layout-grid") => `
-  <button class="tab tab-${type}" role="tab" aria-selected="${selected}">
+  <button class="va-tab va-tab-${type}" role="tab" aria-selected="${selected}">
     <svg aria-hidden="true"><use href="#${icon}" /></svg>
     ${label}
   </button>`;
@@ -14,7 +14,7 @@ const meta: Meta = {
   title: "Components/Tabs",
   tags: ["autodocs"],
   render: () => `
-    <div class="tabs" role="tablist" aria-label="Portal sections">
+    <div class="va-tabs" role="tablist" aria-label="Portal sections">
       ${tab("portal", "Overview", true)}
       ${tab("portal", "Documents", false, "file-text")}
       ${tab("portal", "Settings", false, "settings")}
@@ -31,11 +31,11 @@ export const Interactive: Story = {};
 export const BothTypes: Story = {
   render: () => `
     <div style="display: flex; flex-direction: column; gap: 24px;">
-      <div class="tabs" role="tablist" aria-label="Portal">
+      <div class="va-tabs" role="tablist" aria-label="Portal">
         ${tab("portal", "Overview", true)}
         ${tab("portal", "Documents", false, "file-text")}
       </div>
-      <div class="tabs" role="tablist" aria-label="Application">
+      <div class="va-tabs" role="tablist" aria-label="Application">
         ${tab("application", "Overview", true)}
         ${tab("application", "Documents", false, "file-text")}
       </div>
@@ -46,7 +46,7 @@ export const BothTypes: Story = {
 /** An application-step row, as the Short App uses it. */
 export const ApplicationRow: Story = {
   render: () => `
-    <div class="tabs" role="tablist" aria-label="Application steps">
+    <div class="va-tabs" role="tablist" aria-label="Application steps">
       ${tab("application", "Your details", true, "user")}
       ${tab("application", "Funding", false, "banknote")}
       ${tab("application", "Review", false, "check")}

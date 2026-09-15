@@ -5,18 +5,18 @@
  * (1:291) — 9 variants on a partial Filled × Hover × Focus × Error matrix,
  * all 413×73 (width is the caller's; 413 is the sample).
  *
- *   <div class="text-field">
- *     <div class="text-field-title-row">
- *       <label class="text-field-title" for="fname">First name</label>
+ *   <div class="va-text-field">
+ *     <div class="va-text-field-title-row">
+ *       <label class="va-text-field-title" for="fname">First name</label>
  *     </div>
- *     <div class="text-field-box">
- *       <input id="fname" class="text-field-input" type="text" placeholder="Jane" />
+ *     <div class="va-text-field-box">
+ *       <input id="fname" class="va-text-field-input" type="text" placeholder="Jane" />
  *     </div>
  *   </div>
  *
  * ANATOMY — title row 25px (20px text-label-strong line + 5px pb; NOT the
  * text-field-label TOKEN — the Figma label verbatim binds Labels/Strong
- * 14/20/500, designer list. The part class is .text-field-title because a
+ * 14/20/500, designer list. The part class is .va-text-field-title because a
  * .text-field-label class would collide with that token's generated utility
  * — the .list-item lesson; RadioField's -title naming adopted family-wide)
  * over a 48px box (h-12 pinned, 1px border inside
@@ -48,10 +48,10 @@
  * Filled axis — a native ::placeholder handles it with no class.
  *
  * Slots, all optional (hidden in every drawn variant): leading/trailing
- * 18px icons (.text-field-icon — Figma's placeholders are dollar glyphs,
+ * 18px icons (.va-text-field-icon — Figma's placeholders are dollar glyphs,
  * caller passes real ones), an 18px helper icon-button in the label row
- * (.text-field-help — Figma's glyph is the misnamed ChevronLeft placeholder,
- * RadioField pattern), and .text-field-hint below. THE HINT SHIPS IN NORMAL
+ * (.va-text-field-help — Figma's glyph is the misnamed ChevronLeft placeholder,
+ * RadioField pattern), and .va-text-field-hint below. THE HINT SHIPS IN NORMAL
  * FLOW — Figma's bottomContent geometry is broken (absolute −19px/−313%,
  * the RadioField defect verbatim) — as a labeled correction; help-caption
  * type, Text/Secondary, Warning/Text when the field is invalid (inferred —
@@ -62,23 +62,23 @@
  */
 
 @layer components {
-  .text-field {
+  .va-text-field {
     @apply flex w-full flex-col; /* no gap — the label row's pb is the 5px seam */
   }
 
-  .text-field-title-row {
+  .va-text-field-title-row {
     @apply flex items-center gap-1 pb-1.25; /* 20 + 5 = 25px row */
   }
 
-  .text-field-title {
+  .va-text-field-title {
     @apply text-label-strong text-content-secondary; /* never recolours, even on error */
   }
 
   /* Optional helper icon-button beside the label (RadioField precedent). */
-  .text-field-help {
+  .va-text-field-help {
     @apply ml-auto size-4.5 shrink-0 cursor-pointer border-0 bg-transparent p-0 text-neutral-disabled;
   }
-  .text-field-help svg {
+  .va-text-field-help svg {
     @apply size-4.5;
     fill: none;
     stroke: currentColor;
@@ -89,13 +89,13 @@
 
   /* The bordered box — 48px pinned via height (never min-height), the 1px
      border absorbed by border-box (Secondary-button closure). */
-  .text-field-box {
+  .va-text-field-box {
     @apply flex h-12 w-full items-center gap-2 rounded-sm border p-3;
     @apply border-stroke-border bg-surface-paper;
     transition: border-color 150ms;
   }
 
-  .text-field-icon {
+  .va-text-field-icon {
     @apply size-4.5 shrink-0 text-content-secondary;
     fill: none;
     stroke: currentColor;
@@ -104,16 +104,16 @@
     stroke-linejoin: round;
   }
 
-  .text-field-input {
+  .va-text-field-input {
     @apply min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 outline-none;
     @apply text-input text-content-primary;
   }
-  .text-field-input::placeholder {
+  .va-text-field-input::placeholder {
     @apply text-content-hint;
     opacity: 1; /* Firefox dims ::placeholder by default */
   }
 
-  .text-field-hint {
+  .va-text-field-hint {
     @apply m-0 pt-1.25 text-help-caption text-content-secondary;
   }
 
@@ -124,21 +124,21 @@
   /* Hover excludes focus by name too — the :not() chain out-specifies the
      focus rule, so without this guard a hovered+focused box would paint the
      hover border (Figma draws no hover+focus; focus wins, library decision). */
-  .text-field-box:hover:not(:has(.text-field-input:focus)):not(:has(.text-field-input[aria-invalid="true"])) {
+  .va-text-field-box:hover:not(:has(.va-text-field-input:focus)):not(:has(.va-text-field-input[aria-invalid="true"])) {
     @apply border-stroke-hover;
   }
 
-  .text-field-box:has(.text-field-input:focus) {
+  .va-text-field-box:has(.va-text-field-input:focus) {
     @apply focus-ring border-primary;
   }
 
-  .text-field-box:has(.text-field-input[aria-invalid="true"]) {
+  .va-text-field-box:has(.va-text-field-input[aria-invalid="true"]) {
     @apply border-warning;
   }
 
   /* Inferred (row hidden in every drawn variant; Warning/Text per the
      error-variant binding) — designer to confirm. */
-  .text-field:has(.text-field-input[aria-invalid="true"]) .text-field-hint {
+  .va-text-field:has(.va-text-field-input[aria-invalid="true"]) .va-text-field-hint {
     @apply text-warning-text;
   }
 }

@@ -24,7 +24,7 @@ const btn = ({
   label = "Action",
 }) => `
   <button
-    class="icon-button${size === "sm" ? " icon-button-sm" : ""}${type === "state" ? " icon-button-state" : ""}${subtle ? " icon-button-subtle" : ""}"
+    class="va-icon-button${size === "sm" ? " va-icon-button-sm" : ""}${type === "state" ? " va-icon-button-state" : ""}${subtle ? " va-icon-button-subtle" : ""}"
     aria-label="${label}"
     ${disabled ? "disabled" : ""}
   >

@@ -15,6 +15,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
+import { slug } from './lib/naming.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, '..');
@@ -32,7 +33,7 @@ const rootDir = path.resolve(__dirname, '..');
  * @returns {string}
  */
 function kebab(pascal) {
-  return pascal.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+  return slug(pascal);
 }
 
 /**

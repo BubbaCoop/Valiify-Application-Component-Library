@@ -13,7 +13,7 @@ interface SwitchArgs {
 }
 
 const sw = (checked = false, disabled = false, label = "Toggle") =>
-  `<input type="checkbox" role="switch" class="switch" aria-label="${label}" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />`;
+  `<input type="checkbox" role="switch" class="va-switch" aria-label="${label}" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />`;
 
 const meta: Meta<SwitchArgs> = {
   title: "Components/Switch",

@@ -4,13 +4,13 @@
  * Language-picker dropdown trigger. Extracted from Figma Text Selector
  * (1:489) — 12 variants across Hover × Active × Mobile, all 18px tall.
  *
- *   <button class="text-selector" aria-haspopup="listbox" aria-expanded="false">
- *     <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
- *     <span class="text-selector-label">English</span>
- *     <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+ *   <button class="va-text-selector" aria-haspopup="listbox" aria-expanded="false">
+ *     <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+ *     <span class="va-text-selector-label">English</span>
+ *     <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
  *   </button>
  *
- * Ink-only (like .btn-micro): no box, fill, border, or padding at any state.
+ * Ink-only (like .va-btn-micro): no box, fill, border, or padding at any state.
  * 16px globe · Help & Caption 12/400/14 label (natural case) · 18px chevron.
  *
  * THE DESIGN FILE CONTAINS DUPLICATE "HOVER" VARIANTS — two node groups both
@@ -37,16 +37,16 @@
  */
 
 @layer components {
-  .text-selector {
+  .va-text-selector {
     @apply m-0 inline-flex h-4.5 cursor-pointer items-center gap-1 border-0 bg-transparent p-0;
   }
 
-  .text-selector-label {
+  .va-text-selector-label {
     @apply text-help-caption text-content-tertiary;
     transition: color 150ms;
   }
 
-  .text-selector-icon {
+  .va-text-selector-icon {
     @apply size-4 shrink-0 text-neutral-disabled; /* 16px globe */
     fill: none;
     stroke: currentColor;
@@ -56,7 +56,7 @@
     transition: color 150ms;
   }
 
-  .text-selector-chevron {
+  .va-text-selector-chevron {
     @apply size-4.5 shrink-0 text-neutral-disabled; /* 18px */
     fill: none;
     stroke: currentColor;
@@ -71,23 +71,23 @@
   /* Hover: the modest single-token step; excludes the open state (Figma
      draws no hover+open combination — Radio's :not() discipline). Icons
      deliberately keep their rest ink. */
-  .text-selector:hover:not([aria-expanded="true"]) .text-selector-label {
+  .va-text-selector:hover:not([aria-expanded="true"]) .va-text-selector-label {
     @apply text-content-secondary;
   }
 
   /* Open: the two-property step + rotation. */
-  .text-selector[aria-expanded="true"] .text-selector-label {
+  .va-text-selector[aria-expanded="true"] .va-text-selector-label {
     @apply text-content-primary;
   }
-  .text-selector[aria-expanded="true"] .text-selector-icon,
-  .text-selector[aria-expanded="true"] .text-selector-chevron {
+  .va-text-selector[aria-expanded="true"] .va-text-selector-icon,
+  .va-text-selector[aria-expanded="true"] .va-text-selector-chevron {
     @apply text-neutral;
   }
-  .text-selector[aria-expanded="true"] .text-selector-chevron {
+  .va-text-selector[aria-expanded="true"] .va-text-selector-chevron {
     @apply rotate-180;
   }
 
-  .text-selector:focus-visible {
+  .va-text-selector:focus-visible {
     @apply focus-ring;
   }
 }

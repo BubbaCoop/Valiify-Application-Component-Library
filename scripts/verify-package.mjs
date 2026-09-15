@@ -71,8 +71,8 @@ const builtCss = () => {
 // 3a. /source entry ---------------------------------------------------------
 sh("npx vite build", APP);
 let css = builtCss();
-if (css.includes(".btn-primary")) pass("/source: component classes compiled");
-else fail("/source: component classes compiled", ".btn-primary missing from the consumer bundle");
+if (css.includes(".va-btn-primary")) pass("/source: component classes compiled");
+else fail("/source: component classes compiled", ".va-btn-primary missing from the consumer bundle");
 if (/\.text-display\{/.test(css) || /\.text-display\s*\{/.test(css))
   pass("/source: token-generated utilities compiled", "text-display present");
 else fail("/source: token-generated utilities compiled", "text-display utility missing — the @theme did not reach the consumer's Tailwind");
@@ -89,8 +89,8 @@ writeFileSync(stylesPath, styles.replace('@import "@valiify/shortapp-ui/source";
 rmSync(join(APP, "dist"), { recursive: true, force: true });
 sh("npx vite build", APP);
 css = builtCss();
-if (css.includes(".btn-primary")) pass("prebuilt: component classes compiled");
-else fail("prebuilt: component classes compiled", ".btn-primary missing");
+if (css.includes(".va-btn-primary")) pass("prebuilt: component classes compiled");
+else fail("prebuilt: component classes compiled", ".va-btn-primary missing");
 if (!/\.text-display\s*\{/.test(css))
   pass("prebuilt: token utilities correctly ABSENT", "the two-entry contract holds");
 else fail("prebuilt: token utilities correctly ABSENT", "text-display utility leaked into the prebuilt entry");

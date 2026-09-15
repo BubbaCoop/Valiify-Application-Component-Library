@@ -267,7 +267,7 @@
           },
           {
             "trigger": "§9-forbidden",
-            "when": "a STEP n OF m eyebrow, a progress bar used as sequence position, a Back/Continue footer row, the 560 column, a .btn family control for an inline action, an uppercase button label, a table or column-headed grid, a sidebar/breadcrumb/sub-nav, monospace, a shadow on a card, a rule between rows inside a card, a filled button that is not a commit, or a bare number without its unit or denominator"
+            "when": "a STEP n OF m eyebrow, a progress bar used as sequence position, a Back/Continue footer row, the 560 column, a .va-btn family control for an inline action, an uppercase button label, a table or column-headed grid, a sidebar/breadcrumb/sub-nav, monospace, a shadow on a card, a rule between rows inside a card, a filled button that is not a commit, or a bare number without its unit or denominator"
           },
           {
             "trigger": "§13-open-item",

@@ -27,7 +27,7 @@ const meta: Meta<RadioArgs> = {
     disabled: false,
   },
   render: ({ checked, disabled }) =>
-    `<input type="radio" class="radio" aria-label="Option" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />`,
+    `<input type="radio" class="va-radio" aria-label="Option" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />`,
 };
 
 export default meta;
@@ -47,8 +47,8 @@ export const Checked: Story = {
 export const BothRestStates: Story = {
   render: () => `
     <div style="display: flex; gap: 24px; align-items: center;">
-      <input type="radio" class="radio" aria-label="Unchecked" />
-      <input type="radio" class="radio" aria-label="Checked" checked />
+      <input type="radio" class="va-radio" aria-label="Unchecked" />
+      <input type="radio" class="va-radio" aria-label="Checked" checked />
     </div>
   `,
 };
@@ -65,7 +65,7 @@ export const InAGroup: Story = {
           .map(
             (label, i) => `
           <label style="display: inline-flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;">
-            <input type="radio" name="account-type" class="radio" ${i === 1 ? "checked" : ""} />
+            <input type="radio" name="account-type" class="va-radio" ${i === 1 ? "checked" : ""} />
             ${label}
           </label>`,
           )
@@ -79,8 +79,8 @@ export const InAGroup: Story = {
 export const Focus: Story = {
   render: () => `
     <div style="display: flex; gap: 24px;">
-      <input type="radio" name="focus-demo" class="radio" aria-label="First" />
-      <input type="radio" name="focus-demo" class="radio" aria-label="Second" checked />
+      <input type="radio" name="focus-demo" class="va-radio" aria-label="First" />
+      <input type="radio" name="focus-demo" class="va-radio" aria-label="Second" checked />
     </div>
   `,
 };
@@ -93,8 +93,8 @@ export const Focus: Story = {
 export const DisabledGap: Story = {
   render: () => `
     <div style="display: flex; gap: 24px; align-items: center;">
-      <input type="radio" class="radio" aria-label="Disabled unchecked" disabled />
-      <input type="radio" class="radio" aria-label="Disabled checked" checked disabled />
+      <input type="radio" class="va-radio" aria-label="Disabled unchecked" disabled />
+      <input type="radio" class="va-radio" aria-label="Disabled checked" checked disabled />
       <span style="font-size: 12px; color: #666;">
         renders identically to enabled — no Figma variant to reproduce
       </span>

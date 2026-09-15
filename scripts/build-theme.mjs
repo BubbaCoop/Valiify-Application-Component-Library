@@ -22,6 +22,16 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(ROOT, "tokens/figma-tokens.json");
 const OUT = join(ROOT, "src/themes/valiify.css");
+// The prebuilt bundle compiles its utilities under `prefix(va)` in a SECOND Tailwind
+// pass (scripts/build-styles.mjs). `@apply text-eyebrow` inside an @utility resolves at
+// compile time, so under a prefix it must read `@apply va:text-eyebrow` or the compile
+// errors. That makes the tokens and the type utilities separately importable, and the
+// type utilities exist in two spellings. valiify.css stays the aggregate, so
+// src/library.css, the ./source entry and verify-bundle's probe are unaffected.
+const OUT_TOKENS = join(ROOT, "src/themes/valiify-tokens.css");
+const OUT_TYPE = join(ROOT, "src/themes/valiify-type.css");
+const OUT_TYPE_PREFIXED = join(ROOT, "src/themes/valiify-type-prefixed.css");
+const CLASS_PREFIX = "va";
 
 const tokens = JSON.parse(readFileSync(SRC, "utf8"));
 
@@ -495,6 +505,32 @@ if (labelStyles.length) {
   }
 }
 
+/** The @utility type-* blocks, in one spelling or the other. */
+function typeUtilities(prefix) {
+  const out = [];
+  const q = (x) => (prefix ? `${prefix}:${x}` : x);
+  out.push("/**");
+  out.push(" * Uppercase type utilities. GENERATED — see scripts/build-theme.mjs.");
+  if (prefix) {
+    out.push(" *");
+    out.push(` * The ${prefix}: spelling, for the prebuilt bundle's prefixed utilities pass.`);
+    out.push(" * @apply resolves at compile time, so under a prefix every payload needs it too.");
+  }
+  out.push(" */");
+  for (const { key, figmaName, t } of labelStyles) {
+    const parts = [q(`text-${key}`)];
+    if (t.family !== "Inter") parts.push(q("font-mono"));
+    parts.push(q("uppercase"));
+    // The NAME stays unprefixed — Tailwind adds the prefix when the utility is used,
+    // exactly as it does for theme variables. Only the @apply payload carries it.
+    out.push(`@utility type-${key} {`);
+    out.push(`  @apply ${parts.join(" ")}; /* ${figmaName} */`);
+    out.push("}");
+    out.push("");
+  }
+  return out.join("\n");
+}
+
 if (drift.length) {
   console.error("\n  Color round-trip FAILED — conversion drifted >1/255:\n");
   for (const d of drift) {
@@ -506,7 +542,30 @@ if (drift.length) {
   process.exit(1);
 }
 
-writeFileSync(OUT, L.join("\n"));
+// The @theme block is everything before the first @utility; split there.
+const full = L.join("\n");
+const cut = full.indexOf("/**\n * Uppercase type utilities.");
+const tokensOnly = cut === -1 ? full : full.slice(0, cut).replace(/\s+$/, "") + "\n";
+
+writeFileSync(OUT_TOKENS, tokensOnly);
+writeFileSync(OUT_TYPE, typeUtilities(null) + "\n");
+writeFileSync(OUT_TYPE_PREFIXED, typeUtilities(CLASS_PREFIX) + "\n");
+writeFileSync(
+  OUT,
+  [
+    "/**",
+    " * Valiify Short App Theme — aggregate entry. GENERATED — do not edit by hand.",
+    " * Source: tokens/figma-tokens.json · Generator: scripts/build-theme.mjs",
+    " *",
+    " * Split so the prebuilt bundle's prefixed pass can import the tokens WITHOUT the",
+    " * @utility blocks, whose @apply payloads must carry the prefix. This file keeps the",
+    " * original path and content for src/library.css, ./source and verify-bundle's probe.",
+    " */",
+    '@import "./valiify-tokens.css";',
+    '@import "./valiify-type.css";',
+    "",
+  ].join("\n"),
+);
 
 const counts = {
   colors: Object.keys(tokens.color).length,

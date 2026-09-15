@@ -13,9 +13,9 @@ interface CheckboxArgs {
 }
 
 const box = (checked = false, disabled = false, label = "Option") => `
-  <span class="checkbox-control">
-    <input type="checkbox" class="checkbox-input" aria-label="${label}" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />
-    <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+  <span class="va-checkbox-control">
+    <input type="checkbox" class="va-checkbox-input" aria-label="${label}" ${checked ? "checked" : ""} ${disabled ? "disabled" : ""} />
+    <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
   </span>`;
 
 const meta: Meta<CheckboxArgs> = {
@@ -64,9 +64,9 @@ export const InAForm: Story = {
           .map(
             (label, i) => `
           <label style="display: inline-flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer;">
-            <span class="checkbox-control">
-              <input type="checkbox" class="checkbox-input" ${i < 2 ? "checked" : ""} />
-              <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+            <span class="va-checkbox-control">
+              <input type="checkbox" class="va-checkbox-input" ${i < 2 ? "checked" : ""} />
+              <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
             </span>
             ${label}
           </label>`,

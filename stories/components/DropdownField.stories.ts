@@ -1,7 +1,7 @@
 /**
  * DropdownField — labeled listbox-trigger form field.
  * Figma: Dropdown Field (1:358), 9 variants (Filled × Hover × Focus × Error
- * partial matrix). Composes the shipped .dropdown-list panel; the chevron
+ * partial matrix). Composes the shipped .va-dropdown-list panel; the chevron
  * flips 180° on [aria-expanded="true"] only.
  */
 import type { Meta, StoryObj } from "@storybook/html";
@@ -20,19 +20,19 @@ const field = ({ label, value, placeholder, expanded, invalid, hint }: Partial<D
   const id = `df-${uid++}`;
   const isPlaceholder = !value;
   return `
-  <div class="dropdown-field">
-    <div class="dropdown-field-title-row">
-      <span id="${id}-label" class="dropdown-field-title">${label ?? "Account type"}</span>
+  <div class="va-dropdown-field">
+    <div class="va-dropdown-field-title-row">
+      <span id="${id}-label" class="va-dropdown-field-title">${label ?? "Account type"}</span>
     </div>
-    <button id="${id}" class="dropdown-field-trigger" type="button"
+    <button id="${id}" class="va-dropdown-field-trigger" type="button"
       aria-haspopup="listbox" aria-expanded="${expanded ? "true" : "false"}"
       aria-labelledby="${isPlaceholder ? `${id}-label` : `${id}-label ${id}-value`}"
       ${invalid ? `aria-invalid="true"` : ""}
       ${hint ? `aria-describedby="${id}-hint"` : ""}>
-      <span id="${id}-value" class="dropdown-field-value${isPlaceholder ? " dropdown-field-value-placeholder" : ""}"${isPlaceholder ? ` aria-hidden="true"` : ""}>${value || placeholder || "Select"}</span>
-      <svg class="dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+      <span id="${id}-value" class="va-dropdown-field-value${isPlaceholder ? " va-dropdown-field-value-placeholder" : ""}"${isPlaceholder ? ` aria-hidden="true"` : ""}>${value || placeholder || "Select"}</span>
+      <svg class="va-dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
     </button>
-    ${hint ? `<p id="${id}-hint" class="dropdown-field-hint">${hint}</p>` : ""}
+    ${hint ? `<p id="${id}-hint" class="va-dropdown-field-hint">${hint}</p>` : ""}
   </div>`;
 };
 
@@ -65,7 +65,7 @@ type Story = StoryObj<DropdownFieldArgs>;
  * (the library ships no JS; border, ring and chevron flip are pure CSS). */
 export const Interactive: Story = {
   play: async ({ canvasElement }) => {
-    const trigger = canvasElement.querySelector<HTMLButtonElement>(".dropdown-field-trigger");
+    const trigger = canvasElement.querySelector<HTMLButtonElement>(".va-dropdown-field-trigger");
     trigger?.addEventListener("click", () => {
       const open = trigger.getAttribute("aria-expanded") === "true";
       trigger.setAttribute("aria-expanded", String(!open));
@@ -91,18 +91,18 @@ export const WithPanel: Story = {
   render: () => `
     <div style="max-width: 413px; position: relative;">
       ${field({ label: "Account type", value: "Personal checking", expanded: true })}
-      <div class="dropdown-list" role="listbox" aria-label="Account type" style="position: absolute; left: 0; right: 0; margin-top: 4px;">
-        <button class="list-option list-option-md" role="option" aria-selected="true">
-          <span class="list-option-text">Personal checking</span>
-          <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
+      <div class="va-dropdown-list" role="listbox" aria-label="Account type" style="position: absolute; left: 0; right: 0; margin-top: 4px;">
+        <button class="va-list-option va-list-option-md" role="option" aria-selected="true">
+          <span class="va-list-option-text">Personal checking</span>
+          <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
         </button>
-        <button class="list-option list-option-md" role="option" aria-selected="false">
-          <span class="list-option-text">Personal savings</span>
-          <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
+        <button class="va-list-option va-list-option-md" role="option" aria-selected="false">
+          <span class="va-list-option-text">Personal savings</span>
+          <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
         </button>
-        <button class="list-option list-option-md" role="option" aria-selected="false">
-          <span class="list-option-text">Business checking</span>
-          <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
+        <button class="va-list-option va-list-option-md" role="option" aria-selected="false">
+          <span class="va-list-option-text">Business checking</span>
+          <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
         </button>
       </div>
     </div>

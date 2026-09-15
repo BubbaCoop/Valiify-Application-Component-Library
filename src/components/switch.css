@@ -4,7 +4,7 @@
  * Toggle for binary on/off settings. Extracted from Figma Switch (1:446) —
  * 4 variants, all 36×20: Active {no, yes} × Hover.
  *
- *   <input type="checkbox" role="switch" class="switch" />
+ *   <input type="checkbox" role="switch" class="va-switch" />
  *
  * A native checkbox with appearance-none: the input is the track, the knob is
  * ::before, and :checked slides it. Form participation, keyboard toggling and
@@ -35,7 +35,7 @@
  */
 
 @layer components {
-  .switch {
+  .va-switch {
     @apply relative m-0 inline-flex shrink-0 cursor-pointer appearance-none p-0;
     /* Explicit both axes — appearance-none leaves no intrinsic size. */
     @apply h-5 w-9 rounded-full;
@@ -44,35 +44,35 @@
     transition: background-color 150ms;
   }
 
-  .switch:hover:not(:disabled):not(:checked) {
+  .va-switch:hover:not(:disabled):not(:checked) {
     @apply bg-stroke-hover;
   }
 
-  .switch:checked {
+  .va-switch:checked {
     @apply bg-primary;
   }
 
   /* A real Figma variant, not an invented state. */
-  .switch:checked:hover:not(:disabled) {
+  .va-switch:checked:hover:not(:disabled) {
     @apply bg-primary-hover;
   }
 
   /* Knob: 16px circle, 2px inset, BG/Paper in every state. */
-  .switch::before {
+  .va-switch::before {
     @apply absolute top-0.5 left-0.5 size-4 rounded-full bg-surface-paper content-[''];
     transition: transform 150ms;
   }
 
-  .switch:checked::before {
+  .va-switch:checked::before {
     @apply translate-x-4; /* 16px travel */
   }
 
-  .switch:focus-visible {
+  .va-switch:focus-visible {
     @apply focus-ring;
   }
 
   /* Figma models no disabled variant; nothing visual is invented. */
-  .switch:disabled {
+  .va-switch:disabled {
     @apply cursor-not-allowed;
   }
 }

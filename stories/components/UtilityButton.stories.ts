@@ -14,7 +14,7 @@ interface UtilityButtonArgs {
 }
 
 const btn = ({ type, label, md, leadingIcon }: Partial<UtilityButtonArgs>) => `
-  <button class="utility-button utility-button-${type}${md ? " utility-button-md" : ""}" type="button">
+  <button class="va-utility-button va-utility-button-${type}${md ? " va-utility-button-md" : ""}" type="button">
     ${leadingIcon && type !== "text" ? `<svg aria-hidden="true"><use href="#dollar-sign" /></svg>` : ""}
     ${label ?? "Add Funds"}
     ${type === "text" ? `<svg aria-hidden="true"><use href="#chevron-right" /></svg>` : ""}

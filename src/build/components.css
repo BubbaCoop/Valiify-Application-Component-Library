@@ -1,0 +1,19 @@
+/**
+ * Prebuilt bundle — PASS A: tokens, base and component classes. No preflight.
+ *
+ * Compiled by scripts/build-styles.mjs and concatenated with pass B into
+ * dist/shortapp-ui.css.
+ *
+ * Deliberately NOT `@import "tailwindcss"`: that entry pulls preflight, and the
+ * host app already has a reset. shortapp-web runs Tailwind v3 + daisyUI 4, whose
+ * base layer ours would fight. theme.css alone gives the default tokens that our
+ * @apply payloads resolve against; unused ones still tree-shake.
+ *
+ * No utilities.css import either, so this pass emits ZERO utility classes — the
+ * prefixed ones come from pass B. theme.css does not declare the layer order, so
+ * it is declared here.
+ */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css";
+@import "../library.css";

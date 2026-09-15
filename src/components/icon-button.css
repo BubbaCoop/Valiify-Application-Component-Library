@@ -4,17 +4,17 @@
  * Compact icon-only button. Extracted from Figma "icon button" (1:429) —
  * 16 variants across Size {md, sm} × Type {Icon Only, State} × Hover × Subtle.
  *
- *   <button class="icon-button" aria-label="Close">
+ *   <button class="va-icon-button" aria-label="Close">
  *     <svg><use href="#x" /></svg>
  *   </button>
  *
  * Icon-only buttons ALWAYS need an aria-label.
  *
  * Two real Types, not skins:
- *   bare .icon-button      Figma "Icon Only" — the glyph IS the box (md 18px,
+ *   bare .va-icon-button      Figma "Icon Only" — the glyph IS the box (md 18px,
  *                          sm 14px); hover recolours the glyph and NOTHING
  *                          else. No background, no radius, ever.
- *   .icon-button-state     Figma "State" — pads the same glyph into a larger
+ *   .va-icon-button-state     Figma "State" — pads the same glyph into a larger
  *                          hit target (md 24px, sm 18px) and hover adds a
  *                          full-circle Action/Hover halo.
  *
@@ -49,7 +49,7 @@
  */
 
 @layer components {
-  .icon-button {
+  .va-icon-button {
     @apply inline-flex shrink-0 cursor-pointer items-center justify-center;
     @apply m-0 border-0 bg-transparent p-0;
     /* md default: the glyph IS the box. */
@@ -60,7 +60,7 @@
   }
 
   /* The glyph slot — sized and painted by the button, no icon class needed. */
-  .icon-button svg {
+  .va-icon-button svg {
     @apply size-4.5 shrink-0; /* 18px */
     fill: none;
     stroke: currentColor;
@@ -71,38 +71,38 @@
 
   /* --- Size --------------------------------------------------------------- */
 
-  .icon-button-sm {
+  .va-icon-button-sm {
     @apply size-3.5; /* 14px */
   }
-  .icon-button-sm svg {
+  .va-icon-button-sm svg {
     @apply size-3.5;
   }
 
   /* --- Colour ramps ------------------------------------------------------- */
 
-  .icon-button:hover:not(:disabled) {
+  .va-icon-button:hover:not(:disabled) {
     @apply text-neutral-hover;
   }
 
   /* Subtle: rest at 60% ink; hover restores Base — never Neutral/Hover. */
-  .icon-button-subtle {
+  .va-icon-button-subtle {
     @apply text-neutral-disabled;
   }
-  .icon-button-subtle:hover:not(:disabled) {
+  .va-icon-button-subtle:hover:not(:disabled) {
     @apply text-neutral;
   }
 
   /* --- State type: padded hit target + hover halo ------------------------- */
 
-  .icon-button-state {
+  .va-icon-button-state {
     @apply size-6 p-0.75; /* 24px box, 3px padding around the 18px glyph */
   }
-  .icon-button-state.icon-button-sm {
+  .va-icon-button-state.va-icon-button-sm {
     @apply size-4.5 p-0.5; /* 18px box, 2px padding around the 14px glyph */
   }
   /* The halo exists ONLY on the State type — Icon Only hover never draws
      chrome. A full circle, per Figma's literal 9999px. */
-  .icon-button-state:hover:not(:disabled) {
+  .va-icon-button-state:hover:not(:disabled) {
     @apply rounded-full bg-action-hover;
   }
 
@@ -110,23 +110,23 @@
      Neutral/Pressed unifies BOTH ramps — after the Subtle rules so the
      equal-specificity cascade resolves to pressed. */
 
-  .icon-button:active:not(:disabled),
-  .icon-button-subtle:active:not(:disabled) {
+  .va-icon-button:active:not(:disabled),
+  .va-icon-button-subtle:active:not(:disabled) {
     @apply text-neutral-pressed;
   }
   /* State type: the pressed halo deepens to Action/Focused. */
-  .icon-button-state:active:not(:disabled) {
+  .va-icon-button-state:active:not(:disabled) {
     @apply rounded-full bg-action-focused;
   }
 
   /* --- Shared states ------------------------------------------------------ */
 
-  .icon-button:focus-visible {
+  .va-icon-button:focus-visible {
     @apply focus-ring;
   }
 
   /* Figma models no disabled variant; nothing visual is invented. */
-  .icon-button:disabled {
+  .va-icon-button:disabled {
     @apply cursor-not-allowed;
   }
 }

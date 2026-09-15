@@ -5,7 +5,7 @@
  * add-owner affordance). Extracted from Figma Owner (261:13225) — 3 variants
  * on a single Type axis {individual, Add, company}, all 34×34, NO state axis.
  *
- *   <span class="owner">
+ *   <span class="va-owner">
  *     <svg aria-hidden="true"><use href="#user" /></svg>
  *   </span>
  *
@@ -34,7 +34,7 @@
  */
 
 @layer components {
-  .owner {
+  .va-owner {
     @apply inline-flex size-8.5 shrink-0 items-center justify-center; /* 34px */
     @apply rounded-sm bg-neutral-bg text-neutral;
   }
@@ -42,7 +42,7 @@
   /* Glyph slot — any sprite symbol, painted by the tile (IconButton
      precedent). The sprite's symbols carry no paint attributes, so the
      Lucide defaults are supplied here. */
-  .owner svg {
+  .va-owner svg {
     @apply size-4.5 shrink-0; /* 18px */
     fill: none;
     stroke: currentColor;

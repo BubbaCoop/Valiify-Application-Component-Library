@@ -1,0 +1,18 @@
+/**
+ * Uppercase type utilities. GENERATED — see scripts/build-theme.mjs.
+ *
+ * The va: spelling, for the prebuilt bundle's prefixed utilities pass.
+ * @apply resolves at compile time, so under a prefix every payload needs it too.
+ */
+@utility type-eyebrow {
+  @apply va:text-eyebrow va:uppercase; /* Labels, links & UI/Eyebrow */
+}
+
+@utility type-micro-label {
+  @apply va:text-micro-label va:uppercase; /* Labels, links & UI/Micro-Label */
+}
+
+@utility type-button-label {
+  @apply va:text-button-label va:uppercase; /* Labels, links & UI/Button Label */
+}
+

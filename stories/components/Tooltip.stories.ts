@@ -11,9 +11,9 @@ interface TooltipArgs {
 }
 
 const tip = ({ title, body }: Partial<TooltipArgs>) => `
-  <div class="tooltip" role="tooltip">
-    ${title ? `<span class="tooltip-title">${title}</span>` : ""}
-    <span class="tooltip-body">${body}</span>
+  <div class="va-tooltip" role="tooltip">
+    ${title ? `<span class="va-tooltip-title">${title}</span>` : ""}
+    <span class="va-tooltip-body">${body}</span>
   </div>`;
 
 const meta: Meta<TooltipArgs> = {
@@ -54,12 +54,12 @@ export const BodyOnly: Story = {
 export const WithTrigger: Story = {
   render: () => `
     <div style="display: inline-flex; flex-direction: column; gap: 8px; align-items: flex-start;">
-      <button class="icon-button" aria-label="What is a routing number?" aria-describedby="tip-1">
+      <button class="va-icon-button" aria-label="What is a routing number?" aria-describedby="tip-1">
         <svg aria-hidden="true"><use href="#circle-help" /></svg>
       </button>
-      <div class="tooltip" role="tooltip" id="tip-1">
-        <span class="tooltip-title">Routing number</span>
-        <span class="tooltip-body">The nine-digit code on the bottom left of your checks.</span>
+      <div class="va-tooltip" role="tooltip" id="tip-1">
+        <span class="va-tooltip-title">Routing number</span>
+        <span class="va-tooltip-body">The nine-digit code on the bottom left of your checks.</span>
       </div>
     </div>
   `,

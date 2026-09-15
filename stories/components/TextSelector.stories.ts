@@ -10,10 +10,10 @@ interface TextSelectorArgs {
 }
 
 const ts = (label = "English", expanded = false) => `
-  <button class="text-selector" aria-haspopup="listbox" aria-expanded="${expanded}">
-    <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
-    <span class="text-selector-label">${label}</span>
-    <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+  <button class="va-text-selector" aria-haspopup="listbox" aria-expanded="${expanded}">
+    <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+    <span class="va-text-selector-label">${label}</span>
+    <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
   </button>`;
 
 const meta: Meta<TextSelectorArgs> = {

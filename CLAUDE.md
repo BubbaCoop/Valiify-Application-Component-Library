@@ -43,9 +43,9 @@ INLINE set; Button / Utility covers non-inline) — 16 variants across `Type` {P
 Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
 `Mobile` axis was removed by the designer (caught by the Gate-0 metadata sweep).
 
-- **Base**: `.btn` — layout only, **a type class is required** (Figma names no
+- **Base**: `.va-btn` — layout only, **a type class is required** (Figma names no
   default Type; the Alert/Tabs lesson)
-- **Types**: `.btn-primary`, `.btn-secondary`, `.btn-micro`, `.btn-bubble`
+- **Types**: `.va-btn-primary`, `.va-btn-secondary`, `.va-btn-micro`, `.va-btn-bubble`
 - **States**: `:hover`, `:active`, `:disabled` (Figma's `Inactive`),
   `:focus-visible`
 - **Icon slots**: plain `svg` children (18px; 12px in Micro), painted by the
@@ -86,25 +86,25 @@ Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
 > so the Radio/Checkbox inset-shadow trick is deliberately NOT used here.
 
 ```html
-<button class="btn btn-primary">
+<button class="va-btn va-btn-primary">
   Continue
   <svg aria-hidden="true"><use href="#arrow-right" /></svg>
 </button>
 
-<button class="btn btn-secondary">
+<button class="va-btn va-btn-secondary">
   <svg aria-hidden="true"><use href="#arrow-left" /></svg>
   Back
 </button>
 
-<button class="btn btn-micro">
+<button class="va-btn va-btn-micro">
   View all
   <svg aria-hidden="true"><use href="#arrow-right" /></svg>
 </button>
 
-<button class="btn btn-bubble">Skip</button>
+<button class="va-btn va-btn-bubble">Skip</button>
 
 <!-- Full width is the caller's -->
-<button class="btn btn-primary w-full">Submit application</button>
+<button class="va-btn va-btn-primary va:w-full">Submit application</button>
 ```
 
 #### Radio
@@ -112,7 +112,7 @@ Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
 Radio button control for single selection from a group. Extracted from Figma
 Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20.
 
-- **Base**: `.radio` — applied **directly to a native `<input type="radio">`**
+- **Base**: `.va-radio` — applied **directly to a native `<input type="radio">`**
 - **States**: `:hover`, `:active`, `:checked`, `:focus-visible`, `:disabled`
 - **Dimensions**: 20×20 circle, 1.5px inside ring, 10px inner dot when checked
 - **No label, no sizes, no slots** — the Figma component is the bare control;
@@ -149,12 +149,12 @@ Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20
 
 ```html
 <!-- Bare control -->
-<input type="radio" name="plan" class="radio" />
-<input type="radio" name="plan" class="radio" checked />
+<input type="radio" name="plan" class="va-radio" />
+<input type="radio" name="plan" class="va-radio" checked />
 
 <!-- With a label, composed at the call site -->
 <label style="display: inline-flex; align-items: center; gap: 10px;">
-  <input type="radio" name="account-type" class="radio" checked />
+  <input type="radio" name="account-type" class="va-radio" checked />
   Business
 </label>
 ```
@@ -164,10 +164,10 @@ Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20
 Circular initials marker. Extracted (inline fast-path) from Figma Avatar
 (23:670) — 4 variants: `Property 1` {MD 24px, SM 20px} × `Feint`.
 
-- **Base**: `.avatar` (MD, 24px) — `Neutral/Base` fill, white initials,
+- **Base**: `.va-avatar` (MD, 24px) — `Neutral/Base` fill, white initials,
   Eyebrow type (11/600, 10% tracking, uppercase)
-- **Size**: `.avatar-sm` (20px) — steps the type to Micro-Label (9/600, 8%)
-- **Variant**: `.avatar-feint` — `Neutral/BG` 8% tint, `Text/Secondary` ink
+- **Size**: `.va-avatar-sm` (20px) — steps the type to Micro-Label (9/600, 8%)
+- **Variant**: `.va-avatar-feint` — `Neutral/BG` 8% tint, `Text/Secondary` ink
 
 > **The uppercase is the type style's own transform** — this component and
 > Badge are the evidence that resolved Eyebrow's casing (typed mixed-case,
@@ -176,9 +176,9 @@ Circular initials marker. Extracted (inline fast-path) from Figma Avatar
 > dashboard file's Avatar. No LG, no ring, no disabled modelled.
 
 ```html
-<span class="avatar">NC</span>
-<span class="avatar avatar-sm">NC</span>
-<span class="avatar avatar-feint">NC</span>
+<span class="va-avatar">NC</span>
+<span class="va-avatar va-avatar-sm">NC</span>
+<span class="va-avatar va-avatar-feint">NC</span>
 ```
 
 #### Badge
@@ -186,14 +186,14 @@ Circular initials marker. Extracted (inline fast-path) from Figma Avatar
 Small uppercase qualifier pill. Extracted (inline fast-path) from Figma Badge
 (28:507) — a single symbol, no variant axes.
 
-- **Base**: `.badge` — 16px full-round pill, `Neutral/BG` fill, 8px x-padding,
+- **Base**: `.va-badge` — 16px full-round pill, `Neutral/BG` fill, 8px x-padding,
   Eyebrow type in `Text/Secondary`; width hugs the label
 
 > **No colour variants, sizes, or states exist in the design** — the symbol
 > has no axes. Pass the label in natural case (the Eyebrow transform caps it).
 
 ```html
-<span class="badge">Optional</span>
+<span class="va-badge">Optional</span>
 ```
 
 #### BoxAction
@@ -202,11 +202,11 @@ A boxed row composing a Checkbox or Switch with a label — the whole row is the
 hit target. Extracted from Figma Box action (199:12990) — 8 variants:
 `Type` {Checkbox 48px, Switch 44px} × {rest, Hover, Active, Disabled}.
 
-- **Base**: `.box-action` (a `<label>`) + type class `.box-action-checkbox` /
-  `.box-action-switch` (required — they carry the pinned heights and label
-  styles) + `.box-action-label`
-- **Pure composition**: the nested control is the shipped `.checkbox-control`
-  / `.switch` markup, unmodified — its checked styling comes free. Row state
+- **Base**: `.va-box-action` (a `<label>`) + type class `.va-box-action-checkbox` /
+  `.va-box-action-switch` (required — they carry the pinned heights and label
+  styles) + `.va-box-action-label`
+- **Pure composition**: the nested control is the shipped `.va-checkbox-control`
+  / `.va-switch` markup, unmodified — its checked styling comes free. Row state
   derives from the real input via `:has(:checked)` / `:has(:disabled)`.
 
 | state | ring (inset shadow) | fill | label |
@@ -226,12 +226,12 @@ hit target. Extracted from Figma Box action (199:12990) — 8 variants:
 > focus — the nested control's own focus-ring serves.
 
 ```html
-<label class="box-action box-action-checkbox">
-  <span class="checkbox-control">
-    <input type="checkbox" class="checkbox-input" />
-    <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+<label class="va-box-action va-box-action-checkbox">
+  <span class="va-checkbox-control">
+    <input type="checkbox" class="va-checkbox-input" />
+    <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
   </span>
-  <span class="box-action-label">Paperless statements</span>
+  <span class="va-box-action-label">Paperless statements</span>
 </label>
 ```
 
@@ -240,8 +240,8 @@ hit target. Extracted from Figma Box action (199:12990) — 8 variants:
 Binary selection control. Extracted from Figma Checkbox (1:424) — 8 variants
 across `Active` × `Hover` × `Pressed` × `Disabled`, all 18×18.
 
-- **Parts**: `.checkbox-control` (18px positioning wrapper), `.checkbox-input`
-  (native `<input type="checkbox">`), `.checkbox-check` (sprite `#check` glyph)
+- **Parts**: `.va-checkbox-control` (18px positioning wrapper), `.va-checkbox-input`
+  (native `<input type="checkbox">`), `.va-checkbox-check` (sprite `#check` glyph)
 - **States**: `:hover`, `:active`, `:checked`, `:disabled`, `:focus-visible` —
   and unlike Radio, **both branches have hover/pressed drawn in Figma**
 - **Dimensions**: 18×18 box, raw **3px radius** (on neither Radius token —
@@ -271,9 +271,9 @@ across `Active` × `Hover` × `Pressed` × `Disabled`, all 18×18.
 
 ```html
 <label style="display: inline-flex; align-items: center; gap: 10px;">
-  <span class="checkbox-control">
-    <input type="checkbox" class="checkbox-input" checked />
-    <svg class="checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+  <span class="va-checkbox-control">
+    <input type="checkbox" class="va-checkbox-input" checked />
+    <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
   </span>
   Online banking
 </label>
@@ -285,13 +285,13 @@ The application shell header. Extracted from Figma Header (550:7507) — Web
 (1410×60) / Mobile (375×60) variants, which differ **only** by frame width
 and the TextSelector's label ("English" → "EN").
 
-- **Base**: `.header` — 60px pinned, `BG/Paper`, 1px `Stroke/Divider` bottom
+- **Base**: `.va-header` — 60px pinned, `BG/Paper`, 1px `Stroke/Divider` bottom
   border (a real border: pinned height + border-box absorbs it), 20px
   x-padding
-- **Parts**: `.header-logo` (caller asset slot, 30px tall, absolutely
+- **Parts**: `.va-header-logo` (caller asset slot, 30px tall, absolutely
   centered — its crimson #CD1041 is the client brand asset's own colour,
-  deliberately untokenized), plus the composed `.text-selector`
-- **Breakpoint helpers**: `.header-desktop` / `.header-mobile` wrappers —
+  deliberately untokenized), plus the composed `.va-text-selector`
+- **Breakpoint helpers**: `.va-header-desktop` / `.va-header-mobile` wrappers —
   render both selector labels; the 768px media query switches them
 
 > **Three labeled library extensions** (the consumer contract; Figma models
@@ -299,23 +299,23 @@ and the TextSelector's label ("English" → "EN").
 > library — establish a scale when overlay components land), full width, and
 > the 768px breakpoint. No scrolled shadow — Figma draws none.
 > **The helpers are `display: contents` wrappers, not classes on
-> `.text-selector`** — header.css sorts before text-selector.css, so
+> `.va-text-selector`** — header.css sorts before text-selector.css, so
 > equal-specificity display rules on the same element would lose by import
 > order.
 > **Sticky sticks to the nearest scrolling ancestor** — mount as a direct
 > child of the scroll container or both contract behaviours silently break.
 
 ```html
-<header class="header">
-  <img class="header-logo" src="/logo.svg" alt="Alabama Credit Union" />
-  <span class="header-desktop">
-    <button class="text-selector" aria-haspopup="listbox" aria-expanded="false">
-      <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
-      <span class="text-selector-label">English</span>
-      <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+<header class="va-header">
+  <img class="va-header-logo" src="/logo.svg" alt="Alabama Credit Union" />
+  <span class="va-header-desktop">
+    <button class="va-text-selector" aria-haspopup="listbox" aria-expanded="false">
+      <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+      <span class="va-text-selector-label">English</span>
+      <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
     </button>
   </span>
-  <span class="header-mobile"><!-- same, label "EN" --></span>
+  <span class="va-header-mobile"><!-- same, label "EN" --></span>
 </header>
 ```
 
@@ -324,14 +324,14 @@ and the TextSelector's label ("English" → "EN").
 Compact icon-only button. Extracted from Figma "icon button" (1:429) — 16
 variants across `Size` × `Type` × `Hover` × `Subtle`.
 
-- **Base**: `.icon-button` — Figma's *Icon Only* type: the glyph IS the box,
+- **Base**: `.va-icon-button` — Figma's *Icon Only* type: the glyph IS the box,
   hover recolours it and **nothing else** (no background, ever)
-- **Type**: `.icon-button-state` — pads the same glyph into a larger hit target
+- **Type**: `.va-icon-button-state` — pads the same glyph into a larger hit target
   and hover adds a full-circle `Action/Hover` halo
-- **Sizes**: md default (18px glyph; 24px box as State), `.icon-button-sm`
+- **Sizes**: md default (18px glyph; 24px box as State), `.va-icon-button-sm`
   (14px glyph; 18px box as State). Box = glyph for Icon Only.
 - **Ramp**: default rest `Neutral/Base` → hover `Neutral/Hover`;
-  `.icon-button-subtle` rest `Neutral/Disabled` (60% ink) → hover
+  `.va-icon-button-subtle` rest `Neutral/Disabled` (60% ink) → hover
   `Neutral/Base` — **hover cancels the muting and never reaches Neutral/Hover**
 - **Glyph slot**: any sprite symbol, no icon class — the button sizes and
   paints its child `svg` directly (stroke-width 2 → 1.5px at md, 1.167px at sm)
@@ -349,17 +349,17 @@ variants across `Size` × `Type` × `Hover` × `Subtle`.
 > `focus-ring`).
 
 ```html
-<button class="icon-button" aria-label="Close">
+<button class="va-icon-button" aria-label="Close">
   <svg aria-hidden="true"><use href="#x" /></svg>
 </button>
 
 <!-- Padded hit target with hover halo -->
-<button class="icon-button icon-button-state" aria-label="Settings">
+<button class="va-icon-button va-icon-button-state" aria-label="Settings">
   <svg aria-hidden="true"><use href="#settings" /></svg>
 </button>
 
 <!-- Small, muted -->
-<button class="icon-button icon-button-sm icon-button-subtle" aria-label="Help">
+<button class="va-icon-button va-icon-button-sm va-icon-button-subtle" aria-label="Help">
   <svg aria-hidden="true"><use href="#circle-help" /></svg>
 </button>
 ```
@@ -370,7 +370,7 @@ Loading placeholders mirroring real components. Extracted from Figma Skeleton
 (525:4650, **16 shapes**) plus the authored written spec (550:7998) — the
 authority for the SM/MD/LG matrix, per-shape radii, and the animation.
 
-- **Base**: `.skeleton` — fill + pulse only; **both a shape and a size class
+- **Base**: `.va-skeleton` — fill + pulse only; **both a shape and a size class
   are required** (dimensions are a 16×3 matrix, not one box at three scales)
 - **Shapes**: `-text -heading -circle -rectangle -button -input -textarea
   -card -switch -checkbox -badge -listitem -tab -avatar -dropdown -radio`
@@ -395,14 +395,14 @@ authority for the SM/MD/LG matrix, per-shape radii, and the animation.
 > curve). Instances pulse in sync for free; do NOT stagger with
 > animation-delay — the spec rules it out. Reduced-motion guard lives inside
 > `@layer components` (the dashboard's one cascade leak, not repeated).
-> **Accessibility**: each `.skeleton` is `aria-hidden` decoration; the
+> **Accessibility**: each `.va-skeleton` is `aria-hidden` decoration; the
 > CONTAINER carries `role="status"`, `aria-busy="true"` and a label.
 
 ```html
 <div role="status" aria-busy="true" aria-label="Loading profile">
-  <span class="skeleton skeleton-circle skeleton-lg" aria-hidden="true"></span>
-  <span class="skeleton skeleton-heading skeleton-lg" aria-hidden="true"></span>
-  <span class="skeleton skeleton-text skeleton-md w-full" aria-hidden="true"></span>
+  <span class="va-skeleton va-skeleton-circle va-skeleton-lg" aria-hidden="true"></span>
+  <span class="va-skeleton va-skeleton-heading va-skeleton-lg" aria-hidden="true"></span>
+  <span class="va-skeleton va-skeleton-text va-skeleton-md va:w-full" aria-hidden="true"></span>
 </div>
 ```
 
@@ -411,7 +411,7 @@ authority for the SM/MD/LG matrix, per-shape radii, and the animation.
 Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
 `Active` × `Hover`, all 36×20.
 
-- **Base**: `.switch` on a native `<input type="checkbox" role="switch">` —
+- **Base**: `.va-switch` on a native `<input type="checkbox" role="switch">` —
   the input is the track, the knob is `::before`
 - **States**: `:hover`, `:checked`, `:checked:hover`, `:disabled`,
   `:focus-visible`
@@ -438,7 +438,7 @@ Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
 ```html
 <label style="display: inline-flex; align-items: center; gap: 16px;">
   Email notifications
-  <input type="checkbox" role="switch" class="switch" checked />
+  <input type="checkbox" role="switch" class="va-switch" checked />
 </label>
 ```
 
@@ -447,14 +447,14 @@ Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
 One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
 24 variants: `Size` {sm, md, lg} × `Selected` × `Hover` × `LastItem`.
 
-- **Base**: `.list-option` — layout only, **a size class is required** (Figma's
+- **Base**: `.va-list-option` — layout only, **a size class is required** (Figma's
   samples only show sm; no default is baked in). Named `-option`, NOT
   `-item`: `.list-item` IS Tailwind's own `display: list-item` utility and
   the collision stacked the rows (caught live; same trap later hit
   `.text-field-label` vs the `text-field-label` type token's utility)
-- **Sizes**: `.list-option-sm` (Help & Caption 12px, 30px / **34px selected**),
-  `.list-option-md` (Labels Default 14px, 36px), `.list-option-lg` (Input 16px, 40px)
-- **Parts**: `.list-option-text` (wraps, doesn't truncate), `.list-option-check`
+- **Sizes**: `.va-list-option-sm` (Help & Caption 12px, 30px / **34px selected**),
+  `.va-list-option-md` (Labels Default 14px, 36px), `.va-list-option-lg` (Input 16px, 40px)
+- **Parts**: `.va-list-option-text` (wraps, doesn't truncate), `.va-list-option-check`
   (18px sprite glyph, ALWAYS in markup, shown by selection)
 - **States**: `:hover` (works on selected rows too — a real Figma variant),
   `[aria-selected="true"]` / `[aria-checked="true"]`, `:focus-visible`
@@ -471,9 +471,9 @@ One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
 > Not modelled, not invented: disabled, pressed.
 
 ```html
-<button class="list-option list-option-sm" role="option" aria-selected="true">
-  <span class="list-option-text">English</span>
-  <svg class="list-option-check" aria-hidden="true"><use href="#check" /></svg>
+<button class="va-list-option va-list-option-sm" role="option" aria-selected="true">
+  <span class="va-list-option-text">English</span>
+  <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
 </button>
 ```
 
@@ -481,7 +481,7 @@ One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
 
 The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
 
-- **Base**: `.dropdown-list` — `BG/Paper`, 1px `Stroke/Divider` border, 4px
+- **Base**: `.va-dropdown-list` — `BG/Paper`, 1px `Stroke/Divider` border, 4px
   radius, zero padding/gap, raw `0 2px 5px 10%` shadow
 
 > **Figma naming trap**: the set's "Property 1 = sm/md" toggles which sample
@@ -494,9 +494,9 @@ The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
 > Width is the consumer's — the panel spans its trigger.
 
 ```html
-<div class="dropdown-list" role="listbox">
-  <button class="list-option list-option-sm" role="option" aria-selected="true">…</button>
-  <button class="list-option list-option-sm" role="option" aria-selected="false">…</button>
+<div class="va-dropdown-list" role="listbox">
+  <button class="va-list-option va-list-option-sm" role="option" aria-selected="true">…</button>
+  <button class="va-list-option va-list-option-sm" role="option" aria-selected="false">…</button>
 </div>
 ```
 
@@ -505,37 +505,37 @@ The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
 Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
 — 6 declared variants across `Filled` × `Hover` × `Focus`.
 
-- **Parts**: `.radio-field` (a `<fieldset>`), `.radio-field-title` (a
+- **Parts**: `.va-radio-field` (a `<fieldset>`), `.va-radio-field-title` (a
   `<legend>`, Labels/Strong 14/500, `Text/Secondary`, optional
-  `.radio-field-help` 18px icon slot), `.radio-field-options` (40px row,
-  24px apart), `.radio-field-option` (a `<label>` composing the shipped
-  `.radio`, 8px gap, Input 16/400), `.radio-field-hint` (optional, 12/400)
+  `.va-radio-field-help` 18px icon slot), `.va-radio-field-options` (40px row,
+  24px apart), `.va-radio-field-option` (a `<label>` composing the shipped
+  `.va-radio`, 8px gap, Input 16/400), `.va-radio-field-hint` (optional, 12/400)
 - **States: none at field level, deliberately** — see below
 
 > **Figma's state axes are UNWIRED — verified three independent ways**: all
 > six variants bind identical variables, share identical structure, and
 > render byte-identical pixels (`Filled` checks nothing; hover/focus draw
-> nothing). All real interaction ships from the composed `.radio` (native
+> nothing). All real interaction ships from the composed `.va-radio` (native
 > tints, crimson `:checked`, focus-ring). Top designer-list item.
 > **The helper icon is hidden in every Figma variant** — its recent redesign
 > could not be verified from this set, and the current glyph is a
 > chevron-left (reads as a placeholder). Designer list.
 > **Option ink is raw `#000000` in Figma** (the file's only raw black) —
 > shipped as `Text/Primary`; designer list. The `bottomContent` block's
-> authored geometry is broken (absolute −59px/−313%) — `.radio-field-hint`
+> authored geometry is broken (absolute −59px/−313%) — `.va-radio-field-hint`
 > ships in normal flow as a labeled correction.
 > No Error axis exists (unlike the sibling text fields), no disabled.
 
 ```html
-<fieldset class="radio-field">
-  <legend class="radio-field-title">Do you have an existing account?</legend>
-  <div class="radio-field-options">
-    <label class="radio-field-option">
-      <input type="radio" name="existing" class="radio" checked />
+<fieldset class="va-radio-field">
+  <legend class="va-radio-field-title">Do you have an existing account?</legend>
+  <div class="va-radio-field-options">
+    <label class="va-radio-field-option">
+      <input type="radio" name="existing" class="va-radio" checked />
       Yes
     </label>
-    <label class="radio-field-option">
-      <input type="radio" name="existing" class="radio" />
+    <label class="va-radio-field-option">
+      <input type="radio" name="existing" class="va-radio" />
       No
     </label>
   </div>
@@ -547,12 +547,12 @@ Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
 Selectable / navigational option card. Extracted from Figma Card (9:367) —
 6 variants: `Hover` × `Radio` × `Pressed`.
 
-- **Base**: `.select-card` — 16px padding, 12px gap, 6px radius, 1px border,
+- **Base**: `.va-select-card` — 16px padding, 12px gap, 6px radius, 1px border,
   76px content-driven height (20+**4**+20 text block + 32 padding)
-- **Parts**: `.select-card-text`, `.select-card-title` (Labels Strong 14/500),
-  `.select-card-description` (optional — Figma's subtitle boolean),
-  `.select-card-chevron` (18px, `Neutral/Base`)
-- **Two exclusive variants**: a `<label>` composing the shipped `.radio`
+- **Parts**: `.va-select-card-text`, `.va-select-card-title` (Labels Strong 14/500),
+  `.va-select-card-description` (optional — Figma's subtitle boolean),
+  `.va-select-card-chevron` (18px, `Neutral/Base`)
+- **Two exclusive variants**: a `<label>` composing the shipped `.va-radio`
   (selection card), or a `<button>` with the trailing chevron (navigation)
 
 | state | border | fill |
@@ -560,7 +560,7 @@ Selectable / navigational option card. Extracted from Figma Card (9:367) —
 | rest | `Stroke/Divider` | `BG/Paper` |
 | `:hover` | `Stroke/Hover` | **unchanged** (pixel-proven perimeter-only) |
 | `:active` (chevron variant) | unchanged token | `Action/Pressed` wash |
-| **selected** (`:has(.radio:checked)`) | `Primary/Primary` | `Primary/BG` |
+| **selected** (`:has(.va-radio:checked)`) | `Primary/Primary` | `Primary/BG` |
 
 > **Figma's "Pressed" on the radio variant means SELECTED** — persistent, with
 > the nested radio checked; driven here by `:has(:checked)` from the real
@@ -575,20 +575,20 @@ Selectable / navigational option card. Extracted from Figma Card (9:367) —
 > variants (library focus-ring).
 
 ```html
-<label class="select-card">
-  <input type="radio" name="join" class="radio" checked />
-  <span class="select-card-text">
-    <span class="select-card-title">Family Connection</span>
-    <span class="select-card-description">A relative is already a member</span>
+<label class="va-select-card">
+  <input type="radio" name="join" class="va-radio" checked />
+  <span class="va-select-card-text">
+    <span class="va-select-card-title">Family Connection</span>
+    <span class="va-select-card-description">A relative is already a member</span>
   </span>
 </label>
 
-<button class="select-card">
-  <span class="select-card-text">
-    <span class="select-card-title">Family Connection</span>
-    <span class="select-card-description">A relative is already a member</span>
+<button class="va-select-card">
+  <span class="va-select-card-text">
+    <span class="va-select-card-title">Family Connection</span>
+    <span class="va-select-card-description">A relative is already a member</span>
   </span>
-  <svg class="select-card-chevron" aria-hidden="true"><use href="#chevron-right" /></svg>
+  <svg class="va-select-card-chevron" aria-hidden="true"><use href="#chevron-right" /></svg>
 </button>
 ```
 
@@ -597,11 +597,11 @@ Selectable / navigational option card. Extracted from Figma Card (9:367) —
 Chip-style tab item, two types. Extracted from Figma Tabs (23:825) — 7
 variants: `Type` {Portal, Application} × `Hover` × `Active`.
 
-- **Base**: `.tab` — layout + shared ink ramp; **a type class is required**
-- **Types**: `.tab-portal` (ghost — bare until active, then a neutral
-  `Action/Active` wash), `.tab-application` (always boxed — Paper +
+- **Base**: `.va-tab` — layout + shared ink ramp; **a type class is required**
+- **Types**: `.va-tab-portal` (ghost — bare until active, then a neutral
+  `Action/Active` wash), `.va-tab-application` (always boxed — Paper +
   `Stroke/Divider` ring, crimson when active)
-- **Row**: `.tabs` — **unsourced structural extension** (no tablist frame in
+- **Row**: `.va-tabs` — **unsourced structural extension** (no tablist frame in
   Figma yet)
 - **States**: `:hover` (ink preview, weight unchanged),
   `[aria-selected="true"]` (ink + weight 400→500), `:focus-visible`
@@ -620,12 +620,12 @@ variants: `Type` {Portal, Application} × `Hover` × `Active`.
 > list). Not modelled, not invented: disabled, pressed.
 
 ```html
-<div class="tabs" role="tablist" aria-label="Application steps">
-  <button class="tab tab-application" role="tab" aria-selected="true">
+<div class="va-tabs" role="tablist" aria-label="Application steps">
+  <button class="va-tab va-tab-application" role="tab" aria-selected="true">
     <svg aria-hidden="true"><use href="#user" /></svg>
     Your details
   </button>
-  <button class="tab tab-application" role="tab" aria-selected="false">
+  <button class="va-tab va-tab-application" role="tab" aria-selected="false">
     <svg aria-hidden="true"><use href="#banknote" /></svg>
     Funding
   </button>
@@ -637,12 +637,12 @@ variants: `Type` {Portal, Application} × `Hover` × `Active`.
 Language-picker dropdown trigger. Extracted from Figma Text Selector (1:489) —
 12 variants across `Hover` × `Active` × `Mobile`, all 18px tall.
 
-- **Parts**: `.text-selector` (the button row), `.text-selector-icon` (16px
-  globe), `.text-selector-label` (Help & Caption 12/400, natural case),
-  `.text-selector-chevron` (18px, rotates)
+- **Parts**: `.va-text-selector` (the button row), `.va-text-selector-icon` (16px
+  globe), `.va-text-selector-label` (Help & Caption 12/400, natural case),
+  `.va-text-selector-chevron` (18px, rotates)
 - **States**: `:hover`, `[aria-expanded="true"]`, `:focus-visible`
 - **Ink-only** — no box, fill, border, or padding at any state (the
-  `.btn-micro` posture)
+  `.va-btn-micro` posture)
 
 | state | label | icons |
 | --- | --- | --- |
@@ -662,10 +662,10 @@ Language-picker dropdown trigger. Extracted from Figma Text Selector (1:489) —
 > no modifier class exists or is needed.
 
 ```html
-<button class="text-selector" aria-haspopup="listbox" aria-expanded="false">
-  <svg class="text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
-  <span class="text-selector-label">English</span>
-  <svg class="text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+<button class="va-text-selector" aria-haspopup="listbox" aria-expanded="false">
+  <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+  <span class="va-text-selector-label">English</span>
+  <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
 </button>
 ```
 
@@ -675,7 +675,7 @@ Icon-in-a-box owner marker. Extracted from Figma Owner (261:13225) — 3
 variants on one `Type` axis {individual, Add, company}, all 34×34, **no state
 axis**.
 
-- **Base**: `.owner` — 34px rounded square (**4px radius — NOT a circle**;
+- **Base**: `.va-owner` — 34px rounded square (**4px radius — NOT a circle**;
   deliberately distinct from the circular, initials-only Avatar), `Neutral/BG`
   fill, glyph in `Neutral/Base`
 - **One class, no type modifiers** — the three Figma variants are
@@ -688,9 +688,9 @@ axis**.
 > Geometry closes exactly (8+18+8 = 34); shipped as a pinned flex box.
 
 ```html
-<span class="owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
-<span class="owner"><svg aria-hidden="true"><use href="#plus" /></svg></span>
-<span class="owner"><svg aria-hidden="true"><use href="#building" /></svg></span>
+<span class="va-owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
+<span class="va-owner"><svg aria-hidden="true"><use href="#plus" /></svg></span>
+<span class="va-owner"><svg aria-hidden="true"><use href="#building" /></svg></span>
 ```
 
 #### OwnerContainer
@@ -698,15 +698,15 @@ axis**.
 One row in the owners list. Extracted from Figma Owner Container (274:258) —
 2 variants (`Property 1` = Person / Company), 509×92.5, **no state axis**.
 
-- **Parts**: `.owner-container` (the row), `.owner-container-info` (column),
-  `.owner-container-title` (34px pinned row: `.owner-container-name` flex-1
-  truncating + optional `.badge` + `.owner-container-percent`),
-  `.owner-container-contact` (18px pinned row: `.owner-container-contact-text`
-  flex-1 + `.owner-container-actions`)
+- **Parts**: `.va-owner-container` (the row), `.va-owner-container-info` (column),
+  `.va-owner-container-title` (34px pinned row: `.va-owner-container-name` flex-1
+  truncating + optional `.va-badge` + `.va-owner-container-percent`),
+  `.va-owner-container-contact` (18px pinned row: `.va-owner-container-contact-text`
+  flex-1 + `.va-owner-container-actions`)
 - **Pure composition, no variant classes** — Person vs Company differ ONLY by
   the Owner glyph and copy (zero variable/structural deltas, lane-verified).
-  Composes the shipped Owner, Badge, `.btn-micro` (Edit) and
-  `.icon-button-sm.icon-button-state` (delete) unmodified.
+  Composes the shipped Owner, Badge, `.va-btn-micro` (Edit) and
+  `.va-icon-button-sm.va-icon-button-state` (delete) unmodified.
 
 > **The divider is a 0.5px inset box-shadow, height pinned `h-[92.5px]`** —
 > Figma draws a bottom-only 0.5px `Stroke/Divider` hairline (pixel-confirmed
@@ -730,19 +730,19 @@ One row in the owners list. Extracted from Figma Owner Container (274:258) —
 > a list (or `role="listitem"`); only the two nested actions are interactive.
 
 ```html
-<div class="owner-container">
-  <span class="owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
-  <div class="owner-container-info">
-    <div class="owner-container-title">
-      <span class="owner-container-name">John Smith</span>
-      <span class="badge" hidden>Optional</span>
-      <span class="owner-container-percent">20%</span>
+<div class="va-owner-container">
+  <span class="va-owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
+  <div class="va-owner-container-info">
+    <div class="va-owner-container-title">
+      <span class="va-owner-container-name">John Smith</span>
+      <span class="va-badge" hidden>Optional</span>
+      <span class="va-owner-container-percent">20%</span>
     </div>
-    <div class="owner-container-contact">
-      <span class="owner-container-contact-text">(123) 456-7890 · john.smith@valiify.com</span>
-      <div class="owner-container-actions">
-        <button class="btn btn-micro">Edit <svg aria-hidden="true"><use href="#pencil" /></svg></button>
-        <button class="icon-button icon-button-sm icon-button-state" aria-label="Remove John Smith">
+    <div class="va-owner-container-contact">
+      <span class="va-owner-container-contact-text">(123) 456-7890 · john.smith@valiify.com</span>
+      <div class="va-owner-container-actions">
+        <button class="va-btn va-btn-micro">Edit <svg aria-hidden="true"><use href="#pencil" /></svg></button>
+        <button class="va-icon-button va-icon-button-sm va-icon-button-state" aria-label="Remove John Smith">
           <svg aria-hidden="true"><use href="#trash-2" /></svg>
         </button>
       </div>
@@ -757,11 +757,11 @@ Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
 — 9 variants on a **partial** `Filled` × `Hover` × `Focus` × `Error` matrix
 (no empty+error, no hover+focus, no disabled), all 413×73.
 
-- **Parts**: `.text-field` › `.text-field-title-row` (25px: `.text-field-title`
-  + optional `.text-field-help` 18px icon-button) › `.text-field-box` (48px
+- **Parts**: `.va-text-field` › `.va-text-field-title-row` (25px: `.va-text-field-title`
+  + optional `.va-text-field-help` 18px icon-button) › `.va-text-field-box` (48px
   pinned wrapper div — a native input can't host the icon slots; state styling
-  hangs off it via `:has()`) › `.text-field-input` (the native input) +
-  optional `.text-field-icon` (18px, leading/trailing) › `.text-field-hint`
+  hangs off it via `:has()`) › `.va-text-field-input` (the native input) +
+  optional `.va-text-field-icon` (18px, leading/trailing) › `.va-text-field-hint`
 - **States**: `:hover`, `:has(:focus)` (any focus — Figma's Focus axis is the
   caret), `aria-invalid="true"` (error), `:focus` ring on error too
 
@@ -796,25 +796,25 @@ Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
 > Not modelled, not invented: **disabled** (a priority gap for real forms).
 
 ```html
-<div class="text-field">
-  <div class="text-field-title-row">
-    <label class="text-field-title" for="fname">First name</label>
+<div class="va-text-field">
+  <div class="va-text-field-title-row">
+    <label class="va-text-field-title" for="fname">First name</label>
   </div>
-  <div class="text-field-box">
-    <input id="fname" class="text-field-input" type="text" placeholder="Jane" />
+  <div class="va-text-field-box">
+    <input id="fname" class="va-text-field-input" type="text" placeholder="Jane" />
   </div>
 </div>
 
 <!-- error: aria-invalid drives it; describedby wires the hint -->
-<div class="text-field">
-  <div class="text-field-title-row">
-    <label class="text-field-title" for="email">Email</label>
+<div class="va-text-field">
+  <div class="va-text-field-title-row">
+    <label class="va-text-field-title" for="email">Email</label>
   </div>
-  <div class="text-field-box">
-    <input id="email" class="text-field-input" type="email"
+  <div class="va-text-field-box">
+    <input id="email" class="va-text-field-input" type="email"
            aria-invalid="true" aria-describedby="email-hint" />
   </div>
-  <p id="email-hint" class="text-field-hint">Enter a valid email address.</p>
+  <p id="email-hint" class="va-text-field-hint">Enter a valid email address.</p>
 </div>
 ```
 
@@ -823,14 +823,14 @@ Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
 Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
 9 variants, same partial matrix and 413×73 anatomy as TextField.
 
-- **Parts**: `.dropdown-field` › `.dropdown-field-title-row` /
-  `.dropdown-field-title` (+ optional `.dropdown-field-optional` right slot,
-  `.dropdown-field-help`) › `.dropdown-field-trigger` (a `<button>`, 48px
-  pinned, `aria-haspopup="listbox"`) › `.dropdown-field-value`
-  (+ `-value-placeholder` for the unselected ink) + `.dropdown-field-chevron`
-  › `.dropdown-field-hint`
-- **NOT a native `<select>`** — composes the shipped `.dropdown-list` +
-  `.list-option` panel (consumer JS positions and toggles it; TextSelector
+- **Parts**: `.va-dropdown-field` › `.va-dropdown-field-title-row` /
+  `.va-dropdown-field-title` (+ optional `.va-dropdown-field-optional` right slot,
+  `.va-dropdown-field-help`) › `.va-dropdown-field-trigger` (a `<button>`, 48px
+  pinned, `aria-haspopup="listbox"`) › `.va-dropdown-field-value`
+  (+ `-value-placeholder` for the unselected ink) + `.va-dropdown-field-chevron`
+  › `.va-dropdown-field-hint`
+- **NOT a native `<select>`** — composes the shipped `.va-dropdown-list` +
+  `.va-list-option` panel (consumer JS positions and toggles it; TextSelector
   precedent)
 - **States**: `:hover`, `:focus-visible` OR `[aria-expanded="true"]` (Primary
   border + ring), `[aria-invalid="true"]` — same ramp as TextField, all the
@@ -855,15 +855,15 @@ Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
 > waived KNOWN_ISSUES entry in the a11y scanner; designer list.
 
 ```html
-<div class="dropdown-field">
-  <div class="dropdown-field-title-row">
-    <span id="at-label" class="dropdown-field-title">Account type</span>
+<div class="va-dropdown-field">
+  <div class="va-dropdown-field-title-row">
+    <span id="at-label" class="va-dropdown-field-title">Account type</span>
   </div>
-  <button class="dropdown-field-trigger" type="button" aria-haspopup="listbox"
+  <button class="va-dropdown-field-trigger" type="button" aria-haspopup="listbox"
           aria-expanded="false" aria-labelledby="at-label">
-    <span id="at-value" class="dropdown-field-value dropdown-field-value-placeholder"
+    <span id="at-value" class="va-dropdown-field-value va-dropdown-field-value-placeholder"
           aria-hidden="true">Select an account type</span>
-    <svg class="dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+    <svg class="va-dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
   </button>
 </div>
 ```
@@ -874,9 +874,9 @@ Labeled multi-line text input. Extracted from Figma Text Area Field
 (199:12523) — 6 variants (`Filled` × `Hover` × `Focus`), all 413×104.
 **No Error axis exists** — none is invented (designer list: deliberate?).
 
-- **Parts**: `.text-area` › `.text-area-title-row` / `.text-area-title`
-  (+ optional `-optional`, `-help`) › `.text-area-input` (the native
-  `<textarea>` IS the box — no icon slots to host) › `.text-area-hint`
+- **Parts**: `.va-text-area` › `.va-text-area-title-row` / `.va-text-area-title`
+  (+ optional `-optional`, `-help`) › `.va-text-area-input` (the native
+  `<textarea>` IS the box — no icon slots to host) › `.va-text-area-hint`
 - **Box**: `h-[79px]` pinned (off Tailwind's scale on purpose), `px-3`
   **`py-2.5`** — the 10px y-padding is authored and differs from the
   siblings (designer list) — top-anchored text, same border/ring ramp as
@@ -891,11 +891,11 @@ Labeled multi-line text input. Extracted from Figma Text Area Field
 > grabber and no overflow state; callers opt in with a resize utility.
 
 ```html
-<div class="text-area">
-  <div class="text-area-title-row">
-    <label class="text-area-title" for="notes">Notes</label>
+<div class="va-text-area">
+  <div class="va-text-area-title-row">
+    <label class="va-text-area-title" for="notes">Notes</label>
   </div>
-  <textarea id="notes" class="text-area-input" placeholder="Anything else?"></textarea>
+  <textarea id="notes" class="va-text-area-input" placeholder="Anything else?"></textarea>
 </div>
 ```
 
@@ -905,13 +905,13 @@ Confirmation dialog card — the library's first overlay. Extracted from Figma
 Modal (557:5127) — 3 variants on a `Type` axis {Destructive, Neutral,
 Success}, 480 wide, 308/196/308 (heights emergent, not pinned).
 
-- **Parts**: `.modal` (the card — works as a `<dialog>` or a div) ›
-  `.modal-header` (`.modal-title` + a composed bare `.icon-button` close with
-  `#x`) › `.modal-description` › optional `.modal-notice` +
-  `.modal-notice-destructive` / `-success` (`.modal-notice-label`,
-  `.modal-notice-body`) › `.modal-actions` (shipped `.btn-secondary` +
-  `.btn-primary`, hug, right-aligned) — plus `.modal-backdrop` and
-  `dialog.modal::backdrop`
+- **Parts**: `.va-modal` (the card — works as a `<dialog>` or a div) ›
+  `.va-modal-header` (`.va-modal-title` + a composed bare `.va-icon-button` close with
+  `#x`) › `.va-modal-description` › optional `.va-modal-notice` +
+  `.va-modal-notice-destructive` / `-success` (`.va-modal-notice-label`,
+  `.va-modal-notice-body`) › `.va-modal-actions` (shipped `.va-btn-secondary` +
+  `.va-btn-primary`, hug, right-aligned) — plus `.va-modal-backdrop` and
+  `dialog.va-modal::backdrop`
 - **No Type classes on the card** — Figma's Type axis IS the notice banner
   (Neutral omits it structurally; no boolean exists). The height math proves
   it: 196 + 88 banner + 24 gap = 308 exact.
@@ -935,26 +935,26 @@ Success}, 480 wide, 308/196/308 (heights emergent, not pinned).
 > in Figma; the wash (Content/Primary at 45% via color-mix) is unsourced.
 > Z-scale per Library Contracts: backdrop z-50, modal z-60.
 > **Primary path is the native `<dialog>` + `showModal()`** (free focus trap,
-> Escape, restore-on-close, `::backdrop`); the `.modal-backdrop` div fallback
+> Escape, restore-on-close, `::backdrop`); the `.va-modal-backdrop` div fallback
 > requires the consumer's own focus trap and Escape — the library ships no
 > JS. Backdrop-click dismissal is consumer JS in both paths.
 
 ```html
-<dialog class="modal" aria-labelledby="m-t" aria-describedby="m-d">
-  <div class="modal-header">
-    <h2 id="m-t" class="modal-title">Delete this application?</h2>
-    <button class="icon-button" aria-label="Close">
+<dialog class="va-modal" aria-labelledby="m-t" aria-describedby="m-d">
+  <div class="va-modal-header">
+    <h2 id="m-t" class="va-modal-title">Delete this application?</h2>
+    <button class="va-icon-button" aria-label="Close">
       <svg aria-hidden="true"><use href="#x" /></svg>
     </button>
   </div>
-  <p id="m-d" class="modal-description">Are you sure you want to proceed?</p>
-  <div class="modal-notice modal-notice-destructive">
-    <span class="modal-notice-label">Critical warning</span>
-    <span class="modal-notice-body">This action cannot be undone.</span>
+  <p id="m-d" class="va-modal-description">Are you sure you want to proceed?</p>
+  <div class="va-modal-notice va-modal-notice-destructive">
+    <span class="va-modal-notice-label">Critical warning</span>
+    <span class="va-modal-notice-body">This action cannot be undone.</span>
   </div>
-  <div class="modal-actions">
-    <button class="btn btn-secondary">Cancel</button>
-    <button class="btn btn-primary">Confirm</button>
+  <div class="va-modal-actions">
+    <button class="va-btn va-btn-secondary">Cancel</button>
+    <button class="va-btn va-btn-primary">Confirm</button>
   </div>
 </dialog>
 <!-- open with dialog.showModal(); ::backdrop is pre-styled -->
@@ -965,9 +965,9 @@ Success}, 480 wide, 308/196/308 (heights emergent, not pinned).
 Dark contrast tooltip with an optional muted title. Extracted (inline
 fast-path) from Figma tooltip (582:9178) — a single symbol, no variant axes.
 
-- **Parts**: `.tooltip` (`BG/Contrast` ground, `rounded-lg`, `px-4 py-3`,
-  `gap-2`, `shadow-basic`, authored `word-break`), `.tooltip-title`
-  (optional — `text-field-label` in `Text/Hint`), `.tooltip-body`
+- **Parts**: `.va-tooltip` (`BG/Contrast` ground, `rounded-lg`, `px-4 py-3`,
+  `gap-2`, `shadow-basic`, authored `word-break`), `.va-tooltip-title`
+  (optional — `text-field-label` in `Text/Hint`), `.va-tooltip-body`
   (`text-body-content` in `Text/Contrast`)
 
 > **Two token firsts**: `BG/Contrast` (#1a1a1a) is a NEW variable added with
@@ -983,12 +983,12 @@ fast-path) from Figma tooltip (582:9178) — a single symbol, no variant axes.
 > baked. Wire `role="tooltip"` + the trigger's `aria-describedby`.
 
 ```html
-<button class="icon-button" aria-label="What is a routing number?" aria-describedby="tip-1">
+<button class="va-icon-button" aria-label="What is a routing number?" aria-describedby="tip-1">
   <svg aria-hidden="true"><use href="#circle-help" /></svg>
 </button>
-<div class="tooltip" role="tooltip" id="tip-1">
-  <span class="tooltip-title">Routing number</span>
-  <span class="tooltip-body">The nine-digit code on the bottom left of your checks.</span>
+<div class="va-tooltip" role="tooltip" id="tip-1">
+  <span class="va-tooltip-title">Routing number</span>
+  <span class="va-tooltip-body">The nine-digit code on the bottom left of your checks.</span>
 </div>
 ```
 
@@ -998,12 +998,12 @@ Transient floating notification. Extracted (inline fast-path) from Figma
 Toast (582:9325) — a PARTIAL `Type` {success, error, info} × `Style` {Full,
 Simple} matrix (Simple exists only as info).
 
-- **Full**: `.toast` (Paper card, `rounded-lg`, `p-4`, inset Stroke/Divider
+- **Full**: `.va-toast` (Paper card, `rounded-lg`, `p-4`, inset Stroke/Divider
   ring + `shadow-basic` in one declaration — content-driven 66px, Modal
-  precedent) + type class + `.toast-icon` (18px caller slot) +
-  `.toast-content` (`.toast-title` Field Label / `.toast-body` help-caption)
-  + a composed bare `.icon-button` dismiss
-- **Simple**: `.toast-simple` — a STATUS-LESS dark `BG/Contrast` full-radius
+  precedent) + type class + `.va-toast-icon` (18px caller slot) +
+  `.va-toast-content` (`.va-toast-title` Field Label / `.va-toast-body` help-caption)
+  + a composed bare `.va-icon-button` dismiss
+- **Simple**: `.va-toast-simple` — a STATUS-LESS dark `BG/Contrast` full-radius
   pill (15px glyph — off the icon grid, designer list; Content 13/16 in
   Text/Contrast). The Type axis is meaningless for it: no ramp token binds.
 - Both carry `z-70` (Library Contracts). Positioning/timers/dismissal are
@@ -1013,24 +1013,24 @@ Simple} matrix (Simple exists only as info).
 > **THE STATUS RAMPS FINALLY BIND** — success → `Success/Base`, info →
 > `Info/Base` — **but the Type literally named "error" binds `Warning/Base`
 > (amber), verbatim**. The sharpest instance of the file-wide slip: the
-> sibling variants prove ramps are wired deliberately. `.toast-error` paints
+> sibling variants prove ramps are wired deliberately. `.va-toast-error` paints
 > `text-warning` faithfully; rebind when the designer does.
 > The Type class paints ONLY the icon (title/body inks constant). Pass the
 > matching glyph: `#circle-check` / `#circle-alert` / `#info`.
 
 ```html
-<div class="toast toast-success" role="status">
-  <svg class="toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
-  <div class="toast-content">
-    <span class="toast-title">Document request sent</span>
-    <span class="toast-body">Client has been notified to upload their W-9.</span>
+<div class="va-toast va-toast-success" role="status">
+  <svg class="va-toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
+  <div class="va-toast-content">
+    <span class="va-toast-title">Document request sent</span>
+    <span class="va-toast-body">Client has been notified to upload their W-9.</span>
   </div>
-  <button class="icon-button" aria-label="Dismiss">
+  <button class="va-icon-button" aria-label="Dismiss">
     <svg aria-hidden="true"><use href="#x" /></svg>
   </button>
 </div>
 
-<div class="toast-simple" role="status">
+<div class="va-toast-simple" role="status">
   <svg aria-hidden="true"><use href="#check" /></svg>
   Template Saved
 </div>
@@ -1042,8 +1042,8 @@ One step marker in the portal's application-status track. Extracted (inline
 fast-path) from Figma Application Status (64:4623) — `Active` {no, yes},
 93×16.
 
-- **Base**: `.status-tracker` (Field Label type, `Text/Tertiary`, 14px glyph
-  slot painted by currentColor, `gap-2`) + `.status-tracker-active`
+- **Base**: `.va-status-tracker` (Field Label type, `Text/Tertiary`, 14px glyph
+  slot painted by currentColor, `gap-2`) + `.va-status-tracker-active`
   (`Text/Primary`) — **the Active axis is an ink swap only**
 
 > Not modelled, not invented: hover/focus (not interactive in Figma),
@@ -1051,7 +1051,7 @@ fast-path) from Figma Application Status (64:4623) — `Active` {no, yes},
 > the call site.
 
 ```html
-<span class="status-tracker status-tracker-active">
+<span class="va-status-tracker va-status-tracker-active">
   <svg aria-hidden="true"><use href="#check" /></svg>
   Application
 </span>
@@ -1063,16 +1063,16 @@ One row in the portal's action list. Extracted (inline fast-path) from Figma
 Action (71:848) — 3 states: Pending / actionable rest / Done, 720×84 samples
 (width the caller's, height emergent 20+44+20).
 
-- **Parts**: `.action` (Paper row, `p-5`/`gap-4`, the OwnerContainer 0.5px
-  inset-shadow hairline) + `.action-icon` (18px slot, constant
-  Text/Secondary) + `.action-content` (`.action-title` title-medium /
-  `.action-description` body-content Tertiary) + optional composed `.badge`
+- **Parts**: `.va-action` (Paper row, `p-5`/`gap-4`, the OwnerContainer 0.5px
+  inset-shadow hairline) + `.va-action-icon` (18px slot, constant
+  Text/Secondary) + `.va-action-content` (`.va-action-title` title-medium /
+  `.va-action-description` body-content Tertiary) + optional composed `.va-badge`
   + a trailing affordance per state
-- **States**: rest (no class) — title `Text/Primary` + `.action-cta` (a real
+- **States**: rest (no class) — title `Text/Primary` + `.va-action-cta` (a real
   34px mini button: Paper, 1px Stroke/Divider border, Field Label + 18px
-  `#arrow-right` — NOT any shipped `.btn` type); `.action-pending` — title
-  demoted to Secondary + `.action-status` chip (12px `#lock` + micro-label
-  in `Text/Hint`); `.action-done` — demoted title + chip (12px `#check` +
+  `#arrow-right` — NOT any shipped `.va-btn` type); `.va-action-pending` — title
+  demoted to Secondary + `.va-action-status` chip (12px `#lock` + micro-label
+  in `Text/Hint`); `.va-action-done` — demoted title + chip (12px `#check` +
   micro-label in **`Success/Text`** — more status-ramp adoption)
 
 > **The PENDING chip's Text/Hint-on-Paper fails WCAG (3.11:1)** — the same
@@ -1083,18 +1083,18 @@ Action (71:848) — 3 states: Pending / actionable rest / Done, 720×84 samples
 > library focus-ring covers it), disabled, compound states.
 
 ```html
-<div class="action">
-  <svg class="action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
-  <div class="action-content">
-    <span class="action-title">Identity</span>
-    <span class="action-description">Verify who you are</span>
+<div class="va-action">
+  <svg class="va-action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
+  <div class="va-action-content">
+    <span class="va-action-title">Identity</span>
+    <span class="va-action-description">Verify who you are</span>
   </div>
-  <button class="action-cta">Verify <svg aria-hidden="true"><use href="#arrow-right" /></svg></button>
+  <button class="va-action-cta">Verify <svg aria-hidden="true"><use href="#arrow-right" /></svg></button>
 </div>
 
-<div class="action action-done">
+<div class="va-action va-action-done">
   …
-  <span class="action-status"><svg aria-hidden="true"><use href="#check" /></svg>Done</span>
+  <span class="va-action-status"><svg aria-hidden="true"><use href="#check" /></svg>Done</span>
 </div>
 ```
 
@@ -1105,10 +1105,10 @@ not a skin on it. Extracted from Figma Button / Utility (24:4382) — 18
 variants on a partial `Size` {MD, SM} × `Type` {Empty, Filled, Rounded,
 Text} × `Hover` × `Pressed` matrix.
 
-- **Base**: `.utility-button` — layout only, **a type class is required**
+- **Base**: `.va-utility-button` — layout only, **a type class is required**
   (the Standard button's rule); SM (34px) is the bare default,
-  `.utility-button-md` (54px, drawn for Empty) modifies
-- **Types**: `.utility-button-empty` / `-filled` / `-rounded` / `-text`
+  `.va-utility-button-md` (54px, drawn for Empty) modifies
+- **Types**: `.va-utility-button-empty` / `-filled` / `-rounded` / `-text`
 - **Label convention**: Field Label 13/500 **natural case** (Text type:
   Content 13/400) — never the Standard set's uppercase Button Label
 - **Icon slots**: plain `svg` children (18px; 16px in Text), painted by
@@ -1135,15 +1135,15 @@ Text} × `Hover` × `Pressed` matrix.
 > Inactive axis exists), MD Filled/Rounded, focus variants (library ring).
 
 ```html
-<button class="utility-button utility-button-empty">
+<button class="va-utility-button va-utility-button-empty">
   <svg aria-hidden="true"><use href="#dollar-sign" /></svg>
   Add Funds
 </button>
 
-<button class="utility-button utility-button-filled utility-button-md">Add Funds</button>
-<button class="utility-button utility-button-rounded">Add Funds</button>
+<button class="va-utility-button va-utility-button-filled va-utility-button-md">Add Funds</button>
+<button class="va-utility-button va-utility-button-rounded">Add Funds</button>
 
-<button class="utility-button utility-button-text">
+<button class="va-utility-button va-utility-button-text">
   View statements
   <svg aria-hidden="true"><use href="#chevron-right" /></svg>
 </button>
@@ -1327,12 +1327,42 @@ Decisions a consumer or contributor would otherwise discover by surprise:
   content `z-0` · sticky chrome (Header) `z-40` · overlay backdrop `z-50` ·
   modal/panel `z-60` · toast `z-70`. Header already ships z-40; overlay
   components must use this scale, not invent values.
-- **No class prefix.** Component classes are unprefixed; the collision risk
-  with Tailwind utilities is gated mechanically instead (`verify:bundle`
-  compiles every component class name through Tailwind + the theme and fails
-  on any that resolve to a utility — the `.list-item`/`.text-field-label`
-  bug class). Consumers who need namespacing can use Tailwind v4's `prefix()`
-  on their own utilities; library classes stay stable API.
+- **Class identity: `va-` for components, `va:` for utilities** (reversed
+  2026-09-14; the library previously shipped unprefixed classes). Component
+  classes are namespaced — `.va-btn`, `.va-text-field-input` — and the
+  prebuilt bundle's utility layer carries Tailwind v4's `va:` prefix
+  (`va:flex`, `va:gap-4`, and the prefix leads any variant: `va:md:w-full`).
+
+  **Why, measured against `daisyui@4.12.24`:** 13 of our 146 component classes
+  collided with daisyUI — `btn`, `btn-primary`, `btn-secondary`, `badge`,
+  `avatar`, `radio`, `skeleton`, `tab`, `tabs`, `modal`, `modal-backdrop`,
+  `toast`, `tooltip`. Our rules live in `@layer components`; daisyUI injects
+  via `addComponents`, which Tailwind v3 hoists **unlayered**, and unlayered
+  normal declarations beat layered ones *before* specificity or source order is
+  consulted. No import ordering fixes it. Unlayering ours would not either:
+  daisyUI supplies every property we don't set — its button class leaks 26 of
+  them, and its modal class is `pointer-events: none; opacity: 0` until its own
+  open modifier is applied, so a dialog carrying that name rendered
+  **invisible**. The collision surface also
+  grows: 15 of the 40 components still to be built (`alert`, `card`,
+  `checkbox`, `input`, `link`, `divider`, `step`, `textarea`, …) already exist
+  in daisyUI. Namespacing is the only fix that works.
+
+  The utility prefix is separate and load-bearing: several utilities genuinely
+  differ between Tailwind majors (default border colour, ring width, `space-x`
+  strategy), so a host on v3 must not be able to collide with ours.
+
+  **Scope:** the prefix applies to the PREBUILT bundle only. A consumer on
+  `./source` compiles our `@theme` with their own Tailwind and writes
+  `rounded-sm` unprefixed — component `@apply` payloads in `src/components`
+  stay unprefixed for the same reason.
+
+  Three gates hold it: `verify:bundle` still fails on any component class that
+  resolves to a utility (the `.list-item`/`.text-field-label` bug class),
+  `verify:vocabulary` fails on any class named in docs that the bundle does not
+  define, and `verify:markup` fails on any class in generated markup with no
+  rule in `dist/shortapp-ui.css`. `class-manifest.json` is the generated list
+  all three compare against.
 - **Undefined tokens are a build failure.** `verify:bundle` also fails on any
   fallback-less `var(--…)` in dist that the bundle never defines (the
   `--color-surface-frame` bug class).
@@ -1352,13 +1382,33 @@ CSS-only — there is no Tailwind plugin to register, and no `tailwind.config.js
 
 | Entry                             | You get                                              | You do NOT get          |
 | --------------------------------- | ---------------------------------------------------- | ----------------------- |
+| `@valiify/shortapp-ui/styles.css` | component classes + tokens + the `va:` utility layer, **no reset** | nothing — this entry is self-contained |
 | `@valiify/shortapp-ui` (prebuilt) | component classes + tokens as CSS custom properties  | token-derived utilities |
 | `@valiify/shortapp-ui/source`     | the above **plus** token-generated utility classes   | —                       |
+
+**`./styles.css` is the entry for a host that should never compile our classes.**
+It ships `dist/shortapp-ui.css`: component classes, tokens under both spellings,
+and a closed set of `va:`-prefixed utilities — with **preflight deliberately
+excluded**, so it cannot fight the host's own reset. It needs no Tailwind at all,
+which makes the host's Tailwind version irrelevant. That is what makes it safe to
+drop into an app on Tailwind v3 + daisyUI 4.
+
+The trade is that the utility layer is a **closed set**: `src/utility-surface.css`
+is generated from `design-methodology/*.md`, so a utility that surface never uses
+is not in the bundle, and markup using it renders unstyled. `verify:markup` is the
+gate that makes that loud instead of silent.
+
+`.` and `./index.css` are unchanged — still the preflight-bearing `dist/index.css`.
+`./source` still requires the consumer to be on Tailwind v4; the package no longer
+declares a peer dependency, so nothing enforces that but this sentence.
 
 ```css
 /* prebuilt */
 @import "tailwindcss";
 @import "@valiify/shortapp-ui";
+
+/* self-contained — no Tailwind in the host, no reset shipped */
+@import "@valiify/shortapp-ui/styles.css";
 
 /* source — consumer's Tailwind processes our @theme */
 @import "tailwindcss";

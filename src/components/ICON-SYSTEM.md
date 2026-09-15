@@ -94,7 +94,7 @@ CSS classes that enforce consistent sizing:
 ### Icon in Button
 ```html
 <!-- Icon with text label -->
-<button class="btn btn-primary">
+<button class="va-btn va-btn-primary">
   <svg class="icon icon-size-14" aria-hidden="true">
     <use href="#save" />
   </svg>
@@ -102,7 +102,7 @@ CSS classes that enforce consistent sizing:
 </button>
 
 <!-- Icon-only button (requires aria-label) -->
-<button class="btn btn-outline" aria-label="Close">
+<button class="va-btn btn-outline" aria-label="Close">
   <svg class="icon icon-size-13" aria-hidden="true">
     <use href="#x" />
   </svg>
@@ -151,7 +151,7 @@ CSS classes that enforce consistent sizing:
 
 ```html
 <!-- Small button (13px icons) -->
-<button class="btn btn-outline btn-sm">
+<button class="va-btn btn-outline btn-sm">
   <svg class="icon icon-size-13" aria-hidden="true">
     <use href="#filter" />
   </svg>
@@ -159,7 +159,7 @@ CSS classes that enforce consistent sizing:
 </button>
 
 <!-- Medium button (14px icons) - DEFAULT -->
-<button class="btn btn-primary">
+<button class="va-btn va-btn-primary">
   <svg class="icon icon-size-14" aria-hidden="true">
     <use href="#save" />
   </svg>
@@ -167,7 +167,7 @@ CSS classes that enforce consistent sizing:
 </button>
 
 <!-- Large button (15px icons) -->
-<button class="btn btn-primary btn-lg">
+<button class="va-btn va-btn-primary btn-lg">
   <svg class="icon icon-size-15" aria-hidden="true">
     <use href="#download" />
   </svg>
@@ -248,10 +248,10 @@ Icons use `currentColor` by default, inheriting the text color:
 
 ```css
 /* Icon inherits button text color */
-.btn-primary {
+.va-btn-primary {
   color: var(--color-content-contrast);
 }
-.btn-primary .icon {
+.va-btn-primary .icon {
   stroke: currentColor; /* Inherits white color */
 }
 
@@ -310,7 +310,7 @@ Prefix with `custom-`:
 
 ### ✅ Right: Standard icon component
 ```html
-<button class="btn">
+<button class="va-btn">
   <svg class="icon icon-size-20" aria-hidden="true">
     <use href="#save" />
   </svg>
@@ -320,7 +320,7 @@ Prefix with `custom-`:
 ### ❌ Wrong: Missing accessibility
 ```html
 <!-- Icon-only button without label -->
-<button class="btn">
+<button class="va-btn">
   <svg class="icon icon-size-20">
     <use href="#x" />
   </svg>
@@ -329,7 +329,7 @@ Prefix with `custom-`:
 
 ### ✅ Right: Proper accessibility
 ```html
-<button class="btn" aria-label="Close">
+<button class="va-btn" aria-label="Close">
   <svg class="icon icon-size-20" aria-hidden="true">
     <use href="#x" />
   </svg>

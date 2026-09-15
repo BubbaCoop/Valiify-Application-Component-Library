@@ -13,21 +13,21 @@ interface ActionArgs {
 }
 
 const row = ({ title, description, state, badge }: Partial<ActionArgs>) => {
-  const stateClass = state === "pending" ? " action-pending" : state === "done" ? " action-done" : "";
+  const stateClass = state === "pending" ? " va-action-pending" : state === "done" ? " va-action-done" : "";
   const trailing =
     state === "pending"
-      ? `<span class="action-status"><svg aria-hidden="true"><use href="#lock" /></svg>Upcoming</span>`
+      ? `<span class="va-action-status"><svg aria-hidden="true"><use href="#lock" /></svg>Upcoming</span>`
       : state === "done"
-        ? `<span class="action-status"><svg aria-hidden="true"><use href="#check" /></svg>Done</span>`
-        : `<button class="action-cta" type="button">Verify <svg aria-hidden="true"><use href="#arrow-right" /></svg></button>`;
+        ? `<span class="va-action-status"><svg aria-hidden="true"><use href="#check" /></svg>Done</span>`
+        : `<button class="va-action-cta" type="button">Verify <svg aria-hidden="true"><use href="#arrow-right" /></svg></button>`;
   return `
-  <div class="action${stateClass}">
-    <svg class="action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
-    <div class="action-content">
-      <span class="action-title">${title}</span>
-      <span class="action-description">${description}</span>
+  <div class="va-action${stateClass}">
+    <svg class="va-action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
+    <div class="va-action-content">
+      <span class="va-action-title">${title}</span>
+      <span class="va-action-description">${description}</span>
     </div>
-    ${badge ? `<span class="badge">${badge}</span>` : ""}
+    ${badge ? `<span class="va-badge">${badge}</span>` : ""}
     ${trailing}
   </div>`;
 };

@@ -10,7 +10,7 @@ interface StatusTrackerArgs {
 }
 
 const step = ({ label, active }: Partial<StatusTrackerArgs>) => `
-  <span class="status-tracker${active ? " status-tracker-active" : ""}">
+  <span class="va-status-tracker${active ? " va-status-tracker-active" : ""}">
     <svg aria-hidden="true"><use href="#check" /></svg>
     ${label}
   </span>`;

@@ -10,7 +10,7 @@ interface OwnerArgs {
 }
 
 const owner = (icon: string) =>
-  `<span class="owner"><svg aria-hidden="true"><use href="#${icon}" /></svg></span>`;
+  `<span class="va-owner"><svg aria-hidden="true"><use href="#${icon}" /></svg></span>`;
 
 const meta: Meta<OwnerArgs> = {
   title: "Components/Owner",

@@ -99,7 +99,7 @@ with class API, state tables, and copy-pasteable HTML:
   UtilityButton (Empty/Filled/Rounded/Text), IconButton, Radio, Checkbox,
   Switch, Tabs, TextSelector
 - **Fields** — TextField, DropdownField, TextArea, RadioField
-- **Selection & lists** — SelectCard, BoxAction, ListItem (`.list-option`),
+- **Selection & lists** — SelectCard, BoxAction, ListItem (`.va-list-option`),
   DropdownList, Action
 - **Feedback & overlays** — Modal (native `<dialog>`-first), Toast, Tooltip,
   Skeleton, StatusTracker
@@ -108,14 +108,14 @@ with class API, state tables, and copy-pasteable HTML:
 Quick taste:
 
 ```html
-<button class="btn btn-primary">Continue</button>
+<button class="va-btn va-btn-primary">Continue</button>
 
-<div class="text-field">
-  <div class="text-field-title-row">
-    <label class="text-field-title" for="name">First name</label>
+<div class="va-text-field">
+  <div class="va-text-field-title-row">
+    <label class="va-text-field-title" for="name">First name</label>
   </div>
-  <div class="text-field-box">
-    <input id="name" class="text-field-input" type="text" placeholder="Jane" />
+  <div class="va-text-field-box">
+    <input id="name" class="va-text-field-input" type="text" placeholder="Jane" />
   </div>
 </div>
 ```

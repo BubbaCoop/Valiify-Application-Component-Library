@@ -5,8 +5,8 @@
  * 7 variants: Type {Portal, Application} × Hover × Active (Application
  * active+hover is genuinely undrawn).
  *
- *   <div class="tabs" role="tablist" aria-label="Sections">
- *     <button class="tab tab-application" role="tab" aria-selected="true">
+ *   <div class="va-tabs" role="tablist" aria-label="Sections">
+ *     <button class="va-tab va-tab-application" role="tab" aria-selected="true">
  *       <svg aria-hidden="true"><use href="#file-text" /></svg>
  *       Overview
  *     </button>
@@ -14,11 +14,11 @@
  *
  * A TYPE CLASS IS REQUIRED (the Alert/Tabs lesson — no default Type exists):
  *
- *   .tab-portal        ghost: bare ink until active, then a neutral
+ *   .va-tab-portal        ghost: bare ink until active, then a neutral
  *                      Action/Active wash (hover-on-active steps to
  *                      Action/Focused — a Δ6/255 near-invisible swap,
  *                      reproduced faithfully; designer list)
- *   .tab-application   always boxed: Paper fill + 1px Stroke/Divider ring;
+ *   .va-tab-application   always boxed: Paper fill + 1px Stroke/Divider ring;
  *                      hover washes Action/Hover (ring unchanged); active
  *                      goes crimson (Primary/Text ink, Primary/BG fill,
  *                      Primary ring)
@@ -34,7 +34,7 @@
  * a real border would add 2px (7+7+20+2 = 36 ≠ the drawn 34). Same
  * inside-stroke resolution as SelectCard/BoxAction.
  *
- * .tabs (the row) is UNSOURCED SCAFFOLDING — no tablist frame exists in
+ * .va-tabs (the row) is UNSOURCED SCAFFOLDING — no tablist frame exists in
  * Figma yet; it ships as a labeled structural extension.
  *
  * Not modelled, not invented: disabled, pressed; Application active+hover
@@ -43,11 +43,11 @@
 
 @layer components {
   /* The row — structural extension, no Figma source yet. */
-  .tabs {
+  .va-tabs {
     @apply inline-flex items-center gap-2;
   }
 
-  .tab {
+  .va-tab {
     @apply inline-flex cursor-pointer items-center gap-2 rounded-sm px-3 py-1.75;
     @apply m-0 border-0 bg-transparent;
     @apply text-label text-content-secondary;
@@ -57,7 +57,7 @@
       box-shadow 150ms;
   }
 
-  .tab svg {
+  .va-tab svg {
     @apply size-4 shrink-0; /* 16px */
     fill: none;
     stroke: currentColor;
@@ -67,41 +67,41 @@
   }
 
   /* Hover previews the active ink without asserting its weight. */
-  .tab:hover:not(:disabled) {
+  .va-tab:hover:not(:disabled) {
     @apply text-content-primary;
   }
 
   /* Active: ink + weight step (Labels/Strong), both types. */
-  .tab[aria-selected="true"] {
+  .va-tab[aria-selected="true"] {
     @apply text-label-strong text-content-primary;
   }
 
-  .tab:focus-visible {
+  .va-tab:focus-visible {
     @apply focus-ring;
   }
 
   /* --- Portal: ghost until active ------------------------------------------ */
 
-  .tab-portal[aria-selected="true"] {
+  .va-tab-portal[aria-selected="true"] {
     @apply bg-action-active;
   }
   /* Faithful reproduction of the near-invisible Focused swap (designer list). */
-  .tab-portal[aria-selected="true"]:hover:not(:disabled) {
+  .va-tab-portal[aria-selected="true"]:hover:not(:disabled) {
     @apply bg-action-focused;
   }
 
   /* --- Application: always boxed ------------------------------------------- */
 
-  .tab-application {
+  .va-tab-application {
     @apply bg-surface-paper;
     box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
   }
   /* Ring deliberately unchanged on hover — only the fill washes. */
-  .tab-application:hover:not([aria-selected="true"]):not(:disabled) {
+  .va-tab-application:hover:not([aria-selected="true"]):not(:disabled) {
     @apply bg-action-hover;
   }
   /* Source order after the shared active rule so the crimson ink wins. */
-  .tab-application[aria-selected="true"] {
+  .va-tab-application[aria-selected="true"] {
     @apply bg-primary-bg text-primary-text;
     box-shadow: inset 0 0 0 1px var(--color-primary);
   }

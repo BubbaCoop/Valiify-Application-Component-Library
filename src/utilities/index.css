@@ -14,7 +14,7 @@
  * :focus-visible (not :focus) so it appears for keyboard navigation but not on
  * mouse clicks:
  *
- *   .btn:focus-visible { @apply focus-ring; }
+ *   .va-btn:focus-visible { @apply focus-ring; }
  *
  * Two details worth knowing:
  *

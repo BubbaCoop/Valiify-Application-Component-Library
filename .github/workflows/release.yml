@@ -66,6 +66,12 @@ jobs:
       - name: verify:bundle
         run: npm run verify:bundle
 
+      - name: verify:vocabulary
+        run: npm run verify:vocabulary
+
+      - name: verify:markup
+        run: npm run verify:markup
+
       # The real tarball in a real consumer Vite build, both entry points.
       - name: verify:package
         run: npm run verify:package

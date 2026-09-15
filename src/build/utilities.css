@@ -1,0 +1,35 @@
+/**
+ * Prebuilt bundle — PASS B: the `va:`-prefixed utility layer.
+ *
+ * Why a second pass at all: Tailwind's prefix is global to a compile and renames
+ * theme variables too (--color-primary -> --va-color-primary). Prefixing the whole
+ * library would break the public token API and force `va:` onto all 340 @apply
+ * payloads in src/components. Compiling utilities separately keeps components and
+ * tokens exactly as they are.
+ *
+ * Why prefix the utilities at all: the host may be on Tailwind v3, where
+ * `border`, `ring-1` and `space-x-*` mean different things than they do here.
+ * `va:` makes our utilities unable to collide with the host's.
+ *
+ * The utilities land UNLAYERED, and that is deliberate. `tailwindcss/utilities.css`
+ * is a bare `@tailwind utilities;` — unlike `tailwindcss/index.css`, which wraps it in
+ * `@layer utilities`. Unlayered is the safer shape for a layer shipped INTO a foreign
+ * app: unlayered rules beat layered ones before specificity is consulted, so a layered
+ * `va:flex` would silently lose to any unlayered host rule touching the same property
+ * (daisyUI 4 is entirely unlayered). Our component classes stay in @layer components,
+ * so the host's own utilities still win over them — which is what a consumer expects.
+ *
+ * ../utilities/index.css imports UNCHANGED. `@utility focus-ring` has no @apply,
+ * and its var(--ring-focus-width) resolves against pass A's definitions once the
+ * two passes are concatenated — so it needs no prefixed twin. Only the @utility
+ * blocks whose bodies use @apply do, because @apply resolves at compile time.
+ */
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" prefix(va);
+@import "../themes/valiify-tokens.css" prefix(va);
+@import "../themes/valiify-type-prefixed.css";
+@import "../utilities/index.css";
+@import "../utility-surface.css";
+
+@import "tailwindcss/utilities.css" source(none);

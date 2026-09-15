@@ -301,7 +301,7 @@ export const IconSizes: Story = {
 export const IconsInButtons: Story = {
   render: () => `
     <style>
-      .btn {
+      .va-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -315,12 +315,12 @@ export const IconsInButtons: Story = {
         cursor: pointer;
         transition: all 0.15s;
       }
-      .btn-primary {
+      .va-btn-primary {
         border: none;
         background: oklch(0.4234 0.1163 256.9);
         color: #ffffff;
       }
-      .btn-primary:hover {
+      .va-btn-primary:hover {
         background: oklch(0.3509 0.0948 257.07);
       }
       .btn-outline {
@@ -344,36 +344,36 @@ export const IconsInButtons: Story = {
       }
     </style>
     <div class="button-demo">
-      <button class="btn btn-primary">
+      <button class="va-btn va-btn-primary">
         <svg class="icon" width="20" height="20" aria-hidden="true">
           <use href="#save" />
         </svg>
         Save Changes
       </button>
-      <button class="btn btn-primary">
+      <button class="va-btn va-btn-primary">
         <svg class="icon" width="20" height="20" aria-hidden="true">
           <use href="#download" />
         </svg>
         Download
       </button>
-      <button class="btn btn-outline">
+      <button class="va-btn btn-outline">
         <svg class="icon" width="20" height="20" aria-hidden="true">
           <use href="#search" />
         </svg>
         Search
       </button>
-      <button class="btn btn-outline">
+      <button class="va-btn btn-outline">
         <svg class="icon" width="20" height="20" aria-hidden="true">
           <use href="#filter" />
         </svg>
         Filter
       </button>
-      <button class="btn btn-outline" aria-label="Settings">
+      <button class="va-btn btn-outline" aria-label="Settings">
         <svg class="icon" width="20" height="20" aria-hidden="true">
           <use href="#settings" />
         </svg>
       </button>
-      <button class="btn btn-outline" aria-label="More options">
+      <button class="va-btn btn-outline" aria-label="More options">
         <svg class="icon" width="20" height="20" aria-hidden="true">
           <use href="#more-horizontal" />
         </svg>

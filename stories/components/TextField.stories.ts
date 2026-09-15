@@ -21,21 +21,21 @@ const field = (
   const id = `tf-${uid++}`;
   const hintId = `${id}-hint`;
   return `
-  <div class="text-field">
-    <div class="text-field-title-row">
-      <label class="text-field-title" for="${id}">${label ?? "First name"}</label>
-      ${extra.help ? `<button type="button" class="text-field-help" aria-label="More information"><svg aria-hidden="true"><use href="#circle-help" /></svg></button>` : ""}
+  <div class="va-text-field">
+    <div class="va-text-field-title-row">
+      <label class="va-text-field-title" for="${id}">${label ?? "First name"}</label>
+      ${extra.help ? `<button type="button" class="va-text-field-help" aria-label="More information"><svg aria-hidden="true"><use href="#circle-help" /></svg></button>` : ""}
     </div>
-    <div class="text-field-box">
-      ${extra.leadingIcon ? `<svg class="text-field-icon" aria-hidden="true"><use href="#${extra.leadingIcon}" /></svg>` : ""}
-      <input id="${id}" class="text-field-input" type="text"
+    <div class="va-text-field-box">
+      ${extra.leadingIcon ? `<svg class="va-text-field-icon" aria-hidden="true"><use href="#${extra.leadingIcon}" /></svg>` : ""}
+      <input id="${id}" class="va-text-field-input" type="text"
         ${placeholder ? `placeholder="${placeholder}"` : ""}
         ${value ? `value="${value}"` : ""}
         ${invalid ? `aria-invalid="true"` : ""}
         ${hint ? `aria-describedby="${hintId}"` : ""} />
-      ${extra.trailingIcon ? `<svg class="text-field-icon" aria-hidden="true"><use href="#${extra.trailingIcon}" /></svg>` : ""}
+      ${extra.trailingIcon ? `<svg class="va-text-field-icon" aria-hidden="true"><use href="#${extra.trailingIcon}" /></svg>` : ""}
     </div>
-    ${hint ? `<p id="${hintId}" class="text-field-hint">${hint}</p>` : ""}
+    ${hint ? `<p id="${hintId}" class="va-text-field-hint">${hint}</p>` : ""}
   </div>`;
 };
 

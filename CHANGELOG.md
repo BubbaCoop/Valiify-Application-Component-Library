@@ -7,6 +7,53 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
+### BREAKING — component classes are namespaced `va-`, shipped utilities carry `va:`
+
+- **2026-09-14** — Every component class gains the `va-` namespace: `.btn` →
+  `.va-btn`, `.text-field-input` → `.va-text-field-input`, all 146 of them. The
+  prebuilt bundle's utility layer carries Tailwind v4's `va:` prefix
+  (`va:flex`, `va:gap-4`; the prefix leads any variant, `va:md:w-full`).
+
+  **Why.** Measured against `daisyui@4.12.24`, 13 of our 146 classes collided:
+  `btn`, `btn-primary`, `btn-secondary`, `badge`, `avatar`, `radio`, `skeleton`,
+  `tab`, `tabs`, `modal`, `modal-backdrop`, `toast`, `tooltip`. Our rules are in
+  `@layer components`; daisyUI's are unlayered (Tailwind v3 hoists
+  `addComponents` output out of its layers), and unlayered normal declarations
+  beat layered ones before specificity or source order is consulted — so daisyUI
+  won all 13 and no import ordering could change it. Unlayering ours would not
+  have helped either: daisyUI supplies every property we leave unset, and its
+  modal class is `pointer-events: none; opacity: 0` by default, so a dialog
+  carrying that name rendered invisible. Renaming is the only fix that works,
+  and the surface was growing — 15 of the 40 components still to be built
+  already exist in daisyUI.
+
+  **Migration.** Prefix every component class with `va-` and every utility with
+  `va:`. `class-manifest.json` (new, exported as `./manifest`) lists both sets.
+  Token names are **unchanged**: `--color-primary` is still `--color-primary`.
+  Component `@apply` payloads and the `./source` entry are unchanged too — the
+  prefix belongs to the prebuilt bundle's utility layer only.
+
+### Added
+
+- **2026-09-14** — `./styles.css` → `dist/shortapp-ui.css`: a self-contained
+  bundle of component classes, tokens and the `va:` utility layer, built by two
+  Tailwind passes and concatenated. **Preflight is excluded**, so it cannot
+  fight the host's reset, and it needs no Tailwind in the consumer — which makes
+  the host's Tailwind version irrelevant. Its utility layer is deliberately
+  unlayered, so it cannot lose to an unlayered host rule.
+- **2026-09-14** — `./manifest` → `class-manifest.json`, generated from the
+  built bundle: 146 component classes, 140 utilities.
+- **2026-09-14** — Two gates: `verify:vocabulary` fails when a doc names a class
+  the bundle does not define, `verify:markup` fails when generated markup uses a
+  class with no rule in the bundle. Both carry canaries so they cannot pass
+  vacuously. Both run in CI.
+
+### Removed
+
+- **2026-09-14** — `peerDependencies` on `tailwindcss`. The prebuilt entries
+  need no Tailwind at all. `./source` still requires v4; nothing enforces that
+  now except the documentation.
+
 ### Changed
 
 - **2026-09-03** — Val pipeline retargeted from the dashboard library to

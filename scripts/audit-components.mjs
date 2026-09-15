@@ -19,6 +19,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SPECS } from './visual-specs.mjs';
+import { slug } from './lib/naming.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CSS = join(ROOT, 'src/components');
@@ -27,8 +28,8 @@ const STORIES = join(ROOT, 'stories/components');
 const BOLD = '\x1b[1m', DIM = '\x1b[2m', RED = '\x1b[31m';
 const YEL = '\x1b[33m', GRN = '\x1b[32m', OFF = '\x1b[0m';
 
-/** Badge -> badge, IconButton -> icon-button. Matches new-component.mjs:52. */
-const kebab = (p) => p.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+/** Badge -> badge, IconButton -> icon-button. File slug only — see scripts/lib/naming.mjs. */
+const kebab = slug;
 
 const read = (p) => {
   try { return readFileSync(p, 'utf8'); } catch { return ''; }

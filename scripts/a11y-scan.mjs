@@ -58,13 +58,13 @@ const DISABLED = [
 const KNOWN_ISSUES = [
   {
     rule: "color-contrast",
-    marker: "dropdown-field-value-placeholder",
+    marker: "va-dropdown-field-value-placeholder",
     reason:
       "Figma's authored placeholder ink (Text/Hint #8e9195 on Paper) is 3.11:1 — a design defect on the designer list. TextField/TextArea share the identical ink via native ::placeholder, which axe cannot evaluate; this real-DOM placeholder is the same authored value, faithfully reproduced.",
   },
   {
     rule: "color-contrast",
-    marker: "action-status",
+    marker: "va-action-status",
     reason:
       "The Action row's PENDING chip binds Text/Hint (#8e9195) on Paper verbatim — 3.11:1, the same authored-ink defect as the field placeholders, at 9px micro-label size. Designer list (Text/Hint-on-Paper family).",
   },

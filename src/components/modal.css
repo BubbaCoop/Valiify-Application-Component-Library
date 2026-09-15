@@ -8,33 +8,33 @@
  * new tokenized Basic Drop Shadow (--shadow-basic, added with this
  * component; DropdownList rebound to it the same day).
  *
- *   <dialog class="modal" aria-labelledby="m-title" aria-describedby="m-desc">
- *     <div class="modal-header">
- *       <h2 id="m-title" class="modal-title">Confirm Action</h2>
- *       <button class="icon-button" aria-label="Close">
+ *   <dialog class="va-modal" aria-labelledby="m-title" aria-describedby="m-desc">
+ *     <div class="va-modal-header">
+ *       <h2 id="m-title" class="va-modal-title">Confirm Action</h2>
+ *       <button class="va-icon-button" aria-label="Close">
  *         <svg aria-hidden="true"><use href="#x" /></svg>
  *       </button>
  *     </div>
- *     <p id="m-desc" class="modal-description">Are you sure you want to proceed?</p>
- *     <div class="modal-notice modal-notice-destructive">
- *       <span class="modal-notice-label">Critical warning</span>
- *       <span class="modal-notice-body">This cannot be undone.</span>
+ *     <p id="m-desc" class="va-modal-description">Are you sure you want to proceed?</p>
+ *     <div class="va-modal-notice va-modal-notice-destructive">
+ *       <span class="va-modal-notice-label">Critical warning</span>
+ *       <span class="va-modal-notice-body">This cannot be undone.</span>
  *     </div>
- *     <div class="modal-actions">
- *       <button class="btn btn-secondary">Cancel</button>
- *       <button class="btn btn-primary">Confirm</button>
+ *     <div class="va-modal-actions">
+ *       <button class="va-btn va-btn-secondary">Cancel</button>
+ *       <button class="va-btn va-btn-primary">Confirm</button>
  *     </div>
  *   </dialog>
  *
  * PURE COMPOSITION FOR EVERYTHING INTERACTIVE — close is the shipped
- * .icon-button (md Icon Only — the 18px box/glyph matches exactly) with #x (Figma's close master is a misnamed
+ * .va-icon-button (md Icon Only — the 18px box/glyph matches exactly) with #x (Figma's close master is a misnamed
  * "ChevronLeft" duplicate of IconButton — designer list; composing the real
- * one forks nothing). Actions are the shipped .btn-secondary / .btn-primary,
+ * one forks nothing). Actions are the shipped .va-btn-secondary / .va-btn-primary,
  * hug width, right-aligned.
  *
  * NO TYPE CLASSES ON THE CARD — Figma's Type axis IS the notice banner:
  * Neutral omits it structurally (no boolean exists), Destructive/Success
- * include their variant. The caller composes .modal-notice + a variant class
+ * include their variant. The caller composes .va-modal-notice + a variant class
  * or leaves it out. The height math proves it: 196 (Neutral) + 88 (banner)
  * + 24 (its gap) = 308, exact.
  *
@@ -66,9 +66,9 @@
  * THE BACKDROP IS A LIBRARY EXTENSION — no scrim layer exists anywhere in
  * Figma (Canvas 557:5013 holds only the cards). The wash value is UNSOURCED
  * (Text/Primary at 45%); designer to confirm. Two shipped paths:
- *   PRIMARY  <dialog class="modal"> + dialog.showModal() — native focus
+ *   PRIMARY  <dialog class="va-modal"> + dialog.showModal() — native focus
  *            trap, Escape, restore-on-close, ::backdrop, top layer.
- *   FALLBACK <div class="modal-backdrop"><div class="modal" role="dialog"
+ *   FALLBACK <div class="va-modal-backdrop"><div class="va-modal" role="dialog"
  *            aria-modal="true">…</div></div> — the consumer supplies the
  *            focus trap and Escape (the library ships no JS).
  * Backdrop-click dismissal is consumer JS in both paths.
@@ -79,7 +79,7 @@
  */
 
 @layer components {
-  .modal {
+  .va-modal {
     @apply m-auto flex w-[480px] flex-col gap-6 rounded-2xl border-0 bg-surface-paper p-7 text-left;
     @apply z-60;
     /* 1px inside ring (a border would grow the content-driven 308 to 310)
@@ -92,41 +92,41 @@
     overflow: clip;
   }
 
-  .modal-header {
+  .va-modal-header {
     @apply flex items-center justify-between gap-4;
   }
 
   /* Raw 18/24/600 — no --text-* token models it (designer list). Figma's
      whitespace-nowrap is an overflow defect, not reproduced: titles wrap. */
-  .modal-title {
+  .va-modal-title {
     @apply m-0 text-[18px] leading-6 font-semibold text-content-primary;
   }
 
-  .modal-description {
+  .va-modal-description {
     @apply m-0 text-label text-content-secondary;
   }
 
   /* --- Notice banner (Figma's Type axis) ----------------------------------- */
 
-  .modal-notice {
+  .va-modal-notice {
     @apply flex flex-col gap-1 rounded-md p-4;
   }
 
-  .modal-notice-label {
+  .va-modal-notice-label {
     @apply text-[12px] leading-4 font-semibold uppercase; /* raw; ink inherits */
   }
 
-  .modal-notice-body {
+  .va-modal-notice-body {
     @apply text-[13px] leading-[18px] font-normal; /* raw; ink inherits */
   }
 
-  .modal-notice-destructive {
+  .va-modal-notice-destructive {
     @apply bg-primary-bg text-primary-text;
     box-shadow: inset 0 0 0 1px var(--color-primary); /* inside ring, see header */
   }
 
   /* Raw, unbound in Figma — verbatim; see header. */
-  .modal-notice-success {
+  .va-modal-notice-success {
     /* static-ok(hardcoded-color): Success banner is raw unbound hex in Figma (≠ the Success ramp) — top designer-list item */
     background-color: #f0fdf4;
     /* static-ok(hardcoded-color): raw unbound body ink, same designer-list item */
@@ -134,7 +134,7 @@
     /* static-ok(hardcoded-color): raw unbound border, same designer-list item */
     box-shadow: inset 0 0 0 1px #16a34a;
   }
-  .modal-notice-success .modal-notice-label {
+  .va-modal-notice-success .va-modal-notice-label {
     /* static-ok(hardcoded-color): raw unbound label ink (differs from the body ink, unlike Destructive's single currentColor) */
     color: #15803d;
   }
@@ -143,19 +143,19 @@
 
   /* Figma draws cursor-pointer on this ROW — a defect, excluded; only the
      nested buttons are interactive. */
-  .modal-actions {
+  .va-modal-actions {
     @apply flex items-center justify-end gap-4;
   }
 
   /* --- Overlay plumbing (library extension — no scrim exists in Figma) ------ */
 
-  .modal-backdrop {
+  .va-modal-backdrop {
     @apply fixed inset-0 z-50 flex items-center justify-center;
     /* UNSOURCED wash: Text/Primary at 45% — designer to confirm. */
     background-color: color-mix(in oklab, var(--color-content-primary) 45%, transparent);
   }
 
-  dialog.modal::backdrop {
+  dialog.va-modal::backdrop {
     background-color: color-mix(in oklab, var(--color-content-primary) 45%, transparent);
   }
 }

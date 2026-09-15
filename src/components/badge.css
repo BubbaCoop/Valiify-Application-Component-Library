@@ -7,7 +7,7 @@
  * Eyebrow type (11/600/16, 10% tracking, uppercase transform) in
  * Text/Secondary.
  *
- *   <span class="badge">Optional</span>
+ *   <span class="va-badge">Optional</span>
  *
  * The uppercase is the Eyebrow style's own transform (type-eyebrow bundles
  * it) — pass the label in natural case. Width hugs the label; height is
@@ -19,7 +19,7 @@
  */
 
 @layer components {
-  .badge {
+  .va-badge {
     @apply inline-flex h-4 shrink-0 items-center rounded-full px-2;
     @apply bg-neutral-bg text-content-secondary type-eyebrow;
   }
