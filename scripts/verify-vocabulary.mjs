@@ -21,7 +21,7 @@
  *
  *   node scripts/verify-vocabulary.mjs
  */
-import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, statSync, lstatSync } from "node:fs";
 import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -42,6 +42,8 @@ const EXCLUDED = [
   ["node_modules/", "dependencies"],
   [".git/", "vcs"],
   ["CHANGELOG.md", "a historical record: its entries name classes as they were at the time of each release"],
+  ["examples/daisyui-starter/", "the host-collision test: its pages name daisyUI's classes (btn, badge, select) and the host's Tailwind 3 utilities ON PURPOSE — they are the other side of the collision, and check-no-bleed.mjs measures our classes there at runtime"],
+  ["tests/fixtures/layer-defeat.html", "the cascade-layer repro: two deliberately unshipped classes whose only difference is an @layer wrapper — verify:layer-defeat asserts them"],
 ];
 
 /**
@@ -94,6 +96,9 @@ function walk(dir, acc = []) {
   for (const name of readdirSync(dir)) {
     const abs = join(dir, name);
     const rel = relative(ROOT, abs);
+    // Installed examples carry node_modules/@valiify/shortapp-ui -> ../.. — a symlink back
+    // to this repo. Following it recursed until ENAMETOOLONG. Neither is our prose.
+    if (name === "node_modules" || lstatSync(abs).isSymbolicLink()) continue;
     if (excluded(rel + (statSync(abs).isDirectory() ? "/" : ""))) continue;
     if (statSync(abs).isDirectory()) walk(abs, acc);
     else if (EXTS.some((e) => name.endsWith(e))) acc.push(abs);

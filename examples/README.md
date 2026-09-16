@@ -153,3 +153,36 @@ Make sure you ran `npm install` in the example directory, not just the parent re
 - [GETTING_STARTED.md](../GETTING_STARTED.md) - Complete installation guide
 - [TROUBLESHOOTING.md](../TROUBLESHOOTING.md) - Debug common issues
 - [COMPONENTS.md](../COMPONENTS.md) - Full component markup reference
+
+### [daisyui-starter/](daisyui-starter/) - The host-collision test
+
+**Best for:** proving the prebuilt bundle inside shortapp-web's stack — **Tailwind 3
++ daisyUI 4**, no Tailwind 4 anywhere.
+
+Imports `@valiify/shortapp-ui/styles.css` as a plain stylesheet. `npm run check`
+renders the page in headless Chromium and asserts **computed styles**, which no
+manifest-based gate can see, in two directions and over two load paths:
+
+- **A — class-name collisions** (daisyUI's `btn` vs our `.va-btn`), fixed by the `va-` namespace.
+- **B — the host's element reset** defeating our component rules: Tailwind 3
+  preflight's `* { border-width: 0 }`, `button { background-color: transparent }`,
+  `input, textarea { … }`. Asserted per control — button, input, select, textarea.
+- Load paths: `@import` inside the host's `@tailwind` file (the host's Tailwind 3
+  consumes our `@layer` blocks and emits the rules unlayered) and a raw `<link>` to
+  the bundle as shipped (layers intact — where 1.0.0 loses). A lone import through
+  the host PostCSS is probed: Tailwind 3 refuses it.
+
+The layer-defeat fingerprint the check names: the focus ring survives while the
+border, fill and padding do not, on the same control.
+
+### [sveltekit-starter/](sveltekit-starter/) - The scoped-style test
+
+**Best for:** proving the prebuilt bundle against **SvelteKit + Svelte 5** component
+styles, which compile to unlayered CSS that Vite injects after the app stylesheet.
+
+No Tailwind. `npm run check` asserts three real components against the compiled
+selectors read off the served CSS: a `:global(button)` reset (the bundle must win),
+a scoped `button { }` (compiles to `button.svelte-hash`, 0,1,1 — the bundle
+**cannot** win; asserted as a loss so the contract's second clause stays pinned to a
+measurement), and the remedy `button:not([class*="va-"])`. It also asserts the
+bundle survives the library's own `reset.css`.

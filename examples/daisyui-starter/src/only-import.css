@@ -1,0 +1,4 @@
+/* Probe: our bundle as a SEPARATE file through the host's PostCSS — no @tailwind
+   directives in this file. Does Tailwind 3 strip the layers, pass them through, or
+   refuse? check-no-bleed.mjs reads the answer off the served CSS. */
+@import "@valiify/shortapp-ui/styles.css";

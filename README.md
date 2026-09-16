@@ -39,10 +39,27 @@ npm install @valiify/shortapp-ui     # that is the whole install — no Tailwind
 ```
 
 `./styles.css` is component classes + tokens + a `va:`-prefixed utility layer,
-prebuilt. Your app never compiles our classes, so **your Tailwind version does not
-matter** — including no Tailwind at all, or Tailwind v3 alongside daisyUI.
+prebuilt and **unlayered**. Your app never compiles our classes, so **your Tailwind
+version does not matter** — including no Tailwind at all, or Tailwind v3 alongside
+daisyUI. It does not render "identically" to `./source`; its contract is narrower
+and checkable, in two clauses:
 
-Three things to know before using it:
+1. **What it defends against.** Load it after your reset and its component rules
+   beat any host rule of *lower* specificity wherever that rule sits in source
+   order — Tailwind 3 preflight, daisyUI's base, a `:global(button)` reset in a
+   Svelte component. (1.0.0 did not hold this: its rules sat in `@layer
+   components` and lost to every unlayered host rule. The fingerprint was a
+   control whose focus ring survived while its border, fill and padding did not.)
+2. **What it cannot defend against.** A host rule of *higher* specificity still
+   wins. A Svelte scoped `button { border: 0 }` compiles to `button.svelte-hash`
+   (0,1,1) and beats our single-class rules (0,1,0). A host that wraps its own CSS
+   in a cascade layer changes the arithmetic too. Scope element resets by class, or
+   exclude library controls: `button:not([class*="va-"]) { border: 0 }`.
+
+Both clauses are measured in `examples/daisyui-starter` and
+`examples/sveltekit-starter` (`npm run check`).
+
+Three more things to know before using it:
 
 1. **The entries are alternatives, never companions.** Import exactly one of `.`,
    `./index.css`, `./styles.css`. Importing `.` *and* `./styles.css` brings
@@ -51,8 +68,9 @@ Three things to know before using it:
    `./styles.css` ships no preflight on purpose, so it cannot fight a host's reset
    — but standalone that means no `box-sizing: border-box`, and every fixed
    dimension renders larger than designed (`.va-owner-container` measures 124.5px
-   instead of 92.5px). `./reset.css` is four measured rules, not preflight. Skip it
-   inside an app that already resets.
+   instead of 92.5px). `./reset.css` is five measured rules, not preflight — since
+   1.0.1 it also carries the `html` ink/ground default. Skip it inside an app that
+   already resets.
 3. **The utility layer is a closed set — and so are its variants.** Only the 280
    utilities the design methodology uses are shipped: each base plus its **`md:`
    form only**. `va:mt-7` is not one. Neither is `va:lg:py-12`, `va:sm:gap-4` or

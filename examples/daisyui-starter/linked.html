@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>shortapp-ui + Tailwind 3 + daisyUI 4 — no-bleed check (linked bundle)</title>
+    <link rel="stylesheet" href="/src/host.css" />
+    <!-- the bundle AS SHIPPED, after the host reset, untouched by the host pipeline -->
+    <link rel="stylesheet" href="/bundle.css" />
+  </head>
+  <body class="p-8 space-y-8">
+    <!--
+      DIRECTION B — the host's ELEMENT RESET must not defeat our component rules.
+      Tailwind 3 preflight touches button, input, select and textarea (and `*` for
+      border-width). These four controls come FIRST in the DOM so the check can Tab
+      through them in order and read the focus ring where each component paints it.
+      The fingerprint of a cascade-layer defeat: the outline survives (preflight never
+      touches outline) while the border does not.
+    -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold">host element reset vs our controls</h2>
+
+      <!-- button -->
+      <button id="va-trigger" class="va-dropdown-field-trigger" type="button" aria-haspopup="listbox" aria-expanded="false">
+        <span class="va-dropdown-field-value va-dropdown-field-value-placeholder">Select an account type</span>
+      </button>
+
+      <!-- input (the ring is painted on the box) -->
+      <div class="va-text-field">
+        <div id="va-input-box" class="va-text-field-box">
+          <input id="va-input" class="va-text-field-input" type="text" value="Jane" />
+        </div>
+      </div>
+
+      <!-- textarea -->
+      <textarea id="va-textarea" class="va-text-area-input">Anything else?</textarea>
+
+      <!-- select: the library ships NO select component. The check asserts that from
+           the manifest, so the day one lands this section fails until it is covered. -->
+      <select id="host-select" class="select select-bordered"><option>daisyUI select</option></select>
+
+      <button id="va-btn-primary" class="va-btn va-btn-primary" type="button">Continue</button>
+    </section>
+
+    <!--
+      DIRECTION A — class-name collisions. Every pair is a name daisyUI owns; ours
+      carries va-. Both must keep their own look.
+    -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold">daisyUI names vs ours</h2>
+      <button id="daisy-btn" class="btn btn-primary">daisyUI</button>
+      <button id="va-btn-micro" class="va-btn va-btn-micro" type="button">View all</button>
+      <span id="daisy-badge" class="badge badge-primary">daisyUI</span>
+      <span id="va-badge" class="va-badge">Optional</span>
+      <input id="daisy-input" class="input input-bordered" value="daisyUI" />
+      <!-- the 0.x killer: a dialog named .modal was `opacity: 0; pointer-events: none` -->
+      <dialog id="va-modal" class="va-modal" open aria-label="ours">
+        <div class="va-modal-header"><h2 class="va-modal-title">Ours stays visible</h2></div>
+      </dialog>
+    </section>
+
+    <!-- the utility layer: ours is va:-prefixed, the host's is bare -->
+    <section class="space-y-3">
+      <h2 class="text-lg font-bold">utilities</h2>
+      <p id="host-util" class="text-center">host Tailwind 3 utility</p>
+      <p id="va-util" class="va:type-eyebrow va:text-content-tertiary">ours, prefixed</p>
+    </section>
+  </body>
+</html>

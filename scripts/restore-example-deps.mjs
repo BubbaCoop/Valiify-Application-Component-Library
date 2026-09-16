@@ -2,7 +2,9 @@ import { readFileSync, writeFileSync } from 'fs';
 
 const examples = [
   'examples/vite-starter/package.json',
-  'examples/postcss-starter/package.json'
+  'examples/postcss-starter/package.json',
+  'examples/daisyui-starter/package.json',
+  'examples/sveltekit-starter/package.json'
 ];
 
 console.log('\n🔄 Restoring example dependencies to file:../..\n');

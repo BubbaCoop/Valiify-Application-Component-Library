@@ -21,6 +21,17 @@
  *
  * Use it when the bundle is the ONLY stylesheet on the page. Skip it inside an
  * app that already resets — importing it there is harmless but redundant.
+ *
+ * THIS FILE IS SUBJECT TO THE CASCADE LIKE ANY HOST RESET. Every rule here is an
+ * unlayered element selector. In 1.0.0 the bundle's component rules sat inside
+ * `@layer components`, and unlayered beats layered before specificity is
+ * consulted — so rule 4's `button { color: inherit }` beat `.va-btn-primary`'s
+ * white ink and the label inherited the page colour onto the crimson fill. The
+ * fix for "what if a consumer loads only styles.css" was a live instance of the
+ * bug it was answering, and nothing we had could see it. From 1.0.1 the bundle
+ * is unlayered and its classes (0,1,0) beat these element rules (0,0,1) on
+ * specificity; scripts/verify-reset.mjs asserts that no rule in this file
+ * overrides a property the bundle declares on the same element.
  */
 
 /*
@@ -74,4 +85,19 @@ textarea {
   line-height: inherit;
   letter-spacing: inherit;
   color: inherit;
+}
+
+/*
+ * 5. Document ink and ground — Text/Primary on BG/App Page. Moved here from the
+ * bundle in 1.0.1. It used to ship in pass A as `@layer base { html { … } }`, a
+ * lowest-priority default meant to lose to any host rule. Two reasons it moved:
+ * a Tailwind 3 host's PostCSS refuses any file carrying `@layer base {` without
+ * a matching `@tailwind base` (measured — the bundle could not be its own CSS
+ * entry), and a document default is the host's to set. A page with no host is
+ * exactly what this file is for, so the default lives here, unlayered like the
+ * rest, where it applies only when nothing else styles the document.
+ */
+html {
+  color: var(--color-content-primary);
+  background-color: var(--color-surface-app-page);
 }

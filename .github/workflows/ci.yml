@@ -43,6 +43,10 @@ jobs:
       - name: build
         run: npm run build
 
+      # Chromium for every computed-style gate below (and verify:visual later).
+      - name: playwright chromium
+        run: npx playwright install --with-deps chromium
+
       # Reads dist, so it has to follow build. Guards the cascade-layer
       # statement that the whole consumer-override contract depends on.
       - name: verify:layers
@@ -56,6 +60,34 @@ jobs:
 
       - name: verify:markup
         run: npm run verify:markup
+
+      # Computed styles inside a host — the class no manifest gate can see.
+      # verify:layer-defeat  the 1.0.0 repro: an unlayered host `button { border: 0 }`
+      #                      must not beat .va-dropdown-field-trigger.
+      # verify:reset         src/reset.css may override nothing the bundle declares
+      #                      on a documented element (1.0.0: 50 defeats).
+      # verify:utility-precedence  no va: utility in generated markup loses to a
+      #                      compound component selector (unlayered bundle contract).
+      - name: verify:layer-defeat
+        run: npm run verify:layer-defeat
+
+      - name: verify:reset
+        run: npm run verify:reset
+
+      - name: verify:utility-precedence
+        run: npm run verify:utility-precedence
+
+      # The bundle inside the two host stacks it is shipped into: Tailwind 3 +
+      # daisyUI 4 (element reset, three load paths) and SvelteKit (scoped styles).
+      # Both passed 1.0.0 on the common path and failed it on the linked one.
+      - name: examples — host checks
+        run: |
+          set -euo pipefail
+          for ex in daisyui-starter sveltekit-starter; do
+            echo "::group::examples/$ex"
+            (cd "examples/$ex" && npm ci --no-audit --no-fund && npm run check)
+            echo "::endgroup::"
+          done
 
       # The packed tarball in a real consumer Vite build (both entry points).
       # Catches exports-map/files-whitelist breakage nothing else can see.
@@ -82,8 +114,6 @@ jobs:
       # it needs Storybook over HTTP. It has no file:// path, so a static build
       # alone is not enough; it must be served. Proven locally at 931/931
       # against the static output on port 6007.
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
 
       - name: build-storybook
         run: npm run build-storybook

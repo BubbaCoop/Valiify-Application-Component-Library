@@ -7,6 +7,94 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
+## [1.0.1] — 2026-09-16
+
+### Fixed — `reset.css` defeated the components it was shipped to support
+
+`./reset.css` was added in 1.0.0 as the answer to "what if a consumer loads only
+`styles.css`". It is unlayered element rules — `button, input, select, textarea {
+font-size: 100%; line-height: inherit; letter-spacing: inherit; color: inherit }` — and
+the 1.0.0 bundle's component rules sat inside `@layer components`. Unlayered beats
+layered before specificity is consulted, so the reset won over our own classes.
+Measured with the new `verify:reset` against the 1.0.0 artifact, over every ```html
+example in CLAUDE.md: **50 property/element defeats** — every `<button>`-based
+component (`.va-btn-*`, `.va-utility-button-*`, `.va-icon-button*`, `.va-list-option`,
+`.va-tab`, `.va-action-cta`) lost `font-size`, `line-height`, `letter-spacing` and
+`color`; `.va-text-field-input` and `.va-text-area-input` lost `line-height`. The
+Primary button's white label inherited the page ink onto the crimson fill. The fix for
+one problem was a live instance of the problem, and nothing we had could see it.
+`verify:reset` now asserts that no rule in `reset.css` overrides a property the bundle
+declares on any documented element (0 on 1.0.1), with a canary.
+
+### Fixed — the prebuilt bundle is now unlayered (the cascade-layer defeat)
+
+`dist/shortapp-ui.css` (`./styles.css`) wrapped every component rule in `@layer
+components`. Any UNLAYERED host rule beat them regardless of specificity or source
+order: Tailwind 3 preflight (`* { border-width: 0 }`, `button { background-color:
+transparent }`, `input, textarea { padding: 0 }`, `textarea { resize: vertical }`),
+daisyUI 4, a Svelte `:global(button)` reset — and `reset.css` above. The `va-` rename
+in 1.0.0 could not fix this and did not; it is not a name collision. The fingerprint a
+consumer reported: a control whose **focus ring survived while its border did not**
+(preflight never touches `outline`; it zeroes `border-width` on `*`).
+
+**Why it reached a consumer.** A host that `@import`s the bundle into the file carrying
+its `@tailwind` directives has Tailwind 3 consume our `@layer` blocks and re-emit the
+rules unlayered, after preflight — the bug vanishes and the library looks correct on
+the path most people test. It broke on a raw `<link>` to the file, the path we told the
+consumer to use, where the layers reach the browser intact. `examples/daisyui-starter`
+now measures both paths (1.0.0: 22/22 on import, 12/22 on link) and a third: a lone
+`@import` through Tailwind 3's PostCSS, which 1.0.0 could not even take (below).
+
+**The fix** is a build-time unwrap of pass A in `scripts/build-styles.mjs`: the two
+`@layer components` blocks are replaced by their children. `src/components`,
+`./source` and `dist/index.css` keep their layers — for a Tailwind v4 host the layer
+IS the contract (`verify:layers`' original assertion, unchanged). `verify:layers`
+gains the inverse assertion on the prebuilt bundle, with the layered `dist/index.css`
+as its canary. `scripts/verify-layer-defeat.mjs` is the committed repro: one page, one
+rule, toggled only by the wrapper; red on 1.0.0, green on 1.0.1.
+
+**Behaviour change for consumers of `./styles.css`.** Previously any unlayered
+consumer rule beat any component rule. Now a single-class override (`.my-btn {
+height: 40px }`) still wins when it loads after the bundle — source order — but
+overriding a compound state rule (`.va-btn-primary:hover`) needs matching specificity.
+Correct for a library you deliberately import; a change nonetheless. The library's
+own `va:` utilities follow the same arithmetic: they beat the 154 single-class
+component rules and lose to the 164 compound ones. `verify:utility-precedence`
+(new, in CI) fails when generated markup relies on a utility that a compound
+component selector outranks — none does today.
+
+**What the bundle still cannot defend against**, now stated as contract in README,
+GETTING_STARTED and CLAUDE.md: a host rule of HIGHER specificity. A Svelte scoped
+`button { border: 0 }` compiles to `button.svelte-<hash>` (0,1,1) and outranks our
+0,1,0. `examples/sveltekit-starter` asserts that loss on purpose and asserts the
+remedy (`button:not([class*="va-"])`, or class-scoped resets).
+
+### Changed — the `html` ink/ground default moved from the bundle to `reset.css`
+
+Pass A used to ship `@layer base { html { color; background-color } }`. A Tailwind 3
+host's PostCSS refuses any file carrying `@layer base {` without a matching `@tailwind
+base` (measured: the bundle could not be its own CSS entry). A document default is the
+host's to set, and the methodology paints the canvas explicitly; the one place the rule
+belongs is the opt-in file for standalone pages. `reset.css` is now five rules, and the
+prebuilt bundle carries no `@layer base`. `dist/index.css` and `./source` are unchanged.
+
+### Added
+
+- `scripts/verify-layer-defeat.mjs` + `tests/fixtures/layer-defeat.html` — the repro,
+  as a gate.
+- `scripts/verify-reset.mjs` — reset.css may override nothing the bundle declares.
+- `scripts/verify-utility-precedence.mjs` — utilities in generated markup keep
+  precedence over component selectors; canaries for both false negatives and the
+  type-selector false positive.
+- `examples/daisyui-starter` — Tailwind 3 + daisyUI 4 host, computed-style
+  assertions per control (button, input, select-by-manifest, textarea) over three load
+  paths, naming the layer-defeat fingerprint when it sees it.
+- `examples/sveltekit-starter` — Svelte 5 scoped styles: `:global` reset (must win),
+  scoped element selector (documented loss), remedy, and the bundle vs its own
+  `reset.css`.
+- All of the above run in `ci.yml` and `release.yml`.
+
+
 ## [1.0.0] — 2026-09-15
 
 **Breaking.** Component classes are namespaced `va-` and shipped utilities carry the

@@ -1380,6 +1380,44 @@ Decisions a consumer or contributor would otherwise discover by surprise:
   describing it names a class the bundle dropped, and the docs can be spotless
   while a page composes something the methodology never sanctioned. Changing the
   class vocabulary means running **both**, and reading both results.
+- **The prebuilt bundle is UNLAYERED; source, `./source` and `dist/index.css`
+  keep their layers** (decided 2026-09-16, shipped 1.0.1). Inside `@layer
+  components`, every component rule loses to any unlayered host rule before
+  specificity or source order is consulted — Tailwind 3 preflight (`* {
+  border-width: 0 }`, `button { background-color: transparent }`), daisyUI, a
+  Svelte `:global()` reset, and **our own `reset.css`**, whose `button { color:
+  inherit }` beat `.va-btn-primary`'s white ink in 1.0.0 (50 property/element
+  defeats measured by `verify:reset`). The `va-` rename could never have fixed
+  this; it is not a name collision. `build-styles.mjs` unwraps pass A at build
+  time so `src/components` stays layered for the Tailwind-v4 entries, where the
+  layer IS the contract (`verify:layers`' original assertion). The `html`
+  ink/ground default moved out of the bundle into `reset.css`: a Tailwind 3
+  host's PostCSS refuses any file carrying `@layer base {` without a matching
+  `@tailwind base`.
+
+  **It was invisible on the common path.** A host that `@import`s the bundle
+  into its `@tailwind` file has Tailwind 3 consume the layer blocks and re-emit
+  the rules unlayered — the bug vanishes, the library looks correct. It broke on
+  a raw `<link>`, the path we told the consumer to use. A harness testing only
+  the import path would have stayed green forever; `examples/daisyui-starter`
+  now tests both, plus the lone-import path.
+
+  **The two-clause host contract** (consumers: README, GETTING_STARTED):
+  1. *Defends against* any host rule of lower specificity, wherever it sits in
+     source order, provided the bundle loads after the host's reset.
+  2. *Cannot defend against* a host rule of higher specificity — a Svelte
+     scoped `button { }` compiles to `button.svelte-hash` (0,1,1) and beats our
+     0,1,0 — or a host that wraps its own CSS in a layer. Remedy: scope element
+     resets by class or exclude library controls (`button:not([class*="va-"])`).
+     `examples/sveltekit-starter` asserts the limit as a loss on purpose.
+
+  **Behaviour change for consumers**: a single-class override still wins by
+  source order when it loads after us; overriding a compound state rule now
+  needs matching specificity. Our own `va:` utilities are consumers too — they
+  beat the 154 single-class rules by source order and lose to the 164 compound
+  ones; `verify:utility-precedence` fails when generated markup relies on the
+  latter (today: none).
+
 - **Undefined tokens are a build failure.** `verify:bundle` also fails on any
   fallback-less `var(--…)` in dist that the bundle never defines (the
   `--color-surface-frame` bug class).
@@ -1416,8 +1454,9 @@ CSS-only — there is no Tailwind plugin to register, and no `tailwind.config.js
 
 **`./styles.css` is the entry for a host that should never compile our classes.**
 It ships `dist/shortapp-ui.css`: component classes, tokens under both spellings,
-and a closed set of `va:`-prefixed utilities — with **preflight deliberately
-excluded**, so it cannot fight the host's own reset. It needs no Tailwind at all,
+and a closed set of `va:`-prefixed utilities — **unlayered** (Library Contracts:
+the two-clause host contract; load it AFTER the host's reset) and with
+**preflight deliberately excluded**, so it cannot fight the host's own reset. It needs no Tailwind at all,
 which makes the host's Tailwind version irrelevant. That is what makes it safe to
 drop into an app on Tailwind v3 + daisyUI 4.
 
@@ -1479,10 +1518,14 @@ drop into an app on Tailwind v3 + daisyUI 4.
 > look right and nothing else does.
 >
 > `@valiify/shortapp-ui/reset.css` is the measured floor and **not** preflight:
-> `box-sizing`, the body margin, the font family, and form-control font
-> inheritance. Four rules, each one there because a value was measurably wrong
-> without it. Import it FIRST, and skip it inside an app that already resets
-> (daisyUI, Bootstrap, a house reset) — harmless there, just redundant.
+> `box-sizing`, the body margin, the font family, form-control font inheritance,
+> and (since 1.0.1) the `html` ink/ground default that used to ship in the bundle
+> as `@layer base`. Five rules, each one there because a value was measurably
+> wrong without it. Import it FIRST, and skip it inside an app that already
+> resets (daisyUI, Bootstrap, a house reset) — harmless there, just redundant.
+> **It is subject to the cascade like any host reset**: in 1.0.0 its `button {
+> color: inherit }` beat the layered `.va-btn-primary`. `verify:reset` asserts it
+> overrides nothing the bundle declares on any documented element.
 
 `.` and `./index.css` are unchanged — still the preflight-bearing `dist/index.css`.
 `./source` still requires the consumer to be on Tailwind v4; the package no longer
@@ -1663,6 +1706,23 @@ Both run in CI, together with `verify:a11y` (which waives documented design
 defects via `KNOWN_ISSUES` in [scripts/a11y-scan.mjs](scripts/a11y-scan.mjs)
 — printed, never silent). The consolidated designer list lives at
 [docs/designer-list.md](docs/designer-list.md).
+
+### Host verification — computed styles inside a foreign app
+
+Every gate above checks class NAMES or the bundle's own text. None of them can
+see a host stylesheet win over a component rule, which is how 1.0.0 shipped.
+These render the bundle and read computed styles:
+
+```bash
+npm run verify:layer-defeat        # the 1.0.0 repro; tests/fixtures/layer-defeat.html
+npm run verify:reset               # reset.css overrides nothing the bundle declares
+npm run verify:utility-precedence  # no va: utility in generated markup loses to a compound selector
+cd examples/daisyui-starter && npm run check     # Tailwind 3 + daisyUI 4, three load paths
+cd examples/sveltekit-starter && npm run check   # Svelte scoped styles, incl. the documented limit
+```
+
+All carry canaries and run in CI. `verify:layer-defeat` and `verify:reset` take
+`--file <bundle>` so a released artifact can be re-measured.
 
 ## Storybook
 

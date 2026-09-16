@@ -1,0 +1,33 @@
+/*
+ * The @import MUST come first.
+ *
+ * CSS requires every @import to precede all other rules, so putting it after the
+ * @tailwind directives — which expand into rules — gets it silently DISCARDED.
+ *
+ * That order is also what makes this the honest test. `@tailwind base` expands
+ * to Tailwind 3's preflight, UNLAYERED and AFTER our bundle: `*, ::before, ::after
+ * { border-width: 0 }`, `button { background-color: transparent }`, `input,
+ * textarea { font-size: 100%; color: inherit; padding: 0 }`, `textarea { resize:
+ * vertical }`. A component rule that sits inside a cascade layer loses to every
+ * one of those before specificity or source order is consulted. A component rule
+ * that is unlayered wins on specificity (a class beats an element and beats `*`).
+ * check-no-bleed.mjs measures which of the two the shipped bundle is.
+ */
+@import "@valiify/shortapp-ui/styles.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * The host's own body type — deliberately NOT the library's defaults. Preflight
+ * makes form controls inherit font-size, line-height and color from here; if our
+ * input rule loses, the input reads 13px / 26px / purple instead of the designed
+ * 16px / 24px / Text-Primary, and the check can see it. With the library's own
+ * values here, the defeat would be invisible by coincidence.
+ */
+body {
+  font-size: 13px;
+  line-height: 2;
+  color: rebeccapurple;
+}

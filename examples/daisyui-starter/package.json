@@ -1,0 +1,22 @@
+{
+  "name": "valiify-shortapp-ui-daisyui-starter",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "check": "node check-no-bleed.mjs"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "daisyui": "^4.12.14",
+    "playwright": "1.62.1",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^3.4.17",
+    "vite": "^5.4.11"
+  },
+  "dependencies": {
+    "@valiify/shortapp-ui": "file:../.."
+  }
+}

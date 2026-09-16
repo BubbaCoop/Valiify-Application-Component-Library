@@ -193,6 +193,55 @@ dot variant to reach for.
 
 See [COMPONENTS.md](COMPONENTS.md) for complete markup examples of every component.
 
+## Without Tailwind v4: the prebuilt bundle
+
+If your host has no Tailwind v4 pipeline — shortapp-web is SvelteKit + Tailwind 3 +
+daisyUI 4 — import the prebuilt bundle instead of `/source`, and **not**
+`@valiify/shortapp-ui` (`dist/index.css`), which ships Tailwind 4's preflight and
+fights your reset:
+
+```css
+/* app.css — inside the file that carries your @tailwind directives */
+@import "@valiify/shortapp-ui/styles.css";   /* MUST be the first line */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+or, standalone with no host CSS at all:
+
+```css
+@import "@valiify/shortapp-ui/reset.css";    /* first — the measured floor, incl. the html default */
+@import "@valiify/shortapp-ui/styles.css";
+```
+
+Import exactly one of `.`, `./index.css`, `./styles.css`. Never two.
+
+The bundle does not render "identically" to `/source`. Its contract is narrower and
+checkable, in two clauses:
+
+1. **What it defends against.** The bundle is **unlayered** and must load **after**
+   your reset. Its component rules then beat any host rule of *lower* specificity,
+   wherever that rule sits in source order: Tailwind 3 preflight (`* { border-width:
+   0 }`, `button { background-color: transparent }`), daisyUI's base, a
+   `:global(button)` reset in a Svelte component. Version 1.0.0 did **not** hold
+   this — its rules sat in `@layer components` and lost to every unlayered host rule.
+   The fingerprint: a control whose focus ring survives while its border, fill and
+   padding do not. Use 1.0.1 or later.
+2. **What it cannot defend against.** A host rule of *higher* specificity still wins,
+   and a Svelte scoped element selector is exactly that — `button { border: 0 }` in a
+   component's `<style>` compiles to `button.svelte-<hash>` (0,1,1), which outranks
+   our single-class rules (0,1,0). A host that wraps its own CSS in a cascade layer
+   changes the arithmetic too. **Instead:** scope element resets by class (`.plain {
+   }`) or exclude library controls — `button:not([class*="va-"]) { border: 0 }` —
+   and never write a bare `button` / `input` / `textarea` selector inside a
+   component that renders a `va-` control.
+
+Both clauses are measured, not asserted: `examples/daisyui-starter` (Tailwind 3 +
+daisyUI, three load paths) and `examples/sveltekit-starter` (scoped styles, including
+clause 2 asserted as a loss) — `npm run check` in each.
+
 ## Common Mistakes
 
 ### ❌ Importing from JavaScript
@@ -304,6 +353,11 @@ import "./styles.css";
 
 <button class="va-btn va-btn-primary">Click me</button>
 ```
+
+> **Scoped styles and library controls.** A scoped `button { }` in a component
+> compiles to `button.svelte-<hash>` and outranks the library's single-class rules
+> even with the prebuilt bundle. Scope resets by class or exclude library controls
+> (`button:not([class*="va-"])`) — see "Without Tailwind v4" above.
 
 ### Next.js (App Router)
 

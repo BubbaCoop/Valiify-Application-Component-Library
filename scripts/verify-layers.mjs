@@ -30,6 +30,27 @@
  *
  * Point it at a different file with --file, which the negative test uses:
  *   node scripts/verify-layers.mjs --file /tmp/stripped.css
+ *
+ * THE INVERSE CONTRACT — dist/shortapp-ui.css (the prebuilt `./styles.css` entry).
+ *
+ * That bundle is shipped INTO a foreign app that never compiles our classes, and
+ * there the layer is the bug, not the contract. Unlayered CSS beats layered CSS
+ * before specificity or source order is consulted, so a component rule inside
+ * `@layer components` loses to the host's Tailwind 3 preflight (`* { border-width:
+ * 0 }`, `button { background-color: transparent }`), to daisyUI, to a Svelte
+ * `:global()` reset — and to the library's OWN reset.css. 1.0.0 shipped that way;
+ * scripts/verify-layer-defeat.mjs is the repro. So for shortapp-ui.css this gate
+ * asserts the opposite of what it asserts for index.css: ZERO `@layer components`
+ * blocks and ZERO `@layer base` blocks. The `html` ink/ground default that used to
+ * ship as `@layer base` moved to src/reset.css in 1.0.1: a Tailwind 3 host's PostCSS
+ * refuses any file carrying `@layer base {` without a matching `@tailwind base`,
+ * so keeping it would have rejected a working configuration to ship a rule the
+ * methodology overrides anyway. Only `@layer properties` (Tailwind's @property
+ * polyfill wrapper) may remain.
+ *
+ * The two files are checked with the SAME detector, and index.css — which keeps its
+ * layers for Tailwind v4 hosts — must read as layered every run. That is the canary:
+ * a detector that reads both files as unlayered has stopped seeing layers.
  */
 
 import { readFileSync, existsSync } from "node:fs";
@@ -164,7 +185,74 @@ function main() {
       `\n  ${RED}Layer contract broken.${OFF} Consumer utilities will not override component classes.\n`,
     );
   }
-  process.exit(failed ? 1 : 0);
+  if (failed) process.exit(1);
+
+  // Only when running against the default target — a --file run is a single-file check.
+  if (fileFlag === -1) prebuilt();
+  process.exit(0);
+}
+
+/** How many `@layer <name> {` BLOCKS (not statements) a stylesheet carries. */
+function layerBlocks(css, name) {
+  return (css.match(new RegExp(`@layer\\s+${name}\\s*\\{`, "g")) || []).length;
+}
+
+function prebuilt() {
+  const file = join(ROOT, "dist/shortapp-ui.css");
+  console.log(`\n${BOLD}Prebuilt bundle — inverse contract${OFF}  ${DIM}dist/shortapp-ui.css${OFF}\n`);
+  if (!existsSync(file)) {
+    console.error(`\n  ${RED}dist/shortapp-ui.css is missing.${OFF}  Build it first:  npm run build\n`);
+    process.exit(1);
+  }
+  const css = readFileSync(file, "utf8");
+  const indexCss = readFileSync(TARGET, "utf8");
+  let failed = false;
+
+  // Canary: the detector must see index.css's layered components, or it sees nothing.
+  const canary = layerBlocks(indexCss, "components");
+  if (canary === 0 || layerBlocks("@layer components {\n.x{}\n}", "components") !== 1) {
+    console.log(`  ${RED}FAIL${OFF}  canary self-test: the block detector reads dist/index.css as having ${canary} \`@layer components\` block(s); it keeps its layers by design, so the detector is blind.`);
+    process.exit(1);
+  }
+  pass("canary self-test", `dist/index.css carries ${canary} layered component block(s), as designed`);
+
+  const comps = layerBlocks(css, "components");
+  if (comps === 0) pass("no @layer components blocks", "component rules are unlayered — a host element reset cannot beat them on layer alone");
+  else
+    failed = fail(
+      "no @layer components blocks",
+      `${comps} \`@layer components {\` block(s) found.\n` +
+        "Inside a layer, every component rule loses to any UNLAYERED host rule —\n" +
+        "Tailwind 3 preflight, daisyUI, a Svelte :global() reset, our own reset.css —\n" +
+        "regardless of specificity or source order. This is the 1.0.0 bug\n" +
+        "(scripts/verify-layer-defeat.mjs). build-styles.mjs unwraps pass A; check it.",
+    );
+
+  const base = layerBlocks(css, "base");
+  if (base === 0) pass("no @layer base blocks", "the html default lives in reset.css — a Tailwind 3 PostCSS host can take this file as its own entry");
+  else
+    failed = fail(
+      "no @layer base blocks",
+      `${base} \`@layer base {\` block(s) found.\n` +
+        "A Tailwind 3 host's PostCSS refuses a file carrying `@layer base {` without a\n" +
+        "matching `@tailwind base` (measured in examples/daisyui-starter). The html\n" +
+        "ink/ground default belongs in src/reset.css; src/build/components.css must not\n" +
+        "import ../base or ../library.css.",
+    );
+
+  const stray = (css.match(/@layer\s+(?!properties\b)([a-z-]+)\s*\{/g) || []).map((m) => m.replace(/@layer\s+|\s*\{/g, ""));
+  if (!stray.length) pass("no other layer blocks", "only @layer properties (Tailwind's @property polyfill) remains");
+  else failed = fail("no other layer blocks", `unexpected layer block(s): ${[...new Set(stray)].join(", ")}`);
+
+  const utilLayered = layerBlocks(css, "utilities");
+  if (utilLayered === 0) pass("no @layer utilities blocks", "the va: layer stays unlayered (pass B contract)");
+  else failed = fail("no @layer utilities blocks", `${utilLayered} block(s) — pass B utilities must not be layered.`);
+
+  if (failed) {
+    console.log(`\n  ${RED}Inverse contract broken.${OFF} The prebuilt bundle would lose to unlayered host rules.\n`);
+    process.exit(1);
+  }
+  console.log(`\n  ${DIM}Prebuilt bundle is unlayered: a host element reset cannot beat it on layer alone.${OFF}\n`);
 }
 
 try {

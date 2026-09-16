@@ -1,5 +1,5 @@
 /**
- * Prebuilt bundle — PASS A: tokens, base and component classes. No preflight.
+ * Prebuilt bundle — PASS A: tokens and component classes. No preflight, NO base.
  *
  * Compiled by scripts/build-styles.mjs and concatenated with pass B into
  * dist/shortapp-ui.css.
@@ -12,8 +12,22 @@
  * No utilities.css import either, so this pass emits ZERO utility classes — the
  * prefixed ones come from pass B. theme.css does not declare the layer order, so
  * it is declared here.
+ *
+ * NOT ../library.css (the `./source` entry) — that pulls ../base/index.css, the
+ * `@layer base { html { … } }` ink/ground default. Two reasons it is left out here:
+ *   1. A host's Tailwind 3 PostCSS refuses any file carrying `@layer base {` without
+ *      a matching `@tailwind base` — measured in examples/daisyui-starter; the bundle
+ *      could not be its own CSS entry.
+ *   2. A document default belongs to the host, or to the opt-in reset.css for a
+ *      standalone page — which is where the rule now lives. The methodology paints
+ *      the canvas explicitly (`va:bg-surface-app-page`) and never relied on it.
+ * The components then land in `@layer components`, which scripts/build-styles.mjs
+ * UNWRAPS — see there for why a layer is the bug in a bundle shipped into a foreign
+ * app. Source, ./source and dist/index.css keep their layers.
  */
 @layer theme, base, components, utilities;
 
 @import "tailwindcss/theme.css";
-@import "../library.css";
+@import "../themes/valiify.css";
+@import "../components/index.css";
+@import "../utilities/index.css";

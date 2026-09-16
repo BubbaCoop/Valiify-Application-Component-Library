@@ -30,44 +30,24 @@ try {
   process.exit(1);
 }
 
-/** Bodies of the top-level `@layer <name> { … }` blocks. */
-function layerBodies(name) {
-  const out = [];
-  const re = new RegExp(`@layer\\s+${name}\\s*\\{`, "g");
-  let m;
-  while ((m = re.exec(css))) {
-    let depth = 1, i = m.index + m[0].length;
-    const start = i;
-    while (i < css.length && depth) {
-      if (css[i] === "{") depth++;
-      else if (css[i] === "}") depth--;
-      i++;
-    }
-    out.push(css.slice(start, i - 1));
-  }
-  return out;
-}
-
-/** Selector text at depth 0 of a block. */
-function* heads(body) {
-  let depth = 0, buf = [];
-  for (const ch of body) {
-    if (ch === "{") {
-      if (depth === 0) { yield buf.join(""); buf = []; }
-      depth++;
-    } else if (ch === "}") {
-      depth--;
-      if (depth === 0) buf = [];
-    } else if (depth === 0) buf.push(ch);
-  }
-}
-
+// Component classes are UNLAYERED since 1.0.1 (scripts/build-styles.mjs unwraps pass
+// A — inside `@layer components` they lost to every unlayered host rule), so they are
+// collected from every rule in the file, at any nesting depth (@media, @supports), by
+// selector — never from declaration values. Utilities (`.va\:…`) are excluded by the
+// backslash that Tailwind writes into their selectors.
+import postcss from "postcss";
+const root = postcss.parse(css);
 const components = new Set();
-for (const body of layerBodies("components")) {
-  for (const head of heads(body)) {
-    if (head.trim().startsWith("@")) continue;
-    for (const m of head.matchAll(/\.(va-[a-z0-9-]+)/g)) components.add(m[1]);
+root.walkRules((rule) => {
+  if (rule.parent?.type === "atrule" && /keyframes/.test(rule.parent.name)) return;
+  for (const sel of rule.selectors) {
+    if (/^\.va\\:/.test(sel)) continue;
+    for (const m of sel.matchAll(/\.(va-[a-z0-9-]+)/g)) components.add(m[1]);
   }
+});
+if (components.size === 0) {
+  console.error("  no component classes found in dist/shortapp-ui.css — the selector walk is broken, not the bundle empty.");
+  process.exit(1);
 }
 
 // Utilities are emitted UNLAYERED (see src/build/utilities.css for why), so they are

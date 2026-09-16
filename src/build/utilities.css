@@ -16,8 +16,13 @@
  * `@layer utilities`. Unlayered is the safer shape for a layer shipped INTO a foreign
  * app: unlayered rules beat layered ones before specificity is consulted, so a layered
  * `va:flex` would silently lose to any unlayered host rule touching the same property
- * (daisyUI 4 is entirely unlayered). Our component classes stay in @layer components,
- * so the host's own utilities still win over them — which is what a consumer expects.
+ * (daisyUI 4 is entirely unlayered). Since 1.0.1 the SAME sentence governs pass A:
+ * build-styles.mjs unwraps the component classes too, because inside @layer components
+ * they lost to the host's preflight, to daisyUI and to our own reset.css (the 1.0.0
+ * bug). With both passes unlayered, a va: utility beats a component rule of equal
+ * specificity by source order (pass B follows pass A) and loses to a compound component
+ * selector — scripts/verify-utility-precedence.mjs asserts no generated markup relies
+ * on the latter.
  *
  * ../utilities/index.css imports UNCHANGED. `@utility focus-ring` has no @apply,
  * and its var(--ring-focus-width) resolves against pass A's definitions once the

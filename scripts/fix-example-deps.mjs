@@ -7,7 +7,9 @@ const version = rootPkg.version;
 // List of example package.json files to fix
 const examples = [
   'examples/vite-starter/package.json',
-  'examples/postcss-starter/package.json'
+  'examples/postcss-starter/package.json',
+  'examples/daisyui-starter/package.json',
+  'examples/sveltekit-starter/package.json'
 ];
 
 console.log(`\n🔧 Fixing example dependencies to version ^${version}...\n`);

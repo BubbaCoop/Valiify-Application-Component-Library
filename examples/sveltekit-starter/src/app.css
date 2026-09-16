@@ -1,0 +1,17 @@
+/*
+ * The app shell's load path — the prebuilt entry, standalone.
+ *
+ * reset.css first (this host has no other reset), then the bundle. Import ONE of
+ * the library's three style entries, never two. Note that reset.css is itself an
+ * unlayered `button, input, select, textarea { color: inherit; … }` — it is the
+ * library's own element reset, and it is subject to the same cascade rules as the
+ * host's. check-scoped-styles.mjs asserts the bundle survives it.
+ */
+@import "@valiify/shortapp-ui/reset.css";
+@import "@valiify/shortapp-ui/styles.css";
+
+body {
+  margin: 0;
+  padding: 32px;
+  background: var(--color-surface-app-page);
+}

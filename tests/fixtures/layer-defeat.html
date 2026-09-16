@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>layer defeat — box off, box on</title>
+    <!--
+      The minimal repro for the 1.0.0 prebuilt-bundle bug. Open it in any browser.
+
+      ONE host rule, ONE library rule, written twice. The only difference between
+      the two buttons is whether the library rule is wrapped in `@layer components`.
+
+      Everything else is stacked in the LIBRARY'S favour on purpose:
+        - the host rule comes FIRST in source order   (later wins, so we should)
+        - the host rule is an element selector, 0,0,1  (our class is 0,1,0, so we should)
+      The only thing left that can make ours lose is the layer — and it does.
+      Unlayered declarations beat layered ones before specificity or source order
+      is consulted. That is what Tailwind v3 preflight, daisyUI 4 and every Svelte
+      scoped <style> do to a rule inside `@layer components`.
+
+      scripts/verify-layer-defeat.mjs asserts both boxes, then the real bundle.
+    -->
+    <style>
+      /* the host's reset — unlayered, element selector, first in source */
+      button {
+        border: 0;
+      }
+    </style>
+    <style>
+      /* the library rule, bare */
+      .box-bare {
+        border: 1px solid #a6192e;
+      }
+      /* the SAME rule, wrapped — this is what dist/shortapp-ui.css 1.0.0 does */
+      @layer components {
+        .box-layered {
+          border: 1px solid #a6192e;
+        }
+      }
+    </style>
+    <style>
+      /* presentation only — nothing here touches `border` */
+      body { font: 14px/1.4 system-ui, sans-serif; margin: 32px; color: #1a1a1a; }
+      button { display: block; padding: 12px 16px; margin: 8px 0 24px; background: #fffdfb; font: inherit; }
+      code { font-size: 12px; color: #6f7276; }
+    </style>
+  </head>
+  <body>
+    <p>unlayered — <strong>box on</strong>. Class beats element; later beats earlier.</p>
+    <button id="bare" class="box-bare">.box-bare { border: 1px solid }</button>
+
+    <p>@layer components — <strong>box off</strong>. Same rule, same page, same host reset.</p>
+    <button id="layered" class="box-layered">@layer components { .box-layered { border: 1px solid } }</button>
+
+    <p><code>host: button { border: 0 }</code> — unlayered, first in source, lower specificity. It still wins against the layered rule.</p>
+  </body>
+</html>

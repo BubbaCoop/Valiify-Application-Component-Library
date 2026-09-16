@@ -1,0 +1,14 @@
+/*
+ * The host's stylesheet ALONE — no @import of ours. linked.html pairs this with a
+ * <link> to the bundle file, so the bundle reaches the browser exactly as shipped:
+ * the host's Tailwind never sees it and cannot strip its cascade layers.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-size: 13px;
+  line-height: 2;
+  color: rebeccapurple;
+}
