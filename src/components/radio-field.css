@@ -41,8 +41,28 @@
  * (absolute, bottom:-59px, right:-313%) and is unexercised — .va-radio-field-hint
  * ships as a normal flow element instead, a labeled correction.
  *
- * Not modelled (and in this case not even wired): error, disabled. No Error
- * axis exists here unlike the sibling text fields.
+ * ERROR IS TEXT-ONLY, AND THAT IS THE DESIGN (designer, 2026-09-16 — D2).
+ * Figma draws no error variant for this component, and the treatment the
+ * sibling fields use could not have been copied even if it did: TextField and
+ * TextArea react to an error on their BORDER, and a RadioField has no box and
+ * no border in any state. So the error is the message alone —
+ * .va-radio-field-hint in Warning/Text — and the radio controls are
+ * deliberately untouched. This is NOT an unfinished component: a ring tint was
+ * considered and ruled out, because amber appears nowhere in the Radio control
+ * and adding it would have been invented style in a second component.
+ *
+ * Consequence, recorded so it is not re-opened as a bug: an unanswered
+ * required group's entire error signal is one line of amber text beneath it.
+ *
+ * ARIA — the invalid state goes on the GROUP, not on the options: a fieldset
+ * of radios has no single input to mark, and the group is what is invalid. A
+ * native <fieldset> carries NO implicit radiogroup role, so the role must be
+ * explicit or aria-invalid announces against nothing:
+ *
+ *   <fieldset class="va-radio-field" role="radiogroup"
+ *             aria-invalid="true" aria-describedby="q-hint">
+ *
+ * Not modelled, not invented: disabled. The Figma state axes remain unwired.
  */
 
 @layer components {
@@ -80,5 +100,11 @@
      (absolute/-59px/-313%); shipped as normal flow, a labeled correction. */
   .va-radio-field-hint {
     @apply pt-1.25 text-help-caption text-content-secondary;
+  }
+
+  /* The whole error treatment: one ink swap on one element (D2). No border
+     rule exists here because the component has no border to paint. */
+  .va-radio-field[aria-invalid="true"] .va-radio-field-hint {
+    @apply text-warning-text;
   }
 }

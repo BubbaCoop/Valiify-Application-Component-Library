@@ -2,6 +2,8 @@
  * RadioField — labeled radio-group form field.
  * Figma: Radio Fields (123:6059), 6 declared variants whose state axes are
  * unwired (all render identically) — real states come from the composed .va-radio.
+ * The error state is text-only by design (2026-09-16, D2): the component has
+ * no box to paint, so the message alone carries it and the radios never change.
  */
 import type { Meta, StoryObj } from "@storybook/html";
 
@@ -57,6 +59,32 @@ export const WithHelperAndHint: Story = {
         </label>
       </div>
       <p class="va-radio-field-hint">Required for federal reporting.</p>
+    </fieldset>
+  `,
+};
+
+/**
+ * Error — the whole treatment is the message ink (D2). The radios are
+ * deliberately identical to their rest state; that is the design, not a gap.
+ * `aria-invalid` sits on the GROUP, which needs an explicit `role="radiogroup"`
+ * because a native <fieldset> has no implicit one.
+ */
+export const Error: Story = {
+  render: () => `
+    <fieldset class="va-radio-field" style="max-width: 413px;"
+              role="radiogroup" aria-invalid="true" aria-describedby="rf-err-hint">
+      <legend class="va-radio-field-title">Do you serve international customers?</legend>
+      <div class="va-radio-field-options">
+        <label class="va-radio-field-option">
+          <input type="radio" name="rf-err" class="va-radio" />
+          Yes
+        </label>
+        <label class="va-radio-field-option">
+          <input type="radio" name="rf-err" class="va-radio" />
+          No
+        </label>
+      </div>
+      <p id="rf-err-hint" class="va-radio-field-hint">Required</p>
     </fieldset>
   `,
 };

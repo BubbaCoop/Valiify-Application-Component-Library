@@ -3,8 +3,14 @@
  *
  * Labeled multi-line text input. Extracted from Figma Text Area Field
  * (199:12523) — 6 variants (Filled × Hover × Focus), all 413×104: the field
- * family's 25px label row over a 79px box. NO Error axis exists (unlike the
- * sibling fields) — none is invented; designer list.
+ * family's 25px label row over a 79px box.
+ *
+ * FIGMA DRAWS NO ERROR VARIANT for this component — the error axis below is a
+ * LABELED EXTENSION, added 2026-09-16 on the designer's decision (D1/D3), not
+ * an extraction. It reproduces the sibling Plain Text Field's shipped error
+ * treatment exactly, which is sound precisely because the two state models are
+ * already a token-verified match with zero deviations. Nothing is invented:
+ * every value here is one the field family already binds.
  *
  *   <div class="va-text-area">
  *     <div class="va-text-area-title-row">
@@ -24,7 +30,18 @@
  * STATE MODEL — identical to the family (border-only; token-verified match
  * to Plain Text Field, zero deviations):
  *   rest Stroke/Border → hover Stroke/Hover → :focus Primary + Primary Ring
+ *   error [aria-invalid="true"] → Warning/Base
  * Hover+focus undrawn; focus wins by source order.
+ *
+ * ERROR BINDS THE WARNING RAMP, AND THAT IS PERMANENT (designer, 2026-09-16 —
+ * D4). The file defines a full Error/* ramp that nothing uses; for years that
+ * read as an authoring slip. It is not — amber is the intended error colour
+ * for the field family. Do not "fix" this to Error/*.
+ *
+ * ERROR+HOVER IS EXCLUDED BY NAME, matching TextField: a hovered invalid field
+ * keeps its amber border and never reaches Stroke/Hover. ERROR+FOCUS is a real
+ * compound — amber border, crimson ring — and it works only because the error
+ * rule sorts AFTER the focus rule; see the comment at the rules themselves.
  *
  * TWO LABELED CORRECTIONS of Figma authoring defects:
  * - The value node carries the Input style's single-line nowrap/ellipsis
@@ -42,7 +59,7 @@
  * .va-text-area-hint below in normal flow (broken bottomContent geometry, the
  * family defect, corrected as in TextField).
  *
- * Not modelled, not invented: Error, disabled, hover+focus.
+ * Not modelled, not invented: disabled, hover+focus.
  */
 
 @layer components {
@@ -93,7 +110,7 @@
   /* --- States (focus after hover — source order resolves the undrawn
      hover+focus combo in focus's favour) ----------------------------------- */
 
-  .va-text-area-input:hover:not(:focus):not(:disabled) {
+  .va-text-area-input:hover:not(:focus):not(:disabled):not([aria-invalid="true"]) {
     @apply border-stroke-hover;
   }
 
@@ -101,9 +118,25 @@
     @apply focus-ring border-primary;
   }
 
+  /* AFTER the focus rule ON PURPOSE — equal specificity, so source order lets
+     the amber border win on error+focus while focus's outline ring, a separate
+     property, still fires. That compound is the one Figma draws on the sibling
+     field. Do NOT reorder these two rules alphabetically or by state name: it
+     silently drops the amber border the moment the field takes focus. */
+  .va-text-area-input[aria-invalid="true"] {
+    @apply border-warning;
+  }
+
   /* --- Hint (normal-flow correction, family pattern) ----------------------- */
 
   .va-text-area-hint {
     @apply m-0 pt-1.25 text-help-caption text-content-secondary;
+  }
+
+  /* The hint row IS the error row across all three field components — one
+     element, Text/Secondary as a hint and Warning/Text as an error (designer,
+     2026-09-16 — D3). */
+  .va-text-area:has(.va-text-area-input[aria-invalid="true"]) .va-text-area-hint {
+    @apply text-warning-text;
   }
 }

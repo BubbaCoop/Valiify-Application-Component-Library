@@ -11,16 +11,20 @@ _Last updated 2026-09-02 (27 components extracted)._
 
 ## Systemic — one Figma fix resolves several components
 
-1. **The Error ramp is defined but applied nowhere.** Every field `Error=Yes`
-   variant — Plain Text Field (515:5147/5159/5171) and Dropdown Field
+1. **The Error ramp is defined but applied nowhere — RESOLVED FOR FIELDS
+   (designer, 2026-09-16; decision D4).** Every field `Error=Yes` variant —
+   Plain Text Field (515:5147/5159/5171) and Dropdown Field
    (521:5308/5318/5328) — binds `Warning/Base` (#b4791c amber), never
    `Error/*` (#c0362c). Settled with both variable reads and pixel samples.
-   → Should field errors rebind to the Error ramp? The library ships amber
-   verbatim and will follow the file. **Now the sharpest instance: the Toast
-   Type literally named "error" (582:9338) binds Warning/Base — while its
-   sibling variants bind Success/Base and Info/Base correctly, proving the
-   ramps are wired deliberately.** The Modal's Destructive (Primary tints)
-   is the same family.
+   → **Amber is the intended error colour for the field family, permanently.**
+   It was never a slip. The library will not rebind, and future extractions
+   should stop raising it. TextArea and RadioField joined the amber binding in
+   1.1.0 on the same decision. The `Error/*` tokens stay in the theme, unused.
+   **STILL OPEN — the Toast Type literally named "error" (582:9338) binds
+   Warning/Base** while its siblings bind Success/Base and Info/Base
+   correctly. D4 answered a question about *colour*; this one is about
+   *naming*, and is not covered by it. The Modal's Destructive (Primary
+   tints) is the same family.
 2. **`bottomContent` rows have broken authored geometry** (absolute,
    `bottom: -19px`, `right: -313%`, width ~1706px on 413px parents) in
    Plain Text Field, Dropdown Field, Text Area Field, and RadioField. The
@@ -107,6 +111,10 @@ _Last updated 2026-09-02 (27 components extracted)._
 ### RadioField (123:6059)
 - All six variants' state axes are UNWIRED (identical variables, structure,
   pixels). Top item.
+- ~~No error state.~~ **RESOLVED 2026-09-16 (D2): text-only** — the hint turns
+  `Warning/Text`, the radio controls are untouched. The component has no box,
+  so the siblings' border treatment had no target; a ring tint was ruled out
+  as invented style. Shipped in 1.1.0. No frames were needed or drawn.
 - Option ink is raw #000000 (the file's only raw black) — shipped as
   `Text/Primary`.
 - Stray sibling symbol "Radio field" (123:6056, 56×24) — intended component
@@ -142,7 +150,12 @@ _Last updated 2026-09-02 (27 components extracted)._
   (copy-paste artifact); no variant demonstrates wrapping or overflow.
 - No resize grabber and no overflow state — the library chose
   `resize: none`; confirm.
-- No Error axis (unlike the siblings) — deliberate?
+- ~~No Error axis (unlike the siblings) — deliberate?~~ **RESOLVED 2026-09-16
+  (D1/D3): the library added one as a labeled extension**, mirroring Plain
+  Text Field exactly (amber border, amber hint, error+hover excluded,
+  error+focus = amber border + crimson ring). Shipped in 1.1.0. Figma still
+  draws no error variant for this component — **adding one would be
+  welcome**, but the treatment is now pinned in code either way.
 
 ### Header (550:7507)
 - No scrolled shadow drawn — confirm none is wanted for the sticky state.

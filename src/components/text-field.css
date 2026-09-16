@@ -34,8 +34,10 @@
  *
  * ERROR BINDS THE WARNING RAMP, VERBATIM — all three Error=Yes variants bind
  * Warning/Base (#b4791c amber); no Error/* token appears anywhere in the set
- * (variable + pixel verified). The unused-Error-ramp slip is now confirmed
- * for the field family; rebind to the Error ramp only when the designer does.
+ * (variable + pixel verified). THIS IS PERMANENT (designer, 2026-09-16 — D4):
+ * the unused Error/* ramp read as an authoring slip for a long time and is
+ * not one. Amber is the intended error colour for the field family. Do not
+ * rebind this to Error/*.
  *
  * ERROR+HOVER IS UNWIRED in Figma (byte-identical variable maps) — the hover
  * rule excludes invalid fields by name. ERROR+FOCUS is a real compound: the
@@ -54,8 +56,9 @@
  * RadioField pattern), and .va-text-field-hint below. THE HINT SHIPS IN NORMAL
  * FLOW — Figma's bottomContent geometry is broken (absolute −19px/−313%,
  * the RadioField defect verbatim) — as a labeled correction; help-caption
- * type, Text/Secondary, Warning/Text when the field is invalid (inferred —
- * the row is hidden in every drawn variant; designer to confirm).
+ * type, Text/Secondary, Warning/Text when the field is invalid — confirmed
+ * (designer, 2026-09-16 — D3); the hint row is the error row across all three
+ * field components.
  *
  * Not modelled, not invented: disabled (none exists — flagged as a priority
  * gap for real forms), empty+error, hover+focus variants.
@@ -136,8 +139,7 @@
     @apply border-warning;
   }
 
-  /* Inferred (row hidden in every drawn variant; Warning/Text per the
-     error-variant binding) — designer to confirm. */
+  /* The hint row IS the error row across all three field components (D3). */
   .va-text-field:has(.va-text-field-input[aria-invalid="true"]) .va-text-field-hint {
     @apply text-warning-text;
   }

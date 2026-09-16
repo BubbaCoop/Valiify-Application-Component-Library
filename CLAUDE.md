@@ -510,13 +510,26 @@ Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
   `.va-radio-field-help` 18px icon slot), `.va-radio-field-options` (40px row,
   24px apart), `.va-radio-field-option` (a `<label>` composing the shipped
   `.va-radio`, 8px gap, Input 16/400), `.va-radio-field-hint` (optional, 12/400)
-- **States: none at field level, deliberately** — see below
+- **Error**: `aria-invalid="true"` on the fieldset (which needs an explicit
+  `role="radiogroup"` — a native `<fieldset>` has none) turns
+  `.va-radio-field-hint` to `Warning/Text`. **That is the entire treatment.**
+- **Other states: none at field level, deliberately** — see below
 
 > **Figma's state axes are UNWIRED — verified three independent ways**: all
 > six variants bind identical variables, share identical structure, and
 > render byte-identical pixels (`Filled` checks nothing; hover/focus draw
 > nothing). All real interaction ships from the composed `.va-radio` (native
 > tints, crimson `:checked`, focus-ring). Top designer-list item.
+
+> **THE ERROR IS TEXT-ONLY, AND THAT IS THE DESIGN** (designer 2026-09-16,
+> decision D2). Figma draws no error variant, and the sibling fields' treatment
+> could not have been copied even if it did: TextField and TextArea react on
+> their **border**, and a RadioField has no box and no border in any state. So
+> the message alone carries it and the radio controls are untouched — a ring
+> tint was considered and ruled out, because amber appears nowhere in Radio and
+> adding it would have been invented style in a second component. Consequence,
+> recorded so it is not re-opened as a bug: an unanswered required group's
+> entire error signal is one line of amber text beneath it.
 > **The helper icon is hidden in every Figma variant** — its recent redesign
 > could not be verified from this set, and the current glyph is a
 > chevron-left (reads as a placeholder). Designer list.
@@ -872,7 +885,9 @@ Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
 
 Labeled multi-line text input. Extracted from Figma Text Area Field
 (199:12523) — 6 variants (`Filled` × `Hover` × `Focus`), all 413×104.
-**No Error axis exists** — none is invented (designer list: deliberate?).
+**Figma draws no Error variant; the error state is a labeled extension**
+added 2026-09-16 on the designer's decision (D1/D3), reproducing the sibling
+TextField's shipped treatment rather than inventing one.
 
 - **Parts**: `.va-text-area` › `.va-text-area-title-row` / `.va-text-area-title`
   (+ optional `-optional`, `-help`) › `.va-text-area-input` (the native
@@ -881,6 +896,10 @@ Labeled multi-line text input. Extracted from Figma Text Area Field
   **`py-2.5`** — the 10px y-padding is authored and differs from the
   siblings (designer list) — top-anchored text, same border/ring ramp as
   the family (token-verified zero deviations)
+- **Error**: `aria-invalid="true"` on the `<textarea>` → border `Warning/Base`,
+  hint `Warning/Text`. Error+hover is excluded by name (stays amber);
+  error+focus keeps the amber border while the crimson ring still fires — the
+  error rule **sorts after the focus rule** and that order is load-bearing
 
 > **Two labeled corrections of Figma defects**: the value node carries the
 > Input style's single-line nowrap/ellipsis (copy-paste artifact — wrapping
@@ -889,6 +908,12 @@ Labeled multi-line text input. Extracted from Figma Text Area Field
 > needs).
 > **`resize: none` is a library decision, flagged as such** — Figma draws no
 > grabber and no overflow state; callers opt in with a resize utility.
+
+> **Amber is the error colour permanently** (designer 2026-09-16, decision
+> D4) — across the whole field family. The token set defines a full `Error/*`
+> ramp that nothing binds; for a long time that read as an authoring slip. It
+> is not. Do not rebind field errors to `Error/*`. (The Toast type literally
+> named `error` is a separate, still-open question about naming.)
 
 ```html
 <div class="va-text-area">

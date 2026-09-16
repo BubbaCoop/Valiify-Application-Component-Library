@@ -43,9 +43,10 @@
  *           own w/h, the corner-rotation signature). :focus-visible gets the
  *           same border+ring treatment but NEVER the rotation — arrow
  *           direction must track the panel, not keyboard focus.
- *   error   [aria-invalid="true"] → Warning/Base, VERBATIM — the amber slip
- *           confirmed for the whole field family; no Error/* token exists in
- *           the set. Written AFTER the open rule on purpose: equal
+ *   error   [aria-invalid="true"] → Warning/Base, VERBATIM — and PERMANENT
+ *           (designer, 2026-09-16 — D4): amber is the intended error colour,
+ *           not a slip; no Error/* token exists in the set. Do not rebind.
+ *           Written AFTER the open rule on purpose: equal
  *           specificity, so source order lets the amber border win on
  *           error+open while the ring and rotation (separate properties)
  *           still apply — exactly the compound Figma draws.
@@ -153,6 +154,7 @@
   }
 
   .va-dropdown-field:has(.va-dropdown-field-trigger[aria-invalid="true"]) .va-dropdown-field-hint {
-    @apply text-warning-text; /* inferred — designer to confirm */
+    /* The hint row IS the error row across all three field components (D3). */
+    @apply text-warning-text;
   }
 }

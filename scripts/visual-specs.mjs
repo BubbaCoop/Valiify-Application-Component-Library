@@ -1318,7 +1318,7 @@ export const SPECS = {
   // -------------------------------------------------------------- RadioField
   RadioField: {
     figma:
-      "Radio Fields 123:6059 — 6 declared variants; ALL state axes unwired (three-lane-verified 0-pixel diffs). Real states come from the composed .va-radio.",
+      "Radio Fields 123:6059 — 6 declared variants; ALL state axes unwired (three-lane-verified 0-pixel diffs). Real states come from the composed .va-radio. NO error variant is drawn: error is text-only by decision (designer 2026-09-16, D2) because the component has no box to paint.",
     variants: 6,
     stories: {
       "components-radiofield--interactive": [
@@ -1381,6 +1381,46 @@ export const SPECS = {
           get: "box-shadow",
           contains: true,
           expect: { token: "--color-primary" },
+        },
+      ],
+
+      // Error (D2) — the ENTIRE treatment is one ink swap on one element. The
+      // three checks that follow the first are negative on purpose: when a
+      // component's error state is a single colour, the regression worth
+      // catching is a stray cue APPEARING on the controls or the title, not
+      // the cue itself failing.
+      "components-radiofield--error": [
+        {
+          label: "error hint ink Warning/Text",
+          sel: ".va-radio-field-hint",
+          get: "color",
+          expect: { token: "--color-warning-text" },
+        },
+        {
+          label: "option ink UNCHANGED (no amber leaks onto the labels)",
+          sel: ".va-radio-field-option",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "title ink UNCHANGED",
+          sel: ".va-radio-field-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "radio ring carries NO warning tint (D2 — controls untouched)",
+          sel: ".va-radio-field .va-radio",
+          get: "box-shadow",
+          contains: true,
+          not: true,
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "the field still draws no box (error adds no border)",
+          sel: ".va-radio-field",
+          get: "border-top-width",
+          expect: "0px",
         },
       ],
     },
@@ -2243,10 +2283,15 @@ export const SPECS = {
   // ---------------------------------------------------------------- TextArea
   TextArea: {
     figma:
-      "Text Area Field 199:12523 — 6 variants (Filled × Hover × Focus). No Error axis. py-10 is authored (family inconsistency).",
+      "Text Area Field 199:12523 — 6 variants (Filled × Hover × Focus). py-10 is authored (family inconsistency). NO error variant is drawn: the error axis is a labeled extension (designer 2026-09-16, D1/D3) mirroring Plain Text Field's shipped treatment.",
     variants: 6,
     stories: {
-      // AllStates order: 0 empty · 1 filled(multi-line) · 2 empty+hint
+      // AllStates order: 0 empty · 1 filled(multi-line) · 2 empty+hint · 3 error+hint
+      // The error instance is LAST, not at index 2 where TextField carries its
+      // own. Slotting it in would have changed which element the existing
+      // "hint ink Content/Secondary" check (first .va-text-area-hint, no nth)
+      // measures. Every error check below selects on [aria-invalid="true"]
+      // rather than an index, so instance order is irrelevant to them.
       "components-textarea--all-states": [
         { label: "field total 104 (label 25 + box 79)", sel: ".va-text-area", get: "height", expect: 104 },
         { label: "label row 25", sel: ".va-text-area-title-row", get: "height", expect: 25 },
@@ -2330,10 +2375,50 @@ export const SPECS = {
           get: "color",
           expect: { token: "--color-content-secondary" },
         },
+
+        // --- Error (D1) — mirrors TextField's error block exactly. ---
+        {
+          label: "error border Warning/Base (NOT the Error ramp — D4, permanent)",
+          sel: '.va-text-area-input[aria-invalid="true"]',
+          get: "border-top-color",
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error+hover UNCHANGED (excluded by name, as in TextField)",
+          sel: '.va-text-area-input[aria-invalid="true"]',
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error label ink unchanged (border-only reaction)",
+          sel: '.va-text-area:has([aria-invalid="true"]) .va-text-area-title',
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "error hint ink Warning/Text (D3 — the hint row IS the error row)",
+          sel: '.va-text-area:has([aria-invalid="true"]) .va-text-area-hint',
+          get: "color",
+          expect: { token: "--color-warning-text" },
+        },
+        {
+          label: "error+focus border STAYS Warning (source order — amber wins the tie)",
+          sel: '.va-text-area-input[aria-invalid="true"]',
+          get: "border-top-color",
+          before: [{ click: '.va-text-area-input[aria-invalid="true"]', wait: 450 }],
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error+focus ring STILL crimson Primary/Ring (outline is a separate property)",
+          sel: '.va-text-area-input[aria-invalid="true"]',
+          get: "outline-color",
+          before: [{ click: '.va-text-area-input[aria-invalid="true"]', wait: 450 }],
+          expect: { token: "--color-primary-ring" },
+        },
       ],
 
-      // NOT ASSERTED: Error (no axis exists — none invented); disabled;
-      // hover+focus (undrawn; focus wins by source order).
+      // NOT ASSERTED: disabled; hover+focus (undrawn; focus wins by source order).
     },
   },
 

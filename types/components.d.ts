@@ -53,7 +53,13 @@ export type TabsClass = "va-tabs";
 export type HeaderClass = "va-header";
 
 // RadioField component classes
-export type RadioFieldClass = "va-radio-field";
+export type RadioFieldClass =
+  | "va-radio-field"
+  | "va-radio-field-title"
+  | "va-radio-field-help"
+  | "va-radio-field-options"
+  | "va-radio-field-option"
+  | "va-radio-field-hint";
 
 // Skeleton component classes
 export type SkeletonClass = "va-skeleton";
