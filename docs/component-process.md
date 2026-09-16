@@ -293,9 +293,11 @@ there is no multiplier form for it.
 
 ### Sizing of nested primitives belongs at the call site
 
-Icons take `.icon-size-14`; Avatar takes `.avatar-md`. Do not reach into a
-child component with a descendant selector to resize it — DropdownField used
-to do this to its avatar and it hid the duplication.
+Avatar takes `.va-avatar-sm`; its MD size is the base `.va-avatar` with no
+modifier. An icon takes the slot class of wherever it sits — `.va-text-field-icon`,
+`.va-toast-icon` — which is what carries its size. Do not reach into a child
+component with a descendant selector to resize it — DropdownField used to do this
+to its avatar and it hid the duplication.
 
 ---
 
@@ -324,8 +326,8 @@ list, size table, usage examples, and a blockquote for any trap.
 
 State plainly what is **not** from Figma. Invented API is fine when it is
 necessary and labelled; it is corrosive when it looks design-approved.
-`.dropdown-menu-divider` and `.textarea-counter` are both extensions, and both
-say so.
+`.va-dropdown-list` is an extension — its hover fills at the corners are not in
+Figma, and the rule carries a "Library extension" comment saying so.
 
 ---
 

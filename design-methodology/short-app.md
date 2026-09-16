@@ -332,10 +332,15 @@ Compose these from tokens and the primitives above. Nothing in `_dashboard-archi
 
 Decided; repo work outside this document (Figma component first, then the library's `/extract` → `npm run new:component` → visual-spec process). Until they ship, pages use the interim recipes in §11; once they ship, the rows here become §10 entries.
 
+A class named in this section does **not** exist yet, so it is written **without a leading
+dot** — `va-text-field-optional`. The dotted form asserts a class the bundle ships, and
+`npm run verify:vocabulary` reads it exactly that way; a planned name is a name, not a
+reference. Add the dot in the same change that adds the class.
+
 | Addition | Spec from the frames | Library home |
 |---|---|---|
 | Mobile sticky action bar | 76 tall (`va:h-19`), `va:py-3.5 va:px-4`, `va:bg-surface-paper`, top hairline `va:border-t va:border-stroke-divider`, `va:sticky va:bottom-0`, `va:z-40`; slots for `.va-btn va-btn-secondary` (99, hug) + `va:gap-5` + `.va-btn va-btn-primary va:flex-1`; applies to every flow below `md` (§1.2) | new component — name to be chosen at scaffold time |
-| TextField optional slot | title-row marker `Optional`, `va:ml-auto va:text-help-caption va:text-content-tertiary`, mirroring `.va-dropdown-field-optional` / `.va-text-area-optional` | modifier on `.va-text-field-title-row` (expected `.text-field-optional`, following the siblings' naming — to be confirmed when built) |
+| TextField optional slot | title-row marker `Optional`, `va:ml-auto va:text-help-caption va:text-content-tertiary`, mirroring `.va-dropdown-field-optional` / `.va-text-area-optional` | modifier on `.va-text-field-title-row` — will ship as `va-text-field-optional` (unshipped, so named without a leading dot), the spelling its shipped siblings `.va-dropdown-field-optional` / `.va-text-area-optional` already fix |
 
 ---
 

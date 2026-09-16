@@ -184,11 +184,12 @@ fetch(spriteUrl)
   </div>
 </div>
 
-<span class="chip chip-success">
-  <span class="chip-dot"></span>
-  <span>Approved</span>
-</span>
+<span class="va-badge">Approved</span>
 ```
+
+Badge ships with no colour variants, no sizes and no states — `src/components/badge.css`
+records that as deliberate ("not modelled, not invented"), so there is no success or
+dot variant to reach for.
 
 See [COMPONENTS.md](COMPONENTS.md) for complete markup examples of every component.
 
@@ -388,8 +389,8 @@ Either:
 **Recommended approach:**
 
 ```html
-<dialog class="modal modal-positive">
-  <!-- modal content -->
+<dialog class="va-modal">
+  <!-- va-modal-header, va-modal-title, va-modal-description, va-modal-actions -->
 </dialog>
 
 <script>
@@ -410,7 +411,7 @@ To verify your installation is working:
 
 1. **Styles apply** - Buttons should have colored backgrounds and rounded corners
 2. **Icons render** - If you see `#icon-name` text, the sprite didn't load
-3. **Token utilities work** - Try `<div class="bg-approved">` - it should have a green background
+3. **Token utilities work** - Try `<div class="va:bg-success">` - it should have a green background
 4. **No console errors** - Check for 404s on sprite.svg or CSS files
 
 ## Next Steps

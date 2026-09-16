@@ -1,159 +1,90 @@
 # Valiify Short App Icons
 
-Complete icon system with 2,034 Lucide icons + custom icons, delivered as an optimized SVG sprite.
+2,034 [Lucide](https://lucide.dev) icons + 2 custom icons, delivered as one checked-in SVG
+sprite.
 
-## Quick Start
+> **There is no `icon` class.** This library ships no generic class for an `<svg>` and no
+> `icon-sm`/`icon-md`/`icon-size-*` scale. Earlier versions of this file documented one —
+> and even told you to author the CSS yourself. That vocabulary came from the dashboard
+> library and never existed here. See
+> [ICON-SYSTEM.md](../components/ICON-SYSTEM.md) for the full model; the short version is
+> below.
 
-### 1. Include the sprite
+## Quick start
 
-Load the sprite once in your HTML (typically in `<head>` or at the start of `<body>`):
+### 1. Load the sprite once
 
 ```html
-<!-- Option A: Inline (best for performance) -->
-<div style="display: none;">
-  <?php include 'path/to/sprite.svg'; ?>
+<!-- Option A: inline it (no network request) -->
+<div hidden>…contents of sprite.svg…</div>
+
+<!-- Option B: reference it externally, cacheable, one request -->
+<!-- symbols resolve as /path/to/sprite.svg#search -->
+```
+
+### 2. Reference a symbol
+
+The class on the `<svg>` is the **component slot class** of wherever the icon sits. It
+supplies size, colour and stroke, so the markup needs no `width`, `height` or styling:
+
+```html
+<div class="va-text-field-box">
+  <svg class="va-text-field-icon" aria-hidden="true"><use href="#search" /></svg>
+  <input class="va-text-field-input" type="text" />
 </div>
-
-<!-- Option B: External reference -->
-<!-- Icons will reference: /path/to/sprite.svg#icon-name -->
 ```
 
-### 2. Use an icon
+The slot classes are `.va-text-field-icon`, `.va-action-icon`, `.va-toast-icon` and
+`.va-text-selector-icon`. For an icon-only control, the class goes on the `<button>`
+instead and the inner `<svg>` takes none:
 
 ```html
-<!-- Basic usage -->
-<svg class="icon" width="24" height="24">
-  <use href="#search" />
-</svg>
-
-<!-- With currentColor (inherits text color) -->
-<svg class="icon" width="20" height="20" aria-hidden="true">
-  <use href="#check" />
-</svg>
-
-<!-- Custom icon (prefixed with 'custom-') -->
-<svg class="icon" width="24" height="24">
-  <use href="#custom-valiify-logo" />
-</svg>
+<button class="va-icon-button va-icon-button-subtle" aria-label="Dismiss">
+  <svg aria-hidden="true"><use href="#x" /></svg>
+</button>
 ```
 
-### 3. Style with CSS
+### 3. Standalone icons
 
-Icons use `currentColor` by default and scale to their container:
+Outside a slot, size with `va:size-3.5` / `va:size-4` / `va:size-4.5` / `va:size-5` /
+`va:size-8.5` (14, 16, 18, 20, 34px — that is the entire scale) and colour with any
+`va:text-*` token utility. The stroke/fill paint block has **no utility yet**, so a bare
+`<svg>` outside a slot needs that CSS written by hand. Prefer a slot class.
 
-```css
-.icon {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  stroke-width: 2;
-  fill: none;
-  stroke: currentColor;
-}
+## Icon library
 
-/* Status icon colors */
-.icon-success { color: var(--color-approved); }
-.icon-error { color: var(--color-critical); }
-.icon-warning { color: var(--color-warning); }
+| set | count | naming |
+| --- | --- | --- |
+| Lucide | 2,034 | upstream name unchanged — `search`, `user`, `file-text` |
+| Custom | 2 | prefixed `custom-` — `custom-help`, `custom-valiify-logo` |
 
-/* Sizes */
-.icon-sm { width: 16px; height: 16px; }
-.icon-md { width: 20px; height: 20px; }
-.icon-lg { width: 24px; height: 24px; }
-.icon-xl { width: 32px; height: 32px; }
-```
+`src/icons/icon-list.txt` lists every available symbol name.
 
-## Icon Library
+## Framework wrappers
 
-### Lucide Icons (2,034 icons)
+A wrapper is fine as long as the class it receives is a real one — the sprite reference
+is the only part the wrapper owns.
 
-All Lucide icons are available with their original names. Browse the full list:
-- **Online**: https://lucide.dev/icons/
-- **Local**: See `icon-list.txt` for all available names
+### React / JSX
 
-Popular icons:
-- **UI Actions**: `search`, `filter`, `settings`, `menu`, `more-horizontal`, `more-vertical`
-- **Navigation**: `arrow-left`, `arrow-right`, `chevron-down`, `chevron-up`, `x`, `check`
-- **File/Data**: `file`, `folder`, `download`, `upload`, `save`, `trash-2`, `edit-3`
-- **Status**: `check-circle`, `x-circle`, `alert-circle`, `info`, `help-circle`
-- **User**: `user`, `users`, `user-plus`, `log-in`, `log-out`
-
-### Custom Icons
-
-Custom icons are prefixed with `custom-` to avoid naming conflicts.
-
-**Current custom icons:**
-- `custom-valiify-logo` - Valiify brand logo
-
-## Adding Custom Icons
-
-1. **Create your SVG file** in `src/icons/custom/`:
-   ```bash
-   # Example: adding a custom status icon
-   touch src/icons/custom/status-verified.svg
-   ```
-
-2. **Format requirements**:
-   - 24×24 viewBox (or specify custom viewBox)
-   - Use `currentColor` for stroke/fill to inherit text color
-   - Clean, optimized SVG (remove editor metadata)
-   - Meaningful filename (becomes icon ID)
-
-   ```xml
-   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-        fill="none" stroke="currentColor" 
-        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-     <path d="M9 11l3 3L22 4"/>
-     <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-   </svg>
-   ```
-
-3. **Rebuild the sprite**:
-   ```bash
-   npm run build:icons
-   ```
-
-4. **Use your icon**:
-   ```html
-   <svg class="icon" width="24" height="24">
-     <use href="#custom-status-verified" />
-   </svg>
-   ```
-
-## Icon Component Example
-
-For framework-specific usage, here's a reusable icon component pattern:
-
-### React/JSX
 ```jsx
-function Icon({ name, size = 24, className = '', ...props }) {
+function Icon({ name, className = "" }) {
   return (
-    <svg 
-      className={`icon ${className}`} 
-      width={size} 
-      height={size}
-      aria-hidden="true"
-      {...props}
-    >
+    <svg className={className} aria-hidden="true">
       <use href={`#${name}`} />
     </svg>
   );
 }
 
-// Usage
-<Icon name="search" size={20} className="text-primary" />
-<Icon name="custom-valiify-logo" size={32} />
+// the caller passes the slot class
+<Icon name="search" className="va-text-field-icon" />
 ```
 
 ### Vue
+
 ```vue
 <template>
-  <svg 
-    :class="['icon', className]" 
-    :width="size" 
-    :height="size"
-    aria-hidden="true"
-  >
+  <svg :class="slotClass" aria-hidden="true">
     <use :href="`#${name}`" />
   </svg>
 </template>
@@ -162,136 +93,82 @@ function Icon({ name, size = 24, className = '', ...props }) {
 export default {
   props: {
     name: { type: String, required: true },
-    size: { type: Number, default: 24 },
-    className: { type: String, default: '' }
-  }
-}
+    slotClass: { type: String, required: true },
+  },
+};
 </script>
-```
-
-### Vanilla HTML/CSS (Framework-agnostic)
-```html
-<!-- Just use SVG directly -->
-<button class="va-btn va-btn-primary">
-  <svg class="icon" width="20" height="20" aria-hidden="true">
-    <use href="#search" />
-  </svg>
-  Search
-</button>
 ```
 
 ## Accessibility
 
-### Decorative icons (most common)
+| case | markup |
+| --- | --- |
+| Decorative (an adjacent text label carries the meaning) | `aria-hidden="true"` on the `<svg>` |
+| Icon-only control | `aria-label` on the **button**; `aria-hidden="true"` on the `<svg>` |
+| The icon itself carries meaning | `role="img"` plus a `<title>` child |
+
 ```html
-<!-- Icon next to text label -->
-<button>
-  <svg class="icon" width="20" height="20" aria-hidden="true">
-    <use href="#save" />
-  </svg>
-  Save Changes
+<button class="va-icon-button" aria-label="Close dialog">
+  <svg aria-hidden="true"><use href="#x" /></svg>
 </button>
+
+<svg class="va-action-icon" role="img"><title>Verified</title><use href="#check-circle" /></svg>
 ```
 
-### Standalone icons (icon-only buttons)
-```html
-<!-- Icon is the only label -->
-<button aria-label="Close dialog">
-  <svg class="icon" width="20" height="20" aria-hidden="true">
-    <use href="#x" />
-  </svg>
-</button>
+## Adding a custom icon
+
+```sh
+cp my-glyph.svg src/icons/custom/   # 24×24 viewBox, stroke-based, no fill
+npm run build:icons                 # regenerates sprite.svg
 ```
 
-### Meaningful icons (convey information)
-```html
-<!-- Icon conveys status/information -->
-<div class="status">
-  <svg class="icon icon-success" width="16" height="16" role="img" aria-label="Verified">
-    <use href="#check-circle" />
-  </svg>
-  <span>Account verified</span>
-</div>
+It becomes `#custom-my-glyph`. The sprite carries no build timestamp and is a pure
+function of its sources, so rebuilding without an icon change produces no diff.
+
+## Build
+
+```sh
+npm run build:icons   # sprite only
+npm run build         # full build, includes the sprite
 ```
 
-## Build & Development
-
-```bash
-# Generate sprite from Lucide + custom icons
-npm run build:icons
-
-# Full build (includes icons)
-npm run build
-
-# Watch for changes (CSS only - run build:icons manually for icon changes)
-npm run dev
-```
-
-## File Structure
+## File structure
 
 ```
 src/icons/
-├── README.md           # This file
-├── sprite.svg          # Generated sprite (2034+ icons)
-├── icon-list.txt       # Searchable list of all icon names
-└── custom/             # Your custom icons
+├── README.md         # this file
+├── sprite.svg        # generated — do not hand-edit
+├── icon-list.txt     # every symbol name
+└── custom/
+    ├── help.svg
     └── valiify-logo.svg
 ```
 
 ## Distribution
 
-The icon sprite is included in the published package:
+The sprite ships with the package:
 
 ```json
-{
-  "exports": {
-    "./icons/sprite.svg": "./src/icons/sprite.svg"
-  }
-}
+{ "exports": { "./icons/sprite.svg": "./src/icons/sprite.svg" } }
 ```
 
-Consumers can import it:
 ```js
-import spriteUrl from '@valiify/shortapp-ui/icons/sprite.svg';
+import spriteUrl from "@valiify/shortapp-ui/icons/sprite.svg";
 ```
 
-## Tips & Best Practices
+It is 505 KB raw and about 88 KB gzipped. Inline it when the icons are critical-path;
+reference it externally when cacheability matters more.
 
-### Icon Sizing
-- Use design token sizes: 16px (sm), 20px (md), 24px (lg), 32px (xl)
-- Icons scale with font-size when using `width: 1em; height: 1em;`
-- Maintain consistent sizes within a component
+## Updating Lucide
 
-### Performance
-- **Inline the sprite** for zero network requests (best for critical icons)
-- **External sprite** is cacheable but requires one request
-- Sprite is ~300KB with 2034 icons (gzips well)
-
-### Naming Conventions
-- **Lucide icons**: Use original name (`search`, `user`, `file-text`)
-- **Custom icons**: Prefix with `custom-` (`custom-valiify-logo`)
-- **Variants**: Use descriptive suffixes (`custom-icon-filled`, `custom-icon-outline`)
-
-### Stroke Width
-- Lucide default: `stroke-width: 2`
-- Adjust per icon if needed: `<svg style="stroke-width: 1.5;">`
-- Maintain consistency within the same UI context
-
-## Updating Lucide Icons
-
-To get the latest Lucide icons:
-
-```bash
-# Update lucide-static package
+```sh
 npm update lucide-static
-
-# Rebuild sprite
 npm run build:icons
 ```
 
-Check release notes: https://github.com/lucide-icons/lucide/releases
+Release notes: https://github.com/lucide-icons/lucide/releases
 
 ## License
 
-- **Lucide Icons**: ISC License (https://lucide.dev/license)
-- **Custom Icons**: Valiify proprietary (add your license)
+- **Lucide**: ISC (https://lucide.dev/license)
+- **Custom icons**: Valiify proprietary

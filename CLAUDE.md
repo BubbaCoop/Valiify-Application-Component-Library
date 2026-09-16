@@ -1363,6 +1363,23 @@ Decisions a consumer or contributor would otherwise discover by surprise:
   define, and `verify:markup` fails on any class in generated markup with no
   rule in `dist/shortapp-ui.css`. `class-manifest.json` is the generated list
   all three compare against.
+
+  **`class-audit` is a fourth gate and is NOT one of these three — do not reason
+  from one to the other.** They read different inputs at different times, and
+  neither can mask the other:
+
+  | | `class-audit` (val-core) | `verify:vocabulary` (this repo) |
+  |---|---|---|
+  | governs | **generated pages**, at pipeline runtime | **committed prose**, in CI |
+  | reads | the page being built, `src/components`, the theme, the surface methodology | every `.md`/`.html`/`.json` doc, against `class-manifest.json` |
+  | runs | inside `/design`, per run, before handoff | `npm run verify:vocabulary`, per commit |
+  | answers | "may this page write this class?" | "does this class we wrote about still exist?" |
+
+  So a `class-audit` PASS predicts nothing about `verify:vocabulary`, and fixing
+  one does not move the other: a page can be fully sanctioned while the doc
+  describing it names a class the bundle dropped, and the docs can be spotless
+  while a page composes something the methodology never sanctioned. Changing the
+  class vocabulary means running **both**, and reading both results.
 - **Undefined tokens are a build failure.** `verify:bundle` also fails on any
   fallback-less `var(--…)` in dist that the bundle never defines (the
   `--color-surface-frame` bug class).

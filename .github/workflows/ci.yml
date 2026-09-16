@@ -54,9 +54,6 @@ jobs:
       - name: verify:bundle
         run: npm run verify:bundle
 
-      - name: verify:vocabulary
-        run: npm run verify:vocabulary
-
       - name: verify:markup
         run: npm run verify:markup
 
@@ -114,6 +111,13 @@ jobs:
       - name: chromatic
         if: ${{ env.CHROMATIC_PROJECT_TOKEN != '' }}
         run: npx chromatic --storybook-build-dir storybook-static --exit-zero-on-changes
+
+      # LAST on purpose. This gate reads prose, not the bundle, so nothing downstream
+      # depends on it — and when it sat above verify:markup / verify:package /
+      # verify:visual, a single stale class name in a doc failed the job before any of
+      # them ran. A documentation finding must not mask a build finding.
+      - name: verify:vocabulary
+        run: npm run verify:vocabulary
 
 # Deliberately not here yet: `prettier --check`, which fails on 35 prose files
 # (docs/*.md, CLAUDE.md, SKILL.md). Adding it now would ship CI red. Separate

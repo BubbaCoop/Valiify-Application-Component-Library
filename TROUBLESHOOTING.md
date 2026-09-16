@@ -263,7 +263,7 @@ See `examples/vite-starter/src/main.js` for a complete working dropdown implemen
 **For modals:** Use native `<dialog>` instead:
 
 ```html
-<dialog class="modal modal-positive">
+<dialog class="va-modal">
   <!-- content -->
 </dialog>
 

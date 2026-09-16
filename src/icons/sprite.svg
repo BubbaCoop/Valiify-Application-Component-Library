@@ -5,9 +5,13 @@
 
     Contains 2034 Lucide icons + 2 custom icons = 2036 total
 
-    Usage:
-      <svg class="icon" width="24" height="24">
-        <use href="/path/to/sprite.svg#icon-name" />
+    Usage — the class is the component slot class of wherever the icon sits
+    (.va-text-field-icon, .va-toast-icon, .va-action-icon, .va-text-selector-icon);
+    it carries the size, colour and stroke, so no width/height here. There is no
+    generic "icon" class in this library. See src/components/ICON-SYSTEM.md.
+
+      <svg class="va-toast-icon" aria-hidden="true">
+        <use href="#icon-name" />
       </svg>
 
     Custom icons are prefixed with 'custom-'
