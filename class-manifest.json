@@ -6,7 +6,7 @@
   "utilityPrefix": "va:",
   "counts": {
     "components": 146,
-    "utilities": 280
+    "utilities": 281
   },
   "components": [
     "va-action",
@@ -245,6 +245,7 @@
     "va:md:flex",
     "va:md:flex-1",
     "va:md:flex-col",
+    "va:md:flex-row",
     "va:md:focus-ring",
     "va:md:gap-1",
     "va:md:gap-1.5",

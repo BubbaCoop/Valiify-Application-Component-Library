@@ -7,6 +7,107 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-09-16
+
+> **Version note.** This release is `1.2.0`, and there is no `1.1.0`. The feature
+> commit bumped `package.json` to 1.1.0, then `npm version minor` bumped it again
+> before publish. 1.1.0 was never published to npm and never will be — if you find
+> it referenced in a commit message or an older doc, it means this release.
+
+### Added — an error axis on `TextArea` and `RadioField`
+
+Six of the fourteen fields on the Short App's BSA "Account information" step need a
+required inline error, and neither component modelled one — their own documentation
+said "No Error axis exists". Figma draws no error variant for either, so rather than
+invent a treatment, the design run was held and the question went to the designer.
+Four decisions came back; they are recorded with their provenance in
+`val/runs/2026-09-16-design-bsa-account-information/library-ask-error-axis.md`.
+
+**`TextArea` mirrors `TextField` exactly.** `aria-invalid="true"` on the `<textarea>`
+gives it a `Warning/Base` border and a `Warning/Text` hint. Error+hover is excluded by
+name, so a hovered invalid field keeps its amber border. Error+focus is a real
+compound — amber border, crimson ring — and it works only because the error rule sorts
+**after** the focus rule: equal specificity, so source order decides the border while
+the `outline` ring, a separate property, persists. The rule carries a comment saying
+so. Reordering those two rules alphabetically silently drops the amber border the
+moment the field takes focus. This transfers with nothing invented because the two
+state models were already a token-verified match with zero deviations.
+
+**`RadioField` gets error text and nothing else**, and that is the design, not a
+partial implementation. A `RadioField` has no box and no border in any state, so the
+siblings' border treatment had no target. A ring tint was considered and ruled out:
+amber appears nowhere in the `Radio` control, and adding it would have been invented
+style in a second component. The consequence is recorded in the CSS so it is not
+re-opened as a bug — an unanswered required group's entire error signal is one line of
+amber text beneath it.
+
+`aria-invalid` goes on the **group**, with an explicit `role="radiogroup"`:
+
+```html
+<fieldset class="va-radio-field" role="radiogroup" aria-invalid="true" aria-describedby="q-hint">
+```
+
+A native `<fieldset>` carries no implicit `radiogroup` role, so without it the
+attribute announces against nothing.
+
+### Changed — amber is the error colour permanently, across the field family
+
+The theme defines a full `Error/*` ramp (#c0362c) that nothing binds, while every
+field error variant binds `Warning/Base` (#b4791c). For a long time that read as an
+authoring slip and the CSS carried comments promising to "rebind to the Error ramp
+only when the designer does". **It was never a slip.** Those comments are removed from
+`text-field.css` and `dropdown-field.css`, and the corresponding systemic item comes
+off `docs/designer-list.md` for the field family. The `Error/*` tokens stay in the
+theme, unused — removing them would be breaking.
+
+Not covered: the `Toast` type literally named `error` also binds amber. That is a
+question about naming rather than colour, and `toast.css` is deliberately untouched.
+
+### Changed — the hint row is confirmed as the error row
+
+`TextField` has carried an `inferred — designer to confirm` comment on its hint-ink
+rule since extraction, because the hint row is hidden in every drawn Figma variant.
+Two decisions close different halves of it: one establishes that a warning-ink message
+below a field **is** an error treatment in this system, the other fixes which ramp it
+comes from. The comments come out of `text-field.css` and `dropdown-field.css`, and
+the new rules ship without an equivalent caveat.
+
+### Fixed — `RadioFieldClass` declared one of its six classes
+
+`types/components.d.ts` had `RadioFieldClass = "va-radio-field"` while the component
+has always shipped `-title`, `-help`, `-options`, `-option` and `-hint`. Unrelated to
+the error axis; closed while in the file.
+
+### Verification
+
+614 visual assertions, up from 603 — `TextArea` +6, `RadioField` +5, with no existing
+assertion changed. 116 stories clean under axe with the same three pre-existing
+waivers. Full static, bundle, layer and host gate suite green, including both example
+starters.
+
+Every new assertion was proven to fail when what it tests is removed. The five
+positive ones redden when their rule is reverted; the six **guard** assertions assert
+absence, so no removal can redden them — each was proven by adding the exact stray cue
+it exists to catch (amber on the radio rings, titles, option labels and group border;
+a recoloured `TextArea` label; a dropped focus ring).
+
+`class-manifest.json` regenerates byte-identical: the error reuses the existing hint
+element, so no class name is added. The bundle delta is exactly four rules — three
+added, one hover guard narrowed.
+
+### Not in this release
+
+The missing **disabled** state across all four field components
+(`docs/ticket-disabled-state-field-family.md`). The designer list calls it
+launch-blocking for an application form; it needs its own decision, because a radio
+group hits the same no-box problem resolved here for errors.
+
+### Upgrading
+
+Minor, not patch. If you already set `aria-invalid="true"` on a `.va-text-area-input`
+for accessibility, it renders no differently today and renders an amber border after
+this — a visible change in existing markup. Nothing is renamed or removed.
+
 ## [1.0.1] — 2026-09-16
 
 ### Fixed — `reset.css` defeated the components it was shipped to support

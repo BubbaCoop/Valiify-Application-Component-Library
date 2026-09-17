@@ -38,7 +38,7 @@ HTML). This file is the compact map; go to CLAUDE.md for any detail.
 | TextSelector | `.va-text-selector` + `-icon/-label/-chevron`; aria-expanded = open |
 | TextField | `.va-text-field` › `-title-row`/`-title` › `-box` (48px, :has-driven) › `-input` + `-icon` › `-hint`; error = aria-invalid |
 | DropdownField | `.va-dropdown-field` › `-title-row`/`-title` › `-trigger` (button, aria-expanded) › `-value`(+`-value-placeholder`)/`-chevron` › `-hint` |
-| TextArea | `.va-text-area` › `-title-row`/`-title` › `-input` (native textarea, 79px, resize:none) › `-hint`; NO error axis |
+| TextArea | `.va-text-area` › `-title-row`/`-title` › `-input` (native textarea, 79px, resize:none) › `-hint`; error axis as of 1.2.0 — `[aria-invalid="true"]` → amber border + amber hint, mirroring TextField |
 | RadioField | `.va-radio-field` (fieldset) › `-title` (legend) › `-options` › `-option` composing `.va-radio` › `-hint` |
 | SelectCard | `.va-select-card` (label+va-radio = selection, button+chevron = navigation) + `-text/-title/-description/-chevron` |
 | BoxAction | `.va-box-action` (label) + REQUIRED `-checkbox` (48px) / `-switch` (44px) + `-label`; composes shipped control |

@@ -1,0 +1,26 @@
+{
+  "runDir": "val/runs/2026-09-16-design-bsa-account-information",
+  "package": "05-package",
+  "concept": "02-concept/concept.v3.html",
+  "counts": {
+    "svelteFiles": 12,
+    "conceptBlocks": 27,
+    "contractBlocks": 27,
+    "states": 6,
+    "copy": 30,
+    "props": 31
+  },
+  "findings": [
+    {
+      "check": "compile",
+      "severity": "warn",
+      "message": "05-package/src/lib/components/DropdownField.svelte: a11y_role_supports_aria_props_implicit — The attribute 'aria-invalid' is not supported by the role 'button'. This role is implicit on the element `<button>`\nhttps://svelte.dev/e/a11y_role_supports_aria_props_implicit"
+    },
+    {
+      "check": "icons",
+      "severity": "warn",
+      "message": "sprite not given (--sprite) — icon existence not checked"
+    }
+  ],
+  "verdict": "PASS"
+}

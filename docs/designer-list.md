@@ -19,7 +19,7 @@ _Last updated 2026-09-02 (27 components extracted)._
    → **Amber is the intended error colour for the field family, permanently.**
    It was never a slip. The library will not rebind, and future extractions
    should stop raising it. TextArea and RadioField joined the amber binding in
-   1.1.0 on the same decision. The `Error/*` tokens stay in the theme, unused.
+   1.2.0 on the same decision. The `Error/*` tokens stay in the theme, unused.
    **STILL OPEN — the Toast Type literally named "error" (582:9338) binds
    Warning/Base** while its siblings bind Success/Base and Info/Base
    correctly. D4 answered a question about *colour*; this one is about
@@ -114,7 +114,7 @@ _Last updated 2026-09-02 (27 components extracted)._
 - ~~No error state.~~ **RESOLVED 2026-09-16 (D2): text-only** — the hint turns
   `Warning/Text`, the radio controls are untouched. The component has no box,
   so the siblings' border treatment had no target; a ring tint was ruled out
-  as invented style. Shipped in 1.1.0. No frames were needed or drawn.
+  as invented style. Shipped in 1.2.0. No frames were needed or drawn.
 - Option ink is raw #000000 (the file's only raw black) — shipped as
   `Text/Primary`.
 - Stray sibling symbol "Radio field" (123:6056, 56×24) — intended component
@@ -153,7 +153,7 @@ _Last updated 2026-09-02 (27 components extracted)._
 - ~~No Error axis (unlike the siblings) — deliberate?~~ **RESOLVED 2026-09-16
   (D1/D3): the library added one as a labeled extension**, mirroring Plain
   Text Field exactly (amber border, amber hint, error+hover excluded,
-  error+focus = amber border + crimson ring). Shipped in 1.1.0. Figma still
+  error+focus = amber border + crimson ring). Shipped in 1.2.0. Figma still
   draws no error variant for this component — **adding one would be
   welcome**, but the treatment is now pinned in code either way.
 

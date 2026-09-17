@@ -1,7 +1,7 @@
 # Ticket: no disabled state exists on any form field
 
 **Status:** open · **Raised:** 2026-09-16 · **Blocks:** no current run
-**Not part of 1.1.0** — see [the error-axis scope](../val/runs/2026-09-16-design-bsa-account-information/library-ask-error-axis.md) §B10.
+**Not part of 1.2.0** — see [the error-axis scope](../val/runs/2026-09-16-design-bsa-account-information/library-ask-error-axis.md) §B10.
 **Needs:** a designer decision first (frames or a written rule), then a library change.
 
 ## The gap
@@ -80,6 +80,6 @@ Concretely:
 ## Related
 
 - `docs/designer-list.md` systemic item 4 (the standing record of this gap).
-- The error-axis change, 1.1.0 — same components, same family, and the designer conversation that
+- The error-axis change, 1.2.0 — same components, same family, and the designer conversation that
   settles this could settle both. Deliberately kept separate so a two-rule change did not become a
   four-component redesign.

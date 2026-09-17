@@ -537,7 +537,7 @@ Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
 > shipped as `Text/Primary`; designer list. The `bottomContent` block's
 > authored geometry is broken (absolute −59px/−313%) — `.va-radio-field-hint`
 > ships in normal flow as a labeled correction.
-> No Error axis exists (unlike the sibling text fields), no disabled.
+> No disabled state exists (docs/ticket-disabled-state-field-family.md).
 
 ```html
 <fieldset class="va-radio-field">

@@ -142,7 +142,7 @@ The surface runs on a 4px grid — Tailwind's spacing scale expresses it directl
 | Choice cards | `.va-select-card` = `va:p-4 va:gap-3 va:rounded-md`, `.va-select-card-text` `va:gap-1`, title `va:text-label-strong` 14/20 (76 emergent: 16+20+4+20+16); list `va:gap-3` | 9:544 Card |
 | Checklist boxes | `.va-box-action va-box-action-checkbox` = `va:h-12 va:px-4 va:py-3 va:rounded-sm` (48); list `va:gap-3`; hairline after *None of the below* is page-composed (`va:border-b va:border-stroke-divider`) | 199:13001 Box |
 | Form field | `.va-text-field` = `.va-text-field-title-row` (`va:text-label-strong`, `va:pb-1.25`) + `.va-text-field-box` `va:h-12` — 73 pitch (20 + 5 + 48); stack `va:gap-5` (20) | 118:5928 Plain Text Field |
-| Two-up fields | `va:flex va:gap-4` inside `va:w-[518px]` (251 + 16 + 251); `va:flex va:gap-6` at column level (`va:w-67` each: 268 + 24 + 268) | 258:13116 Row; Additional_Details PNG |
+| Two-up fields | **Spell it mobile-first, because §1.2 stacks these on mobile and the base direction must be written down, not assumed from flex's default.** Column level: base `va:flex va:flex-col va:gap-5` (one field per row), then `va:md:flex-row va:md:gap-6` with `va:md:w-67` each (268 + 24 + 268). Inside the 518 inline form: `va:flex va:gap-4` (251 + 16 + 251). *A desktop-first spelling here silently ships a stacked row: the prebuilt bundle's utility set is closed and only contains what this file uses, so an unwritten `flex-row` resolves to no rule at all while the `md:` gap still applies — which looks deliberate.* | 258:13116 Row; Additional_Details PNG |
 | Radio group | `.va-radio-field` = `.va-radio-field-title` `va:pb-1.25` + `.va-radio-field-options` `va:h-10 va:gap-6` + `.va-radio-field-option` `va:gap-2`; `.va-radio` is `va:size-5` (20) | 118:5928 Radio Fields |
 | Disclaimer | `.va-checkbox-control` (`va:size-4.5`) + `va:gap-3` + `va:text-label va:text-content-secondary` — no component (§11) | Disclaimer container |
 | Instruction callout | `va:text-help-caption va:text-content-secondary` (12/14) behind `va:border-l va:border-stroke-divider`; `va:mb-4` above the button row — no component (§11) | Footer "Layer field" |
@@ -164,7 +164,7 @@ The surface runs on a 4px grid — Tailwind's spacing scale expresses it directl
 ## 5. Component selection rules
 
 - **Card list for a single choice; box list for multiple; radios for yes/no.** Choice cards = `.va-select-card` as a `<button>` with `.va-select-card-chevron` (76, chevron, no commit button) when exactly one option advances the flow. Checklist boxes = `.va-box-action va-box-action-checkbox` (48, `.va-checkbox-control` inside, commit button) when several may apply. Inline `Yes / No` = `.va-radio-field` (`.va-radio-field-option`s composing `.va-radio`; never a `.va-dropdown-field`, never a `.va-switch`) for binary questions inside a form. **Evidence:** §2 archetypes 1–3; 118:5928 Radio Fields. **Confidence:** high.
-- **Dropdown for enumerations, text for free entry, formatted placeholder for anything with a shape.** `Select…` = `.va-dropdown-field` (a `<button>` trigger, 48, `aria-haspopup="listbox"`, opening the shipped `.va-dropdown-list` › `.va-list-option va-list-option-sm` panel) for revenue bands, employee counts, industry; `.va-text-field` with `000-000-0000`, `MM/YYYY`, `00000`, `0.00`, `••••` placeholders (native `::placeholder` in `va:text-content-hint` — `--color-content-hint`: #8e9195). Currency inputs carry a leading `$` in the `.va-text-field-icon` slot (18, `va:text-content-secondary`, glyph `#dollar-sign`). **Evidence:** BSA.png, Full_time.png, Short_App.png, 118:5928 AttachMoneyRounded. **Confidence:** high.
+- **Dropdown for enumerations, text for free entry, formatted placeholder for anything with a shape.** `Select…` = `.va-dropdown-field` (a `<button>` trigger, 48, `aria-haspopup="listbox"`, opening the shipped `.va-dropdown-list` › `.va-list-option va-list-option-sm` panel) for revenue bands, employee counts, industry; `.va-text-field` with `000-000-0000`, `MM/YYYY`, `00000`, `0.00`, `••••` placeholders (native `::placeholder` in `va:text-content-hint` — `--color-content-hint`: #8e9195). Currency inputs carry a leading `$` in the `.va-text-field-icon` slot (18, `va:text-content-secondary`, glyph `#dollar-sign`). **Free entry splits by shape of answer:** a single-line answer is `.va-text-field` (48 box, 73 pitch); an answer that is a *list or a sentence* is `.va-text-area` (79 box, 104 pitch) — see §10. Choose by what the question asks for, not by expected length: "To or from which countries?" takes a multi-line field because the answer is a list, even when one country is a valid answer. **Evidence:** BSA.png, Full_time.png, Short_App.png, 118:5928 AttachMoneyRounded; BSA Filled 199:12185 → 636:2045, 636:2448 (two `Text Area Field` instances, 560×104). **Confidence:** high.
 - **Toggle only for "reveal more fields."** The single switch on the applicant surface (`Mail should go to a different address`) is `.va-switch` (36×20; off track `va:bg-stroke-border`, on `va:bg-primary`) and reveals a second address block; it is not used for yes/no answers. Loan coverages use switches because they are opt-ins with a price. (The library also ships `.va-box-action va-box-action-switch`, a boxed 44px switch row; no frame uses it.) **Evidence:** 348:8076, 449:10462 Switch. **Confidence:** high.
 - **Conditional fields reveal in place, indented, with a left rule.** BSA follow-ups ("Do you plan to send or receive international wires?" → "To or from which countries?") and the mailing address block indent ~22px under a vertical hairline (`va:border-l va:border-stroke-divider va:pl-5.5` `[raw]`). Nothing opens a modal or a new step. **Evidence:** BSA_Filled.png, Business_Details_mailing_address.png. **Confidence:** high (composition) / medium (exact indent — §13).
 - **Two button tiers.** *Step tier:* the Standard button — `.va-btn` at 48 (`va:h-12`), `va:type-button-label` (`--text-button-label`: Inter Semi Bold 14/20, +10% tracking, bundled UPPERCASE), `va:rounded-sm` (`--radius-sm`: 4px), with an 18px arrow `svg` child — `BACK` = `.va-btn va-btn-secondary` (`va:border va:border-stroke-border`, `--color-stroke-border`: #1a1a1a @17%, ink `va:text-content-secondary`, leading `#arrow-left`), primary = `.va-btn va-btn-primary` (`va:bg-primary`, `--color-primary`: #a6192e; `:disabled` → `va:bg-primary-disabled`, `--color-primary-disabled`: #a6192e @30%; trailing `#arrow-right`); a disabled Back is `.va-btn-secondary:disabled` (`va:border-stroke-divider va:text-content-tertiary` — gray by design, reserved; no current frame disables Back). *Inline tier:* the Utility button — `.va-utility-button va-utility-button-filled` / `va-utility-button-empty` (34 tall, `va:text-field-label` 13/500, natural case — `Add Person`, `Save`, `Cancel`), the same crimson/outline pairing, used only inside a card's inline form. **Evidence:** button instances on all frames; Account_role_2.png, Full_time-1.png. **Confidence:** high.
@@ -185,7 +185,7 @@ The surface runs on a 4px grid — Tailwind's spacing scale expresses it directl
 - **Selected = crimson border + 6% crimson tint** (`.va-box-action:has(:checked)`: inset 1px `--color-primary` + `va:bg-primary-bg`); **unselected checklist boxes are the library's rest display — `va:bg-surface-paper` (#fffdfb) with the label in `va:text-content-primary` (#1a1a1a) inside a 1px `stroke-divider` ring.** BoxAction has exactly three displays — rest, active (`:has(:checked)`: primary ring + `va:bg-primary-bg`, label `va:text-lead`) and disabled (`:has(:disabled)`: `va:bg-surface-app-page`, `va:text-content-tertiary`, 0.5px ring) — and the checklist uses rest and active only. **Evidence:** 199:13001; designer decision. **Confidence:** high.
 - **Roles are pills, ownership is a number.** Business Review shows `Manager` / `Signer` as `.va-badge` (16px full-round `va:bg-neutral-bg` pill, `va:type-eyebrow va:text-content-secondary` — the OwnerContainer's own `tag` slot) beside a `va:text-title-medium` (16/20/500) percentage (`.va-owner-container-percent`); roster rows show the percentage alone. **Evidence:** Business_review.png, Full_time.png. **Confidence:** high.
 - **The offer discount is shown as a strikethrough delta, and coverage acceptance flips the card text to crimson.** `6̶%̶ 5.5% APR`, `0.5% APR discount applied` in `va:text-primary-text`, two-dot pager fills per accepted coverage. Pattern only. **Evidence:** Loan_Web_4/5, Loan_Mobile_4/5. **Confidence:** high.
-- **Validation errors render below the field in the warning color, with the field itself in its error display.** Both are the library's: `.va-text-field-box:has([aria-invalid="true"])` → `va:border-warning` (`--color-warning`: #b4791c) and the `.va-text-field-hint` under an invalid input → `va:text-warning-text` (`--color-warning-text`: #8b5d16); `.va-dropdown-field-trigger[aria-invalid="true"]` behaves the same. **Amber is the correct error display** — the Warning ramp is the intended binding on this surface; the `--color-error*` ramp stays unused here. `.va-text-area-input` has no error axis. **Evidence:** designer decision; library bindings. **Confidence:** high (rule) / low (no frame draws the state).
+- **Validation errors render below the field in the warning color, with the field itself in its error display.** Both are the library's: `.va-text-field-box:has([aria-invalid="true"])` → `va:border-warning` (`--color-warning`: #b4791c) and the `.va-text-field-hint` under an invalid input → `va:text-warning-text` (`--color-warning-text`: #8b5d16); `.va-dropdown-field-trigger[aria-invalid="true"]` behaves the same. **Amber is the correct error display** — the Warning ramp is the intended binding on this surface; the `--color-error*` ramp stays unused here, permanently (designer 2026-09-16, D4: the unused `Error/*` ramp is not a slip and must not be rebound). **`.va-text-area-input` HAS an error axis as of `@valiify/shortapp-ui@1.2.0`**, mirroring TextField exactly: `[aria-invalid="true"]` → `va:border-warning`, its `.va-text-area-hint` → `va:text-warning-text`, error+hover excluded by name, error+focus keeping the amber border while the crimson ring still fires. `.va-radio-field` also gained one in 1.2.0, and it is **text-only** — `[aria-invalid="true"]` on the `<fieldset>` (which needs an explicit `role="radiogroup"`) turns `.va-radio-field-hint` to `va:text-warning-text` and the radio controls do not change, because the component has no box to paint. Do not invent a control-level cue for it. **Evidence:** designer decision; library bindings. **Confidence:** high (rule) / low (no frame draws the state).
 - **Loading and post-`CONFIRM` success states appear in no frame.** The library ships `.va-skeleton` (16 shapes × sm/md/lg, container `role="status" aria-busy="true"`) and `.va-toast va-toast-success` / `.va-toast-simple`; whether either is used here is open (§13). `.va-modal` is the sanctioned overlay for any future confirmation on this surface (reserved).
 
 ---
@@ -273,6 +273,7 @@ Every pattern in §1–§8 that the library ships, with the class to use. Slots 
 | Radio (20) | `.va-radio` on `<input type="radio">` |
 | Yes / No radio group | `.va-radio-field` (`<fieldset>`) › `.va-radio-field-title` (`<legend>`), `.va-radio-field-options`, `.va-radio-field-option`, optional `.va-radio-field-hint` |
 | Text input with label (73 pitch, 48 box, radius 4, `$` icon) | `.va-text-field` › `.va-text-field-title-row` › `.va-text-field-title`; `.va-text-field-box` › `.va-text-field-icon` + `.va-text-field-input`; `.va-text-field-hint`; `Optional` title-row slot planned (§12) |
+| Multi-line free text with label (104 pitch, 79 box, radius 4) — an answer that is a list or a sentence | `.va-text-area` › `.va-text-area-title-row` › `.va-text-area-title` (+ optional `-optional`, `-help`); `.va-text-area-input` (the native `<textarea>` IS the box); `.va-text-area-hint`. Error axis as of 1.2.0, same ramp as `.va-text-field` (§6). `resize: none` by default. **In-scope frames:** BSA Filled 199:12185 → `636:2045` (wire countries, C3) and `636:2448` (international-customer countries, C6), both 560×104 `Text Area Field` instances |
 | `Select…` dropdown field | `.va-dropdown-field` › `.va-dropdown-field-title-row` › `.va-dropdown-field-title` (+ `.va-dropdown-field-optional`); `.va-dropdown-field-trigger` › `.va-dropdown-field-value` (`-value-placeholder`) + `.va-dropdown-field-chevron`; panel `.va-dropdown-list` › `.va-list-option` |
 | Validation error (amber border, hint) | `[aria-invalid="true"]` on `.va-text-field-input` / `.va-dropdown-field-trigger`; `.va-text-field-hint` / `.va-dropdown-field-hint` → `va:border-warning`, `va:text-warning-text` |
 | Mailing-address toggle; loan coverage switches | `.va-switch` (`role="switch"`, 36×20) |
@@ -291,7 +292,9 @@ Every pattern in §1–§8 that the library ships, with the class to use. Slots 
 | Keyboard focus | `va:focus-ring` utility on every interactive element (3px `--color-primary-ring`, #a6192e @22%) |
 | Loading (proposed) | `.va-skeleton va-skeleton-input va-skeleton-sm`, `va-skeleton-button`, `va-skeleton-text`, `va-skeleton-heading` in a `role="status"` container — unconfirmed (§13) |
 
-Shipped components that no in-scope frame uses: `.va-avatar`, `.va-btn-bubble`, `.va-tab-portal`, `.va-text-area`, `.va-box-action-switch`, `.va-toast`, `.va-status-tracker`, `.va-action`, `.va-utility-button-rounded` / `-text`, `.va-icon-button-subtle`. Do not map by analogy — the loan pages in particular are legacy and have no portal components.
+Shipped components that no in-scope frame uses: `.va-avatar`, `.va-btn-bubble`, `.va-tab-portal`, `.va-box-action-switch`, `.va-toast`, `.va-status-tracker`, `.va-action`, `.va-utility-button-rounded` / `-text`, `.va-icon-button-subtle`. Do not map by analogy — the loan pages in particular are legacy and have no portal components.
+
+The multi-line free-text field was on that list until 2026-09-16 and is now mapped in the table above — see §13.1. **Keep this note on its own line, and do not write the class name in backticks here:** the class-audit harvests every backticked class from the shipped-but-unused sentence's line and treats it as forbidden, so a removal note sharing that line silently re-adds what it says was removed.
 
 ---
 
@@ -319,7 +322,7 @@ Compose these from tokens and the primitives above. Nothing in `_dashboard-archi
 | Ownership progress | label row `va:h-9.5 va:flex va:items-center va:justify-between va:text-label-strong`; track `va:h-1 va:rounded-full` in `#1a1a1a @8%` `[raw]` with fill `va:bg-content-primary` |
 | Roles matrix | card as above; header `va:h-6 va:grid` `va:w-79 / va:w-30 / va:w-30` in `va:type-eyebrow va:text-content-secondary`; rows `va:h-[47px] va:py-1 va:px-4 va:grid` with `box-shadow: inset 0 -1px 0 var(--color-stroke-divider)`; cells `.va-radio` / `.va-checkbox-control`; `.va-tabs` › `.va-tab va-tab-application` for Individual/Company |
 | Informational confirm card | `va:bg-surface-paper va:rounded-sm va:p-4 va:ring-1 va:ring-inset va:ring-stroke-divider`; `va:text-label-strong` title, `va:text-label va:text-content-secondary` body |
-| Two-up fields | `va:flex va:gap-6` (column level, `va:w-67` each) / `va:flex va:gap-4` (inside the 518 inline form) |
+| Two-up fields | column level `va:flex va:flex-col va:gap-5` → `va:md:flex-row va:md:gap-6`, `va:md:w-67` each (mobile-first — see §11) / `va:flex va:gap-4` (inside the 518 inline form) |
 | Three-up standalone fields (Phone / ZIP / SSN last 4) | `va:flex va:gap-4`; first field `va:flex-1`, the two short fields `va:w-32` (128) each (272 + 16 + 128 + 16 + 128 = 560); stacks on mobile per §1.2. Standalone titled fields only — the address composite below is a different pattern |
 | Address composite (Address / Apt / City · State · ZIP) | one joined group, not three fields: outer `va:rounded-sm` container with `va:ring-1 va:ring-inset va:ring-stroke-divider`; rows Address, Apt, City·State·ZIP stacked with `va:border-b va:border-stroke-divider` seams, no gaps; inputs are `.va-text-field-box` without `.va-text-field-title-row` (the composite has no per-field titles — the group's title is `Address` above it); the last row is `va:grid va:grid-cols-[7fr_4fr_5fr]` with `va:border-l va:border-stroke-divider` seams between cells (City ≈ 44% / State ≈ 25% / ZIP ≈ 31%); State is a `.va-dropdown-field-trigger`; `Optional` on the Apt row sits inside the input, right-aligned, `va:text-help-caption va:text-content-tertiary` (the only place Optional is not in a title row). Same proportions at 343; State label → `ST`, ZIP placeholder → `ZIP`. Evidence 676:4758 / 676:4982, measured from PNG — confidence medium on the exact ratio |
 | Switch row (mailing-address toggle, coverage opt-ins) | `va:flex va:items-center va:justify-between va:gap-4 va:h-12`; label `va:text-label-strong va:text-content-secondary` left, `.va-switch` right; the revealed block follows as a conditional reveal |
@@ -355,6 +358,52 @@ Anything a page needs from this list is unspecified; do not infer it.
 - **Roles-matrix label type** — the frame's 16/20 has no component; unmapped.
 - **`.va-owner-container` pinned height on mobile** — the library pins `va:h-[92.5px]`, but at 343 the contact line wraps and the row must hug (§1.2). Needs a library check: drop the pin below `md` or let the row hug everywhere.
 - **Library follow-ups (§12)** — decided but not yet built.
+
+### 13.1 Amendment log
+
+Changes to this file after its initial authoring, with what triggered them. A rule
+here was wrong or absent; the entry says how that was established, so the same
+question is not re-litigated from the frames each time.
+
+**2026-09-16 — `.va-text-area` is mapped; it was never unsanctioned, only unenumerated.**
+
+*Triggered by:* design run `2026-09-16-design-bsa-account-information` (BSA Details,
+step 5 of 10). The concept architect returned `CONCEPT: BLOCKED | no-component` on the
+three "To or from which countries?" fields: §2, §5 and §10 named no multi-line control,
+and §10's closing line listed `.va-text-area` among components "no in-scope frame uses",
+followed by "Do not map by analogy" — a prohibition. The architect correctly refused to
+compose it and refused to silently downgrade to a single-line field.
+
+*Why the methodology was what was wrong:* the library had just shipped an error axis on
+`.va-text-area` **for these exact fields** (`@valiify/shortapp-ui@1.2.0`, decisions
+D1/D3), so the file asserted a component was unused on this surface in the same week the
+library extended it to serve that surface.
+
+*How it was established, before editing:* the BSA Filled frame (`199:12185`) was read
+directly. It contains **two** `Text Area Field` instances — `636:2045` at y=606 (the wire
+countries field, C3) and `636:2448` at y=1025 (the international-customer countries field,
+C6) — each 560×104, which is the component's own 25 label row over its 79 box. Both are
+multi-line controls, drawn, in an in-scope frame. Note their node ids (`636:*`) against
+the frame's own (`199:*`): they were added to the frame **after** it was authored, which
+is consistent with BSA not having been among the screens enumerated when §10's
+shipped-but-unused line was written. The line was stale, not a decision.
+
+*Evidence precision — one correction to the question as asked:* the request named
+"BSA C3/C5/C6" as the frame evidence. Only **C3 and C6** are drawn. **C5** — the ACH
+countries field — appears nowhere in the filled frame, because that frame's ACH
+international-wires child is not answered `Yes`. C5's existence rests on the brief's
+explicit statement that the wire and ACH chains behave identically, not on a drawn
+control. Two drawn instances are sufficient evidence for this amendment; C5 is composed
+by that stated symmetry.
+
+*Edits made:* §5 (free entry split by single-line vs multi-line), §6 (the "no error axis"
+claim corrected, and RadioField's text-only error axis recorded), §10 (new multi-line row
+with frame evidence; `.va-text-area` removed from the shipped-but-unused line).
+`.claude/skills/valiify-shortapp-ui/SKILL.md` was corrected in the same change for the
+same reason.
+
+*Unchanged by this amendment:* decisions D1–D4 stand exactly as taken. The error axis was
+the right call; this is the methodology catching up to it.
 
 ---
 
