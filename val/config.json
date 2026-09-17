@@ -14,6 +14,10 @@
     "componentRegistry": "val/registry/components.json",
     "tokenSource": "src/themes/valiify.css",
     "componentCss": "dist/index.css",
+    "pageStylesheets": [
+      "src/reset.css",
+      "dist/shortapp-ui.css"
+    ],
     "iconSprite": "src/icons/sprite.svg",
     "storiesDir": "stories/components",
     "componentsDir": "src/components",
@@ -31,9 +35,9 @@
       "@fontsource/inter"
     ],
     "systemNote": "the Short App type system is INTER-ONLY (all 24 text styles; there is no mono register in this design system)",
-    "dataRule": "tabular-nums (the Short App system is Inter-only; no mono register exists — if the Figma appears to show a mono face, flag it as a design question rather than importing a font the token set doesn't define)"
+    "dataRule": "tabular-nums (the Short App system is Inter-only; no mono register exists \u2014 if the Figma appears to show a mono face, flag it as a design question rather than importing a font the token set doesn't define)"
   },
-  "audience": "applicant-facing (the Short App application flow — fields, cards, actions) or portal/reviewer-facing (the Portal Specific set: StatusTracker, Action, UtilityButton). This selects which component families apply.",
+  "audience": "applicant-facing (the Short App application flow \u2014 fields, cards, actions) or portal/reviewer-facing (the Portal Specific set: StatusTracker, Action, UtilityButton). This selects which component families apply.",
   "pipelines": {
     "val": true,
     "extract": true,
@@ -53,11 +57,11 @@
         "viewports": [
           {
             "id": "web",
-            "note": "1920 canvas, 560 column (§1.1)"
+            "note": "1920 canvas, 560 column (\u00a71.1)"
           },
           {
             "id": "mobile",
-            "note": "375, 343 column, sticky footer (§1.2)"
+            "note": "375, 343 column, sticky footer (\u00a71.2)"
           }
         ],
         "regions": [
@@ -82,7 +86,7 @@
           },
           {
             "heading": "Step position",
-            "hint": "STEP n OF m · SECTION NAME (or \"unknown — asked\")",
+            "hint": "STEP n OF m \u00b7 SECTION NAME (or \"unknown \u2014 asked\")",
             "required": true
           },
           {
@@ -105,7 +109,7 @@
           },
           {
             "heading": "Data collected",
-            "hint": "| field | type | required | format / placeholder | options source | — required-ness stated for EVERY field, including fields inside a conditional block",
+            "hint": "| field | type | required | format / placeholder | options source | \u2014 required-ness stated for EVERY field, including fields inside a conditional block",
             "required": true
           },
           {
@@ -115,22 +119,22 @@
           },
           {
             "heading": "States",
-            "hint": "| state (empty / disabled / error / success / …) | trigger | what shows |",
+            "hint": "| state (empty / disabled / error / success / \u2026) | trigger | what shows |",
             "required": true
           },
           {
             "heading": "Conditional logic",
-            "hint": "| trigger | exact boundary rule | what reveals | required-ness of the revealed fields | — \"less than 2 years\" needs its arithmetic, not its phrase",
+            "hint": "| trigger | exact boundary rule | what reveals | required-ness of the revealed fields | \u2014 \"less than 2 years\" needs its arithmetic, not its phrase",
             "required": true
           },
           {
             "heading": "Validation rules",
-            "hint": "| field | rule | message shown | when it fires | — every rule needs its message; a rule with no message is a copy gap",
+            "hint": "| field | rule | message shown | when it fires | \u2014 every rule needs its message; a rule with no message is a copy gap",
             "required": true
           },
           {
             "heading": "Copy supplied",
-            "hint": "| id | role | text | — list EVERY role explicitly or mark it \"not supplied\": title · description · field labels · placeholders (per shaped field) · sub-section labels · help text · button labels · error messages · empty-state text · legal/consent",
+            "hint": "| id | role | text | \u2014 list EVERY role explicitly or mark it \"not supplied\": title \u00b7 description \u00b7 field labels \u00b7 placeholders (per shaped field) \u00b7 sub-section labels \u00b7 help text \u00b7 button labels \u00b7 error messages \u00b7 empty-state text \u00b7 legal/consent",
             "required": true
           },
           {
@@ -142,15 +146,15 @@
         ],
         "stopTriggers": [
           {
-            "trigger": "archetype-not-in-§2",
-            "when": "the step is none of the eight §2 archetypes (a table, a dashboard tile, a file upload…)"
+            "trigger": "archetype-not-in-\u00a72",
+            "when": "the step is none of the eight \u00a72 archetypes (a table, a dashboard tile, a file upload\u2026)"
           },
           {
-            "trigger": "§9-forbidden",
-            "when": "a progress bar or back control in the header, a sidebar/rail/tab strip, NEXT, an asterisk for required, a second typeface or monospace, a gray disabled primary, an overlay for detail, a confirmation page (§7 hands off to the portal)"
+            "trigger": "\u00a79-forbidden",
+            "when": "a progress bar or back control in the header, a sidebar/rail/tab strip, NEXT, an asterisk for required, a second typeface or monospace, a gray disabled primary, an overlay for detail, a confirmation page (\u00a77 hands off to the portal)"
           },
           {
-            "trigger": "§13-open-item",
+            "trigger": "\u00a713-open-item",
             "when": "loading state, conditional-reveal indent value, progress-bar track colour, roles-matrix label type, owner-row height on mobile"
           },
           {
@@ -159,9 +163,9 @@
           }
         ],
         "conceptSections": [
-          "Archetype — the §2 row and why",
-          "Step position + eyebrow text — STEP n OF m / SECTION",
-          "Mobile behaviour per §1.2 — what stacks, what stays three-up, the sticky footer"
+          "Archetype \u2014 the \u00a72 row and why",
+          "Step position + eyebrow text \u2014 STEP n OF m / SECTION",
+          "Mobile behaviour per \u00a71.2 \u2014 what stacks, what stays three-up, the sticky footer"
         ]
       },
       "applicant-portal": {
@@ -170,7 +174,7 @@
         "viewports": [
           {
             "id": "web",
-            "note": "1920 canvas, 720 column at x 600 (§1) — web only; mobile is out of scope for v1 (§13.1)"
+            "note": "1920 canvas, 720 column at x 600 (\u00a71) \u2014 web only; mobile is out of scope for v1 (\u00a713.1)"
           }
         ],
         "regions": [
@@ -193,12 +197,12 @@
         "briefSchema": [
           {
             "heading": "Archetype",
-            "hint": "hub | section-index | application-detail | record-detail | task-flow (the §2 row)",
+            "hint": "hub | section-index | application-detail | record-detail | task-flow (the \u00a72 row)",
             "required": true
           },
           {
             "heading": "User",
-            "hint": "who, in one sentence — a signed-in member, not an applicant",
+            "hint": "who, in one sentence \u2014 a signed-in member, not an applicant",
             "required": true
           },
           {
@@ -212,46 +216,46 @@
           },
           {
             "heading": "Sections & order",
-            "hint": "| section label | what it holds | why it sits there | — ordered by what blocks the member first (§3); finished groups last",
+            "hint": "| section label | what it holds | why it sits there | \u2014 ordered by what blocks the member first (\u00a73); finished groups last",
             "required": true
           },
           {
             "heading": "Section counters",
-            "hint": "| section | counter or link | — every section label needs its right-hand partner (§3): a fraction like \"1 of 4 verified\" or a link like \"All Applications ›\"",
+            "hint": "| section | counter or link | \u2014 every section label needs its right-hand partner (\u00a73): a fraction like \"1 of 4 verified\" or a link like \"All Applications \u203a\"",
             "required": true
           },
           {
             "heading": "Data displayed",
-            "hint": "| item | source | format | — the portal is mostly read; masked ids use the bullet form (§8)",
+            "hint": "| item | source | format | \u2014 the portal is mostly read; masked ids use the bullet form (\u00a78)",
             "required": true
           },
           {
             "heading": "Data collected",
-            "hint": "| field | type | required | format / placeholder | options source | — task-flow only; mark \"none\" for the other four archetypes",
+            "hint": "| field | type | required | format / placeholder | options source | \u2014 task-flow only; mark \"none\" for the other four archetypes",
             "required": true
           },
           {
             "heading": "Actions & consequences",
-            "hint": "| control | verb | result | destination | — one action per row plus at most one link (§5); name which single control, if any, is the commit",
+            "hint": "| control | verb | result | destination | \u2014 one action per row plus at most one link (\u00a75); name which single control, if any, is the commit",
             "required": true
           },
           {
             "heading": "Status vocabulary",
-            "hint": "| state | which of the three forms (§6): row-level 12/16 · emphatic eyebrow UPPER · task chip micro-label | colour | — every status is a word; colour is added to the word",
+            "hint": "| state | which of the three forms (\u00a76): row-level 12/16 \u00b7 emphatic eyebrow UPPER \u00b7 task chip micro-label | colour | \u2014 every status is a word; colour is added to the word",
             "required": true
           },
           {
             "heading": "States",
-            "hint": "| state (empty / blocked / done / error / …) | trigger | what shows | — empty renders as a to-do row, never a blank (§6)",
+            "hint": "| state (empty / blocked / done / error / \u2026) | trigger | what shows | \u2014 empty renders as a to-do row, never a blank (\u00a76)",
             "required": true
           },
           {
             "heading": "Blocked-on",
-            "hint": "| item | person | artifact | — a blocked item names the person and the thing (§6); say \"none\" if nothing blocks"
+            "hint": "| item | person | artifact | \u2014 a blocked item names the person and the thing (\u00a76); say \"none\" if nothing blocks"
           },
           {
             "heading": "Copy supplied",
-            "hint": "| id | role | text | — list EVERY role explicitly or mark it \"not supplied\": title · subtitle · meta · section labels · counters · row titles · descriptions · button labels · status words · empty-state text · legal/consent",
+            "hint": "| id | role | text | \u2014 list EVERY role explicitly or mark it \"not supplied\": title \u00b7 subtitle \u00b7 meta \u00b7 section labels \u00b7 counters \u00b7 row titles \u00b7 descriptions \u00b7 button labels \u00b7 status words \u00b7 empty-state text \u00b7 legal/consent",
             "required": true
           },
           {
@@ -263,15 +267,15 @@
         ],
         "stopTriggers": [
           {
-            "trigger": "archetype-not-in-§2",
-            "when": "the page is none of the five §2 archetypes (a table, a settings form, a chart, a wizard…)"
+            "trigger": "archetype-not-in-\u00a72",
+            "when": "the page is none of the five \u00a72 archetypes (a table, a settings form, a chart, a wizard\u2026)"
           },
           {
-            "trigger": "§9-forbidden",
+            "trigger": "\u00a79-forbidden",
             "when": "a STEP n OF m eyebrow, a progress bar used as sequence position, a Back/Continue footer row, the 560 column, a .va-btn family control for an inline action, an uppercase button label, a table or column-headed grid, a sidebar/breadcrumb/sub-nav, monospace, a shadow on a card, a rule between rows inside a card, a filled button that is not a commit, or a bare number without its unit or denominator"
           },
           {
-            "trigger": "§13-open-item",
+            "trigger": "\u00a713-open-item",
             "when": "quick-action button height, nav-tab height, header stickiness, loading or error/validation states, post-commit success"
           },
           {
@@ -280,9 +284,9 @@
           }
         ],
         "conceptSections": [
-          "Archetype — the §2 row and why",
-          "Section order — what blocks the member first (§3), and each label's counter or link partner",
-          "Status vocabulary — which of the three §6 forms each state uses, and its token"
+          "Archetype \u2014 the \u00a72 row and why",
+          "Section order \u2014 what blocks the member first (\u00a73), and each label's counter or link partner",
+          "Status vocabulary \u2014 which of the three \u00a76 forms each state uses, and its token"
         ]
       }
     },
