@@ -86,6 +86,15 @@ export const SPECS = {
       "components-button--all-types": [
         { label: "primary height 48", sel: ".va-btn-primary", get: "height", expect: 48 },
         {
+          // Figma's label is fill-container with left text (mains 1:259/1:227), so a
+          // stretched button reads label-left / icon-right. space-between is identical
+          // at hug width. Caught by the BSA Val run's Continue button (2026-09-17).
+          label: "content is space-between (Figma label fills, icon at the far edge)",
+          sel: ".va-btn-primary",
+          get: "justify-content",
+          expect: "space-between",
+        },
+        {
           label: "primary radius raw 4px",
           sel: ".va-btn-primary",
           get: "border-radius",
@@ -1339,6 +1348,15 @@ export const SPECS = {
           sel: ".va-radio-field-title",
           get: "padding-bottom",
           expect: "5px",
+        },
+        {
+          // The title is a <legend>; Chromium's UA sheet gives legends 2px of
+          // inline padding that survives without preflight. Caught by the BSA Val
+          // run's accuracy gate (2026-09-17) as a 2px title offset on every viewport.
+          label: "title zeroes the UA legend inline padding",
+          sel: ".va-radio-field-title",
+          get: "padding-left",
+          expect: "0px",
         },
         {
           label: "actions row 40 tall",

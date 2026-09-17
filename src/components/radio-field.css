@@ -71,7 +71,7 @@
   }
 
   .va-radio-field-title {
-    @apply flex w-full items-center gap-1 pb-1.25; /* 5px */
+    @apply flex w-full items-center gap-1 px-0 pb-1.25; /* 5px */
     @apply text-label-strong text-content-secondary;
   }
 

@@ -9,10 +9,11 @@
  * a page using it renders unstyled with nothing failing. This file is committed so
  * that set is reviewable in a diff.
  *
- * 281 utilities — each base plus its `md:` form (the one sanctioned
+ * 297 utilities — each base plus its `md:` form (the one sanctioned
  * breakpoint). Candidates that do not compile are dropped by the generator.
  */
 
+@source inline("va:absolute");
 @source inline("va:bg-action-active");
 @source inline("va:bg-content-primary");
 @source inline("va:bg-content-tertiary");
@@ -72,8 +73,10 @@
 @source inline("va:items-start");
 @source inline("va:justify-between");
 @source inline("va:justify-center");
+@source inline("va:left-0");
 @source inline("va:line-through");
 @source inline("va:mb-4");
+@source inline("va:md:absolute");
 @source inline("va:md:bg-action-active");
 @source inline("va:md:bg-content-primary");
 @source inline("va:md:bg-content-tertiary");
@@ -134,9 +137,13 @@
 @source inline("va:md:items-start");
 @source inline("va:md:justify-between");
 @source inline("va:md:justify-center");
+@source inline("va:md:left-0");
 @source inline("va:md:line-through");
 @source inline("va:md:mb-4");
+@source inline("va:md:min-h-screen");
 @source inline("va:md:ml-auto");
+@source inline("va:md:mt-1");
+@source inline("va:md:mt-auto");
 @source inline("va:md:mx-auto");
 @source inline("va:md:p-2");
 @source inline("va:md:p-3");
@@ -157,6 +164,8 @@
 @source inline("va:md:py-3.5");
 @source inline("va:md:py-4");
 @source inline("va:md:py-8");
+@source inline("va:md:relative");
+@source inline("va:md:right-0");
 @source inline("va:md:ring-1");
 @source inline("va:md:ring-inset");
 @source inline("va:md:ring-stroke-divider");
@@ -195,6 +204,7 @@
 @source inline("va:md:text-title");
 @source inline("va:md:text-title-medium");
 @source inline("va:md:text-warning-text");
+@source inline("va:md:top-full");
 @source inline("va:md:type-button-label");
 @source inline("va:md:type-eyebrow");
 @source inline("va:md:type-micro-label");
@@ -215,7 +225,10 @@
 @source inline("va:md:z-50");
 @source inline("va:md:z-60");
 @source inline("va:md:z-70");
+@source inline("va:min-h-screen");
 @source inline("va:ml-auto");
+@source inline("va:mt-1");
+@source inline("va:mt-auto");
 @source inline("va:mx-auto");
 @source inline("va:p-2");
 @source inline("va:p-3");
@@ -236,6 +249,8 @@
 @source inline("va:py-3.5");
 @source inline("va:py-4");
 @source inline("va:py-8");
+@source inline("va:relative");
+@source inline("va:right-0");
 @source inline("va:ring-1");
 @source inline("va:ring-inset");
 @source inline("va:ring-stroke-divider");
@@ -274,6 +289,7 @@
 @source inline("va:text-title");
 @source inline("va:text-title-medium");
 @source inline("va:text-warning-text");
+@source inline("va:top-full");
 @source inline("va:type-button-label");
 @source inline("va:type-eyebrow");
 @source inline("va:type-micro-label");

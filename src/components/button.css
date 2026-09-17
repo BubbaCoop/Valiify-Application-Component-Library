@@ -40,8 +40,15 @@
  *     closes exactly (13+13+20+1+1 border-box); Primary's is 2px short
  *     (13+13+20=46 vs 48) — an authoring gap on the designer list, resolved
  *     by frame authority, not by inventing different padding.
- *   - Width is content-driven; Figma's 239px is the sample hug. Use w-full at
- *     the call site for full-width forms.
+ *   - Width is the caller's; Figma's frame is a FIXED 239px sample with the
+ *     label set to fill-container and left-aligned text (verified on mains
+ *     1:259 and 1:227, 2026-09-17), so the trailing icon sits at the right
+ *     padding edge however wide the button is. Reproduced with
+ *     justify-content: space-between — identical at hug width, and a
+ *     stretched button (w-full / flex-1) reads label-left, icon-right as the
+ *     BSA frames draw it. Known limit of the bare-text-node contract: a
+ *     STRETCHED button with a LEADING icon would push its label right; no
+ *     frame draws that case.
  *   - Radius is a raw 4px (coincides with rounded-sm's value; Figma binds no
  *     Radius variable). Bubble is a true pill.
  *   - Secondary's border is a clean pixel-aligned 1px — a real border is
@@ -65,7 +72,7 @@
 
 @layer components {
   .va-btn {
-    @apply inline-flex cursor-pointer items-center justify-center select-none;
+    @apply inline-flex cursor-pointer items-center justify-between select-none;
     @apply m-0 border-0 bg-transparent p-0;
     transition:
       background-color 150ms,

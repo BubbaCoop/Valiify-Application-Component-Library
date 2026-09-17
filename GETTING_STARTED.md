@@ -465,7 +465,13 @@ To verify your installation is working:
 
 1. **Styles apply** - Buttons should have colored backgrounds and rounded corners
 2. **Icons render** - If you see `#icon-name` text, the sprite didn't load
-3. **Token utilities work** - Try `<div class="va:bg-success">` - it should have a green background
+3. **Token utilities work** - depends on which entry you installed:
+   - `./styles.css` (the prebuilt bundle) - try `<div class="va:bg-success">`; it should have a
+     green background. The `va:` prefix exists **only** in this entry.
+   - `./source` - the prefix does **not** apply; your own Tailwind generates utilities
+     unprefixed, so try `<div class="bg-success">`. A `va:`-prefixed class produces no rule here.
+   - `.` / `./index.css` - these ship **no** utility layer at all; neither spelling will work.
+     Component classes (`.va-btn`) still do.
 4. **No console errors** - Check for 404s on sprite.svg or CSS files
 
 ## Next Steps

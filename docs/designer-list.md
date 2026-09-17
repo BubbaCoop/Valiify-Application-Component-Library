@@ -7,7 +7,7 @@ the library until the design changes — nothing here blocks shipping, but the
 **Systemic** items affect multiple components and are worth fixing at the
 source.
 
-_Last updated 2026-09-02 (27 components extracted)._
+_Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val run added)._
 
 ## Systemic — one Figma fix resolves several components
 
@@ -234,3 +234,68 @@ _Last updated 2026-09-02 (27 components extracted)._
 - Rounded uses py-7 where Empty/Filled use py-8 (border compensation?).
 - The trailing icon layer is named "AttachMoneyRounded" again.
 - No disabled/Inactive axis exists (Standard has one) — intended?
+
+## From the BSA "Account information" Val run (2026-09-17; frames 199:12008, 199:12185, 720:8067, 721:8438)
+
+Page-level findings from building the BSA step against `@valiify/shortapp-ui@1.3.0`
+with all four frames measured. Run record:
+`val/runs/2026-09-16-val-bsa-account-information/` (07-writeup.md).
+
+1. **Back button label ink is an instance override on all four frames.** The
+   Button / Standard main (1:227, Secondary rest) binds `Text/Secondary`; the BSA
+   Back instances (496:3449, 496:3461, 720:8133, 721:8462) override the label to
+   `Text/Primary` while the arrow stays `#54565b` — mixed inks on one control. The
+   library keeps the main's binding. Confirm which is intended.
+2. **The step eyebrow's first segment binds Tag & Pill on the BSA frames**
+   ("Step 5 of 10", 199:12013 — 5% tracking) while the methodology's reference
+   frames bind Eyebrow (10%) for the whole `STEP n OF m / SECTION` run. Reproduced
+   as Eyebrow (methodology §3); the row renders ~7px wider than the frame.
+3. **Conditional-reveal indent — exact values now known**: `Layer field`
+   Type=Type4 (199:12725) indents 20px with a 1px `Stroke/Border` rule whose
+   stroke is centred on the column edge; the grandchild Text Area Field draws its
+   own rule segment via its Indented boolean at the same indent. Methodology §11
+   (`va:pl-5.5`, ~22) and §13's open item should take these. Note the rule token is
+   `Stroke/Border`, not the `Stroke/Divider` the recipe names.
+4. **`ACCOUNT ACTIVITY` sits above the Estimated-monthly field in both EMPTY
+   frames and below it in both FILLED frames.** Built below (brief order).
+5. **The mobile frames use a legacy header/footer shell** (main component
+   unresolvable via the API; binds `bg/paper` #ffffff, `stroke/stroke`,
+   `content/hidden` from a different collection; hidden opacity-0 back iconbutton;
+   footer label **Next** where web says **Continue** and §9 forbids NEXT). Rebuilt
+   in the shipped `.va-header` + 1.3.0 tokens with "Continue". The two frames also
+   pin the footer bar to the artboard bottom with inconsistent gaps (13 / 16).
+6. **ACH child copy** (199:12772, 721:8593) reads "…international wires?" under the
+   ACH field — corrected to "…international ACH transfers?" by the requester's
+   decision (2026-09-16). Fix at source.
+7. **Field labels are title case on the frames** ("Annual Revenue", "Number of
+   Employees") against the sentence-case rule (§8). Built sentence case.
+8. **The web EMPTY frame draws a value ("25,000") in Estimated monthly
+   transaction volume**; built empty.
+9. **One nested Radio Fields instance carries a stray `pb 12`** (ACH child, 77 tall
+   vs 65) — built at the component's geometry.
+10. **Radio option ink is raw `#000000`** in every Radio Fields instance (the
+    file's only raw black) — shipped as `Text/Primary` (already listed under
+    RadioField; repeated here because every BSA instance carries it).
+11. **Frame 5 (199:12187) reports a stale hug height** (1392 → bottom 1452) above
+    its own footer child (bottom 1455).
+12. **Button / Standard's label is fill-container with left text on a fixed 239px
+    frame** (mains 1:259 / 1:227). The 239 sample hides it, so the library shipped a
+    centred label; a stretched button now reads label-left / icon-right as the BSA
+    frames draw it. Confirm that is the intended stretched layout (centred labels are
+    the more common intent) — and whether a stretched button with a LEADING icon
+    should keep its label beside the icon (no frame draws that case).
+13. **No frame draws an open dropdown panel.** The library now positions the panel
+    4px below its trigger (methodology §11, 2026-09-17) as a library decision; confirm
+    the offset, and whether the header language menu should hang right-aligned.
+14. **Mobile frames revised to 20px horizontal padding (2026-09-17), inconsistently.**
+    720:8067 and 721:8438 now pad the shell 20 (335 column); the empty frame's footer
+    bar (720:8131) pads 14/20 but the filled frame's (721:8460) still pads 14/16. Built
+    20 on both. Also: §1.2's surface-wide rule (16 / 343, from the loan-flow frames) now
+    disagrees with the BSA pair — is 20 the shell rule for every flow?
+15. **Library facts surfaced, not design defects**: `.va-btn-secondary`'s real 1px
+    border adds 2px to Figma's inside-stroke hug width; the RadioField `<legend>`
+    kept Chromium's 2px UA inline padding under `./reset.css` (fixed after 1.3.0,
+    `px-0`); the utility surface lacks `text-tag-pill`, `tabular-nums`,
+    `absolute`/`relative` (dropdown panels render in flow) and any footer-pin
+    spelling.
+

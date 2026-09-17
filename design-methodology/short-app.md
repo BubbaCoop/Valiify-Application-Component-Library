@@ -85,7 +85,7 @@ One shell, one column, no rails. Everything below the header is a single 560px c
 
 ### 1.2 Mobile shell
 
-- **375 wide; header 60 (`.va-header` — the same component; its `.va-header-mobile` wrapper swaps the selector label to `EN` below 768px); page container `va:p-4` (16 → 343 column, `va:w-[343px]`), `va:gap-4` (16); a separate 76px sticky footer** (`va:h-19 va:py-3.5 va:px-4`; `.va-btn va-btn-secondary` 99 + `va:gap-5` (20) + `.va-btn va-btn-primary va:flex-1`; `va:z-40`, the sticky-chrome tier) — a **planned library component** (§12; interim recipe §11). Title is `va:text-display` 28/34; the block collapses to 96 tall as the description wraps. **The breakpoint is Tailwind's native `md` (768)**, matching the header's `max-width: 767px` media query; the library defines no `--breakpoint-*` token. **Evidence:** 449:10374–10418 children `Header 375x60`, `Page Container`, `Footer 375x76`; Title Container `Mobile=yes`. **Confidence:** high.
+- **375 wide; header 60 (`.va-header` — the same component; its `.va-header-mobile` wrapper swaps the selector label to `EN` below 768px); page container `va:p-4` (16 → 343 column, `va:w-[343px]`), `va:gap-4` (16); a separate 76px sticky footer** (`va:h-19 va:py-3.5 va:px-4`; `.va-btn va-btn-secondary` 99 + `va:gap-5` (20) + `.va-btn va-btn-primary va:flex-1`; `va:z-40`, the sticky-chrome tier) — a **planned library component** (§12; interim recipe §11). Title is `va:text-display` 28/34; the block collapses to 96 tall as the description wraps. **The breakpoint is Tailwind's native `md` (768)**, matching the header's `max-width: 767px` media query; the library defines no `--breakpoint-*` token. **Evidence:** 449:10374–10418 children `Header 375x60`, `Page Container`, `Footer 375x76`; Title Container `Mobile=yes`. **Confidence:** high. **Revised BSA mobile frames (720:8067 / 721:8438, designer change 2026-09-17) pad 20 left/right — `va:px-5`, a 335 column; vertical padding stays 20 in those frames.** Whether the 20 replaces 16 surface-wide is a §13 open item — the loan-flow frames cited here were authored at 16/343.
 - **This mobile shell applies to every flow.** No consumer or business step has a mobile frame; by decision they use the same 343 column / 16 padding / 76 sticky footer. **Evidence:** designer decision; 675:4131, 676:4501, 676:4982, 688:5717. **Confidence:** high.
 - **Multi-up fields stack on mobile.** Any row of two or three standalone fields (First name / Last name; Phone / ZIP / SSN last 4) becomes one field per row at the standard `va:gap-5` (20) field pitch, including inside the roster's inline form. **Exception:** the joined City / State / ZIP row inside the address composite stays three-up; the State dropdown abbreviates to `ST` and the ZIP placeholder to `ZIP`. Everything else keeps its web composition inside the 343 column. **Evidence:** 675:4131, 676:4982 vs the same steps at 1920. **Confidence:** high.
 - **The roles matrix keeps its three columns at 343.** Same card, same `PERSON / CONTROLS / SIGNER` eyebrow header, same 47px rows and *Add another owner* footer; the person column simply absorbs the width. It does not collapse to a per-person list. **Evidence:** 676:4501 vs 676:4620. **Confidence:** high.
@@ -307,7 +307,7 @@ Compose these from tokens and the primitives above. Nothing in `_dashboard-archi
 | Page shell | canvas `va:bg-surface-app-page`; body `va:w-140 va:mx-auto va:py-12 va:flex va:flex-col va:gap-10`; `.va-header` as a direct child of the scroll container (sticky contract) |
 | Title block | `va:type-eyebrow` row (`va:text-content-tertiary` run + `va:text-primary-text` section) › `va:text-display va:text-content-primary` › `va:text-input va:text-content-secondary`, `va:gap-2` |
 | Button row (web) | `va:flex va:gap-6`; `.va-btn va-btn-secondary` (+ `#arrow-left`) · `.va-btn va-btn-primary va:flex-1` (+ `#arrow-right`); `va:w-full` primary when no Back; in flow |
-| Mobile footer (interim, until the §12 component lands) | `va:h-19 va:py-3.5 va:px-4 va:flex va:gap-5 va:bg-surface-paper va:border-t va:border-stroke-divider va:sticky va:bottom-0 va:z-40`; `.va-btn va-btn-secondary` 99 + `.va-btn va-btn-primary va:flex-1` |
+| Mobile footer (interim, until the §12 component lands) | `va:h-19 va:py-3.5 va:px-4 va:flex va:gap-5 va:bg-surface-paper va:border-t va:border-stroke-divider va:mt-auto va:sticky va:bottom-0 va:z-40`; `.va-btn va-btn-secondary` 99 + `.va-btn va-btn-primary va:flex-1`; the bar's horizontal padding follows the shell's (`va:px-5` on the revised BSA frames — 720:8131 pads 14/20; 721:8460 still 14/16, a frame inconsistency on the designer list). **Pinning contract:** the footer is a DIRECT child of the scroll container (`<body>`), which is `va:min-h-screen va:flex va:flex-col`; `va:mt-auto` parks the bar at the viewport bottom when the step is shorter than the screen, `va:sticky va:bottom-0` keeps it there while a taller step scrolls. A wrapper around the bar becomes its containing block and makes the sticky inert (§13.1, 2026-09-17) |
 | Sub-section label + hairline | `va:type-eyebrow va:text-content-secondary` over `va:border-b va:border-stroke-divider` |
 | Checklist "None of the below" seam | `va:border-b va:border-stroke-divider` after the first `.va-box-action`, inside the `va:gap-3` stack |
 | Conditional reveal | `va:border-l va:border-stroke-divider va:pl-5.5 va:flex va:flex-col va:gap-5` (indent ~22 `[raw]`) |
@@ -325,6 +325,7 @@ Compose these from tokens and the primitives above. Nothing in `_dashboard-archi
 | Two-up fields | column level `va:flex va:flex-col va:gap-5` → `va:md:flex-row va:md:gap-6`, `va:md:w-67` each (mobile-first — see §11) / `va:flex va:gap-4` (inside the 518 inline form) |
 | Three-up standalone fields (Phone / ZIP / SSN last 4) | `va:flex va:gap-4`; first field `va:flex-1`, the two short fields `va:w-32` (128) each (272 + 16 + 128 + 16 + 128 = 560); stacks on mobile per §1.2. Standalone titled fields only — the address composite below is a different pattern |
 | Address composite (Address / Apt / City · State · ZIP) | one joined group, not three fields: outer `va:rounded-sm` container with `va:ring-1 va:ring-inset va:ring-stroke-divider`; rows Address, Apt, City·State·ZIP stacked with `va:border-b va:border-stroke-divider` seams, no gaps; inputs are `.va-text-field-box` without `.va-text-field-title-row` (the composite has no per-field titles — the group's title is `Address` above it); the last row is `va:grid va:grid-cols-[7fr_4fr_5fr]` with `va:border-l va:border-stroke-divider` seams between cells (City ≈ 44% / State ≈ 25% / ZIP ≈ 31%); State is a `.va-dropdown-field-trigger`; `Optional` on the Apt row sits inside the input, right-aligned, `va:text-help-caption va:text-content-tertiary` (the only place Optional is not in a title row). Same proportions at 343; State label → `ST`, ZIP placeholder → `ZIP`. Evidence 676:4758 / 676:4982, measured from PNG — confidence medium on the exact ratio |
+| Open listbox panel (`.va-dropdown-field` trigger, header language selector) | trigger wrapped in `va:relative`; the `.va-dropdown-list` panel `va:absolute va:top-full va:mt-1 va:z-60` — plus `va:left-0 va:w-full` to span a field trigger, or `va:right-0 va:w-32` for the header language menu; mounted only while open. The 4px offset is a library decision: no frame draws an open panel (Dropdown Field set 1:358 has no open variant) — see §13.1, 2026-09-17 |
 | Switch row (mailing-address toggle, coverage opt-ins) | `va:flex va:items-center va:justify-between va:gap-4 va:h-12`; label `va:text-label-strong va:text-content-secondary` left, `.va-switch` right; the revealed block follows as a conditional reveal |
 | `Optional` on a text field (interim, until the §12 slot ships) | `.va-text-field-title-row va:flex va:justify-between` with a trailing `<span class="va:ml-auto va:text-help-caption va:text-content-tertiary">Optional</span>`, mirroring `.va-dropdown-field-optional` |
 | Offer selection (loan, pattern only) | total card + collapsible breakdown as a review-style card; coverage rows as `va:flex` rows with `.va-switch`; offers as `.va-select-card` (`<label>` + `.va-radio`); strikethrough `va:line-through va:text-content-tertiary` + `va:text-primary-text` delta |
@@ -356,6 +357,7 @@ Anything a page needs from this list is unspecified; do not infer it.
 - **Conditional-reveal indent** — ~22px from PNG only; exact values are in the `Layer field` / `Address Super entry` components. The §11 recipe (`va:pl-5.5`) is the interim rule and is not a stop.
 - **Progress-bar track colour** — `#1a1a1a @8%` has no token (`--color-action-active` / `-pressed` share the value but are interaction overlays; `--color-primary-track` is crimson). Raw composition stands until a token or component exists.
 - **Roles-matrix label type** — the frame's 16/20 has no component; unmapped.
+- **Mobile shell horizontal padding** — the revised BSA mobile frames (2026-09-17) pad 20 (`va:px-5`, 335 column) where every other mobile frame and §1.2's rule say 16 (`va:p-4`, 343). Within the BSA pair, mobile-filled's footer (721:8460) still pads 16. Designer to confirm whether 20 is the shell rule surface-wide; until then a page follows its own frames.
 - **`.va-owner-container` pinned height on mobile** — the library pins `va:h-[92.5px]`, but at 343 the contact line wraps and the row must hug (§1.2). Needs a library check: drop the pin below `md` or let the row hug everywhere.
 - **Library follow-ups (§12)** — decided but not yet built.
 
@@ -364,6 +366,51 @@ Anything a page needs from this list is unspecified; do not infer it.
 Changes to this file after its initial authoring, with what triggered them. A rule
 here was wrong or absent; the entry says how that was established, so the same
 question is not re-litigated from the frames each time.
+
+**2026-09-17 — BSA mobile frames revised to 20px horizontal padding; recorded per-frame, rule left open.**
+
+*Triggered by:* Val run `2026-09-16-val-bsa-account-information`, requester note during review:
+the designer increased the left/right padding on all elements of 720:8067 and 721:8438 to
+20. Re-extraction confirmed: shell padding 16 → 20 on both, column 343 → 335, every field,
+divider and label x 16 → 20; the empty frame's footer bar pads 14/20 (primary 224 → 216),
+the filled frame's footer bar still 14/16 (not updated); heights unchanged; header unchanged
+(already 20). §1.2 records the revised frames' values with `va:px-5`; because the rule "same
+343 column / 16 padding" rests on other flows' frames, the surface-wide question is a §13
+open item rather than a silent rewrite.
+
+**2026-09-17 — the mobile footer's pinning is spelled out; "sticky" alone never engaged.**
+
+*Triggered by:* Val run `2026-09-16-val-bsa-account-information`, requester review of the
+375 render: the footer bar sat in flow under the last field with empty canvas beneath it.
+§1.2 said "sticky footer" and the §11 recipe carried `va:sticky va:bottom-0`, but the
+surface had no `va:min-h-screen` / `va:mt-auto`, and the page had wrapped the bar in a
+mount div — a containing block exactly the bar's height, inside which `va:sticky` can do
+nothing. On a step shorter than the viewport, `va:sticky va:bottom-0` alone never pins anyway:
+it needs the scroll container to be at least viewport-tall and the bar pushed to its end.
+The recipe now states the contract: `<body>` (the scroll container) is `va:min-h-screen
+va:flex va:flex-col`; the bar is its direct child with `va:mt-auto va:sticky va:bottom-0
+va:z-40`. Both mobile frames pin the bar to the artboard bottom (720:8067 → 991–1067,
+721:8438 → 1464–1540), so this is frame evidence, not a library decision.
+
+**2026-09-17 — the open listbox panel has a recipe; it was absent, not forbidden.**
+
+*Triggered by:* Val run `2026-09-16-val-bsa-account-information` (BSA Details, step 5 of
+10, built in the strict 1.3.0 vocabulary). The requester saw the `.va-dropdown-list`
+panel push the fields below it down and sit flush against its trigger. Cause: §11 named
+the panel's classes (`.va-dropdown-list` › `.va-list-option`) but no positioning, and the
+generated utility surface therefore carried no `va:absolute` / `va:relative` / `va:top-*` /
+`va:left-*` / `va:right-*` / `va:mt-*` — a page that may write only sanctioned classes could only
+render the panel in flow.
+
+*Why the methodology was what was wrong:* the library's DropdownField and TextSelector
+docs say "consumer JS positions and toggles" the panel — positioning is a surface
+concern by contract, and the surface never said how. No frame in the file draws an open
+panel (Dropdown Field set 1:358 has no open variant; the language menu is never shown
+open), so the recipe is a library decision, recorded as such: panel `va:absolute
+va:top-full va:mt-1 va:z-60` (the z-scale's modal/panel step) inside a `va:relative`
+wrapper on the trigger; `va:left-0 va:w-full` spans a field, `va:right-0 va:w-32` sits
+a header menu under its selector. The 4px `va:mt-1` offset has no frame evidence and is
+open to the designer.
 
 **2026-09-16 — `.va-text-area` is mapped; it was never unsanctioned, only unenumerated.**
 

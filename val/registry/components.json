@@ -495,7 +495,8 @@
       "label",
       "placeholder",
       "value",
-      "hint"
+      "hint",
+      "invalid"
     ],
     "tokens": [],
     "figmaNames": [

@@ -71,7 +71,7 @@ Three more things to know before using it:
    instead of 92.5px). `./reset.css` is five measured rules, not preflight — since
    1.0.1 it also carries the `html` ink/ground default. Skip it inside an app that
    already resets.
-3. **The utility layer is a closed set — and so are its variants.** Only the 280
+3. **The utility layer is a closed set — and so are its variants.** Only the 281
    utilities the design methodology uses are shipped: each base plus its **`md:`
    form only**. `va:mt-7` is not one. Neither is `va:lg:py-12`, `va:sm:gap-4` or
    `va:hover:bg-primary`. They produce **no rule at all** — no error, no warning,

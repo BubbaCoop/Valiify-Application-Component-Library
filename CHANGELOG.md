@@ -7,6 +7,46 @@ Token names are public API — renaming or removing one is a breaking change.
 
 ## [Unreleased]
 
+### Fixed — a stretched `Button` centred its label and icon
+
+Figma's Button / Standard main components (1:259 Primary, 1:227 Secondary) are fixed
+239px frames whose label is fill-container with left-aligned text, so the trailing
+icon always sits at the right padding edge. `.va-btn` shipped `justify-center`, which
+is indistinguishable at hug width — the 239 sample hid it — but a `w-full` / `flex-1`
+button centred "CONTINUE →" as a pair. Found on the BSA "Account information" Val
+run's Continue button (2026-09-17; `06-accuracy/continue-label-figma-check.md`).
+`.va-btn` is now `justify-between`: identical for hug widths; a stretched button
+reads label-left, icon-right. Known limit: a stretched button with a LEADING icon
+pushes its label right (no frame draws that case; the label is a bare text node).
+
+### Added — positioning utilities in the prebuilt `va:` surface, for the open listbox panel
+
+The surface had no `absolute` / `relative` / `top-*` / `left-*` / `right-*` / `mt-*`,
+so a page spelled in the closed vocabulary could only render `.va-dropdown-list` IN
+FLOW — pushing the content below it down and sitting flush against the trigger. The
+methodology's §11 gains an "Open listbox panel" recipe (trigger wrapped in
+`va:relative`; panel `va:absolute va:top-full va:mt-1 va:z-60` + `va:left-0 va:w-full`
+for a field, `va:right-0 va:w-32` for the header language menu). The 4px offset is a
+library decision: no frame draws an open panel (Dropdown Field set 1:358 has no open
+variant). Generated into `src/utility-surface.css` and the bundle, base + `md:` forms.
+
+Same release, same route: the §11 mobile-footer recipe now states its pinning contract —
+`<body>` is `va:min-h-screen va:flex va:flex-col` and the bar is its direct child with
+`va:mt-auto va:sticky va:bottom-0 va:z-40` — so the surface also gains `min-h-screen`
+and `mt-auto`. "Sticky" alone never engaged: a wrapper around the bar was its containing
+block, and on a step shorter than the viewport nothing pushed the bar to the bottom. Both
+mobile frames pin the bar to the artboard bottom, so this one is frame evidence.
+
+### Fixed — `RadioField` title sat 2px right of its options
+
+`.va-radio-field-title` is a `<legend>`, and Chromium's UA stylesheet gives legends
+2px of inline padding. Tailwind preflight zeroes it, so hosts on `.`/`./source` never
+saw it; the prebuilt `./styles.css` path (no preflight, `./reset.css` only) rendered
+every radio-group title 2px to the right of its option row — on both viewports.
+Found by the BSA "Account information" Val run's accuracy gate (2026-09-17), which
+measured the title's ink edge at +2px while the option row beneath aligned exactly.
+The title now carries `px-0`; the RadioField visual spec asserts it.
+
 ## [1.2.0] — 2026-09-16
 
 > **Version note.** This release is `1.2.0`, and there is no `1.1.0`. The feature

@@ -85,6 +85,12 @@ Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
 > **Secondary's border is a real 1px border** — pixel-aligned, not fractional,
 > so the Radio/Checkbox inset-shadow trick is deliberately NOT used here.
 
+> **Content is `justify-between`, not centred** (fixed after 1.3.0) — Figma's
+> label is fill-container with left text on a fixed 239px frame, so a stretched
+> button (`w-full` / `flex-1`) reads label-left, icon at the far edge; hug widths
+> are unchanged. Limit: a STRETCHED button with a LEADING icon pushes its label
+> right — no frame draws that case.
+
 ```html
 <button class="va-btn va-btn-primary">
   Continue
@@ -538,6 +544,10 @@ Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
 > authored geometry is broken (absolute −59px/−313%) — `.va-radio-field-hint`
 > ships in normal flow as a labeled correction.
 > No disabled state exists (docs/ticket-disabled-state-field-family.md).
+> **The legend zeroes its UA inline padding (`px-0`)** — Chromium gives `<legend>`
+> 2px each side; preflight hides that, the standalone `./styles.css` path did not,
+> and the title rendered 2px right of its options (caught by the BSA Val run's
+> accuracy gate, fixed after 1.3.0).
 
 ```html
 <fieldset class="va-radio-field">
@@ -866,6 +876,10 @@ Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
 > `aria-labelledby`.
 > **The placeholder ink fails WCAG contrast as authored** (3.11:1) — the one
 > waived KNOWN_ISSUES entry in the a11y scanner; designer list.
+> **Open-panel positioning is the methodology's §11 recipe** (added 2026-09-17):
+> wrap the trigger in `va:relative`; panel `va:absolute va:left-0 va:top-full
+> va:mt-1 va:w-full va:z-60`. The 4px offset is a library decision — Figma draws
+> no open panel.
 
 ```html
 <div class="va-dropdown-field">
@@ -1514,7 +1528,7 @@ drop into an app on Tailwind v3 + daisyUI 4.
 >
 > **To add a variant:** extend `RESPONSIVE` in
 > [scripts/build-utility-surface.mjs](scripts/build-utility-surface.mjs) and
-> rebuild. Each variant added multiplies the surface by the number of bases (280
+> rebuild. Each variant added multiplies the surface by the number of bases (281
 > today), so add one because generated output needs it — which `verify:markup` will
 > tell you — not pre-emptively.
 >
