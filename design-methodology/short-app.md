@@ -398,9 +398,19 @@ va:z-40`. Both mobile frames pin the bar to the artboard bottom (720:8067 → 99
 10, built in the strict 1.3.0 vocabulary). The requester saw the `.va-dropdown-list`
 panel push the fields below it down and sit flush against its trigger. Cause: §11 named
 the panel's classes (`.va-dropdown-list` › `.va-list-option`) but no positioning, and the
-generated utility surface therefore carried no `va:absolute` / `va:relative` / `va:top-*` /
-`va:left-*` / `va:right-*` / `va:mt-*` — a page that may write only sanctioned classes could only
-render the panel in flow.
+generated utility surface therefore carried none of the positioning utilities the recipe
+needs — `va:absolute`, `va:relative`, `va:top-full`, `va:left-0`, `va:right-0`, `va:mt-1` —
+and a page that may write only sanctioned classes could only render the panel in flow.
+
+> **Cite concrete class names in this file, never a family glob.** The surface generator
+> harvests every `va:`-spelled token here as a build candidate, and its pattern stops at an
+> asterisk — so a family glob is harvested as a prefix-only fragment that cannot compile.
+> Eight such fragments (the four positioning families named above, each also in its `md:`
+> form) were dropped by the generator's compile step on 2026-09-17: harmless, since dropping
+> non-compiling candidates is exactly what that step is for, but they are noise in the build
+> report and they came from prose, not from any page. Naming the real utilities keeps both
+> gates satisfied — `verify:vocabulary` wants the `va:` prefix on every utility this file
+> mentions, and the generator wants every token it finds to compile.
 
 *Why the methodology was what was wrong:* the library's DropdownField and TextSelector
 docs say "consumer JS positions and toggles" the panel — positioning is a surface
