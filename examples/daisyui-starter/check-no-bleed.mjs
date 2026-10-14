@@ -179,7 +179,7 @@ for (const pg of PAGES) {
     "16px is .va-badge's height — ours bled into daisyUI's badge");
   await check(`${pg.tag} A`, "daisyUI .input is not zero-padded like .va-text-field-input", "#daisy-input", "padding-left", (v) => parseFloat(v) > 0, ">0",
     "");
-  await check(`${pg.tag} A`, "our .va-btn-micro is 12px, not daisyUI's 48px .btn", "#va-btn-micro", "height", px(12), "12px", "");
+  await check(`${pg.tag} A`, "our .va-btn-micro is 16px, not daisyUI's 48px .btn", "#va-btn-micro", "height", px(16), "16px", ""); // 12 -> 16 with the 2026-10 Figma rework (11/16 label)
   await check(`${pg.tag} A`, "our .va-badge is 16px", "#va-badge", "height", px(16), "16px", "");
   await check(`${pg.tag} A`, "our open .va-modal is visible (the 0.x .modal collision)", "#va-modal", "opacity", eq("1"), "1",
     "daisyUI's .modal is opacity 0 / pointer-events none until its own open modifier");

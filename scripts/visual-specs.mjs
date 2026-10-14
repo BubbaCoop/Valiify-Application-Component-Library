@@ -37,8 +37,6 @@
  * written down — a bare loose tolerance hides regressions.
  */
 
-
-
 // The Skeleton written spec's full dimension matrix (550:7998) — every cell
 // swept programmatically. [shape, [sm w,h], [md w,h], [lg w,h]]; square
 // shapes carry one number.
@@ -47,17 +45,17 @@ const SKELETON_MATRIX = [
   ["heading", [160, 20], [240, 24], [360, 32]],
   ["circle", [32], [40], [56]],
   ["rectangle", [120, 80], [200, 120], [320, 180]],
-  ["button", [64, 32], [96, 36], [128, 40]],
-  ["input", [280, 48], [330, 60], [420, 72]],
+  ["button", [64, 32], [120, 48], [128, 48]], // md/lg = the real 48 control (2026-10)
+  ["input", [280, 48], [330, 48], [420, 48]], // the field bone; the 73px Figma shape composes label+gap+field
   ["textarea", [280, 80], [330, 100], [420, 128]],
   ["card", [280, 140], [330, 158], [420, 200]],
   ["switch", [28, 16], [36, 20], [44, 24]],
-  ["checkbox", [14], [18], [22]],
+  ["checkbox", [14], [20], [22]], // md = the real 20px control (2026-10-15)
   ["badge", [60, 16], [80, 20], [100, 24]],
   ["listitem", [280, 28], [330, 32], [420, 40]],
   ["tab", [80, 28], [100, 32], [120, 36]],
-  ["avatar", [32], [40], [56]],
-  ["dropdown", [280, 48], [330, 60], [420, 72]],
+  ["avatar", [20], [24], [32]], // sm/md = the real Avatar sizes (2026-10-15)
+  ["dropdown", [280, 48], [330, 48], [420, 48]],
   ["radio", [16], [20], [24]],
 ];
 const SKELETON_MATRIX_CHECKS = SKELETON_MATRIX.flatMap(([shape, ...sizes]) =>
@@ -78,18 +76,25 @@ export const SPECS = {
 
   // ------------------------------------------------------------------ Button
   Button: {
-    figma: "Button / Standard 1:218 — 16 variants (Pressed formalized into an axis 2026-09-02; values unchanged, variable-diffed)",
+    figma:
+      "Button 1:218 unified set, Appearance=Standard — 16 variants (2026-10 merge: styles renamed Text/Rounded, icons now uniform L/R slots; values re-verified unchanged, three lanes)",
     variants: 16,
     stories: {
       // AllTypes grid order: 0 primary · 1 primary disabled · 2 secondary ·
       // 3 secondary disabled · 4 micro · 5 micro disabled · 6 bubble · 7 bubble disabled
       "components-button--all-types": [
-        { label: "primary height 48", sel: ".va-btn-primary", get: "height", expect: 48 },
+        {
+          label: "primary height 48",
+          sel: ".va-btn-primary",
+          get: "height",
+          expect: 48,
+        },
         {
           // Figma's label is fill-container with left text (mains 1:259/1:227), so a
           // stretched button reads label-left / icon-right. space-between is identical
           // at hug width. Caught by the BSA Val run's Continue button (2026-09-17).
-          label: "content is space-between (Figma label fills, icon at the far edge)",
+          label:
+            "content is space-between (Figma label fills, icon at the far edge)",
           sel: ".va-btn-primary",
           get: "justify-content",
           expect: "space-between",
@@ -147,7 +152,12 @@ export const SPECS = {
           expect: { token: "--color-content-contrast" },
         },
         // Secondary
-        { label: "secondary height 48", sel: ".va-btn-secondary", get: "height", expect: 48 },
+        {
+          label: "secondary height 48",
+          sel: ".va-btn-secondary",
+          get: "height",
+          expect: 48,
+        },
         {
           label: "secondary border 1px",
           sel: ".va-btn-secondary",
@@ -183,7 +193,8 @@ export const SPECS = {
         // The detail the whole Secondary hover system hangs on: the fill
         // appears only at PRESSED — hover must leave it transparent.
         {
-          label: "secondary hover fill stays transparent (wash is pressed-only)",
+          label:
+            "secondary hover fill stays transparent (wash is pressed-only)",
           sel: ".va-btn-secondary",
           get: "background-color",
           hover: true,
@@ -204,7 +215,44 @@ export const SPECS = {
           expect: { token: "--color-content-tertiary" },
         },
         // Micro
-        { label: "micro height 12", sel: ".va-btn-micro", get: "height", expect: 12 },
+        {
+          label:
+            "micro type = EYEBROW 11/16/600/10% UPPER (bound 2026-10-15; item closed)",
+          sel: ".va-btn-micro",
+          get: "font-size",
+          expect: "11px",
+        },
+        // Control focus ring: click parks focus, Tab moves it by KEYBOARD to
+        // the next focusable (the disabled twin is skipped), so :focus-visible
+        // genuinely matches on the secondary button.
+        {
+          label:
+            "control focus ring: 2px (the Focus Ring effect, not the 3px field ring)",
+          sel: ".va-btn-secondary",
+          get: "outline-width",
+          before: [{ click: ".va-btn-primary" }, { key: "Tab", wait: 450 }],
+          expect: "2px",
+        },
+        {
+          label: "control focus ring offset 2 (the 2px paper gap)",
+          sel: ".va-btn-secondary",
+          get: "outline-offset",
+          before: [{ click: ".va-btn-primary" }, { key: "Tab", wait: 450 }],
+          expect: "2px",
+        },
+        {
+          label: "control focus ring SOLID Primary",
+          sel: ".va-btn-secondary",
+          get: "outline-color",
+          before: [{ click: ".va-btn-primary" }, { key: "Tab", wait: 450 }],
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "micro height 16 (the 2026-10 rework: 11/16 label, was 9/12)",
+          sel: ".va-btn-micro",
+          get: "height",
+          expect: 16,
+        },
         {
           label: "micro has no box (no border, no fill)",
           sel: ".va-btn-micro",
@@ -237,7 +285,12 @@ export const SPECS = {
           expect: 12,
         },
         // Bubble
-        { label: "bubble height 34", sel: ".va-btn-bubble", get: "height", expect: 34 },
+        {
+          label: "bubble height 32 (Height/SM token-bound, was 34)",
+          sel: ".va-btn-bubble",
+          get: "height",
+          expect: 32,
+        },
         {
           label: "bubble is a pill",
           sel: ".va-btn-bubble",
@@ -266,13 +319,13 @@ export const SPECS = {
           expect: "none",
         },
         {
-          label: "bubble disabled fill stays invisible (ink dims and nothing else)",
+          label:
+            "bubble disabled fill stays invisible (ink dims and nothing else)",
           sel: ".va-btn-bubble",
           nth: 1,
           get: "background-color",
           expect: "rgba(0, 0, 0, 0)",
         },
-
         // NOT ASSERTED (harness cannot hold :active): primary pressed
         // (Primary/Focus — Figma's literal name, wired to :active), secondary
         // pressed's Action/HOVER wash (verbatim naming oddity), bubble
@@ -280,6 +333,38 @@ export const SPECS = {
         // (0/696 pixel diff in Figma — reproduced as one rule).
         // NO fractional values exist anywhere in this component — stated
         // explicitly because every sibling needed a fractional-survival check.
+      ],
+      "components-button--loading": [
+        {
+          label: "loading blocks pointer events",
+          sel: '.va-btn[aria-busy="true"]',
+          get: "pointer-events",
+          expect: "none",
+        },
+        {
+          label: "loading hides the trailing icon (the spinner takes its slot)",
+          sel: '.va-btn[aria-busy="true"] svg',
+          get: "display",
+          expect: "none",
+        },
+        {
+          label: "loading keeps the rest fill (primary)",
+          sel: ".va-btn-primary",
+          get: "background-color",
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "loading secondary keeps the REST ink (not hover)",
+          sel: ".va-btn-secondary",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "loading height unchanged 48",
+          sel: ".va-btn-primary",
+          get: "height",
+          expect: 48,
+        },
       ],
     },
   },
@@ -290,6 +375,31 @@ export const SPECS = {
     variants: 4,
     stories: {
       // nth 0 = unchecked, nth 1 = checked
+      "components-radio--disabled-gap": [
+        {
+          label:
+            "disabled unchecked ring Stroke/Divider (913:569 — DRAWN since 2026-10)",
+          sel: ".va-radio:disabled",
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "disabled ring stays 1.5px (nothing thins, unlike Checkbox)",
+          sel: ".va-radio:disabled",
+          get: "box-shadow",
+          contains: true,
+          expect: "1.5px",
+        },
+        {
+          label: "disabled CHECKED ring Primary/Disabled (913:571)",
+          sel: ".va-radio:disabled",
+          nth: 1,
+          get: "box-shadow",
+          contains: true,
+          expect: { token: "--color-primary-disabled" },
+        },
+      ],
       "components-radio--both-rest-states": [
         { label: "width 20", sel: ".va-radio", get: "width", expect: 20 },
         { label: "height 20", sel: ".va-radio", get: "height", expect: 20 },
@@ -535,13 +645,24 @@ export const SPECS = {
 
   // ---------------------------------------------------------------- Checkbox
   Checkbox: {
-    figma: "Checkbox 1:424 — 8 variants across Active × Hover × Pressed × Disabled",
+    figma:
+      "Checkbox 1:424 — 8 variants across Active × Hover × Pressed × Disabled (resized 18→20 on 2026-10-13 to match Radio; glyph stays 16, inset 1→2)",
     variants: 8,
     stories: {
       // nth 0 = unchecked, 1 = checked, 2 = disabled unchecked, 3 = disabled checked
       "components-checkbox--all-states": [
-        { label: "control 18 wide", sel: ".va-checkbox-control", get: "width", expect: 18 },
-        { label: "control 18 tall", sel: ".va-checkbox-control", get: "height", expect: 18 },
+        {
+          label: "control 20 wide (2026-10 resize — now matches Radio)",
+          sel: ".va-checkbox-control",
+          get: "width",
+          expect: 20,
+        },
+        {
+          label: "control 20 tall",
+          sel: ".va-checkbox-control",
+          get: "height",
+          expect: 20,
+        },
         {
           label: "radius raw 3px (off the Radius scale, deliberate)",
           sel: ".va-checkbox-input",
@@ -636,11 +757,12 @@ export const SPECS = {
           expect: 16,
         },
         {
-          label: "glyph colour Text/Contrast (unbound in Figma, inferred — see CSS header)",
+          label:
+            "glyph colour BG/Paper (BOUND in Figma since 2026-10 — the old unbound-white question is closed)",
           sel: ".va-checkbox-check",
           nth: 1,
           get: "color",
-          expect: { token: "--color-content-contrast" },
+          expect: { token: "--color-surface-paper" },
         },
         // Disabled unchecked (nth 2): TWO simultaneous authored changes.
         {
@@ -687,14 +809,25 @@ export const SPECS = {
 
   // -------------------------------------------------------------- IconButton
   IconButton: {
-    figma: "icon button 1:429 — 16 variants across Size × Type × Hover × Subtle",
+    figma:
+      "icon button 1:429 — 16 variants across Size × Type × Hover × Subtle",
     variants: 16,
     stories: {
       // nth order: 0 md · 1 md subtle · 2 md state · 3 md state subtle ·
       //            4 sm · 5 sm subtle · 6 sm state · 7 sm state subtle
       "components-iconbutton--all-variants": [
-        { label: "md box 18", sel: ".va-icon-button", get: "width", expect: 18 },
-        { label: "md glyph 18", sel: ".va-icon-button svg", get: "width", expect: 18 },
+        {
+          label: "md box 18",
+          sel: ".va-icon-button",
+          get: "width",
+          expect: 18,
+        },
+        {
+          label: "md glyph 18",
+          sel: ".va-icon-button svg",
+          get: "width",
+          expect: 18,
+        },
         {
           label: "md rest colour Neutral/Base",
           sel: ".va-icon-button",
@@ -735,7 +868,13 @@ export const SPECS = {
           expect: { token: "--color-neutral" },
         },
         // State type (nth 2): padded hit target, halo on hover only.
-        { label: "state box 24", sel: ".va-icon-button", nth: 2, get: "width", expect: 24 },
+        {
+          label: "state box 24",
+          sel: ".va-icon-button",
+          nth: 2,
+          get: "width",
+          expect: 24,
+        },
         {
           label: "state glyph stays 18 (padding, not scaling)",
           sel: ".va-icon-button svg",
@@ -771,24 +910,44 @@ export const SPECS = {
         // 23:723 instance binds Neutral/Disabled (3-lane-confirmed authoring
         // slip; designer list). This asserts the shipped consistent reading.
         {
-          label: "state rest colour Neutral/Base (Figma's 23:723 slip not copied)",
+          label:
+            "state rest colour Neutral/Base (Figma's 23:723 slip not copied)",
           sel: ".va-icon-button",
           nth: 2,
           get: "color",
           expect: { token: "--color-neutral" },
         },
         // sm (nth 4): same bindings, smaller boxes.
-        { label: "sm box 14", sel: ".va-icon-button", nth: 4, get: "width", expect: 14 },
-        { label: "sm glyph 14", sel: ".va-icon-button svg", nth: 4, get: "width", expect: 14 },
         {
-          label: "sm rest colour identical to md (AA made it SAMPLE lighter; the token is the same)",
+          label: "sm box 14",
+          sel: ".va-icon-button",
+          nth: 4,
+          get: "width",
+          expect: 14,
+        },
+        {
+          label: "sm glyph 14",
+          sel: ".va-icon-button svg",
+          nth: 4,
+          get: "width",
+          expect: 14,
+        },
+        {
+          label:
+            "sm rest colour identical to md (AA made it SAMPLE lighter; the token is the same)",
           sel: ".va-icon-button",
           nth: 4,
           get: "color",
           expect: { token: "--color-neutral" },
         },
         // sm State (nth 6)
-        { label: "sm state box 18", sel: ".va-icon-button", nth: 6, get: "width", expect: 18 },
+        {
+          label: "sm state box 18",
+          sel: ".va-icon-button",
+          nth: 6,
+          get: "width",
+          expect: 18,
+        },
         {
           label: "sm state glyph stays 14",
           sel: ".va-icon-button svg",
@@ -820,41 +979,102 @@ export const SPECS = {
       // AllSizes: three columns of [unselected, selected]: nth 0/1 sm, 2/3 md, 4/5 lg
       "components-listitem--all-sizes": [
         // Per-size type bindings — Help & Caption / Labels Default / Input.
-        { label: "sm type 12px Help & Caption", sel: ".va-list-option-sm", get: "font-size", expect: "12px" },
-        { label: "sm line 14px", sel: ".va-list-option-sm", get: "line-height", expect: "14px" },
-        { label: "md type 14px Labels Default", sel: ".va-list-option-md", get: "font-size", expect: "14px" },
-        { label: "md line 20px", sel: ".va-list-option-md", get: "line-height", expect: "20px" },
-        { label: "lg type 16px Input", sel: ".va-list-option-lg", get: "font-size", expect: "16px" },
-        { label: "lg line 24px", sel: ".va-list-option-lg", get: "line-height", expect: "24px" },
+        {
+          label: "sm type 12px Help & Caption",
+          sel: ".va-list-option-sm",
+          get: "font-size",
+          expect: "12px",
+        },
+        {
+          label: "sm line 14px",
+          sel: ".va-list-option-sm",
+          get: "line-height",
+          expect: "14px",
+        },
+        {
+          label: "md type 14px Labels Default",
+          sel: ".va-list-option-md",
+          get: "font-size",
+          expect: "14px",
+        },
+        {
+          label: "md line 20px",
+          sel: ".va-list-option-md",
+          get: "line-height",
+          expect: "20px",
+        },
+        {
+          label: "lg type 16px Input",
+          sel: ".va-list-option-lg",
+          get: "font-size",
+          expect: "16px",
+        },
+        {
+          label: "lg line 24px",
+          sel: ".va-list-option-lg",
+          get: "line-height",
+          expect: "24px",
+        },
         // The gap-collapse trick: 10px unconditional; the hidden check
         // contributes none, so unselected rows read gap-0 visually.
-        { label: "gap unconditional 10", sel: ".va-list-option-sm", get: "gap", expect: "10px" },
-        { label: "sm unselected 30", sel: ".va-list-option-sm", get: "height", expect: 30 },
         {
-          label: "sm SELECTED grows to 34 (Figma's emergent hug, reproduced)",
+          label: "gap unconditional 10",
+          sel: ".va-list-option-sm",
+          get: "gap",
+          expect: "10px",
+        },
+        {
+          label: "sm 32 (Height/SM pinned)",
+          sel: ".va-list-option-sm",
+          get: "height",
+          expect: 32,
+        },
+        {
+          label:
+            "sm SELECTED stays 32 (pinned heights killed the old 30→34 hug)",
           sel: ".va-list-option-sm",
           nth: 1,
           get: "height",
-          expect: 34,
+          expect: 32,
         },
-        { label: "md 36", sel: ".va-list-option-md", get: "height", expect: 36 },
         {
-          label: "md selected stays 36",
+          label: "md 40 (Height/MD pinned)",
           sel: ".va-list-option-md",
-          nth: 1,
           get: "height",
-          expect: 36,
+          expect: 40,
         },
-        { label: "lg 40", sel: ".va-list-option-lg", get: "height", expect: 40 },
         {
-          label: "lg selected stays 40",
-          sel: ".va-list-option-lg",
+          label: "md selected stays 40",
+          sel: ".va-list-option-md",
           nth: 1,
           get: "height",
           expect: 40,
         },
-        { label: "padding-x 12", sel: ".va-list-option-sm", get: "padding-left", expect: "12px" },
-        { label: "padding-y 8", sel: ".va-list-option-sm", get: "padding-top", expect: "8px" },
+        {
+          label: "lg 48 (Height/LG pinned)",
+          sel: ".va-list-option-lg",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "lg selected stays 48",
+          sel: ".va-list-option-lg",
+          nth: 1,
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "padding-x 12",
+          sel: ".va-list-option-sm",
+          get: "padding-left",
+          expect: "12px",
+        },
+        {
+          label: "padding-y 0 (height is the token, never padding math)",
+          sel: ".va-list-option-sm",
+          get: "padding-top",
+          expect: "0px",
+        },
         {
           label: "unselected ink Text/Primary",
           sel: ".va-list-option-sm",
@@ -905,6 +1125,34 @@ export const SPECS = {
           expect: { token: "--color-primary" },
         },
       ],
+      "components-listitem--critical": [
+        {
+          label: "critical ink Error/Base — the Error ramp's FIRST consumer",
+          sel: ".va-list-option-critical",
+          get: "color",
+          expect: { token: "--color-error" },
+        },
+        {
+          label: "critical row keeps the normal fill at rest",
+          sel: ".va-list-option-critical",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+      ],
+      "components-listitem--keyboard-highlight": [
+        {
+          label:
+            "data-active paints the hover wash (aria-activedescendant highlight)",
+          sel: '.va-list-option[data-active="true"]',
+          get: "background-color",
+          expect: { token: "--color-action-hover" },
+        },
+        // NOT ASSERTED: the absence of a library focus ring on rows — the
+        // library writes no :focus-visible rule here (the listbox contract:
+        // focus stays on the trigger), but the UA's own fallback ring on a
+        // directly-focused row is correct behaviour, so asserting 0 would
+        // fight the browser.
+      ],
       "components-listitem--dividers": [
         // The divider is an INSET SHADOW, not a border — Figma's stroke is
         // inside-aligned within the frame heights (a border added +1px,
@@ -917,11 +1165,11 @@ export const SPECS = {
           expect: { token: "--color-stroke-divider" },
         },
         {
-          label: "divider does not add height (unselected row stays 30)",
+          label: "divider does not add height (unselected row stays 32)",
           sel: ".va-list-option",
           nth: 1,
           get: "height",
-          expect: 30,
+          expect: 32,
         },
         {
           label: "no divider on the last row (:last-child, not a class)",
@@ -936,7 +1184,8 @@ export const SPECS = {
 
   // ------------------------------------------------------------ DropdownList
   DropdownList: {
-    figma: "Dropdown List 1:480 — 2 variants (row-1 selection toggle, NOT a size axis)",
+    figma:
+      "Dropdown List 1:480 — 2 variants (row-1 selection toggle, NOT a size axis)",
     variants: 2,
     stories: {
       "components-dropdownlist--interactive": [
@@ -959,7 +1208,8 @@ export const SPECS = {
           expect: { token: "--color-stroke-divider" },
         },
         {
-          label: "radius 4px (authored literal wins over the coarse 1x corner-fit)",
+          label:
+            "radius 4px (authored literal wins over the coarse 1x corner-fit)",
           sel: ".va-dropdown-list",
           get: "border-radius",
           expect: "4px",
@@ -970,9 +1220,15 @@ export const SPECS = {
           get: "padding-top",
           expect: "0px",
         },
-        { label: "zero gap", sel: ".va-dropdown-list", get: "row-gap", expect: "normal" },
         {
-          label: "overflow clip (library extension — hover fills must not poke past corners)",
+          label: "zero gap",
+          sel: ".va-dropdown-list",
+          get: "row-gap",
+          expect: "normal",
+        },
+        {
+          label:
+            "overflow clip (library extension — hover fills must not poke past corners)",
           sel: ".va-dropdown-list",
           get: "overflow-x",
           expect: "clip",
@@ -981,7 +1237,8 @@ export const SPECS = {
         // box-shadow — the −4px spread is inexpressible as a filter, and the
         // clip-eats-shadow claim was re-tested and is false).
         {
-          label: "shadow is the tokenized Basic Drop Shadow (box-shadow, not filter)",
+          label:
+            "shadow is the tokenized Basic Drop Shadow (box-shadow, not filter)",
           sel: ".va-dropdown-list",
           get: "box-shadow",
           contains: true,
@@ -999,15 +1256,37 @@ export const SPECS = {
 
   // --------------------------------------------------------------- BoxAction
   BoxAction: {
-    figma: "Box action 199:12990 — 8 variants: Type {Checkbox, Switch} × {rest, hover, active, disabled}",
+    figma:
+      "Box action 199:12990 — 8 variants: Type {Checkbox, Switch} × {rest, hover, active, disabled}",
     variants: 8,
     stories: {
       // AllStates: nth 0-2 checkbox (rest, active, disabled) · 3-5 switch (same)
       "components-boxaction--all-states": [
-        { label: "checkbox row 48", sel: ".va-box-action-checkbox", get: "height", expect: 48 },
-        { label: "switch row 44", sel: ".va-box-action-switch", get: "height", expect: 44 },
-        { label: "radius 4px", sel: ".va-box-action", get: "border-radius", expect: "4px" },
-        { label: "padding-x 16", sel: ".va-box-action", get: "padding-left", expect: "16px" },
+        {
+          label: "checkbox row 48",
+          sel: ".va-box-action-checkbox",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label:
+            "switch row 48 (unified at Height/LG in the 2026-10 rework, was 44)",
+          sel: ".va-box-action-switch",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "radius 4px",
+          sel: ".va-box-action",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "padding-x 16",
+          sel: ".va-box-action",
+          get: "padding-left",
+          expect: "16px",
+        },
         { label: "gap 12", sel: ".va-box-action", get: "gap", expect: "12px" },
         {
           label: "rest ring Stroke/Divider (inset — Figma inside stroke)",
@@ -1125,12 +1404,13 @@ export const SPECS = {
           expect: "0.5px",
         },
         {
-          label: "disabled switch ring Stroke/Border (per-type token difference)",
+          label:
+            "disabled switch ring Stroke/Divider 0.5px (UNIFIED with checkbox, 2026-10)",
           sel: ".va-box-action-switch",
           nth: 2,
           get: "box-shadow",
           contains: true,
-          expect: { token: "--color-stroke-border" },
+          expect: { token: "--color-stroke-divider" },
         },
         {
           label: "disabled label Tertiary",
@@ -1152,17 +1432,46 @@ export const SPECS = {
 
   // -------------------------------------------------------------- SelectCard
   SelectCard: {
-    figma: "Card 9:367 — 6 variants: Hover × Radio × Pressed (pressed = selected on the radio variant)",
+    figma:
+      "Card 9:367 — 6 variants: Hover × Radio × Pressed (pressed = selected on the radio variant)",
     variants: 6,
     stories: {
       // RadioVariants: nth 0 unselected, nth 1 selected
       "components-selectcard--radio-variants": [
-        { label: "height 76 (content-driven: 32 pad + 20+4+20 text)", sel: ".va-select-card", get: "height", expect: 76 },
-        { label: "radius 6px", sel: ".va-select-card", get: "border-radius", expect: "6px" },
-        { label: "padding 16", sel: ".va-select-card", get: "padding-left", expect: "16px" },
-        { label: "row gap 12", sel: ".va-select-card", get: "gap", expect: "12px" },
+        {
+          label: "height 76 (content-driven: 32 pad + 20+4+20 text)",
+          sel: ".va-select-card",
+          get: "height",
+          expect: 76,
+        },
+        {
+          label: "radius 6px",
+          sel: ".va-select-card",
+          get: "border-radius",
+          expect: "6px",
+        },
+        {
+          label: "padding 16",
+          sel: ".va-select-card",
+          get: "padding-left",
+          expect: "16px",
+        },
+        {
+          label: "row gap 12",
+          sel: ".va-select-card",
+          get: "gap",
+          expect: "12px",
+        },
         // The ring is an inset box-shadow (Figma inside stroke; a border added
         // +2px to the content-driven 76px height — caught by this spec).
+        {
+          label:
+            "ring is the authored 0.5px (2026-10 — half-coverage pixel-confirmed; a border would floor to 1px)",
+          sel: ".va-select-card",
+          get: "box-shadow",
+          contains: true,
+          expect: "0.5px",
+        },
         {
           label: "rest ring Stroke/Divider (inset shadow)",
           sel: ".va-select-card",
@@ -1191,7 +1500,8 @@ export const SPECS = {
           expect: { token: "--color-stroke-hover" },
         },
         {
-          label: "hover leaves the fill UNCHANGED (perimeter-only, pixel-proven)",
+          label:
+            "hover leaves the fill UNCHANGED (perimeter-only, pixel-proven)",
           sel: ".va-select-card",
           get: "background-color",
           hover: true,
@@ -1239,7 +1549,8 @@ export const SPECS = {
       ],
       "components-selectcard--chevron-variant": [
         {
-          label: "chevron 18px, Neutral/Base (variable-bound; visually unconfirmed — designer list)",
+          label:
+            "chevron 18px, Neutral/Base (variable-bound; visually unconfirmed — designer list)",
           sel: ".va-select-card-chevron",
           get: "width",
           expect: 18,
@@ -1279,7 +1590,8 @@ export const SPECS = {
           expect: { token: "--color-surface-paper" },
         },
         {
-          label: "bottom border Stroke/Divider 1px (real border — pinned height absorbs it)",
+          label:
+            "bottom border Stroke/Divider 1px (real border — pinned height absorbs it)",
           sel: ".va-header",
           get: "border-bottom-width",
           expect: "1px",
@@ -1290,11 +1602,31 @@ export const SPECS = {
           get: "border-bottom-color",
           expect: { token: "--color-stroke-divider" },
         },
-        { label: "sticky", sel: ".va-header", get: "position", expect: "sticky" },
+        {
+          label: "sticky",
+          sel: ".va-header",
+          get: "position",
+          expect: "sticky",
+        },
         { label: "top 0", sel: ".va-header", get: "top", expect: "0px" },
-        { label: "z-index 40 (library decision)", sel: ".va-header", get: "z-index", expect: "40" },
-        { label: "padding-x 20", sel: ".va-header", get: "padding-left", expect: "20px" },
-        { label: "logo slot 30 tall", sel: ".va-header-logo", get: "height", expect: 30 },
+        {
+          label: "z-index 40 (library decision)",
+          sel: ".va-header",
+          get: "z-index",
+          expect: "40",
+        },
+        {
+          label: "padding-x 20",
+          sel: ".va-header",
+          get: "padding-left",
+          expect: "20px",
+        },
+        {
+          label: "logo slot 30 tall",
+          sel: ".va-header-logo",
+          get: "height",
+          expect: 30,
+        },
         {
           label: "logo absolutely centered (holds true center)",
           sel: ".va-header-logo",
@@ -1302,7 +1634,8 @@ export const SPECS = {
           expect: "absolute",
         },
         {
-          label: "desktop selector participates in flex (display: contents wrapper)",
+          label:
+            "desktop selector participates in flex (display: contents wrapper)",
           sel: ".va-header-desktop",
           get: "display",
           expect: "contents",
@@ -1364,8 +1697,18 @@ export const SPECS = {
           get: "height",
           expect: 40,
         },
-        { label: "options 24 apart", sel: ".va-radio-field-options", get: "gap", expect: "24px" },
-        { label: "radio-to-label 8", sel: ".va-radio-field-option", get: "gap", expect: "8px" },
+        {
+          label: "options 24 apart",
+          sel: ".va-radio-field-options",
+          get: "gap",
+          expect: "24px",
+        },
+        {
+          label: "radio-to-label 8",
+          sel: ".va-radio-field-option",
+          get: "gap",
+          expect: "8px",
+        },
         {
           label: "option text Input 16px",
           sel: ".va-radio-field-option",
@@ -1373,7 +1716,8 @@ export const SPECS = {
           expect: "16px",
         },
         {
-          label: "option ink Text/Primary (Figma's raw #000 not copied — designer list)",
+          label:
+            "option ink Text/Primary (Figma's raw #000 not copied — designer list)",
           sel: ".va-radio-field-option",
           get: "color",
           expect: { token: "--color-content-primary" },
@@ -1385,7 +1729,8 @@ export const SPECS = {
           expect: 20,
         },
         {
-          label: "the field itself draws no box (unwired axes reproduced as absence)",
+          label:
+            "the field itself draws no box (unwired axes reproduced as absence)",
           sel: ".va-radio-field",
           get: "background-color",
           expect: "rgba(0, 0, 0, 0)",
@@ -1394,7 +1739,8 @@ export const SPECS = {
       "components-radiofield--filled": [
         // Figma's Filled axis renders nothing; ours is the real checked input.
         {
-          label: "checked radio renders the crimson ring (native, from .va-radio)",
+          label:
+            "checked radio renders the crimson ring (native, from .va-radio)",
           sel: ".va-radio-field .va-radio",
           get: "box-shadow",
           contains: true,
@@ -1446,7 +1792,8 @@ export const SPECS = {
 
   // -------------------------------------------------------------------- Tabs
   Tabs: {
-    figma: "Tabs 23:825 — 7 variants: Type {Portal, Application} × Hover × Active",
+    figma:
+      "Tabs 23:825 — 7 variants: Type {Portal, Application} × Hover × Active",
     variants: 7,
     stories: {
       // BothTypes: portal row (nth 0 selected, 1 rest) then application row
@@ -1454,12 +1801,37 @@ export const SPECS = {
       "components-tabs--both-types": [
         // Height 34 at every state pins the inset-shadow decision — a real
         // border would render the bordered Application type at 36.
-        { label: "portal height 34", sel: ".va-tab-portal", get: "height", expect: 34 },
-        { label: "application height 34 (the inset-shadow check)", sel: ".va-tab-application", get: "height", expect: 34 },
-        { label: "padding-x 12", sel: ".va-tab", get: "padding-left", expect: "12px" },
-        { label: "padding-y 7", sel: ".va-tab", get: "padding-top", expect: "7px" },
+        {
+          label: "portal height 32 (Height/SM token-bound, was 34)",
+          sel: ".va-tab-portal",
+          get: "height",
+          expect: 32,
+        },
+        {
+          label: "application height 32 (the inset-shadow check; Height/SM)",
+          sel: ".va-tab-application",
+          get: "height",
+          expect: 32,
+        },
+        {
+          label: "padding-x 12",
+          sel: ".va-tab",
+          get: "padding-left",
+          expect: "12px",
+        },
+        {
+          label: "tab padding-y 0 (height is the token)",
+          sel: ".va-tab",
+          get: "padding-top",
+          expect: "0px",
+        },
         { label: "gap 8", sel: ".va-tab", get: "gap", expect: "8px" },
-        { label: "radius 4", sel: ".va-tab", get: "border-radius", expect: "4px" },
+        {
+          label: "radius 4",
+          sel: ".va-tab",
+          get: "border-radius",
+          expect: "4px",
+        },
         { label: "icon 16", sel: ".va-tab svg", get: "width", expect: 16 },
         {
           label: "no text-transform (Labels styles carry none)",
@@ -1481,7 +1853,8 @@ export const SPECS = {
           expect: "500",
         },
         {
-          label: "portal active+hover steps to Action/Focused (near-invisible but two real tokens)",
+          label:
+            "portal active+hover steps to Action/Focused (near-invisible but two real tokens)",
           sel: ".va-tab-portal",
           get: "background-color",
           hover: true,
@@ -1587,10 +1960,30 @@ export const SPECS = {
     stories: {
       "components-skeleton--all-shapes": [
         // Radius groups — one probe per group.
-        { label: "text radius 4", sel: ".va-skeleton-text", get: "border-radius", expect: "4px" },
-        { label: "button radius 6", sel: ".va-skeleton-button", get: "border-radius", expect: "6px" },
-        { label: "card radius 8", sel: ".va-skeleton-card", get: "border-radius", expect: "8px" },
-        { label: "badge radius 10 (rounded-xl override)", sel: ".va-skeleton-badge", get: "border-radius", expect: "10px" },
+        {
+          label: "text radius 4",
+          sel: ".va-skeleton-text",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "button radius 6",
+          sel: ".va-skeleton-button",
+          get: "border-radius",
+          expect: "6px",
+        },
+        {
+          label: "card radius 8",
+          sel: ".va-skeleton-card",
+          get: "border-radius",
+          expect: "8px",
+        },
+        {
+          label: "badge radius 10 (rounded-xl override)",
+          sel: ".va-skeleton-badge",
+          get: "border-radius",
+          expect: "10px",
+        },
         {
           label: "avatar fully round",
           sel: ".va-skeleton-avatar",
@@ -1599,20 +1992,51 @@ export const SPECS = {
           expect: "10px",
         },
         // Spot dimensions across the matrix (md defaults).
-        { label: "text md 200×16", sel: ".va-skeleton-text", get: "width", expect: 200 },
-        { label: "heading md 24 tall", sel: ".va-skeleton-heading", get: "height", expect: 24 },
-        { label: "input md 330×60", sel: ".va-skeleton-input", get: "width", expect: 330 },
-        { label: "card md 158 tall", sel: ".va-skeleton-card", get: "height", expect: 158 },
-        { label: "switch md 36×20", sel: ".va-skeleton-switch", get: "width", expect: 36 },
-        { label: "radio md 20", sel: ".va-skeleton-radio", get: "width", expect: 20 },
+        {
+          label: "text md 200×16",
+          sel: ".va-skeleton-text",
+          get: "width",
+          expect: 200,
+        },
+        {
+          label: "heading md 24 tall",
+          sel: ".va-skeleton-heading",
+          get: "height",
+          expect: 24,
+        },
+        {
+          label: "input md 330×60",
+          sel: ".va-skeleton-input",
+          get: "width",
+          expect: 330,
+        },
+        {
+          label: "card md 158 tall",
+          sel: ".va-skeleton-card",
+          get: "height",
+          expect: 158,
+        },
+        {
+          label: "switch md 36×20",
+          sel: ".va-skeleton-switch",
+          get: "width",
+          expect: 36,
+        },
+        {
+          label: "radio md 20",
+          sel: ".va-skeleton-radio",
+          get: "width",
+          expect: 20,
+        },
         // The fill: raw #f1f1f4 — the written spec names a variable that does
         // NOT exist in the file (verified by full enumeration). Literal
         // comparison is correct here; tokenize when the designer adds it.
         {
-          label: "fill raw #f1f1f4 (no matching variable exists — designer list)",
+          label:
+            "fill = BG/Skeleton token (tokenized 2026-10-15 — the variable finally landed)",
           sel: ".va-skeleton",
           get: "background-color",
-          expect: "rgb(241, 241, 244)",
+          expect: { token: "--color-surface-skeleton" },
         },
         // NOTE: the pulse animation is deliberately NOT asserted here — the
         // harness freezes animations to keep colour reads deterministic. The
@@ -1626,12 +2050,18 @@ export const SPECS = {
 
   // ------------------------------------------------------------ TextSelector
   TextSelector: {
-    figma: "Text Selector 1:489 — 12 variants: Hover × Active × Mobile (duplicate hover columns resolved as hover vs open)",
+    figma:
+      "Text Selector 1:489 — 12 variants: Hover × Active × Mobile (duplicate hover columns resolved as hover vs open)",
     variants: 12,
     stories: {
       // AllStates order: 0 closed · 1 open · 2 closed EN · 3 open EN
       "components-textselector--all-states": [
-        { label: "row 18 tall", sel: ".va-text-selector", get: "height", expect: 18 },
+        {
+          label: "row 18 tall",
+          sel: ".va-text-selector",
+          get: "height",
+          expect: 18,
+        },
         { label: "gap 4", sel: ".va-text-selector", get: "gap", expect: "4px" },
         {
           label: "ink-only: no box at rest",
@@ -1639,8 +2069,18 @@ export const SPECS = {
           get: "background-color",
           expect: "rgba(0, 0, 0, 0)",
         },
-        { label: "globe 16", sel: ".va-text-selector-icon", get: "width", expect: 16 },
-        { label: "chevron 18", sel: ".va-text-selector-chevron", get: "width", expect: 18 },
+        {
+          label: "globe 16",
+          sel: ".va-text-selector-icon",
+          get: "width",
+          expect: 16,
+        },
+        {
+          label: "chevron 18",
+          sel: ".va-text-selector-chevron",
+          get: "width",
+          expect: 18,
+        },
         {
           label: "rest label Tertiary",
           sel: ".va-text-selector-label",
@@ -1722,9 +2162,30 @@ export const SPECS = {
     variants: 4,
     stories: {
       // nth 0 = off, nth 1 = on
+      "components-switch--disabled-gap": [
+        {
+          label:
+            "disabled OFF track Stroke/Divider (913:573 — DRAWN since 2026-10)",
+          sel: ".va-switch:disabled",
+          get: "background-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "disabled ON track Primary/Disabled (913:575)",
+          sel: ".va-switch:disabled",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-primary-disabled" },
+        },
+      ],
       "components-switch--both-states": [
         { label: "track 36 wide", sel: ".va-switch", get: "width", expect: 36 },
-        { label: "track 20 tall", sel: ".va-switch", get: "height", expect: 20 },
+        {
+          label: "track 20 tall",
+          sel: ".va-switch",
+          get: "height",
+          expect: 20,
+        },
         {
           label: "pill radius (not 0)",
           sel: ".va-switch",
@@ -1802,7 +2263,8 @@ export const SPECS = {
           expect: "16px",
         },
         {
-          label: "knob fill unchanged when on (the property states must NOT change)",
+          label:
+            "knob fill unchanged when on (the property states must NOT change)",
           sel: ".va-switch",
           nth: 1,
           get: "::before.background-color",
@@ -1819,13 +2281,19 @@ export const SPECS = {
 
   // ------------------------------------------------------------------- Owner
   Owner: {
-    figma: "Owner 261:13225 — 3 variants: Type {individual, Add, company}, all 34×34, no state axis",
+    figma:
+      "Owner 261:13225 — 3 variants: Type {individual, Add, company}, all 34×34, no state axis",
     variants: 3,
     stories: {
       // AllTypes order: 0 user (individual) · 1 plus (Add) · 2 building (company)
       "components-owner--all-types": [
         { label: "tile 34×34", sel: ".va-owner", get: "width", expect: 34 },
-        { label: "tile height 34", sel: ".va-owner", get: "height", expect: 34 },
+        {
+          label: "tile height 34",
+          sel: ".va-owner",
+          get: "height",
+          expect: 34,
+        },
         {
           label: "radius 4px (authored wins over the 1x arc under-read)",
           sel: ".va-owner",
@@ -1883,14 +2351,30 @@ export const SPECS = {
     stories: {
       "components-ownercontainer--person": [
         {
-          label: "row height 92.5 (92 content + 0.5 hairline; fractional must survive)",
+          label:
+            "row height 92.5 (92 content + 0.5 hairline; fractional must survive)",
           sel: ".va-owner-container",
           get: "height",
           expect: 92.5,
         },
-        { label: "padding x 20", sel: ".va-owner-container", get: "padding-left", expect: "20px" },
-        { label: "padding y 16", sel: ".va-owner-container", get: "padding-top", expect: "16px" },
-        { label: "gap 16 tile→info", sel: ".va-owner-container", get: "gap", expect: "16px" },
+        {
+          label: "padding x 20",
+          sel: ".va-owner-container",
+          get: "padding-left",
+          expect: "20px",
+        },
+        {
+          label: "padding y 16",
+          sel: ".va-owner-container",
+          get: "padding-top",
+          expect: "16px",
+        },
+        {
+          label: "gap 16 tile→info",
+          sel: ".va-owner-container",
+          get: "gap",
+          expect: "16px",
+        },
         {
           label: "divider is a box-shadow, never a border (floor-to-1px trap)",
           sel: ".va-owner-container",
@@ -1910,7 +2394,12 @@ export const SPECS = {
           get: "background-color",
           expect: "rgba(0, 0, 0, 0)",
         },
-        { label: "title row pinned 34", sel: ".va-owner-container-title", get: "height", expect: 34 },
+        {
+          label: "title row pinned 34",
+          sel: ".va-owner-container-title",
+          get: "height",
+          expect: 34,
+        },
         {
           label: "contact row pinned 18",
           sel: ".va-owner-container-contact",
@@ -1936,7 +2425,8 @@ export const SPECS = {
           expect: "500",
         },
         {
-          label: "percent same style as name (single title-level binding; medium confidence)",
+          label:
+            "percent same style as name (single title-level binding; medium confidence)",
           sel: ".va-owner-container-percent",
           get: "font-size",
           expect: "16px",
@@ -1978,10 +2468,11 @@ export const SPECS = {
           expect: "12px",
         },
         {
-          label: "composed Edit is the shipped micro button (12px row)",
+          label:
+            "composed Edit is the shipped micro button (16px row since 2026-10)",
           sel: ".va-owner-container .va-btn-micro",
           get: "height",
-          expect: 12,
+          expect: 16,
         },
         {
           label: "composed delete is IconButton sm+State (18px box)",
@@ -2029,12 +2520,86 @@ export const SPECS = {
     stories: {
       // AllStates order: 0 rest-empty · 1 filled · 2 error (+hint)
       "components-textfield--all-states": [
-        { label: "field total 73 (label 25 + box 48)", sel: ".va-text-field", get: "height", expect: 73 },
-        { label: "label row 25", sel: ".va-text-field-title-row", get: "height", expect: 25 },
-        { label: "box pinned 48", sel: ".va-text-field-box", get: "height", expect: 48 },
-        { label: "box radius 4 (authored)", sel: ".va-text-field-box", get: "border-radius", expect: "4px" },
-        { label: "box border 1px", sel: ".va-text-field-box", get: "border-top-width", expect: "1px" },
-        { label: "box padding 12", sel: ".va-text-field-box", get: "padding-left", expect: "12px" },
+        // Disabled (865:5431, appended at nth 3): the 2026-10-13 family fix.
+        {
+          label: "disabled box fill BG/App Page",
+          sel: ".va-text-field-box",
+          nth: 3,
+          get: "background-color",
+          expect: { token: "--color-surface-app-page" },
+        },
+        {
+          label: "disabled box border Stroke/Divider",
+          sel: ".va-text-field-box",
+          nth: 3,
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "disabled hover does NOT darken the border (excluded by name)",
+          sel: ".va-text-field-box",
+          nth: 3,
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "disabled value ink Tertiary",
+          sel: ".va-text-field-input",
+          nth: 3,
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label: "disabled title UNCHANGED Text/Secondary",
+          sel: ".va-text-field-title",
+          nth: 3,
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "disabled cursor",
+          sel: ".va-text-field-input",
+          nth: 3,
+          get: "cursor",
+          expect: "not-allowed",
+        },
+        {
+          label: "field total 73 (label 25 + box 48)",
+          sel: ".va-text-field",
+          get: "height",
+          expect: 73,
+        },
+        {
+          label: "label row 25",
+          sel: ".va-text-field-title-row",
+          get: "height",
+          expect: 25,
+        },
+        {
+          label: "box pinned 48",
+          sel: ".va-text-field-box",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "box radius 4 (authored)",
+          sel: ".va-text-field-box",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "box border 1px",
+          sel: ".va-text-field-box",
+          get: "border-top-width",
+          expect: "1px",
+        },
+        {
+          label: "box padding 12",
+          sel: ".va-text-field-box",
+          get: "padding-left",
+          expect: "12px",
+        },
         {
           label: "rest border Stroke/Border",
           sel: ".va-text-field-box",
@@ -2060,14 +2625,24 @@ export const SPECS = {
           get: "color",
           expect: { token: "--color-content-secondary" },
         },
-        { label: "label type label-strong 14", sel: ".va-text-field-title", get: "font-size", expect: "14px" },
+        {
+          label: "label type label-strong 14",
+          sel: ".va-text-field-title",
+          get: "font-size",
+          expect: "14px",
+        },
         {
           label: "placeholder ink Content/Hint",
           sel: ".va-text-field-input",
           get: "::placeholder.color",
           expect: { token: "--color-content-hint" },
         },
-        { label: "input type 16/24", sel: ".va-text-field-input", get: "font-size", expect: "16px" },
+        {
+          label: "input type 16/24",
+          sel: ".va-text-field-input",
+          get: "font-size",
+          expect: "16px",
+        },
         {
           label: "value ink Content/Primary",
           sel: ".va-text-field-input",
@@ -2084,7 +2659,8 @@ export const SPECS = {
           expect: { token: "--color-warning" },
         },
         {
-          label: "error+hover UNCHANGED (unwired in Figma — no Stroke/Hover leak)",
+          label:
+            "error+hover UNCHANGED (unwired in Figma — no Stroke/Hover leak)",
           sel: ".va-text-field-box",
           nth: 2,
           get: "border-top-color",
@@ -2099,7 +2675,8 @@ export const SPECS = {
           expect: { token: "--color-content-secondary" },
         },
         {
-          label: "error hint ink Warning/Text (inferred binding — designer to confirm)",
+          label:
+            "error hint ink Warning/Text (inferred binding — designer to confirm)",
           sel: ".va-text-field-hint",
           get: "color",
           expect: { token: "--color-warning-text" },
@@ -2132,7 +2709,12 @@ export const SPECS = {
           sel: ".va-text-field-box",
           nth: 2,
           get: "border-top-color",
-          before: [{ click: ".va-text-field:nth-of-type(3) .va-text-field-input", wait: 450 }],
+          before: [
+            {
+              click: ".va-text-field:nth-of-type(3) .va-text-field-input",
+              wait: 450,
+            },
+          ],
           expect: { token: "--color-warning" },
         },
         {
@@ -2140,14 +2722,34 @@ export const SPECS = {
           sel: ".va-text-field-box",
           nth: 2,
           get: "outline-color",
-          before: [{ click: ".va-text-field:nth-of-type(3) .va-text-field-input", wait: 450 }],
+          before: [
+            {
+              click: ".va-text-field:nth-of-type(3) .va-text-field-input",
+              wait: 450,
+            },
+          ],
           expect: { token: "--color-primary-ring" },
         },
       ],
       "components-textfield--with-slots": [
-        { label: "icon slot 18", sel: ".va-text-field-icon", get: "width", expect: 18 },
-        { label: "help icon-button 18", sel: ".va-text-field-help", get: "width", expect: 18 },
-        { label: "hint type help-caption 12", sel: ".va-text-field-hint", get: "font-size", expect: "12px" },
+        {
+          label: "icon slot 18",
+          sel: ".va-text-field-icon",
+          get: "width",
+          expect: 18,
+        },
+        {
+          label: "help icon-button 18",
+          sel: ".va-text-field-help",
+          get: "width",
+          expect: 18,
+        },
+        {
+          label: "hint type help-caption 12",
+          sel: ".va-text-field-hint",
+          get: "font-size",
+          expect: "12px",
+        },
         {
           label: "hint ink Content/Secondary (non-error)",
           sel: ".va-text-field-hint",
@@ -2170,12 +2772,78 @@ export const SPECS = {
     stories: {
       // AllStates order: 0 placeholder · 1 filled · 2 open · 3 error(+hint) · 4 error+open
       "components-dropdownfield--all-states": [
-        { label: "field total 73 (no hint)", sel: ".va-dropdown-field", get: "height", expect: 73 },
-        { label: "trigger pinned 48", sel: ".va-dropdown-field-trigger", get: "height", expect: 48 },
-        { label: "trigger radius 4", sel: ".va-dropdown-field-trigger", get: "border-radius", expect: "4px" },
-        { label: "trigger px 12", sel: ".va-dropdown-field-trigger", get: "padding-left", expect: "12px" },
-        { label: "trigger gap 8", sel: ".va-dropdown-field-trigger", get: "gap", expect: "8px" },
-        { label: "chevron 18", sel: ".va-dropdown-field-chevron", get: "width", expect: 18 },
+        // Disabled (865:4512, appended at nth 5): the 2026-10-13 family fix.
+        {
+          label: "disabled trigger fill BG/App Page",
+          sel: ".va-dropdown-field-trigger",
+          nth: 5,
+          get: "background-color",
+          expect: { token: "--color-surface-app-page" },
+        },
+        {
+          label: "disabled trigger border Stroke/Divider",
+          sel: ".va-dropdown-field-trigger",
+          nth: 5,
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label:
+            "disabled value ink Tertiary (out-specifies the placeholder class)",
+          sel: ".va-dropdown-field-trigger:disabled .va-dropdown-field-value",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label:
+            "disabled chevron UNCHANGED Neutral/Base (constant in every state)",
+          sel: ".va-dropdown-field-trigger:disabled .va-dropdown-field-chevron",
+          get: "color",
+          expect: { token: "--color-neutral" },
+        },
+        {
+          label: "disabled cursor",
+          sel: ".va-dropdown-field-trigger",
+          nth: 5,
+          get: "cursor",
+          expect: "not-allowed",
+        },
+        {
+          label: "field total 73 (no hint)",
+          sel: ".va-dropdown-field",
+          get: "height",
+          expect: 73,
+        },
+        {
+          label: "trigger pinned 48",
+          sel: ".va-dropdown-field-trigger",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "trigger radius 4",
+          sel: ".va-dropdown-field-trigger",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "trigger px 12",
+          sel: ".va-dropdown-field-trigger",
+          get: "padding-left",
+          expect: "12px",
+        },
+        {
+          label: "trigger gap 8",
+          sel: ".va-dropdown-field-trigger",
+          get: "gap",
+          expect: "8px",
+        },
+        {
+          label: "chevron 18",
+          sel: ".va-dropdown-field-chevron",
+          get: "width",
+          expect: 18,
+        },
         {
           label: "rest border Stroke/Border",
           sel: ".va-dropdown-field-trigger",
@@ -2208,7 +2876,12 @@ export const SPECS = {
           get: "color",
           expect: { token: "--color-neutral" },
         },
-        { label: "chevron closed: no rotation", sel: ".va-dropdown-field-chevron", get: "rotate", expect: "none" },
+        {
+          label: "chevron closed: no rotation",
+          sel: ".va-dropdown-field-chevron",
+          get: "rotate",
+          expect: "none",
+        },
         // Open (nth 2): Primary border + ring + 180° chevron.
         {
           label: "open border Primary",
@@ -2311,17 +2984,80 @@ export const SPECS = {
       // measures. Every error check below selects on [aria-invalid="true"]
       // rather than an index, so instance order is irrelevant to them.
       "components-textarea--all-states": [
-        { label: "field total 104 (label 25 + box 79)", sel: ".va-text-area", get: "height", expect: 104 },
-        { label: "label row 25", sel: ".va-text-area-title-row", get: "height", expect: 25 },
-        { label: "box pinned 79 (off-scale, arbitrary on purpose)", sel: ".va-text-area-input", get: "height", expect: 79 },
+        // Disabled (865:5526, appended at nth 4): the 2026-10-13 family fix.
+        {
+          label: "disabled fill BG/App Page",
+          sel: ".va-text-area-input",
+          nth: 4,
+          get: "background-color",
+          expect: { token: "--color-surface-app-page" },
+        },
+        {
+          label: "disabled border Stroke/Divider",
+          sel: ".va-text-area-input",
+          nth: 4,
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label:
+            "disabled hover does NOT darken the border (guard carries :disabled)",
+          sel: ".va-text-area-input",
+          nth: 4,
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "disabled ink Tertiary",
+          sel: ".va-text-area-input",
+          nth: 4,
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label: "disabled cursor",
+          sel: ".va-text-area-input",
+          nth: 4,
+          get: "cursor",
+          expect: "not-allowed",
+        },
+        {
+          label: "field total 104 (label 25 + box 79)",
+          sel: ".va-text-area",
+          get: "height",
+          expect: 104,
+        },
+        {
+          label: "label row 25",
+          sel: ".va-text-area-title-row",
+          get: "height",
+          expect: 25,
+        },
+        {
+          label: "box pinned 79 (off-scale, arbitrary on purpose)",
+          sel: ".va-text-area-input",
+          get: "height",
+          expect: 79,
+        },
         {
           label: "y-padding 10 — authored, NOT the siblings' centering",
           sel: ".va-text-area-input",
           get: "padding-top",
           expect: "10px",
         },
-        { label: "x-padding 12", sel: ".va-text-area-input", get: "padding-left", expect: "12px" },
-        { label: "radius 4", sel: ".va-text-area-input", get: "border-radius", expect: "4px" },
+        {
+          label: "x-padding 12",
+          sel: ".va-text-area-input",
+          get: "padding-left",
+          expect: "12px",
+        },
+        {
+          label: "radius 4",
+          sel: ".va-text-area-input",
+          get: "border-radius",
+          expect: "4px",
+        },
         {
           label: "rest border Stroke/Border",
           sel: ".va-text-area-input",
@@ -2375,7 +3111,8 @@ export const SPECS = {
           expect: "none",
         },
         {
-          label: "wrapping enabled (regression guard vs Figma's copy-paste nowrap defect)",
+          label:
+            "wrapping enabled (regression guard vs Figma's copy-paste nowrap defect)",
           sel: ".va-text-area-input",
           get: "white-space",
           not: true,
@@ -2396,7 +3133,8 @@ export const SPECS = {
 
         // --- Error (D1) — mirrors TextField's error block exactly. ---
         {
-          label: "error border Warning/Base (NOT the Error ramp — D4, permanent)",
+          label:
+            "error border Warning/Base (NOT the Error ramp — D4, permanent)",
           sel: '.va-text-area-input[aria-invalid="true"]',
           get: "border-top-color",
           expect: { token: "--color-warning" },
@@ -2415,23 +3153,30 @@ export const SPECS = {
           expect: { token: "--color-content-secondary" },
         },
         {
-          label: "error hint ink Warning/Text (D3 — the hint row IS the error row)",
+          label:
+            "error hint ink Warning/Text (D3 — the hint row IS the error row)",
           sel: '.va-text-area:has([aria-invalid="true"]) .va-text-area-hint',
           get: "color",
           expect: { token: "--color-warning-text" },
         },
         {
-          label: "error+focus border STAYS Warning (source order — amber wins the tie)",
+          label:
+            "error+focus border STAYS Warning (source order — amber wins the tie)",
           sel: '.va-text-area-input[aria-invalid="true"]',
           get: "border-top-color",
-          before: [{ click: '.va-text-area-input[aria-invalid="true"]', wait: 450 }],
+          before: [
+            { click: '.va-text-area-input[aria-invalid="true"]', wait: 450 },
+          ],
           expect: { token: "--color-warning" },
         },
         {
-          label: "error+focus ring STILL crimson Primary/Ring (outline is a separate property)",
+          label:
+            "error+focus ring STILL crimson Primary/Ring (outline is a separate property)",
           sel: '.va-text-area-input[aria-invalid="true"]',
           get: "outline-color",
-          before: [{ click: '.va-text-area-input[aria-invalid="true"]', wait: 450 }],
+          before: [
+            { click: '.va-text-area-input[aria-invalid="true"]', wait: 450 },
+          ],
           expect: { token: "--color-primary-ring" },
         },
       ],
@@ -2447,10 +3192,21 @@ export const SPECS = {
     variants: 3,
     stories: {
       "components-modal--destructive": [
-        { label: "card width 480 fixed", sel: ".va-modal", get: "width", expect: 480 },
-        { label: "card radius 12 (rounded-2xl override)", sel: ".va-modal", get: "border-radius", expect: "12px" },
         {
-          label: "card ring is an inset shadow, not a border (content-driven height)",
+          label: "card width 480 fixed",
+          sel: ".va-modal",
+          get: "width",
+          expect: 480,
+        },
+        {
+          label: "card radius 12 (rounded-2xl override)",
+          sel: ".va-modal",
+          get: "border-radius",
+          expect: "12px",
+        },
+        {
+          label:
+            "card ring is an inset shadow, not a border (content-driven height)",
           sel: ".va-modal",
           get: "border-top-width",
           expect: "0px",
@@ -2463,42 +3219,95 @@ export const SPECS = {
           expect: { token: "--color-stroke-divider" },
         },
         {
-          label: "shadow is the tokenized Basic Drop Shadow (24px blur present)",
+          label:
+            "shadow is the tokenized Basic Drop Shadow (24px blur present)",
           sel: ".va-modal",
           get: "box-shadow",
           contains: true,
           expect: "24px",
         },
-        { label: "card fill Paper", sel: ".va-modal", get: "background-color", expect: { token: "--color-surface-paper" } },
-        { label: "padding 28", sel: ".va-modal", get: "padding-top", expect: "28px" },
-        { label: "body gap 24", sel: ".va-modal", get: "row-gap", expect: "24px" },
-        { label: "modal z-60 (Library Contracts scale)", sel: ".va-modal", get: "z-index", expect: "60" },
         {
-          label: "card height 308 — EMERGENT from the default-copy fixture (1-line title/desc, 2-line banner), not pinned CSS",
+          label: "card fill Paper",
+          sel: ".va-modal",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "padding 28",
+          sel: ".va-modal",
+          get: "padding-top",
+          expect: "28px",
+        },
+        {
+          label: "body gap 24",
+          sel: ".va-modal",
+          get: "row-gap",
+          expect: "24px",
+        },
+        {
+          label: "modal z-60 (Library Contracts scale)",
+          sel: ".va-modal",
+          get: "z-index",
+          expect: "60",
+        },
+        {
+          label:
+            "card height 308 — EMERGENT from the default-copy fixture (1-line title/desc, 2-line banner), not pinned CSS",
           sel: ".va-modal",
           get: "height",
           expect: 308,
         },
-        { label: "title 18px (raw — no token models 18/24/600; designer list)", sel: ".va-modal-title", get: "font-size", expect: "18px" },
-        { label: "title weight 600", sel: ".va-modal-title", get: "font-weight", expect: "600" },
+        {
+          label: "title 18px (raw — no token models 18/24/600; designer list)",
+          sel: ".va-modal-title",
+          get: "font-size",
+          expect: "18px",
+        },
+        {
+          label: "title weight 600",
+          sel: ".va-modal-title",
+          get: "font-weight",
+          expect: "600",
+        },
         {
           label: "title wraps (Figma's nowrap overflow defect corrected)",
           sel: ".va-modal-title",
           get: "white-space",
           expect: "normal",
         },
-        { label: "description text-label 14", sel: ".va-modal-description", get: "font-size", expect: "14px" },
+        {
+          label: "description text-label 14",
+          sel: ".va-modal-description",
+          get: "font-size",
+          expect: "14px",
+        },
         {
           label: "description ink Secondary",
           sel: ".va-modal-description",
           get: "color",
           expect: { token: "--color-content-secondary" },
         },
-        { label: "close composes the bare IconButton (md Icon Only, 18px)", sel: ".va-modal-header .va-icon-button", get: "width", expect: 18 },
-        { label: "notice radius 6", sel: ".va-modal-notice", get: "border-radius", expect: "6px" },
-        { label: "notice padding 16", sel: ".va-modal-notice", get: "padding-top", expect: "16px" },
         {
-          label: "destructive fill Primary/BG (crimson tints, NOT the Error ramp — verbatim)",
+          label: "close composes the bare IconButton (md Icon Only, 18px)",
+          sel: ".va-modal-header .va-icon-button",
+          get: "width",
+          expect: 18,
+        },
+        {
+          label: "notice radius 6",
+          sel: ".va-modal-notice",
+          get: "border-radius",
+          expect: "6px",
+        },
+        {
+          label: "notice padding 16",
+          sel: ".va-modal-notice",
+          get: "padding-top",
+          expect: "16px",
+        },
+        {
+          label:
+            "destructive fill Primary/BG (crimson tints, NOT the Error ramp — verbatim)",
           sel: ".va-modal-notice-destructive",
           get: "background-color",
           expect: { token: "--color-primary-bg" },
@@ -2511,26 +3320,53 @@ export const SPECS = {
           expect: { token: "--color-primary" },
         },
         {
-          label: "destructive ink Primary/Text (label+body inherit one currentColor)",
+          label:
+            "destructive ink Primary/Text (label+body inherit one currentColor)",
           sel: ".va-modal-notice-destructive",
           get: "color",
           expect: { token: "--color-primary-text" },
         },
-        { label: "notice label uppercase styled", sel: ".va-modal-notice-label", get: "text-transform", expect: "uppercase" },
-        { label: "actions gap 16", sel: ".va-modal-actions", get: "column-gap", expect: "16px" },
         {
-          label: "actions row carries no pointer cursor (Figma defect excluded)",
+          label: "notice label uppercase styled",
+          sel: ".va-modal-notice-label",
+          get: "text-transform",
+          expect: "uppercase",
+        },
+        {
+          label: "actions gap 16",
+          sel: ".va-modal-actions",
+          get: "column-gap",
+          expect: "16px",
+        },
+        {
+          label:
+            "actions row carries no pointer cursor (Figma defect excluded)",
           sel: ".va-modal-actions",
           get: "cursor",
           expect: "auto",
         },
-        { label: "composed Cancel is the shipped Secondary (48px)", sel: ".va-modal-actions .va-btn-secondary", get: "height", expect: 48 },
-        { label: "composed Confirm is the shipped Primary (48px)", sel: ".va-modal-actions .va-btn-primary", get: "height", expect: 48 },
+        {
+          label: "composed Cancel is the shipped Secondary (48px)",
+          sel: ".va-modal-actions .va-btn-secondary",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "composed Confirm is the shipped Primary (48px)",
+          sel: ".va-modal-actions .va-btn-primary",
+          get: "height",
+          expect: 48,
+        },
       ],
       "components-modal--neutral": [
-        { label: "Neutral has NO notice (Type = banner presence, no boolean)", sel: ".va-modal-notice", absent: true },
         {
-          label: "Neutral height 196 — emergent: 308 − 88 banner − 24 gap, exact",
+          label: "Neutral has NO notice (Type = banner presence, no boolean)",
+          sel: ".va-modal-notice",
+          absent: true,
+        },
+        {
+          label:
+            "Neutral height 196 — emergent: 308 − 88 banner − 24 gap, exact",
           sel: ".va-modal",
           get: "height",
           expect: 196,
@@ -2553,7 +3389,8 @@ export const SPECS = {
           expect: "rgb(22, 163, 74)",
         },
         {
-          label: "success label ink raw #15803d (differs from body, unlike Destructive)",
+          label:
+            "success label ink raw #15803d (differs from body, unlike Destructive)",
           sel: ".va-modal-notice-success .va-modal-notice-label",
           get: "color",
           expect: "rgb(21, 128, 61)",
@@ -2564,12 +3401,23 @@ export const SPECS = {
           get: "color",
           expect: "rgb(22, 101, 52)",
         },
-        { label: "Success height 308 (symmetric with Destructive)", sel: ".va-modal", get: "height", expect: 308 },
+        {
+          label: "Success height 308 (symmetric with Destructive)",
+          sel: ".va-modal",
+          get: "height",
+          expect: 308,
+        },
       ],
       "components-modal--with-backdrop": [
-        { label: "backdrop z-50 (Library Contracts scale)", sel: ".va-modal-backdrop", get: "z-index", expect: "50" },
         {
-          label: "backdrop washes with Content/Primary at 45% (UNSOURCED — no scrim exists in Figma; designer list)",
+          label: "backdrop z-50 (Library Contracts scale)",
+          sel: ".va-modal-backdrop",
+          get: "z-index",
+          expect: "50",
+        },
+        {
+          label:
+            "backdrop washes with Content/Primary at 45% (UNSOURCED — no scrim exists in Figma; designer list)",
           sel: ".va-modal-backdrop",
           get: "background-color",
           contains: true,
@@ -2586,7 +3434,8 @@ export const SPECS = {
 
   // ----------------------------------------------------------------- Tooltip
   Tooltip: {
-    figma: "tooltip 582:9178 — single symbol, no axes, 280×128 sample. First use of BG/Contrast + Field Label.",
+    figma:
+      "tooltip 582:9178 — single symbol, no axes, 280×128 sample. First use of BG/Contrast + Field Label.",
     variants: 1,
     stories: {
       "components-tooltip--with-title": [
@@ -2596,7 +3445,12 @@ export const SPECS = {
           get: "width",
           expect: 280,
         },
-        { label: "radius 8 (rounded-lg)", sel: ".va-tooltip", get: "border-radius", expect: "8px" },
+        {
+          label: "radius 8 (rounded-lg)",
+          sel: ".va-tooltip",
+          get: "border-radius",
+          expect: "8px",
+        },
         {
           label: "fill the NEW BG/Contrast token",
           sel: ".va-tooltip",
@@ -2610,8 +3464,18 @@ export const SPECS = {
           contains: true,
           expect: "24px",
         },
-        { label: "padding x 16", sel: ".va-tooltip", get: "padding-left", expect: "16px" },
-        { label: "padding y 12", sel: ".va-tooltip", get: "padding-top", expect: "12px" },
+        {
+          label: "padding x 16",
+          sel: ".va-tooltip",
+          get: "padding-left",
+          expect: "16px",
+        },
+        {
+          label: "padding y 12",
+          sel: ".va-tooltip",
+          get: "padding-top",
+          expect: "12px",
+        },
         { label: "gap 8", sel: ".va-tooltip", get: "row-gap", expect: "8px" },
         {
           label: "title is Field Label 13/16/500 (the token's FIRST consumer)",
@@ -2619,7 +3483,12 @@ export const SPECS = {
           get: "font-size",
           expect: "13px",
         },
-        { label: "title weight 500", sel: ".va-tooltip-title", get: "font-weight", expect: "500" },
+        {
+          label: "title weight 500",
+          sel: ".va-tooltip-title",
+          get: "font-weight",
+          expect: "500",
+        },
         {
           label: "title ink Text/Hint (muted over the dark ground)",
           sel: ".va-tooltip-title",
@@ -2644,11 +3513,17 @@ export const SPECS = {
           get: "word-break",
           expect: "break-word",
         },
-        { label: "no border", sel: ".va-tooltip", get: "border-top-width", expect: "0px" },
+        {
+          label: "no border",
+          sel: ".va-tooltip",
+          get: "border-top-width",
+          expect: "0px",
+        },
       ],
       "components-tooltip--short": [
         {
-          label: "short content hugs under the 280 max (labeled library reading of the fixed sample frame)",
+          label:
+            "short content hugs under the 280 max (labeled library reading of the fixed sample frame)",
           sel: ".va-tooltip",
           get: "width",
           not: true,
@@ -2669,7 +3544,12 @@ export const SPECS = {
     stories: {
       // AllTypes order: 0 success · 1 error · 2 info
       "components-toast--all-types": [
-        { label: "card radius 8", sel: ".va-toast", get: "border-radius", expect: "8px" },
+        {
+          label: "card radius 8",
+          sel: ".va-toast",
+          get: "border-radius",
+          expect: "8px",
+        },
         {
           label: "ring is an inset shadow, not a border (content-driven 66)",
           sel: ".va-toast",
@@ -2690,18 +3570,48 @@ export const SPECS = {
           contains: true,
           expect: "24px",
         },
-        { label: "fill Paper", sel: ".va-toast", get: "background-color", expect: { token: "--color-surface-paper" } },
-        { label: "padding 16", sel: ".va-toast", get: "padding-top", expect: "16px" },
-        { label: "icon↔content gap 12", sel: ".va-toast", get: "column-gap", expect: "12px" },
-        { label: "title↔body gap 4", sel: ".va-toast-content", get: "row-gap", expect: "4px" },
+        {
+          label: "fill Paper",
+          sel: ".va-toast",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "padding 16",
+          sel: ".va-toast",
+          get: "padding-top",
+          expect: "16px",
+        },
+        {
+          label: "icon↔content gap 12",
+          sel: ".va-toast",
+          get: "column-gap",
+          expect: "12px",
+        },
+        {
+          label: "title↔body gap 4",
+          sel: ".va-toast-content",
+          get: "row-gap",
+          expect: "4px",
+        },
         {
           label: "height 66 emergent (16+34+16, default copy single lines)",
           sel: ".va-toast",
           get: "height",
           expect: 66,
         },
-        { label: "toast z-70 (Library Contracts scale)", sel: ".va-toast", get: "z-index", expect: "70" },
-        { label: "status icon 18", sel: ".va-toast-icon", get: "width", expect: 18 },
+        {
+          label: "toast z-70 (Library Contracts scale)",
+          sel: ".va-toast",
+          get: "z-index",
+          expect: "70",
+        },
+        {
+          label: "status icon 18",
+          sel: ".va-toast-icon",
+          get: "width",
+          expect: 18,
+        },
         {
           label: "title Field Label 13 (the token's second consumer)",
           sel: ".va-toast-title",
@@ -2714,7 +3624,12 @@ export const SPECS = {
           get: "color",
           expect: { token: "--color-content-primary" },
         },
-        { label: "body help-caption 12", sel: ".va-toast-body", get: "font-size", expect: "12px" },
+        {
+          label: "body help-caption 12",
+          sel: ".va-toast-body",
+          get: "font-size",
+          expect: "12px",
+        },
         {
           label: "body ink Text/Secondary",
           sel: ".va-toast-body",
@@ -2728,7 +3643,8 @@ export const SPECS = {
           expect: { token: "--color-success" },
         },
         {
-          label: "'error' icon Warning/Base VERBATIM (the file-wide slip, sharpest instance)",
+          label:
+            "'error' icon Warning/Base VERBATIM (the file-wide slip, sharpest instance)",
           sel: ".va-toast-error .va-toast-icon",
           get: "color",
           expect: { token: "--color-warning" },
@@ -2746,22 +3662,53 @@ export const SPECS = {
           get: "color",
           expect: { token: "--color-content-primary" },
         },
-        { label: "close composes the bare IconButton (18px)", sel: ".va-toast .va-icon-button", get: "width", expect: 18 },
+        {
+          label: "close composes the bare IconButton (18px)",
+          sel: ".va-toast .va-icon-button",
+          get: "width",
+          expect: 18,
+        },
       ],
       "components-toast--simple": [
         // rounded-full computes to calc(infinity*1px) — assert non-square
         // like Avatar's circle check rather than pinning the clamped value.
-        { label: "pill is fully round", sel: ".va-toast-simple", get: "border-radius", not: true, expect: "0px" },
+        {
+          label: "pill is fully round",
+          sel: ".va-toast-simple",
+          get: "border-radius",
+          not: true,
+          expect: "0px",
+        },
         {
           label: "pill ground BG/Contrast (the Tooltip's dark token)",
           sel: ".va-toast-simple",
           get: "background-color",
           expect: { token: "--color-surface-contrast" },
         },
-        { label: "pill height 36 (10+16+10, no ring)", sel: ".va-toast-simple", get: "height", expect: 36 },
-        { label: "pill padding x 16", sel: ".va-toast-simple", get: "padding-left", expect: "16px" },
-        { label: "pill padding y 10", sel: ".va-toast-simple", get: "padding-top", expect: "10px" },
-        { label: "pill gap 8", sel: ".va-toast-simple", get: "column-gap", expect: "8px" },
+        {
+          label: "pill height 36 (10+16+10, no ring)",
+          sel: ".va-toast-simple",
+          get: "height",
+          expect: 36,
+        },
+        {
+          label: "pill padding x 16",
+          sel: ".va-toast-simple",
+          get: "padding-left",
+          expect: "16px",
+        },
+        {
+          label: "pill padding y 10",
+          sel: ".va-toast-simple",
+          get: "padding-top",
+          expect: "10px",
+        },
+        {
+          label: "pill gap 8",
+          sel: ".va-toast-simple",
+          get: "column-gap",
+          expect: "8px",
+        },
         {
           label: "pill text Content 13 in Text/Contrast",
           sel: ".va-toast-simple",
@@ -2791,15 +3738,36 @@ export const SPECS = {
 
   // ----------------------------------------------------------- StatusTracker
   StatusTracker: {
-    figma: "Application Status 64:4623 — Active {no, yes}, 93×16. Ink swap only.",
+    figma:
+      "Application Status 64:4623 — Active {no, yes}, 93×16. Ink swap only.",
     variants: 2,
     stories: {
       // AllStates order: 0 active · 1 inactive
       "components-statustracker--all-states": [
-        { label: "row 16 tall", sel: ".va-status-tracker", get: "height", expect: 16 },
-        { label: "gap 8", sel: ".va-status-tracker", get: "column-gap", expect: "8px" },
-        { label: "glyph 14 (IconButton sm-glyph size)", sel: ".va-status-tracker svg", get: "width", expect: 14 },
-        { label: "type Field Label 13", sel: ".va-status-tracker", get: "font-size", expect: "13px" },
+        {
+          label: "row 16 tall",
+          sel: ".va-status-tracker",
+          get: "height",
+          expect: 16,
+        },
+        {
+          label: "gap 8",
+          sel: ".va-status-tracker",
+          get: "column-gap",
+          expect: "8px",
+        },
+        {
+          label: "glyph 14 (IconButton sm-glyph size)",
+          sel: ".va-status-tracker svg",
+          get: "width",
+          expect: 14,
+        },
+        {
+          label: "type Field Label 13",
+          sel: ".va-status-tracker",
+          get: "font-size",
+          expect: "13px",
+        },
         {
           label: "active ink Text/Primary",
           sel: ".va-status-tracker",
@@ -2822,15 +3790,36 @@ export const SPECS = {
 
   // ------------------------------------------------------------------ Action
   Action: {
-    figma: "Action 71:848 — Pending / rest / Done, 720×84. Done binds Success/Text.",
+    figma:
+      "Action 71:848 — Pending / rest / Done, 720×84. Done binds Success/Text.",
     variants: 3,
     stories: {
       // AllStates order: 0 done · 1 rest · 2 pending
       "components-action--all-states": [
-        { label: "row fill Paper", sel: ".va-action", get: "background-color", expect: { token: "--color-surface-paper" } },
-        { label: "row padding 20", sel: ".va-action", get: "padding-top", expect: "20px" },
-        { label: "row gap 16", sel: ".va-action", get: "column-gap", expect: "16px" },
-        { label: "row height 84 emergent (20+44+20)", sel: ".va-action", get: "height", expect: 84 },
+        {
+          label: "row fill Paper",
+          sel: ".va-action",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "row padding 20",
+          sel: ".va-action",
+          get: "padding-top",
+          expect: "20px",
+        },
+        {
+          label: "row gap 16",
+          sel: ".va-action",
+          get: "column-gap",
+          expect: "16px",
+        },
+        {
+          label: "row height 84 emergent (20+44+20)",
+          sel: ".va-action",
+          get: "height",
+          expect: 84,
+        },
         {
           label: "hairline is an inset shadow (OwnerContainer pattern)",
           sel: ".va-action",
@@ -2844,14 +3833,24 @@ export const SPECS = {
           contains: true,
           expect: { token: "--color-stroke-divider" },
         },
-        { label: "leading icon 18", sel: ".va-action-icon", get: "width", expect: 18 },
+        {
+          label: "leading icon 18",
+          sel: ".va-action-icon",
+          get: "width",
+          expect: 18,
+        },
         {
           label: "icon ink Text/Secondary (constant)",
           sel: ".va-action-icon",
           get: "color",
           expect: { token: "--color-content-secondary" },
         },
-        { label: "title title-medium 16", sel: ".va-action-title", get: "font-size", expect: "16px" },
+        {
+          label: "title title-medium 16",
+          sel: ".va-action-title",
+          get: "font-size",
+          expect: "16px",
+        },
         {
           label: "done title DEMOTED to Secondary",
           sel: ".va-action-title",
@@ -2871,10 +3870,30 @@ export const SPECS = {
           get: "color",
           expect: { token: "--color-content-tertiary" },
         },
-        { label: "status chip 34 pinned", sel: ".va-action-status", get: "height", expect: 34 },
-        { label: "chip glyph 12", sel: ".va-action-status svg", get: "width", expect: 12 },
-        { label: "chip type micro-label 9", sel: ".va-action-status", get: "font-size", expect: "9px" },
-        { label: "chip uppercase styled", sel: ".va-action-status", get: "text-transform", expect: "uppercase" },
+        {
+          label: "status chip 34 pinned",
+          sel: ".va-action-status",
+          get: "height",
+          expect: 34,
+        },
+        {
+          label: "chip glyph 12",
+          sel: ".va-action-status svg",
+          get: "width",
+          expect: 12,
+        },
+        {
+          label: "chip type micro-label 9",
+          sel: ".va-action-status",
+          get: "font-size",
+          expect: "9px",
+        },
+        {
+          label: "chip uppercase styled",
+          sel: ".va-action-status",
+          get: "text-transform",
+          expect: "uppercase",
+        },
         {
           label: "DONE chip Success/Text — status-ramp adoption",
           sel: ".va-action-done .va-action-status",
@@ -2887,19 +3906,44 @@ export const SPECS = {
           get: "color",
           expect: { token: "--color-content-hint" },
         },
-        { label: "CTA 34 pinned", sel: ".va-action-cta", get: "height", expect: 34 },
-        { label: "CTA border 1px Stroke/Divider", sel: ".va-action-cta", get: "border-top-color", expect: { token: "--color-stroke-divider" } },
-        { label: "CTA label Field Label 13", sel: ".va-action-cta", get: "font-size", expect: "13px" },
+        {
+          label: "CTA 34 pinned",
+          sel: ".va-action-cta",
+          get: "height",
+          expect: 34,
+        },
+        {
+          label: "CTA border 1px Stroke/Divider",
+          sel: ".va-action-cta",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "CTA label Field Label 13",
+          sel: ".va-action-cta",
+          get: "font-size",
+          expect: "13px",
+        },
         {
           label: "CTA ink Text/Primary",
           sel: ".va-action-cta",
           get: "color",
           expect: { token: "--color-content-primary" },
         },
-        { label: "CTA arrow 18", sel: ".va-action-cta svg", get: "width", expect: 18 },
+        {
+          label: "CTA arrow 18",
+          sel: ".va-action-cta svg",
+          get: "width",
+          expect: 18,
+        },
       ],
       "components-action--with-badge": [
-        { label: "badge boolean composes the shipped Badge (16px pill)", sel: ".va-action .va-badge", get: "height", expect: 16 },
+        {
+          label: "badge boolean composes the shipped Badge (16px pill)",
+          sel: ".va-action .va-badge",
+          get: "height",
+          expect: 16,
+        },
       ],
 
       // NOT ASSERTED: hover/pressed (none drawn, none invented — only the
@@ -2908,32 +3952,591 @@ export const SPECS = {
     },
   },
 
+  // ----------------------------------------------------------------- OtpCell
+  OtpCell: {
+    figma:
+      "OTP / Digit cell 824:4856 — 4 variants, State {Empty, Filled, Focused, Error}, all 56×56",
+    variants: 4,
+    stories: {
+      // AllStates order: 0 empty · 1 filled · 2 error
+      // AllStates order: 0 empty · 1 filled · 2 error · 3 disabled (appended)
+      "components-otpcell--all-states": [
+        // Geometry — height AND width pinned (a real 1px border, border-box absorbs it)
+        {
+          label: "cell height 56",
+          sel: ".va-otp-cell",
+          get: "height",
+          expect: 56,
+        },
+        {
+          label: "cell width 56",
+          sel: ".va-otp-cell",
+          get: "width",
+          expect: 56,
+        },
+        {
+          label:
+            "radius 4 (authored, two independent reads; pixel fit read ≈5.4 within antialias error — authored wins, Switch-knob precedent)",
+          sel: ".va-otp-cell",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label:
+            "border is a REAL 1px (measured exactly 1.00 — no fractional trap)",
+          sel: ".va-otp-cell",
+          get: "border-top-width",
+          expect: "1px",
+        },
+        {
+          label: "rest border Stroke/Border",
+          sel: ".va-otp-cell",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "fill Paper (constant in every state)",
+          sel: ".va-otp-cell",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        // Type — Metric/Small, the first form control on the Metric family
+        {
+          label: "digit Metric/Small 20",
+          sel: ".va-otp-cell",
+          get: "font-size",
+          expect: "20px",
+        },
+        {
+          label: "digit line 26",
+          sel: ".va-otp-cell",
+          get: "line-height",
+          expect: "26px",
+        },
+        {
+          label: "digit weight 500",
+          sel: ".va-otp-cell",
+          get: "font-weight",
+          expect: "500",
+        },
+        {
+          label: "digit centred",
+          sel: ".va-otp-cell",
+          get: "text-align",
+          expect: "center",
+        },
+        {
+          label: "filled digit ink Text/Primary",
+          sel: ".va-otp-cell",
+          get: "color",
+          nth: 1,
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label:
+            "caret Primary (Figma's '|' glyph is a FAKE caret — shipped as caret-color)",
+          sel: ".va-otp-cell",
+          get: "caret-color",
+          expect: { token: "--color-primary" },
+        },
+        // Focus — :focus (the caret state), Primary border + the 3px ring
+        {
+          label: "focus border Primary",
+          sel: ".va-otp-cell",
+          get: "border-top-color",
+          before: [{ click: ".va-otp-cell", wait: 450 }],
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "focus ring 3px",
+          sel: ".va-otp-cell",
+          get: "outline-width",
+          before: [{ click: ".va-otp-cell", wait: 450 }],
+          expect: "3px",
+        },
+        {
+          label: "focus ring Primary/Ring",
+          sel: ".va-otp-cell",
+          get: "outline-color",
+          before: [{ click: ".va-otp-cell", wait: 450 }],
+          expect: { token: "--color-primary-ring" },
+        },
+        {
+          label: "focused box stays 56 (the ring is paint-only, outside)",
+          sel: ".va-otp-cell",
+          get: "height",
+          before: [{ click: ".va-otp-cell", wait: 450 }],
+          expect: 56,
+        },
+        {
+          label:
+            "focused digit ink UNCHANGED Text/Primary (the crimson in Figma is only the fake caret)",
+          sel: ".va-otp-cell",
+          get: "color",
+          before: [{ click: ".va-otp-cell", wait: 450 }],
+          expect: { token: "--color-content-primary" },
+        },
+        // Error — the Warning ramp (decision D4), border only
+        {
+          label:
+            "error border Warning/Base (amber — D4; no Error/* token exists on it)",
+          sel: '.va-otp-cell[aria-invalid="true"]',
+          get: "border-top-color",
+          expect: { token: "--color-warning" },
+        },
+        {
+          label: "error digit ink unchanged Text/Primary",
+          sel: '.va-otp-cell[aria-invalid="true"]',
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+        {
+          label: "error fill unchanged Paper",
+          sel: '.va-otp-cell[aria-invalid="true"]',
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "disabled fill BG/App Page (913:886 — DRAWN, Height/XL bound)",
+          sel: ".va-otp-cell:disabled",
+          get: "background-color",
+          expect: { token: "--color-surface-app-page" },
+        },
+        {
+          label: "disabled border Stroke/Divider",
+          sel: ".va-otp-cell:disabled",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "disabled digit ink Tertiary",
+          sel: ".va-otp-cell:disabled",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+      ],
+
+      // NOT ASSERTED: hover/disabled/pressed (none drawn, none invented —
+      // disabled is the family gap, cursor only); error+focus compound
+      // (undrawn — ships the family rule: amber border + crimson ring, the
+      // error rule sorts after the focus rule); Empty's Text/Hint ink (it
+      // only ever paints a consumer-supplied ::placeholder).
+    },
+  },
+
+  // ---------------------------------------------------------------- OtpField
+  OtpField: {
+    figma:
+      "OTP field 815:9211 — 4 variants, State {Empty, Focused, Filled, Error}, all 376×100 (title 25 + cells 56 + hint 19)",
+    variants: 4,
+    stories: {
+      "components-otpfield--empty": [
+        // The 100px math: 25 + 56 + 19
+        {
+          label: "field width hugs 376 min",
+          sel: ".va-otp-field",
+          get: "min-width",
+          expect: "376px",
+        },
+        {
+          label: "title row 25 (20 line + 5 pb)",
+          sel: ".va-otp-field-title",
+          get: "height",
+          expect: 25,
+        },
+        {
+          label: "title Labels/Strong 14",
+          sel: ".va-otp-field-title",
+          get: "font-size",
+          expect: "14px",
+        },
+        {
+          label: "title weight 500",
+          sel: ".va-otp-field-title",
+          get: "font-weight",
+          expect: "500",
+        },
+        {
+          label: "title ink Text/Secondary (constant in every state)",
+          sel: ".va-otp-field-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "legend UA padding zeroed (the RadioField 1.3.1 regression)",
+          sel: ".va-otp-field-title",
+          get: "padding-left",
+          expect: "0px",
+        },
+        {
+          label: "cells row 56",
+          sel: ".va-otp-field-cells",
+          get: "height",
+          expect: 56,
+        },
+        {
+          label: "cell gap 8 (Spacing/8)",
+          sel: ".va-otp-field-cells",
+          get: "column-gap",
+          expect: "8px",
+        },
+        {
+          label:
+            "cells row hugs 376 exactly (6×56 + 5×8) — left-aligned, never stretched",
+          sel: ".va-otp-field-cells",
+          get: "width",
+          expect: 376,
+        },
+        {
+          label: "hint row 19 (5 pt + 14 line)",
+          sel: ".va-otp-field-hint",
+          get: "height",
+          expect: 19,
+        },
+        {
+          label: "hint Help & Caption 12",
+          sel: ".va-otp-field-hint",
+          get: "font-size",
+          expect: "12px",
+        },
+        {
+          label: "hint ink Text/Secondary at rest",
+          sel: ".va-otp-field-hint",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+      ],
+      "components-otpfield--error": [
+        {
+          label:
+            "error: every cell border Warning/Base (Figma draws all six — no per-cell error)",
+          sel: ".va-otp-field-cells .va-otp-cell",
+          get: "border-top-color",
+          nth: 5,
+          expect: { token: "--color-warning" },
+        },
+        {
+          label:
+            "error hint ink Warning/Text (via :has() off the real input state)",
+          sel: ".va-otp-field-hint",
+          get: "color",
+          expect: { token: "--color-warning-text" },
+        },
+        {
+          label: "error title ink UNCHANGED Text/Secondary",
+          sel: ".va-otp-field-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label: "error digits unchanged Text/Primary",
+          sel: ".va-otp-field-cells .va-otp-cell",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+      ],
+
+      // NOT ASSERTED: which cell is focused (next-empty is consumer JS —
+      // Figma's Focused variant is one sample composition); hover/disabled
+      // (undrawn); showLabel/showSupportingText booleans (omit the element).
+    },
+  },
+
+  // ----------------------------------------------------------------- Address
+  Address: {
+    figma:
+      "Address Super entry 281:4634 — 13 variants, partial Filled × Hover × Focus × Error × Disabled; one group box, five bespoke cells in three rows",
+    variants: 13,
+    stories: {
+      // AllStates order: 0 rest · 1 error (+hint) · 2 disabled
+      "components-address--all-states": [
+        {
+          label: "title Labels/Strong 14",
+          sel: ".va-address-title",
+          get: "font-size",
+          expect: "14px",
+        },
+        {
+          label:
+            "title ink Text/Secondary (shipped consistent; Figma's Focus variants flip to 13/16 — designer list)",
+          sel: ".va-address-title",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label:
+            "group border Stroke/Divider (1px — the OUTER ring is lighter than the inner dividers)",
+          sel: ".va-address-group",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "group radius 4",
+          sel: ".va-address-group",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "group fill Paper",
+          sel: ".va-address-group",
+          get: "background-color",
+          expect: { token: "--color-surface-paper" },
+        },
+        {
+          label: "row Height/LG 48 (pinned, zero y-padding)",
+          sel: ".va-address-row",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label:
+            "inner divider Stroke/BORDER (darker than the outer ring — verbatim)",
+          sel: ".va-address-row",
+          get: "border-bottom-color",
+          expect: { token: "--color-stroke-border" },
+        },
+        {
+          label: "city cell authored 227",
+          sel: ".va-address-input-city",
+          get: "width",
+          expect: 227,
+        },
+        {
+          label: "state cell authored 133",
+          sel: ".va-address-input-state",
+          get: "width",
+          expect: 133,
+        },
+        {
+          label: "value type Input 16",
+          sel: ".va-address-input",
+          get: "font-size",
+          expect: "16px",
+        },
+        {
+          label: "placeholder ink Text/Hint (the family's waived-contrast ink)",
+          sel: ".va-address-input",
+          get: "color",
+          hover: false,
+          expect: { token: "--color-content-primary" },
+        },
+        // Focus — the FIELD family treatment on the group + the row marker
+        {
+          label: "focus: group border Primary",
+          sel: ".va-address-group",
+          get: "border-top-color",
+          before: [{ click: ".va-address-input", wait: 450 }],
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "focus: the 3px translucent field ring (NOT the control ring)",
+          sel: ".va-address-group",
+          get: "outline-width",
+          before: [{ click: ".va-address-input", wait: 450 }],
+          expect: "3px",
+        },
+        {
+          label:
+            "focus: the focused ROW gains the 2px Primary/Track marker (281:4683 verbatim)",
+          sel: ".va-address-row",
+          get: "box-shadow",
+          before: [{ click: ".va-address-input", wait: 450 }],
+          contains: true,
+          expect: { token: "--color-primary-track" },
+        },
+        // Error (nth 1): amber group border + hint
+        {
+          label: "error group border Warning/Base (D4 — no Error/* anywhere)",
+          sel: ".va-address-group",
+          nth: 1,
+          get: "border-top-color",
+          expect: { token: "--color-warning" },
+        },
+        {
+          label:
+            "error hint ink Warning/Text (labeled family extension — Figma draws no hint row)",
+          sel: ".va-address-hint",
+          get: "color",
+          expect: { token: "--color-warning-text" },
+        },
+        // Disabled (nth 2): the family recipe
+        {
+          label: "disabled group fill BG/App Page (913:860)",
+          sel: ".va-address-group",
+          nth: 2,
+          get: "background-color",
+          expect: { token: "--color-surface-app-page" },
+        },
+        {
+          label: "disabled value ink Tertiary",
+          sel: ".va-address-input:disabled",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+      ],
+
+      // NOT ASSERTED: hover (group border Stroke/Hover — the variant was
+      // unreadable, shipped as the set-level binding; family pattern);
+      // error+focus (undrawn; the family compound ships by rule order);
+      // per-cell error (undrawn); the Focus variants' 13/16 title flip
+      // (defect, shipped consistent).
+    },
+  },
+
+  // ------------------------------------------------------------------ Upload
+  Upload: {
+    figma:
+      "Upload 778:6949 — 3 variants, 499×48: Expanded {no,yes} × Completed {No,yes} (Expanded reads as drag-over)",
+    variants: 3,
+    stories: {
+      // AllStates order: 0 rest · 1 drag-over · 2 completed
+      "components-upload--all-states": [
+        {
+          label: "row Height/LG 48 (token-bound in Figma)",
+          sel: ".va-upload",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "radius 8 (rounded-lg — the one 8px control)",
+          sel: ".va-upload",
+          get: "border-radius",
+          expect: "8px",
+        },
+        {
+          label:
+            "rest border DASHED (only a real border can draw it — stays 1px per the handoff)",
+          sel: ".va-upload",
+          get: "border-top-style",
+          expect: "dashed",
+        },
+        {
+          label: "rest border Stroke/Divider",
+          sel: ".va-upload",
+          get: "border-top-color",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "rest fill none",
+          sel: ".va-upload",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "prompt ink Text/Secondary 13",
+          sel: ".va-upload-prompt",
+          get: "color",
+          expect: { token: "--color-content-secondary" },
+        },
+        {
+          label:
+            "browse run Info/Base (raw #1b4e8b in Figma = the token exactly; designer list)",
+          sel: ".va-upload-browse",
+          get: "color",
+          expect: { token: "--color-info" },
+        },
+        // Drag-over (nth 1)
+        {
+          label: "drag-over fill Action/Hover",
+          sel: ".va-upload",
+          nth: 1,
+          get: "background-color",
+          expect: { token: "--color-action-hover" },
+        },
+        {
+          label: "drag-over border Stroke/Hover, still dashed",
+          sel: ".va-upload",
+          nth: 1,
+          get: "border-top-color",
+          expect: { token: "--color-stroke-hover" },
+        },
+        // Completed (nth 2)
+        {
+          label: "completed border turns SOLID",
+          sel: ".va-upload",
+          nth: 2,
+          get: "border-top-style",
+          expect: "solid",
+        },
+        {
+          label: "completed fill BG/App Page",
+          sel: ".va-upload",
+          nth: 2,
+          get: "background-color",
+          expect: { token: "--color-surface-app-page" },
+        },
+        {
+          label: "filename ink Text/Primary",
+          sel: ".va-upload-filename",
+          get: "color",
+          expect: { token: "--color-content-primary" },
+        },
+      ],
+
+      // NOT ASSERTED: Expanded=no+Completed=yes (undrawn), disabled, error,
+      // progress (none exist); the Remove affordance is the composed
+      // .va-utility-button-text (its own spec covers it); the glyph layers'
+      // lying names ("ChevronLeft" draws upload/file — ships #upload/#file).
+    },
+  },
+
   // ----------------------------------------------------------- UtilityButton
   UtilityButton: {
     figma:
-      "Button / Utility 24:4382 — 18 variants, partial Size {MD, SM} × Type {Empty, Filled, Rounded, Text} × Hover × Pressed",
-    variants: 18,
+      "Button 1:218 unified set, Appearance=Utility — 22 variants, partial Style {Secondary(empty), Primary(filled), Rounded, Text, Link} × Size {MD, SM} × State",
+    variants: 22,
     stories: {
       // AllTypes order: 0 empty · 1 filled · 2 rounded · 3 text
       "components-utilitybutton--all-types": [
-        { label: "SM height 34", sel: ".va-utility-button-empty", get: "height", expect: 34 },
-        { label: "radius 4", sel: ".va-utility-button-empty", get: "border-radius", expect: "4px" },
-        { label: "px 12", sel: ".va-utility-button-empty", get: "padding-left", expect: "12px" },
-        { label: "gap 8", sel: ".va-utility-button-empty", get: "column-gap", expect: "8px" },
-        { label: "label Field Label 13", sel: ".va-utility-button-empty", get: "font-size", expect: "13px" },
+        {
+          label: "SM height 32 (Height/SM token-bound, was 34)",
+          sel: ".va-utility-button-empty",
+          get: "height",
+          expect: 32,
+        },
+        {
+          label: "radius 4",
+          sel: ".va-utility-button-empty",
+          get: "border-radius",
+          expect: "4px",
+        },
+        {
+          label: "px 12",
+          sel: ".va-utility-button-empty",
+          get: "padding-left",
+          expect: "12px",
+        },
+        {
+          label: "gap 8",
+          sel: ".va-utility-button-empty",
+          get: "column-gap",
+          expect: "8px",
+        },
+        {
+          label: "label Field Label 13",
+          sel: ".va-utility-button-empty",
+          get: "font-size",
+          expect: "13px",
+        },
         {
           label: "natural case — never the Standard set's uppercase",
           sel: ".va-utility-button-empty",
           get: "text-transform",
           expect: "none",
         },
-        { label: "icon slot 18", sel: ".va-utility-button-empty svg", get: "width", expect: 18 },
+        {
+          label: "icon slot 18",
+          sel: ".va-utility-button-empty svg",
+          get: "width",
+          expect: 18,
+        },
         // Empty
         {
-          label: "empty rest fill Paper",
+          label:
+            "empty rest fill NONE (ghost — Paper removed in the 2026-10 rework)",
           sel: ".va-utility-button-empty",
           get: "background-color",
-          expect: { token: "--color-surface-paper" },
+          expect: "rgba(0, 0, 0, 0)",
         },
         {
           label: "empty rest border Stroke/Divider",
@@ -2942,10 +4545,11 @@ export const SPECS = {
           expect: { token: "--color-stroke-divider" },
         },
         {
-          label: "empty rest ink Secondary",
+          label:
+            "empty rest ink Text/Primary (both sizes — the 2026-10 rebind)",
           sel: ".va-utility-button-empty",
           get: "color",
-          expect: { token: "--color-content-secondary" },
+          expect: { token: "--color-content-primary" },
         },
         {
           label: "empty hover fill Action/Hover (Paper drops)",
@@ -2955,11 +4559,26 @@ export const SPECS = {
           expect: { token: "--color-action-hover" },
         },
         {
-          label: "empty hover border DROPS to transparent (pixel-proven rest-only border)",
+          label:
+            "empty hover border STAYS Stroke/Divider (2026-10 merge — the old rest-only border is obsolete)",
           sel: ".va-utility-button-empty",
           get: "border-top-color",
           hover: true,
-          expect: "rgba(0, 0, 0, 0)",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "empty hover border width stays 1px (geometry must not shift)",
+          sel: ".va-utility-button-empty",
+          get: "border-top-width",
+          hover: true,
+          expect: "1px",
+        },
+        {
+          label: "empty hover height stays 32 (border-box absorbs the ring)",
+          sel: ".va-utility-button-empty",
+          get: "height",
+          hover: true,
+          expect: 32,
         },
         {
           label: "empty hover ink Primary",
@@ -2989,10 +4608,18 @@ export const SPECS = {
           expect: { token: "--color-primary-hover" },
         },
         {
-          label: "filled has no border",
+          label:
+            "filled border Stroke/Divider (gained in the 2026-10 merge; near-invisible, authored)",
           sel: ".va-utility-button-filled",
           get: "border-top-color",
-          expect: "rgba(0, 0, 0, 0)",
+          expect: { token: "--color-stroke-divider" },
+        },
+        {
+          label: "filled hover border stays Stroke/Divider",
+          sel: ".va-utility-button-filled",
+          get: "border-top-color",
+          hover: true,
+          expect: { token: "--color-stroke-divider" },
         },
         // Rounded
         {
@@ -3022,7 +4649,12 @@ export const SPECS = {
           expect: { token: "--color-action-hover" },
         },
         // Text
-        { label: "text row 16", sel: ".va-utility-button-text", get: "height", expect: 16 },
+        {
+          label: "text row 16",
+          sel: ".va-utility-button-text",
+          get: "height",
+          expect: 16,
+        },
         {
           label: "text type Content 13/400",
           sel: ".va-utility-button-text",
@@ -3030,36 +4662,188 @@ export const SPECS = {
           expect: "400",
         },
         {
-          label: "text rest ink Tertiary (the raw #6f7276 IS this token's value)",
+          label:
+            "text rest ink Secondary (the merge fixed the old raw-#6f7276 stacking)",
           sel: ".va-utility-button-text",
           get: "color",
-          expect: { token: "--color-content-tertiary" },
+          expect: { token: "--color-content-secondary" },
         },
         {
-          label: "text always underlined",
+          label:
+            "text rest has NO underline (the merge moved the underline to Link)",
           sel: ".va-utility-button-text",
           get: "text-decoration-line",
-          expect: "underline",
+          expect: "none",
         },
         {
-          label: "text hover ink Primary (hover = pressed, byte-identical variants)",
+          label:
+            "text hover ink Primary (hover = pressed, byte-identical variants)",
           sel: ".va-utility-button-text",
           get: "color",
           hover: true,
           expect: { token: "--color-content-primary" },
         },
-        { label: "text glyph 16", sel: ".va-utility-button-text svg", get: "width", expect: 16 },
-        { label: "text has no box", sel: ".va-utility-button-text", get: "padding-left", expect: "0px" },
+        {
+          label: "text glyph 16",
+          sel: ".va-utility-button-text svg",
+          get: "width",
+          expect: 16,
+        },
+        {
+          label: "text has no box",
+          sel: ".va-utility-button-text",
+          get: "padding-left",
+          expect: "0px",
+        },
+        // Link (AllTypes order: 0 empty · 1 filled · 2 rounded · 3 text · 4 link)
+        {
+          label: "link height 24 (pinned h-6)",
+          sel: ".va-utility-button-link",
+          get: "height",
+          expect: 24,
+        },
+        {
+          label: "link type 16",
+          sel: ".va-utility-button-link",
+          get: "font-size",
+          expect: "16px",
+        },
+        {
+          label: "link weight 400",
+          sel: ".va-utility-button-link",
+          get: "font-weight",
+          expect: "400",
+        },
+        {
+          label: "link line 24",
+          sel: ".va-utility-button-link",
+          get: "line-height",
+          expect: "24px",
+        },
+        {
+          label:
+            "link ink Primary (the drawn 2026-10-14 state ramp: 847:575 binds Primary/Primary)",
+          sel: ".va-utility-button-link",
+          get: "color",
+          expect: { token: "--color-primary" },
+        },
+        {
+          label: "link always underlined",
+          sel: ".va-utility-button-link",
+          get: "text-decoration-line",
+          expect: "underline",
+        },
+        {
+          label:
+            "link hover ink Primary/Hover (847:577 — the states are drawn now)",
+          sel: ".va-utility-button-link",
+          get: "color",
+          hover: true,
+          expect: { token: "--color-primary-hover" },
+        },
+        {
+          label: "link has no box",
+          sel: ".va-utility-button-link",
+          get: "padding-left",
+          expect: "0px",
+        },
+        {
+          label: "link has no border",
+          sel: ".va-utility-button-link",
+          get: "border-top-width",
+          expect: "0px",
+        },
+        {
+          label: "link fill transparent",
+          sel: ".va-utility-button-link",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "link natural case",
+          sel: ".va-utility-button-link",
+          get: "text-transform",
+          expect: "none",
+        },
+      ],
+      "components-utilitybutton--disabled": [
+        {
+          label:
+            "disabled empty stays a GHOST (unified 2026-10-15 — the interim Paper fill is gone)",
+          sel: ".va-utility-button-empty:disabled",
+          get: "background-color",
+          expect: "rgba(0, 0, 0, 0)",
+        },
+        {
+          label: "disabled empty ink Tertiary (the Standard treatment)",
+          sel: ".va-utility-button-empty:disabled",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label: "disabled filled Primary/Disabled, white ink never fades",
+          sel: ".va-utility-button-filled:disabled",
+          get: "background-color",
+          expect: { token: "--color-primary-disabled" },
+        },
+        {
+          label: "disabled rounded ink Tertiary (unified 2026-10-15)",
+          sel: ".va-utility-button-rounded:disabled",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label:
+            "disabled text ink Tertiary (unified 2026-10-15 — no longer ≡ rest)",
+          sel: ".va-utility-button-text:disabled",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label: "disabled cursor",
+          sel: ".va-utility-button-empty:disabled",
+          get: "cursor",
+          expect: "not-allowed",
+        },
+      ],
+      "components-utilitybutton--link": [
+        {
+          label: "disabled link ink Tertiary (847:581 — drawn)",
+          sel: ".va-utility-button-link:disabled",
+          get: "color",
+          expect: { token: "--color-content-tertiary" },
+        },
+        {
+          label:
+            "disabled link stays underlined (the 'Inline link disabled' style exists but no variant binds it — orphaned, designer list)",
+          sel: ".va-utility-button-link:disabled",
+          get: "text-decoration-line",
+          expect: "underline",
+        },
       ],
       "components-utilitybutton--medium-empty": [
-        { label: "MD height 54", sel: ".va-utility-button-md", get: "height", expect: 54 },
-        { label: "MD px 16", sel: ".va-utility-button-md", get: "padding-left", expect: "16px" },
+        {
+          label:
+            "MD height 48 (Height/LG token-bound, was the hand-resized 54)",
+          sel: ".va-utility-button-md",
+          get: "height",
+          expect: 48,
+        },
+        {
+          label: "MD px 16",
+          sel: ".va-utility-button-md",
+          get: "padding-left",
+          expect: "16px",
+        },
       ],
 
       // NOT ASSERTED: pressed fills (the harness cannot hold :active —
       // pinned from the variable diff: Action/Pressed washes, Primary/Focus
-      // for filled); disabled (no axis — cursor only); MD Filled/Rounded
-      // (undrawn); the Text Size axis (unwired in Figma, 0-pixel diff).
+      // for filled); disabled (no axis anywhere — cursor only, Link
+      // included: its four variants are byte-identical and the button/*
+      // variables that once carried a ramp were removed 2026-10-13); MD
+      // Filled/Rounded (undrawn); the Text Size axis (unwired, 0-pixel
+      // diff).
     },
   },
 };
