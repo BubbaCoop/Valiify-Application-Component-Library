@@ -15,8 +15,14 @@ Token names are public API — renaming or removing one is a breaking change.
   are unaffected — both remain in the repo and keep driving the utility
   surface and the gates.
 - `postpack` now restores the examples' `file:../..` dependency after every
-  pack, so publishing never leaves the working tree dirty
-  (`fix-example-deps.mjs --restore`).
+  pack (via the existing `restore-examples` script), so publishing never
+  leaves the working tree dirty.
+- The packaging smoke test (`verify:package`) now feeds the scratch consumer
+  an explicit bare-utility content probe. It had been passing by accident:
+  the consumer's Tailwind was scanning the tarball's own markdown docs in
+  node_modules for class candidates — slimming the tarball exposed it. The
+  probe also proves, from the consumer's side, that the prebuilt entry
+  generates no token utilities.
 
 ### Added
 

@@ -62,6 +62,21 @@ writeFileSync(join(APP, "package.json"), JSON.stringify(manifest, null, 2));
 sh("npm install --no-audit --no-fund", APP);
 pass("installed into a scratch Vite app", "tarball + tailwindcss + @tailwindcss/vite");
 
+// Content probe: the fixture app only ever writes PREFIXED utilities
+// (va:text-display), so a bare token utility must enter via the consumer's
+// own content for Tailwind to generate it. Before 1.4.1 this check passed by
+// ACCIDENT: the tarball shipped CLAUDE.md + design-methodology/, Tailwind's
+// source detection scanned them inside node_modules, and their prose supplied
+// the candidates. Slimming the tarball exposed it. The probe makes the test
+// honest — a consumer who WRITES text-display gets it from /source — and it
+// deliberately stays in place for the prebuilt build below, where the same
+// candidate must produce NOTHING (no @theme reaches the consumer's Tailwind),
+// which proves the two-entry contract from the consumer's side too.
+writeFileSync(
+  join(APP, "src", "probe.js"),
+  'export const probe = "text-display"; // Tailwind content candidate\n',
+);
+
 const builtCss = () => {
   const assets = join(APP, "dist", "assets");
   const cssFile = readdirSync(assets).find((f) => f.endsWith(".css"));

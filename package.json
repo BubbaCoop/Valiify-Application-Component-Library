@@ -60,7 +60,7 @@
     "verify:package": "node scripts/verify-package.mjs",
     "val:check": "val-init --check",
     "val:init": "val-init",
-    "postpack": "node scripts/fix-example-deps.mjs --restore"
+    "postpack": "npm run restore-examples"
   },
   "keywords": [
     "tailwind",
