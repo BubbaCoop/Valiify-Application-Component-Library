@@ -1,0 +1,56 @@
+# Deploys the Storybook — the library's audit surface and component docs —
+# to GitHub Pages on every push to main (decision 2026-10-15, with the 1.4.x
+# go-live pass). The published URL lives in README.md and CLAUDE.md's Links.
+#
+# One-time repo setting if the first run fails on "Pages not enabled":
+# Settings → Pages → Source → "GitHub Actions". configure-pages below asks
+# for enablement automatically, which works when the token has admin on the
+# repo (it does for same-repo pushes under default permissions below).
+name: storybook-pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; a newer push supersedes a queued one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Same pin as ci.yml — bump deliberately, not by runner default.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.14.0"
+          cache: npm
+
+      - run: npm ci
+
+      # Theme/icons/bundle first: Storybook's preview imports the built CSS.
+      - run: npm run build
+      - run: npm run build-storybook
+
+      - uses: actions/configure-pages@v4
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: storybook-static
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
