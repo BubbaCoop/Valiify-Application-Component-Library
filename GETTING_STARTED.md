@@ -38,21 +38,25 @@ That's it. Open [http://localhost:5173](http://localhost:5173) to see a working 
 ### Step 1: Install Packages
 
 **For Vite:**
+
 ```bash
 npm install @valiify/shortapp-ui tailwindcss @tailwindcss/vite
 ```
 
 **For webpack:**
+
 ```bash
 npm install @valiify/shortapp-ui tailwindcss @tailwindcss/webpack
 ```
 
 **For PostCSS (including Next.js):**
+
 ```bash
 npm install @valiify/shortapp-ui tailwindcss @tailwindcss/postcss
 ```
 
 **For Tailwind standalone CLI:**
+
 ```bash
 npm install @valiify/shortapp-ui tailwindcss @tailwindcss/cli
 ```
@@ -180,7 +184,11 @@ fetch(spriteUrl)
 
 <div class="va-text-field">
   <div class="va-text-field-box">
-    <input type="text" class="va-text-field-input" placeholder="Enter text..." />
+    <input
+      type="text"
+      class="va-text-field-input"
+      placeholder="Enter text..."
+    />
   </div>
 </div>
 
@@ -202,7 +210,7 @@ fights your reset:
 
 ```css
 /* app.css — inside the file that carries your @tailwind directives */
-@import "@valiify/shortapp-ui/styles.css";   /* MUST be the first line */
+@import "@valiify/shortapp-ui/styles.css"; /* MUST be the first line */
 
 @tailwind base;
 @tailwind components;
@@ -212,7 +220,7 @@ fights your reset:
 or, standalone with no host CSS at all:
 
 ```css
-@import "@valiify/shortapp-ui/reset.css";    /* first — the measured floor, incl. the html default */
+@import "@valiify/shortapp-ui/reset.css"; /* first — the measured floor, incl. the html default */
 @import "@valiify/shortapp-ui/styles.css";
 ```
 
@@ -222,19 +230,19 @@ The bundle does not render "identically" to `/source`. Its contract is narrower 
 checkable, in two clauses:
 
 1. **What it defends against.** The bundle is **unlayered** and must load **after**
-   your reset. Its component rules then beat any host rule of *lower* specificity,
+   your reset. Its component rules then beat any host rule of _lower_ specificity,
    wherever that rule sits in source order: Tailwind 3 preflight (`* { border-width:
-   0 }`, `button { background-color: transparent }`), daisyUI's base, a
+0 }`, `button { background-color: transparent }`), daisyUI's base, a
    `:global(button)` reset in a Svelte component. Version 1.0.0 did **not** hold
    this — its rules sat in `@layer components` and lost to every unlayered host rule.
    The fingerprint: a control whose focus ring survives while its border, fill and
    padding do not. Use 1.0.1 or later.
-2. **What it cannot defend against.** A host rule of *higher* specificity still wins,
+2. **What it cannot defend against.** A host rule of _higher_ specificity still wins,
    and a Svelte scoped element selector is exactly that — `button { border: 0 }` in a
    component's `<style>` compiles to `button.svelte-<hash>` (0,1,1), which outranks
    our single-class rules (0,1,0). A host that wraps its own CSS in a cascade layer
    changes the arithmetic too. **Instead:** scope element resets by class (`.plain {
-   }`) or exclude library controls — `button:not([class*="va-"]) { border: 0 }` —
+}`) or exclude library controls — `button:not([class*="va-"]) { border: 0 }` —
    and never write a bare `button` / `input` / `textarea` selector inside a
    component that renders a `va-` control.
 
@@ -324,11 +332,7 @@ See [COMPONENTS.md](COMPONENTS.md) for the required structure of each component.
 import "./styles.css";
 
 function App() {
-  return (
-    <button className="va-btn va-btn-primary">
-      Click me
-    </button>
-  );
+  return <button className="va-btn va-btn-primary">Click me</button>;
 }
 ```
 
@@ -399,6 +403,7 @@ These components ship **zero JavaScript** and require you to implement behavior:
 ### DropdownField / DropdownMenu
 
 Needs:
+
 - Click handler to toggle `aria-expanded`
 - Hide/show the panel with the `hidden` attribute
 - Outside-click detection to close
@@ -430,6 +435,7 @@ See `examples/vite-starter/src/main.js` for a complete working implementation.
 ### Tabs
 
 Needs:
+
 - Click handlers on each tab
 - Toggle `aria-selected` on clicked tab
 - Show/hide corresponding `tabpanel`
@@ -437,6 +443,7 @@ Needs:
 ### Modal
 
 Either:
+
 - Use native `<dialog>` element (recommended - browser handles everything)
 - Or implement: open/close handlers, backdrop click detection, Escape key, focus trapping
 
@@ -456,6 +463,7 @@ Either:
 ### Tooltip
 
 Needs:
+
 - Show/hide on hover/focus
 - Positioning logic (or use a library like Floating UI)
 
@@ -469,7 +477,7 @@ To verify your installation is working:
    - `./styles.css` (the prebuilt bundle) - try `<div class="va:bg-success">`; it should have a
      green background. The `va:` prefix exists **only** in this entry.
    - `./source` - the prefix does **not** apply; your own Tailwind generates utilities
-     unprefixed, so try `<div class="bg-success">`. A `va:`-prefixed class produces no rule here.
+     unprefixed, so try `bg-success` on a div. A `va:`-prefixed class produces no rule here.
    - `.` / `./index.css` - these ship **no** utility layer at all; neither spelling will work.
      Component classes (`.va-btn`) still do.
 4. **No console errors** - Check for 404s on sprite.svg or CSS files

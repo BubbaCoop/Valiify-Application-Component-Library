@@ -7,7 +7,7 @@ the library until the design changes — nothing here blocks shipping, but the
 **Systemic** items affect multiple components and are worth fixing at the
 source.
 
-_Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val run added)._
+_Last updated 2026-10-15 (follow-up syncs: Height/XS deleted, utility disabled unified, Eyebrow bound on Micro, Data Key cased, Skeleton fully closed incl. its rewritten set description — 31 components)._
 
 ## Systemic — one Figma fix resolves several components
 
@@ -20,10 +20,14 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
    It was never a slip. The library will not rebind, and future extractions
    should stop raising it. TextArea and RadioField joined the amber binding in
    1.2.0 on the same decision. The `Error/*` tokens stay in the theme, unused.
+   **UPDATE 2026-10-15: the Error ramp's role is APPROVED as a decision** —
+   ListItem's Critical axis (`Error/Base`, red) is the destructive-action
+   display; amber stays field-errors only. The ramps coexist deliberately;
+   extractions should stop asking.
    **STILL OPEN — the Toast Type literally named "error" (582:9338) binds
    Warning/Base** while its siblings bind Success/Base and Info/Base
-   correctly. D4 answered a question about *colour*; this one is about
-   *naming*, and is not covered by it. The Modal's Destructive (Primary
+   correctly. D4 answered a question about _colour_; this one is about
+   _naming_, and is not covered by it. The Modal's Destructive (Primary
    tints) is the same family.
 2. **`bottomContent` rows have broken authored geometry** (absolute,
    `bottom: -19px`, `right: -313%`, width ~1706px on 413px parents) in
@@ -36,10 +40,16 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
    chevron; OwnerContainer's "arrow-right" renders a pencil and its
    "ChevronLeft" renders a trash can. A rename pass would prevent every
    future extraction from re-flagging these.
-4. **No disabled variant exists on any field** (TextField, DropdownField,
-   TextArea, RadioField) — for an application form this is a launch-blocking
-   gap; the library invents nothing (cursor-only `:disabled`).
-   Radio/Switch/IconButton also model no disabled visual.
+4. ~~No disabled variant exists on any field~~ **RESOLVED 2026-10-13**: the
+   designer drew disabled variants for TextField (865:5431), TextArea
+   (865:5526) and DropdownField (865:4512) — `BG/App Page` fill +
+   `Stroke/Divider` border + `Text/Tertiary` ink, empty+rest only — and
+   DECIDED that Radio, Switch and RadioField get no disabled visual
+   (deliberate exclusion, not a gap). Checkbox already modelled one.
+   Still cursor-only by design: Radio, Switch, RadioField, IconButton,
+   UtilityButton (non-Link). Residual note: no disabled+filled /
+   disabled+error compounds are drawn — the library resolves them by source
+   order (disabled wins); say if that is wrong.
 5. **The Text/Hint-on-Paper pairing fails WCAG contrast** (3.11:1, needs
    4.5:1) wherever it appears: field placeholders (DropdownField flagged
    live by axe; TextField/TextArea hide it inside native `::placeholder`),
@@ -48,51 +58,96 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
 6. **Casing still unconfirmed** for Data Key, Tag & Pill, and the Lockup
    styles (Eyebrow, Button Label, Micro-Label are resolved: styled
    transforms). Confirm per component as they get used.
-7. **Skeleton's written spec names a "Surface/Neutral" variable that does
-   not exist** in the file's collection — the fill ships as raw #f1f1f4 via
-   `--skeleton-fill`. Add the variable and the library will tokenize it.
+7. ~~Skeleton's fill variable missing~~ RESOLVED 2026-10-15: `BG/Skeleton`
+   (#e4e7eb) landed and the library tokenized it (`--color-surface-skeleton`).
 8. **The `Field Label` type token (13/16/500) is misnamed** — RESOLVED-ish
    2026-09-02: its first (and only) consumer turned out to be the TOOLTIP
    title (582:9178), while actual field labels bind `Labels, links &
-   UI/Strong`. Consider renaming the style to match its real use.
+UI/Strong`. Consider renaming the style to match its real use.
 
 ## Per-component
 
-### Button / Standard (1:218)
-- ~~Pressed drawn only as hover+pressed combos~~ RESOLVED 2026-09-02: the
-  rework formalized Pressed into its own axis (511:5xxx); values are
-  byte-identical to the shipped :active treatments — variable-diffed, no
-  CSS change. Set renamed "Button / Standard" (inline uses).
-- Micro's hover and pressed are pixel-identical (0-diff measured).
+### Button — unified set (1:218, merged 2026-10; formerly Button / Standard + Button / Utility)
+
+**From the 2026-10-13 merge re-extraction (three lanes + full variable
+enumeration):**
+
+- ~~Utility/Link renders black but binds crimson~~ RESOLVED 2026-10-13: the
+  `button/foreground` + `button/link-foreground` variable collections were
+  removed ("no new color tokens") and every Link variant now binds
+  `Text/Primary` directly — the dark ink was the intent; the library
+  reverted to a constant Text/Primary the same day. STILL OPEN from it:
+  Link's four variants remain byte-identical (the set description promises
+  Default/Hover/Pressed/Disabled — either draw the states or drop the
+  claim), and the "Buttons / Inline link disabled" text style (underline
+  off) is now ORPHANED — no variant binds it. The library invents neither.
+- **Icon exports carry inconsistent per-slot stroke widths**: every
+  `Icon / Left` is 2.0 and every `Icon / Right` is 1.2 (icon-space px), i.e.
+  ≈2.67/24 vs ≈1.6/24 — neither matches the sprite's 2/24 and the two slots
+  disagree with each other. All 18 slots draw the same `arrow-right`. The
+  library keeps the sprite convention (≈1.5px at 18px).
+- **Utility/Secondary rest ink differs by size**: SM (25:368) binds
+  `Text/Primary` vs MD (24:4381) `Text/Secondary` — re-confirmed after the
+  2026-10-13 token removal as direct bindings. The SM value equals the hover
+  ink; likely a slip. The library ships Text/Secondary for both.
+- **Utility/Primary gained a 1px Stroke/Divider ring** (57:2953; the old
+  Filled had none) — near-invisible over crimson. Intended? (Shipped.)
+- **Utility/Secondary hover drops BG/Paper but keeps the border** — the 4%
+  wash composites over the page, not Paper. Confirm. (This REVERSES the old
+  "Empty border is rest-only" item below — closed by the merge.)
+- **"Buttons / Inline link" is a new text style numerically identical to
+  Body & Supporting/Input (16/24/400)** — merge them or confirm the split.
+  The two new variables' lowercase single-segment names (`button/foreground`,
+  `button/link-foreground`) also break the file's Group/Name convention.
+- **The two Metric/Mono styles (24, 20) are Inter, not mono** — the
+  names-that-lie family.
+- Utility Text MD's old raw-#6f7276 stacking **appears fixed** (rest now
+  binds a clean Text/Secondary) — confirm.
+- Utility Secondary MD is a fixed 54px frame over a 34px content stack
+  (hand-resized look); w-214 is the sample hug.
+- Disabled still exists only for the four Standard styles (+ Link's designed
+  modes) — no Utility Empty/Filled/Rounded/Text disabled.
+
+**Carried forward (pre-merge, still true):**
+
+- Micro's (now Standard/Text XS) hover and pressed are pixel-identical
+  (0/6096 re-measured); Utility Text's hover = pressed too (0/5080).
 - Primary's authored height math is 2px short of the 48px frame (13+13+20=46).
 - `Primary/Focus` is the literal name of the PRESSED fill (wired to
   `:active`) — confusing name, same on Checkbox.
+- Radius-4 on the bare text rows (invisible, harmless).
 
 ### Checkbox (1:424)
+
 - Raw 3px radius sits on no Radius token.
 - The check glyph's white is unbound (ships as `Text/Contrast` — confirm).
 
 ### Radio (1:419)
+
 - Disabled swaps the cursor only — a disabled radio renders identical to an
   enabled one.
 - Structure quirk: unchecked variants draw the ring as a child ellipse,
   checked puts the stroke on the frame. Harmless, inconsistent.
 
 ### Switch (1:446)
+
 - Off-track paints STROKE-family tokens as fills (naming oddity).
 - The knob's faint shadow spill (~1% in one export) is unbound — shipped
   shadowless.
 
 ### IconButton (1:429) — post Neutral-rework
+
 - `23:725`'s hand-shrunk 14px glyph still open (shipped 18px).
 - Subtle rest ink (60%) is very faint over white.
 - (Fixed by designer: the old `23:723` rest-binding slip. ✓)
 
 ### ListItem (1:463)
+
 - sm selected rows grow 30→34 (emergent hug: the fixed 18px check exceeds
   sm's line box). Reproduced and spec-pinned.
 
 ### DropdownList (1:480)
+
 - "Property 1 = sm/md" toggles which sample row is selected — it is NOT a
   size axis.
 - ~~Raw unbound shadow~~ RESOLVED 2026-09-02: rebound to the new
@@ -101,14 +156,17 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
   still a raw literal (bound to no color variable).
 
 ### Tabs (23:825)
+
 - Portal active+hover is a near-invisible token swap (Δ6/255).
 - The active weight step (400→500) reflows the hug ~1px.
 
 ### TextSelector (1:489)
+
 - Duplicate `Hover=yes` variant columns with different treatments; shipped
   reading: modest step = hover, near-black step = open (aria-expanded).
 
 ### RadioField (123:6059)
+
 - All six variants' state axes are UNWIRED (identical variables, structure,
   pixels). Top item.
 - ~~No error state.~~ **RESOLVED 2026-09-16 (D2): text-only** — the hint turns
@@ -121,14 +179,17 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
   or leftover?
 
 ### SelectCard (9:367)
+
 - "Pressed" means SELECTED on the radio variant but a transient wash on the
   chevron variant — two strategies on one axis.
 
 ### BoxAction (199:12990)
+
 - Per-type disabled inconsistencies (different ring tokens; no distinct
   disabled switch asset).
 
 ### Owner (261:13225) / OwnerContainer (274:258)
+
 - A Gate-0 metadata read said 94.5px row height; authored/pixels/math all say
   92.5 (92 + 0.5 hairline). Worth confirming which is current.
 - Ownership % type style inferred (single title-level binding) — confirm
@@ -138,6 +199,7 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
 - The `tag` Badge boolean is never shown true in any variant.
 
 ### TextField (1:291) / DropdownField (1:358)
+
 - Box padding split ambiguity: structure reads 14/20/14, the bound 24px
   line-height closes at 12/24/12 — re-measure the node.
 - hover+focus is undrawn — the library ships focus-wins; confirm intended.
@@ -145,6 +207,7 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
   intentional asymmetry?
 
 ### TextArea (199:12523)
+
 - 10px y-padding vs the siblings' taller boxes — intended?
 - The value node carries the Input style's single-line nowrap/ellipsis
   (copy-paste artifact); no variant demonstrates wrapping or overflow.
@@ -158,11 +221,13 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
   welcome**, but the treatment is now pinned in code either way.
 
 ### Header (550:7507)
+
 - No scrolled shadow drawn — confirm none is wanted for the sticky state.
 - The logo's crimson #CD1041 is the client asset's own colour, deliberately
   untokenized.
 
 ### Modal (557:5127)
+
 - **The Success banner is entirely raw, unbound hex** (#f0fdf4 fill,
   #16a34a border, #15803d label ink, #166534 body ink — Tailwind-palette
   greens) while the Destructive banner properly binds Primary tokens, and
@@ -187,6 +252,7 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
   lower rows were not pixel-scanned (structure-verified only).
 
 ### Tooltip (582:9178)
+
 - `BG/Contrast` (#1a1a1a) was added to the collection with this component —
   extracted as token 58 (`--color-surface-contrast`). No other new variables.
 - The fixed 280px sample frame ships as max-width-with-hug (the authored
@@ -194,6 +260,7 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
 - No arrow/caret, placement, or state is modelled — confirm none is wanted.
 
 ### Toast (582:9325)
+
 - **Type "error" binds Warning/Base** — see systemic item 1; success/info
   bind their ramps correctly in the same set.
 - The Simple pill's glyph is authored 15px — off the 12/14/16/18 icon grid.
@@ -204,10 +271,12 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
   the library ships wrapping.
 
 ### StatusTracker / Application Status (64:4623)
+
 - No connector between steps and no interactive states are modelled —
   confirm the track is compose-only.
 
 ### Action (71:848)
+
 - **The PENDING chip binds Text/Hint on Paper — 3.11:1 at 9px** (systemic
   item 5's worst case).
 - The CTA is a novel 34px bordered mini button matching no shipped Button
@@ -217,23 +286,78 @@ _Last updated 2026-09-17 (27 components extracted; BSA "Account information" Val
 - No hover/pressed is drawn for the CTA (an interactive control with no
   states) — confirm intended.
 
-### Button / Utility (24:4382)
-- **The Empty type's border renders at rest only** — hover/pressed variants
-  drop both the Paper fill and the border (the wash sits directly on the
-  page), yet Stroke/Divider stays bound on those variants (a stale layer?).
-  Confirm the vanishing border is intended.
-- **The Text type's Size axis is unwired** — MD and SM Text are
-  byte-identical (0/1376 pixel diff), the RadioField defect class.
-- **The Text type's rest ink stacks a raw #6f7276 over a bound
-  Text/Secondary** — the raw hex wins and happens to equal Text/Tertiary;
-  bind the token it means.
-- SM Empty/Filled/Rounded hug width but MD Empty bakes w-214 (sample-hug
-  trap, Standard's 239 precedent).
-- Filled binds Stroke/Divider in all states but no border is visible over
-  the solid fill — stale binding?
-- Rounded uses py-7 where Empty/Filled use py-8 (border compensation?).
-- The trailing icon layer is named "AttachMoneyRounded" again.
-- No disabled/Inactive axis exists (Standard has one) — intended?
+### Button / Utility (24:4382) — MERGED into Button (1:218), 2026-10
+
+All items superseded by the unified-set section above: the border-drop item
+is reversed (the border now persists), the Text ink stacking appears fixed,
+the Text underline moved to the new Link style, and Filled's Stroke/Divider
+binding is now a real drawn ring. The Size-axis no-op (Text MD ≡ SM) and the
+sample-hug widths carry forward above.
+
+### OTP / Digit cell (824:4856) + OTP field (815:9211) — extracted 2026-10-13
+
+- **The Focused cell's "caret" is a literal `|` text glyph** drawn in
+  Primary/Primary — no caret layer, and it is why the focused "digit ink"
+  reads crimson. Shipped as `caret-color: Primary` with constant digit ink.
+- **Empty ≡ Filled in the cell masters** (0/3136 px — the `digit` prop
+  defaults to a space; no digit is drawn anywhere in the set).
+- **No hover, disabled or pressed** on cell or field — disabled is the
+  field-family priority gap again.
+- **Error is all-six-cells only** (no per-cell error, no error+empty, no
+  error+focus); digits are retained. Error binds `Warning/Base` /
+  `Warning/Text` — consistent with D4.
+- **Cell radius is a raw 4px** (no Radius token bound — same as Button); a
+  pixel fit read ≈5.4 on the 1px-stroked box. Confirm 4 (= Radius/sm).
+  Related: Skeleton's written spec gives the "input" shape 6px while
+  TextField/TextArea/OtpCell ship 4px — which is right?
+- The field's Focused sample rings the NEXT-EMPTY cell (behavioral intent,
+  not a drawable state) — noted as consumer JS.
+
+### From the 2026-10-14 go-live handoff rework (heights / focus / disabled / loading)
+
+New findings, all shipped as drawn unless noted:
+
+1. ~~Standard Text XS's label bound to no style~~ RESOLVED 2026-10-15: it
+   binds **Eyebrow** (11/16/600/10% UPPER); shipped as `type-eyebrow`.
+2. ~~Data Key has no UPPER transform~~ RESOLVED 2026-10-15: the transform is
+   on; baked as `type-data-key`. **The casing question is now closed for the
+   entire type set.**
+3. ~~Focus Ring authored inconsistently~~ RESOLVED 2026-10-15 (documented by
+   the designer). The library ships the effect-style recipe everywhere
+   (`outline 2px / offset 2px`).
+4. ~~Utility disabled recipes unalike~~ RESOLVED 2026-10-15: unified to the
+   Standard treatment (no fill, Divider border, Tertiary ink; Primary keeps
+   Primary/Disabled). Re-verified direct and shipped.
+5. **Loading spinner has no motion spec** (static 16px 270° arc exports,
+   914:671/677/683/689) — the library spins it at 800ms linear; say if the
+   design wants different. Utility SM Loading frames hug 2px narrower than
+   their Default twins (16px spinner vs 18px icon slot) — the library keeps
+   the 18px slot so width never changes (the handoff contract).
+6. ~~Skeleton~~ FULLY RESOLVED 2026-10-15: field bones 4px; the fill binds
+   the new `BG/Skeleton` variable (#e4e7eb, tokenized as
+   `--color-surface-skeleton`); the Checkbox bone is 20×20 at the control's
+   3px radius; the Avatar bone is 24×24; and the set description was
+   rewritten to match the shipped bones (verified — it now names BG/Skeleton
+   and the real sizes; the "h-10 rounded-md" text is gone). Nothing remains
+   open on Skeleton.
+7. **Address (281:4634)**: the Focus variants flip the title style from
+   Strong 14/20 to Field Label 13/16 (the 171-vs-167 frame-height split);
+   two frames are 517 wide against eleven at 518; Error variants draw no
+   hint row; the non-error Hover variants were unreadable (rate limit) —
+   shipped from the set-level Stroke/Hover binding. Library ships the title
+   at Strong consistently.
+8. **Upload (778:6949)**: the glyph layers are named "ChevronLeft" and draw
+   an upload tray / a file (the naming-lies family — a rename would stop
+   every extraction re-flagging it); the "choose a file" run is a raw
+   #1b4e8b (= `Info/Base` exactly — bind it); the drawn Remove button is a
+   stale underlined instance of the old Utility Text style; variant value
+   casing is inconsistent ("No" vs "yes"); Expanded=no+Completed=yes is
+   undrawn.
+9. **ListItem (786:6869)**: Critical exists only with Selected=No (no
+   critical+selected drawn — the library excludes the combination); size
+   value casing is inconsistent ("sm"/"md"/"LG").
+10. ~~Button set description stale~~ RESOLVED 2026-10-15: the designer
+    documented the Focus variants and updated the description.
 
 ## From the BSA "Account information" Val run (2026-09-17; frames 199:12008, 199:12185, 720:8067, 721:8438)
 
@@ -298,4 +422,3 @@ with all four frames measured. Run record:
     `px-0`); the utility surface lacks `text-tag-pill`, `tabular-nums`,
     `absolute`/`relative` (dropdown panels render in flow) and any footer-pin
     spelling.
-

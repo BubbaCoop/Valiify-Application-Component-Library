@@ -5,7 +5,148 @@ All notable changes to `@valiify/shortapp-ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Token names are public API — renaming or removing one is a breaking change.
 
-## [Unreleased]
+## [1.4.0] - 2026-10-15
+
+### Docs
+
+- GETTING_STARTED's `./source` smoke-test example no longer spells an
+  unprefixed utility inside a class attribute (the vocabulary gate's one
+  real finding this cycle).
+
+
+### Changed — follow-up sync (2026-10-15)
+
+- Skeleton crumbs closed (same day): new `BG/Skeleton` variable (#e4e7eb) →
+  `--color-surface-skeleton`, now the `--skeleton-fill` default (59 colors);
+  checkbox bone 20×20 at the control's 3px radius; avatar bones 20/24
+  (matching the real Avatar sizes).
+
+- `--height-xs` removed (Height/XS was deleted in Figma; nothing consumed it).
+- Utility button disabled states unified to the Standard treatment: no fill,
+  `Stroke/Divider` border, `Text/Tertiary` label+icon (Empty drops its
+  interim Paper fill; Rounded steps Hint→Tertiary; Text now dims). Filled
+  unchanged (`Primary/Disabled`).
+- The Micro button's label binds **Eyebrow** (11/16/600/10% UPPER) — the raw
+  interim values are gone; `type-eyebrow` ships it. Data Key gained its UPPER
+  transform (`type-data-key`) — **the casing question is closed for the whole
+  type set**. Skeleton field bones are 4px in Figma, matching what shipped.
+  ListItem Critical (red `Error/Base`) approved as the destructive-action
+  display; amber stays field-errors only.
+
+### Added — the go-live handoff rework (2026-10-14)
+
+The engineering handoff (heights, tap areas, focus, disabled, loading) plus
+the matching Figma rework, extracted and shipped in one pass:
+
+- **Height tokens**: `--height-xs/sm/md/lg/xl` (24/32/40/48/56) from the new
+  `Height/*` variables; controls now pin `height: var(--height-*)` with zero
+  y-padding (never padding + line-height math). Resized by the file: Rounded
+  button + all Utility SM 34→32, Utility MD 54→48, Tabs 34→32, BoxAction
+  switch rows 44→48, ListItem rows 30/36/40→32/40/48 (pinned — the sm
+  selected-growth quirk is gone), Standard Text (micro) row 12→16 with a raw
+  11/16/600/8% label.
+- **Tap targets**: `--target-min` 24 / `--target-touch` 44 (library
+  constants); hug-content controls (icon button, text selector, micro/text/
+  link buttons, radio, checkbox, switch) extend their hit area with a centred
+  `::after` overlay — never layout.
+- **`focus-ring-control`**: the new Figma "Focus Ring" effect (2px paper gap
+  - 2px solid Primary) on `:focus-visible` for every control; fields keep the
+    original 3px translucent ring. List options take neither (listbox
+    contract: focus stays on the trigger; `data-active` paints the highlight).
+- **Disabled everywhere it is now drawn**: Radio (Divider ring;
+  Primary/Disabled when checked — reverses the 10-13 exclusion), Switch
+  (Divider / Primary/Disabled tracks), OTP cell (App Page + Divider +
+  Tertiary), every Utility button style (per-style recipes, verbatim),
+  BoxAction unified at 0.5px Divider for both types.
+- **Button loading**: `aria-busy="true"` on `.va-btn`/`.va-utility-button` —
+  rest paints stay, the trailing icon yields to a 16px 270° spinner in the
+  label's ink (18px slot: width never changes), clicks blocked,
+  reduced-motion stops the spin.
+- **ListItem rebuilt** (new set 786:6869): hover/`data-active` wash, and
+  `.va-list-option-critical` — ink `Error/Base`, the Error ramp's first
+  consumer.
+- **SelectCard**: the ring is an authored **0.5px** inset shadow in every
+  state; a drawn Focus axis.
+- **New components: Address** (`.va-address*` — one group box, five bespoke
+  cells; group-level hover/focus/error/disabled, focused-row Primary/Track
+  marker) **and Upload** (`.va-upload*` — dashed drop zone, drag-over and
+  completed states, hidden-file-input recipe).
+- **Icons**: Button-family exports normalized to a painted 1px stroke at
+  every size — shipped as per-size sprite stroke-widths (other components
+  keep their authored weights).
+- **Skeleton**: bone fill `#e4e7eb` (the set repaint), field-shape radii 4px
+  (user decision), button/field md bones at the real 48.
+- Casing baked for Tag & Pill + both Lockup styles (UPPER transforms →
+  `type-*` utilities); Data Key still pending. Error-vs-amber doctrine
+  recorded: amber = consumer-facing field errors (D4), red `Error/*` =
+  destructive actions.
+
+### Added — disabled states for the field family (2026-10-13)
+
+The long-flagged gap is closed. Figma drew disabled variants for TextField
+(865:5431), TextArea (865:5526) and DropdownField (865:4512): box fill
+`BG/App Page`, border `Stroke/Divider`, value/placeholder ink
+`Text/Tertiary`; title, hint and (DropdownField) chevron unchanged. Drawn
+empty+rest only — disabled+error/filled/hover are undrawn; the disabled
+rules sort last so the disabled look wins, and hover guards exclude
+`:disabled` by name. Shipped on the native `:disabled` of each control
+(`cursor-not-allowed` included). **Decision recorded with it:** Radio,
+Switch and RadioField get NO disabled visual on purpose — cursor-only is
+the design, no longer an open question
+(docs/ticket-disabled-state-field-family.md resolved).
+
+### Changed — Checkbox resized 18→20 (2026-10-13)
+
+Figma resized every Checkbox variant to 20×20 (now consistent with Radio) and
+rebuilt the hover/pressed variants: `.va-checkbox-control` is now `size-5`;
+the 16×16 check glyph did not scale (inset 1→2px, absorbed by centring); the
+raw 3px radius, 1.5px Stroke/Border ring, both state ramps and the disabled
+treatment (1px + Stroke/Divider) are unchanged — token-diffed per variant.
+The rebuild also **bound the check glyph's previously-unbound white to
+`BG/Paper`**, closing the old "ships as Text/Contrast, designer to confirm"
+question — the glyph ink is now `text-surface-paper`.
+
+### Added — OtpCell + OtpField (2026-10-13)
+
+New components from the OTP Figma sets (cell 824:4856, field 815:9211):
+`.va-otp-cell` (a native per-digit `<input>`, 56×56, real 1px border,
+Metric/Small digits, `:focus` ring + crimson caret, amber `aria-invalid`
+border per decision D4) and `.va-otp-field` / `-title` / `-cells` / `-hint`
+(fieldset + legend composing six cells, 25/56/19 rows, hint ink swaps to
+Warning/Text via `:has()`). Auto-advance/paste handling is consumer JS; the
+library ships none. Figma's Focused "caret" is a literal `|` glyph — shipped
+as `caret-color`, digit ink constant.
+
+### Changed — UtilityButton tracks the 2026-10 Button merge
+
+Figma merged Button / Standard + Button / Utility into one set (1:218,
+Appearance axis) and revised the Utility styles. Class names are unchanged
+(mapping table in CLAUDE.md). Value changes, all Figma's:
+
+- `.va-utility-button-empty`: the Stroke/Divider border now **persists at
+  hover/pressed** (previously dropped to transparent) — one constant
+  translucent ring over the changing fill.
+- `.va-utility-button-filled`: gains a constant 1px Stroke/Divider ring
+  (near-invisible over crimson; authored).
+- `.va-utility-button-text`: the **underline is gone** (Link is the
+  underlined style now) and rest ink steps up to Text/Secondary — the old
+  raw-#6f7276 stacking was fixed by the designer.
+- **New `.va-utility-button-link`**: inline underlined text button, 24px,
+  "Buttons / Inline link" 16/400/24 (ships as `text-input`, numeric match),
+  ink a **constant `Text/Primary`** — the four drawn variants are
+  byte-identical, so no hover/pressed/disabled treatment is invented
+  (`:disabled` is cursor-only). A short-lived `button/link-foreground`
+  variable briefly carried a crimson state ramp; it was removed from the
+  file on 2026-10-13 ("no new color tokens") and the Link ships the direct
+  Text/Primary binding.
+
+Standard (`.va-btn-*`) values re-verified unchanged; icons are now uniform
+swappable left/right slots in Figma (docs updated — CSS never enforced
+sides). Token enumeration re-run 2026-10-13 (twice): the 58-color collection
+is unchanged and is again the only collection — the two `button/*` variable
+collections that appeared with the merge were removed the same day; the
+button variants bind `Text/*` / `Primary/*` directly and the library never
+emitted the short-lived variables.
 
 ### Fixed — a stretched `Button` centred its label and icon
 
@@ -84,7 +225,12 @@ amber text beneath it.
 `aria-invalid` goes on the **group**, with an explicit `role="radiogroup"`:
 
 ```html
-<fieldset class="va-radio-field" role="radiogroup" aria-invalid="true" aria-describedby="q-hint">
+<fieldset
+  class="va-radio-field"
+  role="radiogroup"
+  aria-invalid="true"
+  aria-describedby="q-hint"
+></fieldset>
 ```
 
 A native `<fieldset>` carries no implicit `radiogroup` role, so without it the
@@ -235,7 +381,6 @@ prebuilt bundle carries no `@layer base`. `dist/index.css` and `./source` are un
   `reset.css`.
 - All of the above run in `ci.yml` and `release.yml`.
 
-
 ## [1.0.0] — 2026-09-15
 
 **Breaking.** Component classes are namespaced `va-` and shipped utilities carry the
@@ -271,7 +416,6 @@ the red was accepted. They were wrong before the rename and are not caused by it
 to the job summary so the debt cannot collapse into an unopened log. Reconciling those
 docs means documenting how icons actually work here — a writing task, tracked separately.
 Remove `continue-on-error` when it lands.
-
 
 ### BREAKING — component classes are namespaced `va-`, shipped utilities carry `va:`
 

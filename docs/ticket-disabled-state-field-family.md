@@ -1,24 +1,31 @@
 # Ticket: no disabled state exists on any form field
 
-**Status:** open · **Raised:** 2026-09-16 · **Blocks:** no current run
-**Not part of 1.2.0** — see [the error-axis scope](../val/runs/2026-09-16-design-bsa-account-information/library-ask-error-axis.md) §B10.
-**Needs:** a designer decision first (frames or a written rule), then a library change.
+**Status:** RESOLVED 2026-10-13 · **Raised:** 2026-09-16 · **Blocks:** no current run
+
+> **Resolution:** the designer drew disabled variants for TextField
+> (865:5431), TextArea (865:5526) and DropdownField (865:4512) — fill
+> `BG/App Page`, border `Stroke/Divider`, value ink `Text/Tertiary`, drawn
+> empty+rest only — and deliberately excluded Radio, Switch and RadioField
+> (cursor-only stays). Checkbox already had its disabled. Shipped the same
+> day; see CHANGELOG [Unreleased] and each component's CSS header.
+> **Not part of 1.2.0** — see [the error-axis scope](../val/runs/2026-09-16-design-bsa-account-information/library-ask-error-axis.md) §B10.
+> **Needs:** a designer decision first (frames or a written rule), then a library change.
 
 ## The gap
 
 Four form components model **no disabled state**, in Figma or in the library:
 
-| component | disabled axis in Figma | what the library ships today |
-| --- | --- | --- |
-| `TextField` | none | nothing — `:disabled` is unstyled |
-| `DropdownField` | none | nothing |
-| `TextArea` | none | nothing |
-| `RadioField` | none | nothing |
-| `Radio` (the bare control) | none | cursor only |
-| `Checkbox` | **yes** | ring thins to 1px + swaps to `Stroke/Divider`; checked fill `Primary/Disabled` |
-| `Switch` | none | cursor only |
-| `Button` | **yes** (Figma's `Inactive`) | per-type: `Primary/Disabled` fill, `Stroke/Divider` border, `Text/Tertiary` ink |
-| `UtilityButton` | none | cursor only — no `Inactive` axis exists, unlike Standard |
+| component                  | disabled axis in Figma       | what the library ships today                                                    |
+| -------------------------- | ---------------------------- | ------------------------------------------------------------------------------- |
+| `TextField`                | none                         | nothing — `:disabled` is unstyled                                               |
+| `DropdownField`            | none                         | nothing                                                                         |
+| `TextArea`                 | none                         | nothing                                                                         |
+| `RadioField`               | none                         | nothing                                                                         |
+| `Radio` (the bare control) | none                         | cursor only                                                                     |
+| `Checkbox`                 | **yes**                      | ring thins to 1px + swaps to `Stroke/Divider`; checked fill `Primary/Disabled`  |
+| `Switch`                   | none                         | cursor only                                                                     |
+| `Button`                   | **yes** (Figma's `Inactive`) | per-type: `Primary/Disabled` fill, `Stroke/Divider` border, `Text/Tertiary` ink |
+| `UtilityButton`            | none                         | cursor only — no `Inactive` axis exists, unlike Standard                        |
 
 So the library has two worked examples of a disabled treatment (Button, Checkbox) and **none for
 any field**. Each component's CSS says so explicitly — TextField's header calls it out as
@@ -61,7 +68,7 @@ Concretely:
 4. **RadioField and the bare Radio** — the same shape of question D2 raised for errors: RadioField
    has no box to grey, so a disabled group means the `Radio` control itself must change, which is a
    change to a second component.
-5. **Compound with error.** Can a field be disabled *and* invalid? If yes, which wins.
+5. **Compound with error.** Can a field be disabled _and_ invalid? If yes, which wins.
 
 ## Scope once decided (estimate, not a commitment)
 

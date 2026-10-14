@@ -36,35 +36,78 @@ methodology skills live at `node_modules/@valiify/val-core/skills/`.
 
 ### Available Components
 
+> 31 components. Figma merged the two button sets into one `Button` set
+> (Appearance axis) in 2026-10; the shipped class families (`va-btn-*`,
+> `va-utility-button-*`) are unchanged — the mapping table lives in the
+> Button section.
+
 #### Button
 
-Extracted from Figma **Button / Standard** (1:218; renamed 2026-09-02 — the
-INLINE set; Button / Utility covers non-inline) — 16 variants across `Type` {Primary,
-Secondary, Micro, Bubble} × {rest, hover, hover+pressed, inactive}. A former
-`Mobile` axis was removed by the designer (caught by the Gate-0 metadata sweep).
+Extracted from Figma **Button / Standard** (1:218); since the **2026-10 merge**
+node 1:218 is the unified **Button** set — `Appearance` {Standard, Utility} ×
+`Style` × `Size` × `State` {Default, Hover, Pressed, Disabled}. This section is
+the Standard appearance (16 variants); UtilityButton below is the Utility
+appearance. **The Figma styles were renamed in the merge; the shipped classes
+keep their names** (class names are public API) — the mapping:
+
+| Figma (Appearance / Style / Size) | code                                                    |
+| --------------------------------- | ------------------------------------------------------- |
+| Standard / Primary / MD           | `.va-btn .va-btn-primary`                               |
+| Standard / Secondary / MD         | `.va-btn .va-btn-secondary`                             |
+| Standard / Text / XS              | `.va-btn .va-btn-micro`                                 |
+| Standard / Rounded / SM           | `.va-btn .va-btn-bubble`                                |
+| Utility / Secondary / MD, SM      | `.va-utility-button .va-utility-button-empty` (+ `-md`) |
+| Utility / Primary / SM            | `.va-utility-button .va-utility-button-filled`          |
+| Utility / Rounded / SM            | `.va-utility-button .va-utility-button-rounded`         |
+| Utility / Text / MD, SM           | `.va-utility-button .va-utility-button-text`            |
+| Utility / Link / MD               | `.va-utility-button .va-utility-button-link` (new)      |
+
+Both Appearances use the style name "Primary" with different type/padding/
+heights — be explicit about the `va-btn-` vs `va-utility-button-` prefix. The
+merge changed **no Standard values** (re-verified 2026-10-13, three lanes): the
+old hover+pressed compounds became plain Pressed variants binding the same
+tokens, and Rounded's new Disabled matches the old inactive (ink-only →
+Tertiary). A former `Mobile` axis was removed by the designer (caught by the
+Gate-0 metadata sweep).
 
 - **Base**: `.va-btn` — layout only, **a type class is required** (Figma names no
   default Type; the Alert/Tabs lesson)
+- **Heights are token-bound** (2026-10): Primary/Secondary `var(--height-lg)`
+  48, Bubble `var(--height-sm)` 32 (was 34), Micro a 16px hug row whose label
+  binds **Eyebrow** (11/16/600/10% UPPER — bound 2026-10-15, `type-eyebrow`).
+  Height comes from the token with zero y-padding — never padding +
+  line-height math.
+- **Loading**: `aria-busy="true"` (drawn for Primary/Secondary MD) — rest
+  paints stay, the trailing icon yields to a 16px 270° spinner in the label's
+  ink, the label stays, clicks are blocked, width never changes.
+- **Focus**: `focus-ring-control` (2px solid Primary at offset 2 — the new
+  "Focus Ring" effect; fields keep the old 3px translucent ring). Micro
+  carries a ≥24px tap-target overlay (≥44px on touch).
 - **Types**: `.va-btn-primary`, `.va-btn-secondary`, `.va-btn-micro`, `.va-btn-bubble`
 - **States**: `:hover`, `:active`, `:disabled` (Figma's `Inactive`),
   `:focus-visible`
 - **Icon slots**: plain `svg` children (18px; 12px in Micro), painted by the
-  button. Figma's layout per Type: Primary trailing only, Secondary/Micro both
-  sides, Bubble leading only — documented, not enforced.
+  button. Since the merge Figma models icons **uniformly on every style**:
+  swappable `Icon / Left` (default OFF) + `Icon / Right` (default ON) instance
+  slots — the old per-Type layouts are obsolete. Documented, not enforced.
+  Every default glyph is `arrow-right`; since the 2026-10-14 normalisation the
+  exports author a **painted 1px stroke at every size** — shipped as
+  stroke-width 1.333 on the 24-unit sprite at 18px (= 1px) and 2 at 12px
+  (= 1px). Button-family only; other components keep their authored weights.
 - **Width is the caller's** — Figma's 239px is the sample hug; add `w-full`
   in full-width forms. Heights pinned: 48 / 48 / 12 / 34.
 
-| Type | box | type style | rest → hover → pressed → disabled |
-| --- | --- | --- | --- |
-| `-primary` | 48px, 4px radius, filled | `type-button-label` (14/600, 10%, **uppercase**) | fill `Primary → Hover → Focus → Disabled`; white ink **never fades** |
-| `-secondary` | 48px, 4px radius, 1px border | same | border `Stroke/Border → Hover → (pressed adds Action/Hover wash) → Divider`; ink `Secondary → Primary → · → Tertiary` |
-| `-micro` | 12px bare row, no box | `type-micro-label` (9/600, 8%, **uppercase**) | ink `Secondary → Primary (hover **= pressed**) → Tertiary` |
-| `-bubble` | 34px pill | `text-label` (14/400, **mixed case**) | ink ramp + fill `none → Action/Hover → Action/Pressed → none` |
+| Type         | box                          | type style                                       | rest → hover → pressed → disabled                                                                                     |
+| ------------ | ---------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `-primary`   | 48px, 4px radius, filled     | `type-button-label` (14/600, 10%, **uppercase**) | fill `Primary → Hover → Focus → Disabled`; white ink **never fades**                                                  |
+| `-secondary` | 48px, 4px radius, 1px border | same                                             | border `Stroke/Border → Hover → (pressed adds Action/Hover wash) → Divider`; ink `Secondary → Primary → · → Tertiary` |
+| `-micro`     | 12px bare row, no box        | `type-micro-label` (9/600, 8%, **uppercase**)    | ink `Secondary → Primary (hover **= pressed**) → Tertiary`                                                            |
+| `-bubble`    | 34px pill                    | `text-label` (14/400, **mixed case**)            | ink ramp + fill `none → Action/Hover → Action/Pressed → none`                                                         |
 
 > **Casing is a styled transform, not typed caps** — the Figma samples are
 > "Button" mixed-case; Primary/Secondary/Micro carry an uppercase transform,
 > Bubble doesn't. This resolved the token file's casing question for `Button
-> Label` and `Micro-Label` (both now carry `textTransform` and emit `type-*`
+Label` and `Micro-Label` (both now carry `textTransform` and emit `type-*`
 > utilities); Eyebrow/Data Key/Tag & Pill remain open.
 
 > **Secondary's hover changes the border only** — the fill wash appears only
@@ -124,12 +167,12 @@ Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20
 - **No label, no sizes, no slots** — the Figma component is the bare control;
   compose your own label markup around it
 
-| State     | ring (1.5px inside)          | fill              | dot                    |
-| --------- | ---------------------------- | ----------------- | ---------------------- |
-| rest      | `Stroke/Border`              | none              | —                      |
-| `:hover`  | unchanged                    | `Action/Hover`    | —                      |
-| `:active` | unchanged                    | `Action/Pressed`  | —                      |
-| `:checked`| `Primary/Primary`            | **none**          | 10px `Primary/Primary` |
+| State      | ring (1.5px inside) | fill             | dot                    |
+| ---------- | ------------------- | ---------------- | ---------------------- |
+| rest       | `Stroke/Border`     | none             | —                      |
+| `:hover`   | unchanged           | `Action/Hover`   | —                      |
+| `:active`  | unchanged           | `Action/Pressed` | —                      |
+| `:checked` | `Primary/Primary`   | **none**         | 10px `Primary/Primary` |
 
 > **The ring is an inset `box-shadow`, not a border — load-bearing.** Chrome
 > floors fractional `border-width`, so a 1.5px border renders 1px. An inset
@@ -142,9 +185,12 @@ Radio (1:419) — 4 variants across `Active` × `Hover` × `Pressed`, all 20×20
 > takes no tint — the spec pins this. If the designer adds those variants,
 > remove the `:not(:checked)` guards rather than layering new rules.
 
-> **Not modelled in Figma, not invented here:** no disabled variant (`:disabled`
-> swaps the cursor and nothing else — a disabled radio renders identically to
-> an enabled one; on the designer list), and no focus variant in the component
+> **Disabled and Focus are DRAWN since the 2026-10 go-live rework** (913:569/
+> 571, 914:699/701 — reversing the 10-13 exclusion): disabled greys the ring
+> to `Stroke/Divider` (still 1.5px — nothing thins, unlike Checkbox) and a
+> checked radio's ring AND dot go `Primary/Disabled`; focus is the new
+> "Focus Ring" effect via `focus-ring-control`. The control also carries a
+> ≥24px tap-target overlay (≥44px on touch). No checked+hover/pressed in the component
 > set (`:focus-visible` uses the library-wide `focus-ring` utility — Figma's
 > "Primary Ring" effect, a 3px `Primary/Ring` halo, extracted with the token
 > set).
@@ -209,25 +255,24 @@ hit target. Extracted from Figma Box action (199:12990) — 8 variants:
 `Type` {Checkbox 48px, Switch 44px} × {rest, Hover, Active, Disabled}.
 
 - **Base**: `.va-box-action` (a `<label>`) + type class `.va-box-action-checkbox` /
-  `.va-box-action-switch` (required — they carry the pinned heights and label
-  styles) + `.va-box-action-label`
+  `.va-box-action-switch` (required — they carry the label styles; **both
+  types are `var(--height-lg)` 48 since 2026-10** — the switch row's 44 is
+  gone) + `.va-box-action-label`
 - **Pure composition**: the nested control is the shipped `.va-checkbox-control`
   / `.va-switch` markup, unmodified — its checked styling comes free. Row state
   derives from the real input via `:has(:checked)` / `:has(:disabled)`.
 
-| state | ring (inset shadow) | fill | label |
-| --- | --- | --- | --- |
-| rest | 1px `Stroke/Divider` | `BG/Paper` | checkbox: `text-input`/Primary · switch: `text-body-content`/Secondary |
-| hover | 1px `Stroke/Hover` | **unchanged** | unchanged (row hover never touches the control) |
-| active | 1px `Primary` | `Primary/BG` | checkbox type steps to `text-lead` (500, ink unchanged); switch type never steps |
-| disabled | **0.5px** `Stroke/Divider` (checkbox) / 1px `Stroke/Border` (switch) | `BG/App Page` | `Text/Tertiary` |
+| state    | ring (inset shadow)                                           | fill          | label                                                                            |
+| -------- | ------------------------------------------------------------- | ------------- | -------------------------------------------------------------------------------- |
+| rest     | 1px `Stroke/Divider`                                          | `BG/Paper`    | checkbox: `text-input`/Primary · switch: `text-body-content`/Secondary           |
+| hover    | 1px `Stroke/Hover`                                            | **unchanged** | unchanged (row hover never touches the control)                                  |
+| active   | 1px `Primary`                                                 | `Primary/BG`  | checkbox type steps to `text-lead` (500, ink unchanged); switch type never steps |
+| disabled | **0.5px `Stroke/Divider` — UNIFIED for both types (2026-10)** | `BG/App Page` | `Text/Tertiary`                                                                  |
 
-> **The ring is an inset box-shadow, heights pinned h-12/h-11** — Figma's
-> inside stroke lives within 48/44 (the math closes exactly), a border would
-> overflow the pinned box, and the authored 0.5px disabled ring would be
-> floored to 1px as a border.
-> **Per-type disabled inconsistencies are Figma's** (different ring tokens; no
-> distinct disabled switch asset) — designer list.
+> **The ring is an inset box-shadow, both rows pinned at 48** — a border
+> would overflow the pinned box, and the authored 0.5px disabled ring would
+> be floored to 1px as a border. The old per-type disabled inconsistency was
+> RESOLVED by the 2026-10 rework (0.5px Divider for both).
 > No compound states are drawn; the CSS excludes them by name. No row-level
 > focus — the nested control's own focus-ring serves.
 
@@ -235,7 +280,9 @@ hit target. Extracted from Figma Box action (199:12990) — 8 variants:
 <label class="va-box-action va-box-action-checkbox">
   <span class="va-checkbox-control">
     <input type="checkbox" class="va-checkbox-input" />
-    <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+    <svg class="va-checkbox-check" aria-hidden="true">
+      <use href="#check" />
+    </svg>
   </span>
   <span class="va-box-action-label">Paperless statements</span>
 </label>
@@ -244,21 +291,24 @@ hit target. Extracted from Figma Box action (199:12990) — 8 variants:
 #### Checkbox
 
 Binary selection control. Extracted from Figma Checkbox (1:424) — 8 variants
-across `Active` × `Hover` × `Pressed` × `Disabled`, all 18×18.
+across `Active` × `Hover` × `Pressed` × `Disabled`, all 20×20 (**resized
+18→20 on 2026-10-13** to match Radio; every variant updated consistently,
+hover/pressed rebuilt as new nodes with the same token story).
 
 - **Parts**: `.va-checkbox-control` (18px positioning wrapper), `.va-checkbox-input`
   (native `<input type="checkbox">`), `.va-checkbox-check` (sprite `#check` glyph)
 - **States**: `:hover`, `:active`, `:checked`, `:disabled`, `:focus-visible` —
   and unlike Radio, **both branches have hover/pressed drawn in Figma**
-- **Dimensions**: 18×18 box, raw **3px radius** (on neither Radius token —
-  designer list), 1.5px inside ring, 16×16 check glyph at 1px inset
+- **Dimensions**: 20×20 box, raw **3px radius** (still on neither Radius token
+  after the resize — designer list), 1.5px inside ring, 16×16 check glyph at
+  2px inset (the glyph did NOT scale with the box)
 
-| state | unchecked | checked |
-| --- | --- | --- |
-| rest | `Stroke/Border` ring 1.5px + Paper fill | `Primary` fill, **no ring** |
-| hover | + `Action/Hover` fill, ring unchanged | `Primary/Hover` |
-| pressed | + `Action/Pressed` | **`Primary/Focus`** (verbatim token name) |
-| disabled | ring thins to **1px** AND swaps to `Stroke/Divider` | `Primary/Disabled` (translucent, as-is) |
+| state    | unchecked                                           | checked                                   |
+| -------- | --------------------------------------------------- | ----------------------------------------- |
+| rest     | `Stroke/Border` ring 1.5px + Paper fill             | `Primary` fill, **no ring**               |
+| hover    | + `Action/Hover` fill, ring unchanged               | `Primary/Hover`                           |
+| pressed  | + `Action/Pressed`                                  | **`Primary/Focus`** (verbatim token name) |
+| disabled | ring thins to **1px** AND swaps to `Stroke/Divider` | `Primary/Disabled` (translucent, as-is)   |
 
 > **The ring is an inset box-shadow** (fractional-border trap, same as Radio).
 > **The unchecked border only LOOKS like it darkens across states** — it is one
@@ -269,9 +319,11 @@ across `Active` × `Hover` × `Pressed` × `Disabled`, all 18×18.
 > **`Primary/Focus` is Figma's literal name for the checked PRESSED fill** —
 > wired to `:active`, never `:focus-visible`.
 > **The wrapper exists for the sprite glyph** — a pseudo-element cannot render
-> `<use>`; the check's white is unbound in Figma and ships as `Text/Contrast`
-> (designer to confirm). The sprite's symbols carry no paint attributes, so the
-> component CSS supplies `fill:none; stroke:currentColor; stroke-width:2`.
+> `<use>`; the check's ink was **resolved in the 2026-10 rebuild: a filled
+> vector bound to `BG/Paper`** (the old unbound-white question is closed) and
+> ships as `text-surface-paper`. The sprite's symbols carry no paint
+> attributes, so the component CSS supplies
+> `fill:none; stroke:currentColor; stroke-width:2`.
 > **Not modelled, not invented**: indeterminate (`:indeterminate` renders
 > unchecked — see the IndeterminateGap story), disabled+hover/pressed, focus.
 
@@ -279,7 +331,9 @@ across `Active` × `Hover` × `Pressed` × `Disabled`, all 18×18.
 <label style="display: inline-flex; align-items: center; gap: 10px;">
   <span class="va-checkbox-control">
     <input type="checkbox" class="va-checkbox-input" checked />
-    <svg class="va-checkbox-check" aria-hidden="true"><use href="#check" /></svg>
+    <svg class="va-checkbox-check" aria-hidden="true">
+      <use href="#check" />
+    </svg>
   </span>
   Online banking
 </label>
@@ -315,10 +369,18 @@ and the TextSelector's label ("English" → "EN").
 <header class="va-header">
   <img class="va-header-logo" src="/logo.svg" alt="Alabama Credit Union" />
   <span class="va-header-desktop">
-    <button class="va-text-selector" aria-haspopup="listbox" aria-expanded="false">
-      <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+    <button
+      class="va-text-selector"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+    >
+      <svg class="va-text-selector-icon" aria-hidden="true">
+        <use href="#globe" />
+      </svg>
       <span class="va-text-selector-label">English</span>
-      <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+      <svg class="va-text-selector-chevron" aria-hidden="true">
+        <use href="#chevron-down" />
+      </svg>
     </button>
   </span>
   <span class="va-header-mobile"><!-- same, label "EN" --></span>
@@ -330,7 +392,7 @@ and the TextSelector's label ("English" → "EN").
 Compact icon-only button. Extracted from Figma "icon button" (1:429) — 16
 variants across `Size` × `Type` × `Hover` × `Subtle`.
 
-- **Base**: `.va-icon-button` — Figma's *Icon Only* type: the glyph IS the box,
+- **Base**: `.va-icon-button` — Figma's _Icon Only_ type: the glyph IS the box,
   hover recolours it and **nothing else** (no background, ever)
 - **Type**: `.va-icon-button-state` — pads the same glyph into a larger hit target
   and hover adds a full-circle `Action/Hover` halo
@@ -365,7 +427,10 @@ variants across `Size` × `Type` × `Hover` × `Subtle`.
 </button>
 
 <!-- Small, muted -->
-<button class="va-icon-button va-icon-button-sm va-icon-button-subtle" aria-label="Help">
+<button
+  class="va-icon-button va-icon-button-sm va-icon-button-subtle"
+  aria-label="Help"
+>
   <svg aria-hidden="true"><use href="#circle-help" /></svg>
 </button>
 ```
@@ -379,23 +444,26 @@ authority for the SM/MD/LG matrix, per-shape radii, and the animation.
 - **Base**: `.va-skeleton` — fill + pulse only; **both a shape and a size class
   are required** (dimensions are a 16×3 matrix, not one box at three scales)
 - **Shapes**: `-text -heading -circle -rectangle -button -input -textarea
-  -card -switch -checkbox -badge -listitem -tab -avatar -dropdown -radio`
+-card -switch -checkbox -badge -listitem -tab -avatar -dropdown -radio`
 - **Sizes**: `-sm -md -lg` — written-spec defaults; widths stretch freely
   (`w-full` just works — consumer utilities win), heights stay near defaults
 
-| radius | shapes |
-| --- | --- |
-| 4px | text, heading, checkbox |
-| 6px | button, input, textarea, tab, dropdown |
-| 8px | rectangle, card |
-| 10px | badge, switch |
-| full | circle, avatar, radio |
+| radius | shapes                                                                                                                                   |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 4px    | text, heading, checkbox, **input, textarea, dropdown** (moved 2026-10-14 — "inputs are 4px everywhere"; Figma's bones followed on 10-15) |
+| 6px    | button, tab                                                                                                                              |
+| 8px    | rectangle, card                                                                                                                          |
+| 10px   | badge, switch                                                                                                                            |
+| full   | circle, avatar, radio                                                                                                                    |
 
-> **The fill is raw `#f1f1f4`** — the written spec names a "Surface/Neutral"
-> variable that does not exist in this file's collection (verified by full
-> Plugin API enumeration; the name matches the dashboard-era palette). Ships
-> as `--skeleton-fill` for overridability; tokenize when the variable lands.
-> Designer list.
+> **The fill is TOKENIZED (2026-10-15)**: the bones bind the new
+> `BG/Skeleton` variable (#e4e7eb) → `--color-surface-skeleton`, still
+> wrapped in `--skeleton-fill` for per-instance overrides. The checkbox bone
+> is 20×20 at the control's raw 3px radius and the avatar bones match the
+> real 20/24 sizes — the lag items are closed. The redrawn set's Input/Dropdown shapes are 73px COMPOSITES
+> (16px label bar + 9px gap + 48px field) — the library's `-input`/`-dropdown`
+> bones are the 48px field; compose a `-text` label above for the full shape.
+> Button md/lg bones are 48 (the real control height).
 > **The pulse is the written spec's, not Tailwind's `animate-pulse`** — 2s
 > ease-in-out, opacity 1→0.4→1 (Tailwind's floors at 0.5 on a different
 > curve). Instances pulse in sync for free; do NOT stagger with
@@ -404,11 +472,38 @@ authority for the SM/MD/LG matrix, per-shape radii, and the animation.
 > **Accessibility**: each `.va-skeleton` is `aria-hidden` decoration; the
 > CONTAINER carries `role="status"`, `aria-busy="true"` and a label.
 
+> **Coverage contract (settled 2026-10-13): components do NOT get bespoke
+> skeletons.** The 16 shapes are a primitive vocabulary composed at the call
+> site to mirror the page's layout — Figma draws no per-component skeleton,
+> so shipping one per component would be invented design and a maintenance
+> tax that grows with every extraction. Stand-in map for the shipped
+> components (width via `va:` utilities where the real one stretches):
+> Button/UtilityButton → `-button` · TextField/DropdownField → `-input` /
+> `-dropdown` · TextArea → `-textarea` · Radio/Checkbox/Switch/Badge/Avatar/
+> Tab → their namesakes · ListItem/DropdownList rows, Action, OwnerContainer
+> → `-listitem` (or `-circle` + `-text` composition for avatar-led rows) ·
+> SelectCard/Toast/Modal body → `-card` / `-rectangle` · Owner → `-rectangle`
+> (34×34) · OtpField → six `-checkbox` shapes resized (4px radius matches the
+> cell) or `-rectangle` · headings/copy → `-heading` / `-text`. Overlays
+> (Modal, Tooltip, Toast) and chrome (Header) don't get skeletons at all —
+> you skeleton the content UNDER chrome, never the chrome. Known family
+> question: the written spec's `-input` radius is 6px while the real fields
+> ship 4px (designer list).
+
 ```html
 <div role="status" aria-busy="true" aria-label="Loading profile">
-  <span class="va-skeleton va-skeleton-circle va-skeleton-lg" aria-hidden="true"></span>
-  <span class="va-skeleton va-skeleton-heading va-skeleton-lg" aria-hidden="true"></span>
-  <span class="va-skeleton va-skeleton-text va-skeleton-md va:w-full" aria-hidden="true"></span>
+  <span
+    class="va-skeleton va-skeleton-circle va-skeleton-lg"
+    aria-hidden="true"
+  ></span>
+  <span
+    class="va-skeleton va-skeleton-heading va-skeleton-lg"
+    aria-hidden="true"
+  ></span>
+  <span
+    class="va-skeleton va-skeleton-text va-skeleton-md va:w-full"
+    aria-hidden="true"
+  ></span>
 </div>
 ```
 
@@ -424,12 +519,12 @@ Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
 - **Dimensions**: 36×20 pill track (no border in any variant), 16px knob at
   2px inset, **16px travel** via the CSS `translate` property
 
-| state | track | knob |
-| --- | --- | --- |
-| off rest | `Stroke/Border` (17% ink, **used as a fill**) | `BG/Paper` |
-| off hover | `Stroke/Hover` (56% ink) | unchanged |
-| on rest | `Primary` | unchanged |
-| on hover | `Primary/Hover` | unchanged |
+| state     | track                                         | knob       |
+| --------- | --------------------------------------------- | ---------- |
+| off rest  | `Stroke/Border` (17% ink, **used as a fill**) | `BG/Paper` |
+| off hover | `Stroke/Hover` (56% ink)                      | unchanged  |
+| on rest   | `Primary`                                     | unchanged  |
+| on hover  | `Primary/Hover`                               | unchanged  |
 
 > **The off-track paints with STROKE-family tokens as fills** — `bg-stroke-border`,
 > never `border-*`; a naive read of the token name would add a line that exists
@@ -439,7 +534,10 @@ Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
 > **Knob diameter was the extraction's one cross-lane conflict** (authored
 > 16×16 vs a 15px 1x-raster read) — authored metadata wins: 2+16+16+2 = 36
 > exactly. The spec pins 16.
-> **Not modelled, not invented**: Disabled (cursor only), Pressed, Focus.
+> **Disabled and Focus are DRAWN since 2026-10** (913:573/575, 914:703/705):
+> disabled off-track `Stroke/Divider`, on-track `Primary/Disabled`, knob
+> Paper; focus = `focus-ring-control`. A tap-target overlay extends the hit
+> area to ≥24px (≥44px on touch). Not modelled, not invented: Pressed.
 
 ```html
 <label style="display: inline-flex; align-items: center; gap: 16px;">
@@ -450,16 +548,25 @@ Binary on/off toggle. Extracted from Figma Switch (1:446) — 4 variants across
 
 #### ListItem
 
-One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
-24 variants: `Size` {sm, md, lg} × `Selected` × `Hover` × `LastItem`.
+One row in a dropdown/selection list. Extracted from the REBUILT Figma List
+Item set (786:6869; the old 1:463 is gone) — 36 variants: `Size` {sm 32, md
+40, LG 48 — **Height-token pinned, no state changes height**} × `Selected` ×
+`Hover` × `LastItem` × **`Critical`** (new).
 
 - **Base**: `.va-list-option` — layout only, **a size class is required** (Figma's
   samples only show sm; no default is baked in). Named `-option`, NOT
   `-item`: `.list-item` IS Tailwind's own `display: list-item` utility and
   the collision stacked the rows (caught live; same trap later hit
   `.text-field-label` vs the `text-field-label` type token's utility)
-- **Sizes**: `.va-list-option-sm` (Help & Caption 12px, 30px / **34px selected**),
-  `.va-list-option-md` (Labels Default 14px, 36px), `.va-list-option-lg` (Input 16px, 40px)
+- **Sizes**: `.va-list-option-sm` (Help & Caption 12px, 32px),
+  `.va-list-option-md` (Labels Default 14px, 40px), `.va-list-option-lg`
+  (Input 16px, 48px) — pinned via the Height tokens
+- **Critical**: `.va-list-option-critical` — ink swaps to `Error/Base`
+  (**the Error ramp's first consumer**); hover still washes; never combined
+  with selection (undrawn)
+- **Keyboard**: rows take **no focus ring** (the listbox contract — focus
+  stays on the trigger; the consumer sets `data-active="true"` on the
+  aria-activedescendant row and it paints the hover wash)
 - **Parts**: `.va-list-option-text` (wraps, doesn't truncate), `.va-list-option-check`
   (18px sprite glyph, ALWAYS in markup, shown by selection)
 - **States**: `:hover` (works on selected rows too — a real Figma variant),
@@ -469,17 +576,22 @@ One row in a dropdown/selection list. Extracted from Figma List Item (1:463) —
 > via currentColor. No background.
 > **The gap-collapse trick**: `gap` is unconditional 10px; the hidden check
 > contributes none, so unselected rows read gap-0 with no conditional class.
-> **The sm selected row grows 30→34** — Figma's emergent hug (the fixed 18px
-> check exceeds sm's 14px line box; md/lg line boxes already clear it).
-> Reproduced, spec-pinned, designer-listed.
+> **The old sm 30→34 selected growth is GONE** — heights are pinned, and the
+> 32px sm row absorbs the 18px check.
 > **The divider is `:not(:last-child)`**, matching the LastItem boolean's
 > intent structurally.
 > Not modelled, not invented: disabled, pressed.
 
 ```html
-<button class="va-list-option va-list-option-sm" role="option" aria-selected="true">
+<button
+  class="va-list-option va-list-option-sm"
+  role="option"
+  aria-selected="true"
+>
   <span class="va-list-option-text">English</span>
-  <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
+  <svg class="va-list-option-check" aria-hidden="true">
+    <use href="#check" />
+  </svg>
 </button>
 ```
 
@@ -490,9 +602,9 @@ The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
 - **Base**: `.va-dropdown-list` — `BG/Paper`, 1px `Stroke/Divider` border, 4px
   radius, zero padding/gap, raw `0 2px 5px 10%` shadow
 
-> **Figma naming trap**: the set's "Property 1 = sm/md" toggles which sample
-> row is selected — it is NOT a size axis (both samples are sm rows). No
-> container size classes exist on purpose.
+> The set's sm/md axis is a **real size axis since 2026-10** (32px vs 40px
+> rows). Still no container size classes on purpose — size lives on the
+> composed `.va-list-option-*` rows; a DropdownField panel uses **md** rows.
 > **Two paired library choices — never "fix" one alone**: `overflow: clip` is
 > a labeled extension (Figma has no clipping; hover fills would poke past the
 > corners), and the shadow ships as `filter: drop-shadow()` because
@@ -501,8 +613,20 @@ The panel holding ListItem rows. Extracted from Figma Dropdown List (1:480).
 
 ```html
 <div class="va-dropdown-list" role="listbox">
-  <button class="va-list-option va-list-option-sm" role="option" aria-selected="true">…</button>
-  <button class="va-list-option va-list-option-sm" role="option" aria-selected="false">…</button>
+  <button
+    class="va-list-option va-list-option-sm"
+    role="option"
+    aria-selected="true"
+  >
+    …
+  </button>
+  <button
+    class="va-list-option va-list-option-sm"
+    role="option"
+    aria-selected="false"
+  >
+    …
+  </button>
 </div>
 ```
 
@@ -543,7 +667,11 @@ Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
 > shipped as `Text/Primary`; designer list. The `bottomContent` block's
 > authored geometry is broken (absolute −59px/−313%) — `.va-radio-field-hint`
 > ships in normal flow as a labeled correction.
-> No disabled state exists (docs/ticket-disabled-state-field-family.md).
+> No disabled state exists on RadioField — and since 2026-10-13 that is a
+> DECISION, not a gap: the designer closed the field family's disabled gap
+> (TextField/TextArea/DropdownField shipped; Checkbox already had one) and
+> deliberately excluded Radio, Switch and this composed field
+> (docs/ticket-disabled-state-field-family.md, now resolved).
 > **The legend zeroes its UA inline padding (`px-0`)** — Chromium gives `<legend>`
 > 2px each side; preflight hides that, the standalone `./styles.css` path did not,
 > and the title rendered 2px right of its options (caught by the BSA Val run's
@@ -570,20 +698,22 @@ Labeled radio-group form field. Extracted from Figma Radio Fields (123:6059)
 Selectable / navigational option card. Extracted from Figma Card (9:367) —
 6 variants: `Hover` × `Radio` × `Pressed`.
 
-- **Base**: `.va-select-card` — 16px padding, 12px gap, 6px radius, 1px border,
-  76px content-driven height (20+**4**+20 text block + 32 padding)
+- **Base**: `.va-select-card` — 16px padding, 12px gap, 6px radius, a
+  **0.5px ring in every state** (2026-10; an inset box-shadow — Chrome floors
+  a 0.5px border to 1px), 76px content-driven height. **Focus is a drawn
+  axis** → `focus-ring-control`.
 - **Parts**: `.va-select-card-text`, `.va-select-card-title` (Labels Strong 14/500),
   `.va-select-card-description` (optional — Figma's subtitle boolean),
   `.va-select-card-chevron` (18px, `Neutral/Base`)
 - **Two exclusive variants**: a `<label>` composing the shipped `.va-radio`
   (selection card), or a `<button>` with the trailing chevron (navigation)
 
-| state | border | fill |
-| --- | --- | --- |
-| rest | `Stroke/Divider` | `BG/Paper` |
-| `:hover` | `Stroke/Hover` | **unchanged** (pixel-proven perimeter-only) |
-| `:active` (chevron variant) | unchanged token | `Action/Pressed` wash |
-| **selected** (`:has(.va-radio:checked)`) | `Primary/Primary` | `Primary/BG` |
+| state                                    | border            | fill                                        |
+| ---------------------------------------- | ----------------- | ------------------------------------------- |
+| rest                                     | `Stroke/Divider`  | `BG/Paper`                                  |
+| `:hover`                                 | `Stroke/Hover`    | **unchanged** (pixel-proven perimeter-only) |
+| `:active` (chevron variant)              | unchanged token   | `Action/Pressed` wash                       |
+| **selected** (`:has(.va-radio:checked)`) | `Primary/Primary` | `Primary/BG`                                |
 
 > **Figma's "Pressed" on the radio variant means SELECTED** — persistent, with
 > the nested radio checked; driven here by `:has(:checked)` from the real
@@ -602,16 +732,22 @@ Selectable / navigational option card. Extracted from Figma Card (9:367) —
   <input type="radio" name="join" class="va-radio" checked />
   <span class="va-select-card-text">
     <span class="va-select-card-title">Family Connection</span>
-    <span class="va-select-card-description">A relative is already a member</span>
+    <span class="va-select-card-description"
+      >A relative is already a member</span
+    >
   </span>
 </label>
 
 <button class="va-select-card">
   <span class="va-select-card-text">
     <span class="va-select-card-title">Family Connection</span>
-    <span class="va-select-card-description">A relative is already a member</span>
+    <span class="va-select-card-description"
+      >A relative is already a member</span
+    >
   </span>
-  <svg class="va-select-card-chevron" aria-hidden="true"><use href="#chevron-right" /></svg>
+  <svg class="va-select-card-chevron" aria-hidden="true">
+    <use href="#chevron-right" />
+  </svg>
 </button>
 ```
 
@@ -628,8 +764,10 @@ variants: `Type` {Portal, Application} × `Hover` × `Active`.
   Figma yet)
 - **States**: `:hover` (ink preview, weight unchanged),
   `[aria-selected="true"]` (ink + weight 400→500), `:focus-visible`
-- **Geometry**: 34px hug (7+7+20), 12/7 padding, 8px gap, 4px radius, 16px
-  caller icon slot
+- **Geometry**: 32px (`var(--height-sm)` token-bound since 2026-10; was a
+  34px hug), 12px x-padding (zero y — height is the token), 8px gap, 4px
+  radius, 16px caller icon slot. **Focus is a drawn axis** →
+  `focus-ring-control`.
 
 > **No underline exists** — every active cue is fill/ring/ink
 > (pixel-verified; the dashboard's underline-tab instincts don't apply).
@@ -667,11 +805,11 @@ Language-picker dropdown trigger. Extracted from Figma Text Selector (1:489) —
 - **Ink-only** — no box, fill, border, or padding at any state (the
   `.va-btn-micro` posture)
 
-| state | label | icons |
-| --- | --- | --- |
-| rest | `Text/Tertiary` | `Neutral/Disabled` (60% — lighter than the label) |
-| `:hover` | `Text/Secondary` | **unchanged** |
-| `[aria-expanded="true"]` | `Text/Primary` | `Neutral/Base` full opacity + chevron 180° |
+| state                    | label            | icons                                             |
+| ------------------------ | ---------------- | ------------------------------------------------- |
+| rest                     | `Text/Tertiary`  | `Neutral/Disabled` (60% — lighter than the label) |
+| `:hover`                 | `Text/Secondary` | **unchanged**                                     |
+| `[aria-expanded="true"]` | `Text/Primary`   | `Neutral/Base` full opacity + chevron 180°        |
 
 > **The design file contains duplicate `Hover=yes` variants** — two node
 > groups with different treatments under the same declared properties. Shipped
@@ -686,9 +824,13 @@ Language-picker dropdown trigger. Extracted from Figma Text Selector (1:489) —
 
 ```html
 <button class="va-text-selector" aria-haspopup="listbox" aria-expanded="false">
-  <svg class="va-text-selector-icon" aria-hidden="true"><use href="#globe" /></svg>
+  <svg class="va-text-selector-icon" aria-hidden="true">
+    <use href="#globe" />
+  </svg>
   <span class="va-text-selector-label">English</span>
-  <svg class="va-text-selector-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+  <svg class="va-text-selector-chevron" aria-hidden="true">
+    <use href="#chevron-down" />
+  </svg>
 </button>
 ```
 
@@ -711,9 +853,15 @@ axis**.
 > Geometry closes exactly (8+18+8 = 34); shipped as a pinned flex box.
 
 ```html
-<span class="va-owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
-<span class="va-owner"><svg aria-hidden="true"><use href="#plus" /></svg></span>
-<span class="va-owner"><svg aria-hidden="true"><use href="#building" /></svg></span>
+<span class="va-owner"
+  ><svg aria-hidden="true"><use href="#user" /></svg
+></span>
+<span class="va-owner"
+  ><svg aria-hidden="true"><use href="#plus" /></svg
+></span>
+<span class="va-owner"
+  ><svg aria-hidden="true"><use href="#building" /></svg
+></span>
 ```
 
 #### OwnerContainer
@@ -754,7 +902,9 @@ One row in the owners list. Extracted from Figma Owner Container (274:258) —
 
 ```html
 <div class="va-owner-container">
-  <span class="va-owner"><svg aria-hidden="true"><use href="#user" /></svg></span>
+  <span class="va-owner"
+    ><svg aria-hidden="true"><use href="#user" /></svg
+  ></span>
   <div class="va-owner-container-info">
     <div class="va-owner-container-title">
       <span class="va-owner-container-name">John Smith</span>
@@ -762,10 +912,17 @@ One row in the owners list. Extracted from Figma Owner Container (274:258) —
       <span class="va-owner-container-percent">20%</span>
     </div>
     <div class="va-owner-container-contact">
-      <span class="va-owner-container-contact-text">(123) 456-7890 · john.smith@valiify.com</span>
+      <span class="va-owner-container-contact-text"
+        >(123) 456-7890 · john.smith@valiify.com</span
+      >
       <div class="va-owner-container-actions">
-        <button class="va-btn va-btn-micro">Edit <svg aria-hidden="true"><use href="#pencil" /></svg></button>
-        <button class="va-icon-button va-icon-button-sm va-icon-button-state" aria-label="Remove John Smith">
+        <button class="va-btn va-btn-micro">
+          Edit <svg aria-hidden="true"><use href="#pencil" /></svg>
+        </button>
+        <button
+          class="va-icon-button va-icon-button-sm va-icon-button-state"
+          aria-label="Remove John Smith"
+        >
           <svg aria-hidden="true"><use href="#trash-2" /></svg>
         </button>
       </div>
@@ -781,21 +938,21 @@ Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
 (no empty+error, no hover+focus, no disabled), all 413×73.
 
 - **Parts**: `.va-text-field` › `.va-text-field-title-row` (25px: `.va-text-field-title`
-  + optional `.va-text-field-help` 18px icon-button) › `.va-text-field-box` (48px
-  pinned wrapper div — a native input can't host the icon slots; state styling
-  hangs off it via `:has()`) › `.va-text-field-input` (the native input) +
-  optional `.va-text-field-icon` (18px, leading/trailing) › `.va-text-field-hint`
+  - optional `.va-text-field-help` 18px icon-button) › `.va-text-field-box` (48px
+    pinned wrapper div — a native input can't host the icon slots; state styling
+    hangs off it via `:has()`) › `.va-text-field-input` (the native input) +
+    optional `.va-text-field-icon` (18px, leading/trailing) › `.va-text-field-hint`
 - **States**: `:hover`, `:has(:focus)` (any focus — Figma's Focus axis is the
   caret), `aria-invalid="true"` (error), `:focus` ring on error too
 
-| state | border (1px, border-box) | extra |
-| --- | --- | --- |
-| rest | `Stroke/Border` | — |
-| `:hover` | `Stroke/Hover` | — |
-| focus | `Primary` | + 3px Primary Ring (`focus-ring`) |
-| error | **`Warning/Base`** (amber — verbatim) | — |
-| error+hover | **unchanged** (unwired in Figma; excluded by name) | — |
-| error+focus | border stays amber | **crimson ring still fires** |
+| state       | border (1px, border-box)                           | extra                             |
+| ----------- | -------------------------------------------------- | --------------------------------- |
+| rest        | `Stroke/Border`                                    | —                                 |
+| `:hover`    | `Stroke/Hover`                                     | —                                 |
+| focus       | `Primary`                                          | + 3px Primary Ring (`focus-ring`) |
+| error       | **`Warning/Base`** (amber — verbatim)              | —                                 |
+| error+hover | **unchanged** (unwired in Figma; excluded by name) | —                                 |
+| error+focus | border stays amber                                 | **crimson ring still fires**      |
 
 > **THE PART CLASS IS `-title`, NOT `-label`** — a `.text-field-label` class
 > collides with the `text-field-label` type token's generated utility
@@ -816,7 +973,11 @@ Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
 > **Placeholder contrast fails WCAG as authored** (Text/Hint 3.11:1) — axe
 > can't see `::placeholder` here but flags the same ink on DropdownField;
 > waived in KNOWN_ISSUES with rationale. Designer list.
-> Not modelled, not invented: **disabled** (a priority gap for real forms).
+> **Disabled shipped 2026-10-13** (865:5431 — the long-flagged family gap is
+> closed): box `BG/App Page` + `Stroke/Divider`, value/placeholder ink
+> `Text/Tertiary`, title and hint unchanged. Drawn empty+rest only —
+> disabled+error/filled/hover are undrawn (hover excluded by name; the
+> disabled rule sorts last so it wins the undrawn error compound).
 
 ```html
 <div class="va-text-field">
@@ -824,7 +985,12 @@ Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
     <label class="va-text-field-title" for="fname">First name</label>
   </div>
   <div class="va-text-field-box">
-    <input id="fname" class="va-text-field-input" type="text" placeholder="Jane" />
+    <input
+      id="fname"
+      class="va-text-field-input"
+      type="text"
+      placeholder="Jane"
+    />
   </div>
 </div>
 
@@ -834,8 +1000,13 @@ Labeled single-line text input. Extracted from Figma Plain Text Field (1:291)
     <label class="va-text-field-title" for="email">Email</label>
   </div>
   <div class="va-text-field-box">
-    <input id="email" class="va-text-field-input" type="email"
-           aria-invalid="true" aria-describedby="email-hint" />
+    <input
+      id="email"
+      class="va-text-field-input"
+      type="email"
+      aria-invalid="true"
+      aria-describedby="email-hint"
+    />
   </div>
   <p id="email-hint" class="va-text-field-hint">Enter a valid email address.</p>
 </div>
@@ -857,7 +1028,9 @@ Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
   precedent)
 - **States**: `:hover`, `:focus-visible` OR `[aria-expanded="true"]` (Primary
   border + ring), `[aria-invalid="true"]` — same ramp as TextField, all the
-  same exclusions/compounds
+  same exclusions/compounds; **disabled** (865:4512, added 2026-10-13):
+  trigger `BG/App Page` + `Stroke/Divider`, value ink `Text/Tertiary`,
+  chevron constant `Neutral/Base` — drawn empty+rest only
 
 > **The chevron flips 180° on `[aria-expanded="true"]` ONLY** — never on bare
 > keyboard focus (arrow direction tracks the PANEL). Structurally verified in
@@ -878,7 +1051,7 @@ Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
 > waived KNOWN_ISSUES entry in the a11y scanner; designer list.
 > **Open-panel positioning is the methodology's §11 recipe** (added 2026-09-17):
 > wrap the trigger in `va:relative`; panel `va:absolute va:left-0 va:top-full
-> va:mt-1 va:w-full va:z-60`. The 4px offset is a library decision — Figma draws
+va:mt-1 va:w-full va:z-60`. The 4px offset is a library decision — Figma draws
 > no open panel.
 
 ```html
@@ -886,11 +1059,22 @@ Labeled listbox-trigger field. Extracted from Figma Dropdown Field (1:358) —
   <div class="va-dropdown-field-title-row">
     <span id="at-label" class="va-dropdown-field-title">Account type</span>
   </div>
-  <button class="va-dropdown-field-trigger" type="button" aria-haspopup="listbox"
-          aria-expanded="false" aria-labelledby="at-label">
-    <span id="at-value" class="va-dropdown-field-value va-dropdown-field-value-placeholder"
-          aria-hidden="true">Select an account type</span>
-    <svg class="va-dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
+  <button
+    class="va-dropdown-field-trigger"
+    type="button"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-labelledby="at-label"
+  >
+    <span
+      id="at-value"
+      class="va-dropdown-field-value va-dropdown-field-value-placeholder"
+      aria-hidden="true"
+      >Select an account type</span
+    >
+    <svg class="va-dropdown-field-chevron" aria-hidden="true">
+      <use href="#chevron-down" />
+    </svg>
   </button>
 </div>
 ```
@@ -914,6 +1098,8 @@ TextField's shipped treatment rather than inventing one.
   hint `Warning/Text`. Error+hover is excluded by name (stays amber);
   error+focus keeps the amber border while the crimson ring still fires — the
   error rule **sorts after the focus rule** and that order is load-bearing
+- **Disabled** (865:5526, added 2026-10-13): fill `BG/App Page` + border
+  `Stroke/Divider`, ink `Text/Tertiary`; drawn empty+rest only
 
 > **Two labeled corrections of Figma defects**: the value node carries the
 > Input style's single-line nowrap/ellipsis (copy-paste artifact — wrapping
@@ -934,7 +1120,11 @@ TextField's shipped treatment rather than inventing one.
   <div class="va-text-area-title-row">
     <label class="va-text-area-title" for="notes">Notes</label>
   </div>
-  <textarea id="notes" class="va-text-area-input" placeholder="Anything else?"></textarea>
+  <textarea
+    id="notes"
+    class="va-text-area-input"
+    placeholder="Anything else?"
+  ></textarea>
 </div>
 ```
 
@@ -1022,12 +1212,18 @@ fast-path) from Figma tooltip (582:9178) — a single symbol, no variant axes.
 > baked. Wire `role="tooltip"` + the trigger's `aria-describedby`.
 
 ```html
-<button class="va-icon-button" aria-label="What is a routing number?" aria-describedby="tip-1">
+<button
+  class="va-icon-button"
+  aria-label="What is a routing number?"
+  aria-describedby="tip-1"
+>
   <svg aria-hidden="true"><use href="#circle-help" /></svg>
 </button>
 <div class="va-tooltip" role="tooltip" id="tip-1">
   <span class="va-tooltip-title">Routing number</span>
-  <span class="va-tooltip-body">The nine-digit code on the bottom left of your checks.</span>
+  <span class="va-tooltip-body"
+    >The nine-digit code on the bottom left of your checks.</span
+  >
 </div>
 ```
 
@@ -1041,7 +1237,7 @@ Simple} matrix (Simple exists only as info).
   ring + `shadow-basic` in one declaration — content-driven 66px, Modal
   precedent) + type class + `.va-toast-icon` (18px caller slot) +
   `.va-toast-content` (`.va-toast-title` Field Label / `.va-toast-body` help-caption)
-  + a composed bare `.va-icon-button` dismiss
+  - a composed bare `.va-icon-button` dismiss
 - **Simple**: `.va-toast-simple` — a STATUS-LESS dark `BG/Contrast` full-radius
   pill (15px glyph — off the icon grid, designer list; Content 13/16 in
   Text/Contrast). The Type axis is meaningless for it: no ramp token binds.
@@ -1059,10 +1255,14 @@ Simple} matrix (Simple exists only as info).
 
 ```html
 <div class="va-toast va-toast-success" role="status">
-  <svg class="va-toast-icon" aria-hidden="true"><use href="#circle-check" /></svg>
+  <svg class="va-toast-icon" aria-hidden="true">
+    <use href="#circle-check" />
+  </svg>
   <div class="va-toast-content">
     <span class="va-toast-title">Document request sent</span>
-    <span class="va-toast-body">Client has been notified to upload their W-9.</span>
+    <span class="va-toast-body"
+      >Client has been notified to upload their W-9.</span
+    >
   </div>
   <button class="va-icon-button" aria-label="Dismiss">
     <svg aria-hidden="true"><use href="#x" /></svg>
@@ -1106,7 +1306,7 @@ Action (71:848) — 3 states: Pending / actionable rest / Done, 720×84 samples
   inset-shadow hairline) + `.va-action-icon` (18px slot, constant
   Text/Secondary) + `.va-action-content` (`.va-action-title` title-medium /
   `.va-action-description` body-content Tertiary) + optional composed `.va-badge`
-  + a trailing affordance per state
+  - a trailing affordance per state
 - **States**: rest (no class) — title `Text/Primary` + `.va-action-cta` (a real
   34px mini button: Paper, 1px Stroke/Divider border, Field Label + 18px
   `#arrow-right` — NOT any shipped `.va-btn` type); `.va-action-pending` — title
@@ -1123,55 +1323,84 @@ Action (71:848) — 3 states: Pending / actionable rest / Done, 720×84 samples
 
 ```html
 <div class="va-action">
-  <svg class="va-action-icon" aria-hidden="true"><use href="#shield-check" /></svg>
+  <svg class="va-action-icon" aria-hidden="true">
+    <use href="#shield-check" />
+  </svg>
   <div class="va-action-content">
     <span class="va-action-title">Identity</span>
     <span class="va-action-description">Verify who you are</span>
   </div>
-  <button class="va-action-cta">Verify <svg aria-hidden="true"><use href="#arrow-right" /></svg></button>
+  <button class="va-action-cta">
+    Verify <svg aria-hidden="true"><use href="#arrow-right" /></svg>
+  </button>
 </div>
 
 <div class="va-action va-action-done">
   …
-  <span class="va-action-status"><svg aria-hidden="true"><use href="#check" /></svg>Done</span>
+  <span class="va-action-status"
+    ><svg aria-hidden="true"><use href="#check" /></svg>Done</span
+  >
 </div>
 ```
 
 #### UtilityButton
 
-The non-inline / special-use button family — a SIBLING of Button / Standard,
-not a skin on it. Extracted from Figma Button / Utility (24:4382) — 18
-variants on a partial `Size` {MD, SM} × `Type` {Empty, Filled, Rounded,
-Text} × `Hover` × `Pressed` matrix.
+The non-inline / special-use button family — a SIBLING of the Standard
+appearance, not a skin on it. Originally Figma Button / Utility (24:4382);
+since the 2026-10 merge it is the `Appearance=Utility` half of the unified
+Button set (1:218) — 22 variants on a partial `Style` {Secondary, Primary,
+Rounded, Text, Link} × `Size` {MD, SM} × `State` matrix (Disabled drawn for
+Link only). See the Button section's Figma↔code mapping table.
 
 - **Base**: `.va-utility-button` — layout only, **a type class is required**
   (the Standard button's rule); SM (34px) is the bare default,
   `.va-utility-button-md` (54px, drawn for Empty) modifies
-- **Types**: `.va-utility-button-empty` / `-filled` / `-rounded` / `-text`
-- **Label convention**: Field Label 13/500 **natural case** (Text type:
-  Content 13/400) — never the Standard set's uppercase Button Label
-- **Icon slots**: plain `svg` children (18px; 16px in Text), painted by
-  currentColor so they ride the ink ramps
+- **Types**: `.va-utility-button-empty` / `-filled` / `-rounded` / `-text` /
+  `-link` (class names predate the Figma renames; mapping in Button above)
+- **Label convention**: Field Label 13/500 **natural case** (Text: Content
+  13/400; Link: 16/400/24) — never the Standard set's uppercase Button Label
+- **Icon slots**: plain `svg` children (18px; 16px in Text; **none on
+  Link**), painted by currentColor so they ride the ink ramps; uniform
+  swappable left/right slots since the merge (trailing on by default)
 
-| type | box | rest → hover → pressed |
-| --- | --- | --- |
-| `-empty` | Paper + 1px Stroke/Divider, 4px | ink Secondary → Primary; fill Paper → `Action/Hover` → `Action/Pressed`; **border drops at hover/pressed** |
-| `-filled` | solid, 4px, no border | `Primary → Primary/Hover → Primary/Focus`; white ink never fades |
-| `-rounded` | ghost pill, no border ever | none → `Action/Hover` → `Action/Pressed`; ink Secondary → Primary |
-| `-text` | bare 16px underlined row | ink Tertiary → Primary (**hover = pressed**, byte-identical) |
+| type       | box                                  | rest → hover → pressed                                                                      |
+| ---------- | ------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `-empty`   | **GHOST** + 1px Stroke/Divider, 4px  | ink `Text/Primary` constant; fill none → `Action/Hover` → `Action/Pressed`; border constant |
+| `-filled`  | solid, 4px, 1px Stroke/Divider ring  | `Primary → Primary/Hover → Primary/Focus`; white ink never fades                            |
+| `-rounded` | ghost pill, no border ever           | none → `Action/Hover` → `Action/Pressed`; ink Secondary → Primary                           |
+| `-text`    | bare 16px row, **no underline**      | ink Secondary → Primary (**hover = pressed**, byte-identical)                               |
+| `-link`    | bare 24px inline row, **underlined** | ink `Primary → Primary/Hover → Primary/Focus`; disabled `Text/Tertiary` (underline stays)   |
 
-> **The Empty border is REST-ONLY** — pixel-proven: at hover/pressed both
-> Paper and the border drop and the wash composites over the page (the
-> hover-variant hexes solve over white, not Paper; the Stroke/Divider
-> binding on those variants is a dedup ghost). Ships as border-color
-> transparent so geometry never shifts. Designer list.
-> **The Text type's Size axis is unwired** (MD ≡ SM, 0/1376 pixel diff) and
-> its rest ink is a raw #6f7276 override stacked on a bound Text/Secondary —
-> the raw value IS Text/Tertiary's hex, shipped as the token. Designer list.
+**Heights are token-bound** (2026-10): SM rows `var(--height-sm)` 32 (was
+34), `-md` `var(--height-lg)` 48 (was the hand-resized 54). **Disabled is a
+drawn axis for every style, unified 2026-10-15 to the Standard treatment**:
+no fill, `Stroke/Divider` border, label and icon `Text/Tertiary` — only
+`-filled` differs (`Primary/Disabled`, white ink never fades). **Loading**
+(`aria-busy`, drawn for Primary/Secondary SM) works as on `.va-btn`.
+**Focus** = `focus-ring-control`; `-text`/`-link` carry tap-target
+overlays.
+
+> **The Empty border PERSISTS in every state** (changed in the 2026-10 merge —
+> the old "rest-only border" reading is obsolete): one constant translucent
+> `Stroke/Divider` compositing over the changing fill (Checkbox precedent).
+> Paper still drops at hover/pressed — the wash sits over the page.
+> **Filled gained the same constant Stroke/Divider ring** in the merge —
+> near-invisible over crimson; designer list.
+> **The Text type lost its underline** (Link is now the underlined style) and
+> its old raw-#6f7276 ink stacking was **fixed by the designer** — rest ink is
+> a clean Text/Secondary. Hover = pressed stays byte-identical. Its Size axis
+> is still unwired (MD ≡ SM).
+> **Link's state ramp is drawn per-variant since 2026-10-14**: Default binds
+> `Primary/Primary`, Hover `Primary/Hover`, Pressed `Primary/Focus`, Disabled
+> `Text/Tertiary` — and the underline never drops (the underline-off
+> "disabled" style was deleted). Its type is **`Body & Supporting/Input`**
+> (the duplicate "Buttons / Inline link" style was deleted too) — shipped as
+> `text-input`, now the real binding, not a coincidence.
 > **`Primary/Focus` is the pressed fill name again** — wired to `:active`.
 > MD's authored w-214 is the sample-hug trap; width is the caller's.
-> Not modelled, not invented: disabled (cursor only — unlike Standard, no
-> Inactive axis exists), MD Filled/Rounded, focus variants (library ring).
+> Not modelled, not invented: disabled for Empty/Filled/Rounded/Text (cursor
+> only — **Link is the one Utility style with a designed disabled**), MD
+> Filled/Rounded, focus variants (library ring).
 
 ```html
 <button class="va-utility-button va-utility-button-empty">
@@ -1179,13 +1408,228 @@ Text} × `Hover` × `Pressed` matrix.
   Add Funds
 </button>
 
-<button class="va-utility-button va-utility-button-filled va-utility-button-md">Add Funds</button>
+<button class="va-utility-button va-utility-button-filled va-utility-button-md">
+  Add Funds
+</button>
 <button class="va-utility-button va-utility-button-rounded">Add Funds</button>
 
 <button class="va-utility-button va-utility-button-text">
   View statements
   <svg aria-hidden="true"><use href="#chevron-right" /></svg>
 </button>
+
+<!-- Inline link button — no icons, no box; crimson + underline -->
+<button class="va-utility-button va-utility-button-link">Resend code</button>
+```
+
+#### OtpCell
+
+One digit box of the OTP (one-time code) entry. Extracted from Figma
+**OTP / Digit cell** (824:4856) — 4 variants on a single `State` axis
+{Empty, Filled, Focused, Error}, all 56×56. Figma derives it "from the
+established Plain Text Field input surfaces" (description, verbatim).
+
+- **Base**: `.va-otp-cell` — applied **directly to a native `<input>`**, one
+  input per digit; works standalone or composed by OtpField
+- **States**: `:focus` (the caret state — TextField precedent, not
+  `:focus-visible`), `aria-invalid="true"` (error), `:disabled` (**drawn
+  since 2026-10**, 913:886: App Page fill + Divider border + Tertiary digit)
+- **Dimensions**: 56×56 pinned (height AND width — never min-height), 4px
+  radius, **a real 1px border** (measured exactly 1.00px; no fractional trap,
+  so the Radio/Checkbox inset-shadow trick is deliberately NOT used)
+- **Type**: `Metric/Small` (`text-metric-small`, 20/26/500) — the first form
+  control on the Metric family; digit ink `Text/Primary`, centred
+
+| state       | border (1px)                | extra                                                     |
+| ----------- | --------------------------- | --------------------------------------------------------- |
+| rest        | `Stroke/Border`             | —                                                         |
+| `:focus`    | `Primary/Primary`           | 3px `Primary Ring` (library `focus-ring`) + crimson caret |
+| error       | `Warning/Base` (amber — D4) | — (no ring)                                               |
+| error+focus | border stays amber          | crimson ring still fires (rule order load-bearing)        |
+
+> **Figma's Focused "digit" is a FAKE caret** — a literal `|` text glyph in
+> `Primary/Primary`; no caret layer exists. Shipped as
+> `caret-color: var(--color-primary)` with the digit ink constant (labeled
+> reading; designer list). **Empty ≡ Filled in the masters** (0/3136 px — the
+> digit prop defaults to a space); Empty's `Text/Hint` ink only ever paints a
+> consumer-supplied `::placeholder`. **Radius is 4px authored** (two
+> independent reads; a pixel fit read ≈5.4 within antialias error — authored
+> wins, Switch-knob precedent). Not modelled, not invented: hover, disabled
+> visual, pressed.
+
+```html
+<input
+  class="va-otp-cell"
+  type="text"
+  inputmode="numeric"
+  pattern="[0-9]"
+  maxlength="1"
+  autocomplete="one-time-code"
+  aria-label="Digit 1 of 6"
+/>
+```
+
+#### OtpField
+
+The labeled six-digit OTP entry, composing OtpCell. Extracted from Figma
+**OTP field** (815:9211) — 4 variants on a single `State` axis {Empty,
+Focused, Filled, Error}, all 376×100 (title 25 + cells 56 + hint 19 — the
+math closes exactly).
+
+- **Parts**: `.va-otp-field` (a `<fieldset>`, `min-w-[376px]` — authored and
+  load-bearing: the error message needs it), `.va-otp-field-title` (a
+  `<legend>`, Labels/Strong 14/500 `Text/Secondary`, **`px-0`** — the
+  RadioField UA-padding fix), `.va-otp-field-cells` (hug row, 8px gap —
+  6×56+5×8 = 376, deliberately NOT `w-full`: "the digit row remains compact
+  and left-aligned inside wider wrappers"), `.va-otp-field-hint`
+  (Help & Caption 12/400, present in every state)
+- **Error**: consumer sets `aria-invalid="true"` on **every** cell (Figma
+  draws all six amber — no per-cell error) and swaps the hint copy; the hint
+  ink turns `Warning/Text` via `:has()` off the real input state
+- **Focus lives on the CELL**, never the field — Figma's Focused variant
+  rings the next-empty cell
+
+> **The library ships no JS**: auto-advance, backspace-to-previous,
+> paste-distribution, select-on-focus and setting `aria-invalid` are consumer
+> JS. Figma's `showLabel`/`showSupportingText` booleans have no CSS — omit
+> the element. Cell count is fixed at six by the design. Title and hint inks
+> never change except the hint's error swap. Not modelled, not invented:
+> hover, disabled (the family gap), per-cell error, error+focus at field
+> level.
+
+```html
+<fieldset class="va-otp-field" aria-describedby="otp-hint">
+  <legend class="va-otp-field-title">Verification code</legend>
+  <div class="va-otp-field-cells">
+    <input
+      class="va-otp-cell"
+      type="text"
+      inputmode="numeric"
+      pattern="[0-9]"
+      maxlength="1"
+      autocomplete="one-time-code"
+      aria-label="Digit 1 of 6"
+    />
+    <!-- ×6 -->
+  </div>
+  <p id="otp-hint" class="va-otp-field-hint">
+    Enter the 6-digit code sent to you.
+  </p>
+</fieldset>
+```
+
+#### Address
+
+The grouped address entry. Extracted from Figma **Address Super entry**
+(281:4634) — 13 variants on a partial `Filled` × `Hover` × `Focus` ×
+`Error` × `Disabled` matrix, ~518-wide samples. **Not a composition of
+TextField**: one group box holds five bespoke cells in three rows, and every
+state lives on the group.
+
+- **Parts**: `.va-address` › `.va-address-title-row` / `.va-address-title`
+  (Labels/Strong, `Text/Secondary`) › `.va-address-group` (Paper, 1px
+  `Stroke/Divider`, 4px radius) › three `.va-address-row`s
+  (`var(--height-lg)` each; **inner dividers are the darker
+  `Stroke/Border`** — verbatim) › `.va-address-input` (bare native inputs,
+  Input 16/400; `-city` 227px and `-state` 133px are authored fixed, ZIP
+  flexes) + `.va-address-optional` › `.va-address-hint` (labeled family
+  extension — **Figma draws no hint row**)
+- **States**: hover → group border `Stroke/Hover`; `:focus-within` → Primary
+  group border + the **3px FIELD ring** (not the control ring), and the
+  focused ROW gains an inset 2px `Primary/Track` marker and drops its divider
+  (281:4683 verbatim); error (`aria-invalid` on any input) → amber group
+  border + hint ink `Warning/Text` (D4); disabled → App Page + Tertiary.
+  Error+focus: amber border wins, ring still fires (rule order).
+
+> **Figma flips the title style on the Focus variants** (Strong 14/20 →
+> Field Label 13/16 — the 171-vs-167 frame-height split is exactly that);
+> shipped consistent at Strong, designer list. Hover's bindings were
+> rate-limit-unreadable — shipped from the set-level `Stroke/Hover` binding,
+> labeled. Not modelled, not invented: hover+focus, disabled compounds,
+> per-cell error. Autofill wiring and `aria-invalid` are consumer JS.
+
+```html
+<div class="va-address">
+  <div class="va-address-title-row">
+    <span class="va-address-title">Address</span>
+  </div>
+  <div class="va-address-group">
+    <div class="va-address-row">
+      <input
+        class="va-address-input"
+        placeholder="Address..."
+        aria-label="Street address"
+      />
+    </div>
+    <div class="va-address-row">
+      <input
+        class="va-address-input"
+        placeholder="Apt, suite, unit"
+        aria-label="Apartment, suite, or unit"
+      />
+      <span class="va-address-optional">Optional</span>
+    </div>
+    <div class="va-address-row">
+      <input
+        class="va-address-input va-address-input-city"
+        placeholder="City"
+        aria-label="City"
+      />
+      <input
+        class="va-address-input va-address-input-state"
+        placeholder="State"
+        aria-label="State"
+      />
+      <input
+        class="va-address-input"
+        placeholder="00000"
+        inputmode="numeric"
+        aria-label="ZIP code"
+      />
+    </div>
+  </div>
+</div>
+```
+
+#### Upload
+
+The file drop zone / picker row. Extracted from Figma **Upload** (778:6949)
+— 3 variants, all 499×48: `Expanded` {no, yes} × `Completed` {No, yes}
+(Expanded reads as the drag-over state; no set description exists).
+
+- **Base**: `.va-upload` — a `<label>` wrapping a visually-hidden
+  `.va-upload-input` (`<input type="file">`), `var(--height-lg)`, **8px
+  radius** (the one 8px control), **DASHED** 1px `Stroke/Divider` border
+  (stays 1px per the handoff; only a real border draws dashes)
+- **Parts**: `.va-upload-left` › `.va-upload-icon` (18px — ship `#upload`,
+  or `#file` when complete; Figma's layers are named "ChevronLeft", the
+  naming-lies family) + `.va-upload-prompt` with the `.va-upload-browse` run
+  (**`Info/Base`** — raw #1b4e8b in Figma, the token's exact hex) ›
+  `.va-upload-meta`
+- **States**: `.va-upload-active` (drag-over — consumer JS on dragover):
+  `Action/Hover` fill + dashed `Stroke/Hover`; `.va-upload-complete`: solid
+  border + App Page fill + `.va-upload-filename` (`Text/Primary`) + a
+  composed `.va-utility-button-text` Remove. Focus on the hidden input rings
+  the row (`focus-ring-control`).
+
+> Not modelled, not invented: Expanded=no+Completed=yes, disabled, error,
+> progress. Drag events, file handling and the state classes are consumer
+> JS — the library ships none. Figma's drawn Remove is a STALE underlined
+> instance of the old Utility Text style — compose the current one
+> (designer list).
+
+```html
+<label class="va-upload">
+  <input class="va-upload-input" type="file" />
+  <span class="va-upload-left">
+    <svg class="va-upload-icon" aria-hidden="true"><use href="#upload" /></svg>
+    <span class="va-upload-prompt"
+      >Drop a file here or
+      <span class="va-upload-browse">choose a file</span></span
+    >
+  </span>
+  <span class="va-upload-meta">PDF, JPG, PNG · 20 MB</span>
+</label>
 ```
 
 ---
@@ -1196,12 +1640,43 @@ Short App Figma file, one section per component, following the format used in
 
 ### Design Tokens (complete enumeration 2026-09-02)
 
-**58 colors, 8 radii, 13 spacing values, 24 text styles, 2 effects (the focus
+**59 colors, 8 radii, 13 spacing values, 24 text styles (+5 unconsumed), 3 effects (the focus
 ring and Basic Drop Shadow).** Colors/spacing/radii come from a **complete Plugin API enumeration of
 the file's local variable collection** (`use_figma` →
 `figma.variables.getLocalVariableCollectionsAsync` — all 77 variables, applied
 or not); typography from the type-preview section (1:2) plus component sweeps.
 Browse them rendered in Storybook under **Foundations → Design Tokens**.
+
+> **Re-enumerated 2026-10-13 (the Button-merge sweep, twice).** Collection 1
+> is byte-identical — all 58 colors (Primary ramp verified), 13 spacing, 8
+> radius values unchanged, and it is again the **only** collection: two
+> single-variable `button/*` collections that briefly appeared with the merge
+> were **removed the same day** ("no new color tokens" — the button variants
+> now bind `Text/*` / `Primary/*` directly, and the library never emitted
+> them). Also new: **5 text styles** (29 total) —
+> `Buttons / Inline link` (16/24/400, underlined; numerically = `text-input`),
+> `Buttons / Inline link disabled` (same, underline off),
+> `Display & Title/Next` (19/26/600, unused), and `Metric/Mono 24` + `Metric/
+Mono 20` which are **Inter, not mono** (the names-that-lie family; values =
+> metric-medium-ish 24/30/500 and metric-small 20/26/500). None is tokenized
+> until a component consumes it (Inline link ships as `text-input`, labeled
+> coincidence — later made the REAL binding when the duplicate styles were
+> deleted on 2026-10-14).
+>
+> **2026-10-14 (the go-live handoff sweep):** the collection gained the
+> **`Height/*` variables** (SM 32 / MD 40 / LG 48 / XL 56; an XS=24 appeared
+> briefly and was deleted on 10-15 — never consumed), emitted as
+> `--height-*`; component frames BIND them, and
+> the library sets control heights as `height: var(--height-*)` with zero
+> y-padding — never padding + line-height math. Two LIBRARY constants ride
+> along: `--target-min: 24px` and `--target-touch: 44px` (the tap-area
+> contract written into the Figma component descriptions; not Figma
+> variables). A new **"Focus Ring" effect style** landed (2px BG/Paper gap +
+> 2px solid Primary/Primary) → the `focus-ring-control` utility; fields keep
+> the original 3px `Primary Ring`. Casing: **fully resolved** — Tag &
+> Pill, both Lockups AND Data Key (added 10-15) carry UPPER transforms, all
+> baked into `type-*` utilities; the Micro button's label binds Eyebrow. The
+> Metric/Mono styles are real JetBrains Mono now.
 
 > **The applied-only sweep missed 26 of the 56 colors** — the entire Error and
 > Info ramps, the Success/Warning/Neutral tint sets, `BG/Page`, `BG/Card` —
@@ -1219,7 +1694,7 @@ Browse them rendered in Storybook under **Foundations → Design Tokens**.
   `-tertiary` / `-hint` / `-contrast`
 - Surface (Figma group **BG**): `--color-surface-paper` (#fffdfb) /
   `-app-page` (#fafaf9) / `-page` (#fdf8f5) / `-card` (#f1f0ee) /
-  `-contrast` (#1a1a1a, added with Tooltip)
+  `-contrast` (#1a1a1a, added with Tooltip) / `-skeleton` (#e4e7eb, added 2026-10-15 for the Skeleton fill)
 - Stroke: `--color-stroke-border` / `-divider` / `-hover` (all translucent ink)
 - Action: `--color-action-hover` / `-pressed` / `-active` / `-focused`
 - Status — **four full ramps**, each Base + Text + BG/Ring/Stroke/Stroke-Hover
@@ -1231,11 +1706,11 @@ Browse them rendered in Storybook under **Foundations → Design Tokens**.
 > matching the dashboard library's API shape. The mapping lives in
 > `COLOR_GROUPS` in [scripts/build-theme.mjs](scripts/build-theme.mjs).
 
-> **The Error ramp exists but is applied nowhere** — the field components'
-> `Error=Yes` variants bind `Warning/Base` (amber) instead. Now clearly an
-> authoring slip (upgraded from an open question once the full enumeration
-> surfaced the ramp). On the designer list; build error states against the
-> Error ramp only once confirmed.
+> **The Error ramp has its FIRST consumer (2026-10): ListItem's Critical
+> axis binds `Error/Base`** for destructive rows. Everything error-shaped on
+> FIELDS stays amber (`Warning/*`) per decision D4 — the two ramps now
+> coexist deliberately: amber = consumer-facing field errors, red =
+> destructive actions.
 
 **Radii** — Figma's scale IS Tailwind's t-shirt naming; emitted verbatim.
 xs/sm/md/lg (2/4/6/8px) are byte-identical to Tailwind v4's defaults;
@@ -1254,12 +1729,12 @@ mean 8px instead of 32px.
 **Typography** — 24 composite `--text-*` tokens, all Inter, line heights
 authored in px (only `Link` is Auto):
 
-| Role | tokens |
-| --- | --- |
-| Display & Title | `text-display` 28/34 · `text-display-large` 30/38 · `text-title` 22/26 · `text-title-medium` 16/20 (all 500) |
-| Metric | `text-metric-large` 30/34 · `text-metric-medium` 26/30 · `text-metric-small` 20/26 (all 500) |
-| Body | `text-lead` 16/24/500 · `text-body` 15/20 · `text-input` 16/24 · `text-body-content` 13/16 · `text-help-caption` 12/14 |
-| Labels & UI | `text-label` 14/20 · `text-label-strong` 14/20/500 · `text-field-label` 13/16/500 · `text-button-label` 14/20/600+10% · `text-link` 14/Auto · `text-eyebrow` 11/16/600+10% · `text-tag-pill` 11/16/600+5% · `text-timestamp` 12/16 · `text-data-key` & `text-micro-label` 9/12/600+8% · `text-lockup-wordmark` 15/17/600+10% · `text-lockup-tagline` 9/11/500+16% |
+| Role            | tokens                                                                                                                                                                                                                                                                                                                                                            |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Display & Title | `text-display` 28/34 · `text-display-large` 30/38 · `text-title` 22/26 · `text-title-medium` 16/20 (all 500)                                                                                                                                                                                                                                                      |
+| Metric          | `text-metric-large` 30/34 · `text-metric-medium` 26/30 · `text-metric-small` 20/26 (all 500)                                                                                                                                                                                                                                                                      |
+| Body            | `text-lead` 16/24/500 · `text-body` 15/20 · `text-input` 16/24 · `text-body-content` 13/16 · `text-help-caption` 12/14                                                                                                                                                                                                                                            |
+| Labels & UI     | `text-label` 14/20 · `text-label-strong` 14/20/500 · `text-field-label` 13/16/500 · `text-button-label` 14/20/600+10% · `text-link` 14/Auto · `text-eyebrow` 11/16/600+10% · `text-tag-pill` 11/16/600+5% · `text-timestamp` 12/16 · `text-data-key` & `text-micro-label` 9/12/600+8% · `text-lockup-wordmark` 15/17/600+10% · `text-lockup-tagline` 9/11/500+16% |
 
 > **Casing is not baked into any token.** The preview renders Eyebrow,
 > Micro-Label, Button Label, Tag & Pill, Data Key and the Lockup styles
@@ -1362,6 +1837,22 @@ Decisions a consumer or contributor would otherwise discover by surprise:
   native scale is the contract. The single library-authored media query is
   Header's 768px mobile switch (`md`), documented there. New responsive
   behaviour should use Tailwind's breakpoints, never new raw values.
+- **Two focus rings, by design (2026-10)**: FIELDS (TextField, DropdownField,
+  TextArea, Address, OTP) keep the original `focus-ring` (3px translucent
+  `Primary/Ring` + Primary border); CONTROLS (buttons, checkbox, radio,
+  switch, cards, tabs, icon buttons) use `focus-ring-control` (2px solid
+  Primary at offset 2 — Figma's "Focus Ring" effect). List options take
+  NEITHER (focus stays on the listbox trigger; `data-active` carries the
+  highlight).
+- **Tap targets**: hug-content controls (icon button, text selector, micro/
+  text/link buttons, radio, checkbox, switch) extend their hit area with a
+  centred `::after` overlay to ≥24px (WCAG 2.5.8), ≥44px under
+  `@media (pointer: coarse)` — `--target-min`/`--target-touch`. Never with
+  layout height or padding. Paired with a label, the label row is the target.
+- **Control heights are the `--height-*` tokens** (SM 32 / MD 40 / LG 48 /
+  XL 56 — XS was deleted from Figma 2026-10-15): set
+  `height: var(--height-*)`, zero y-padding, centred content. Never derive a
+  control's height from padding + line-height.
 - **Z-index scale** (established ahead of the Confirmation Modal):
   content `z-0` · sticky chrome (Header) `z-40` · overlay backdrop `z-50` ·
   modal/panel `z-60` · toast `z-70`. Header already ships z-40; overlay
@@ -1377,7 +1868,7 @@ Decisions a consumer or contributor would otherwise discover by surprise:
   `avatar`, `radio`, `skeleton`, `tab`, `tabs`, `modal`, `modal-backdrop`,
   `toast`, `tooltip`. Our rules live in `@layer components`; daisyUI injects
   via `addComponents`, which Tailwind v3 hoists **unlayered**, and unlayered
-  normal declarations beat layered ones *before* specificity or source order is
+  normal declarations beat layered ones _before_ specificity or source order is
   consulted. No import ordering fixes it. Unlayering ours would not either:
   daisyUI supplies every property we don't set — its button class leaks 26 of
   them, and its modal class is `pointer-events: none; opacity: 0` until its own
@@ -1407,25 +1898,26 @@ Decisions a consumer or contributor would otherwise discover by surprise:
   from one to the other.** They read different inputs at different times, and
   neither can mask the other:
 
-  | | `class-audit` (val-core) | `verify:vocabulary` (this repo) |
-  |---|---|---|
-  | governs | **generated pages**, at pipeline runtime | **committed prose**, in CI |
-  | reads | the page being built, `src/components`, the theme, the surface methodology | every `.md`/`.html`/`.json` doc, against `class-manifest.json` |
-  | runs | inside `/design`, per run, before handoff | `npm run verify:vocabulary`, per commit |
-  | answers | "may this page write this class?" | "does this class we wrote about still exist?" |
+  |         | `class-audit` (val-core)                                                   | `verify:vocabulary` (this repo)                                |
+  | ------- | -------------------------------------------------------------------------- | -------------------------------------------------------------- |
+  | governs | **generated pages**, at pipeline runtime                                   | **committed prose**, in CI                                     |
+  | reads   | the page being built, `src/components`, the theme, the surface methodology | every `.md`/`.html`/`.json` doc, against `class-manifest.json` |
+  | runs    | inside `/design`, per run, before handoff                                  | `npm run verify:vocabulary`, per commit                        |
+  | answers | "may this page write this class?"                                          | "does this class we wrote about still exist?"                  |
 
   So a `class-audit` PASS predicts nothing about `verify:vocabulary`, and fixing
   one does not move the other: a page can be fully sanctioned while the doc
   describing it names a class the bundle dropped, and the docs can be spotless
   while a page composes something the methodology never sanctioned. Changing the
   class vocabulary means running **both**, and reading both results.
+
 - **The prebuilt bundle is UNLAYERED; source, `./source` and `dist/index.css`
   keep their layers** (decided 2026-09-16, shipped 1.0.1). Inside `@layer
-  components`, every component rule loses to any unlayered host rule before
+components`, every component rule loses to any unlayered host rule before
   specificity or source order is consulted — Tailwind 3 preflight (`* {
-  border-width: 0 }`, `button { background-color: transparent }`), daisyUI, a
+border-width: 0 }`, `button { background-color: transparent }`), daisyUI, a
   Svelte `:global()` reset, and **our own `reset.css`**, whose `button { color:
-  inherit }` beat `.va-btn-primary`'s white ink in 1.0.0 (50 property/element
+inherit }` beat `.va-btn-primary`'s white ink in 1.0.0 (50 property/element
   defeats measured by `verify:reset`). The `va-` rename could never have fixed
   this; it is not a name collision. `build-styles.mjs` unwraps pass A at build
   time so `src/components` stays layered for the Tailwind-v4 entries, where the
@@ -1442,9 +1934,9 @@ Decisions a consumer or contributor would otherwise discover by surprise:
   now tests both, plus the lone-import path.
 
   **The two-clause host contract** (consumers: README, GETTING_STARTED):
-  1. *Defends against* any host rule of lower specificity, wherever it sits in
+  1. _Defends against_ any host rule of lower specificity, wherever it sits in
      source order, provided the bundle loads after the host's reset.
-  2. *Cannot defend against* a host rule of higher specificity — a Svelte
+  2. _Cannot defend against_ a host rule of higher specificity — a Svelte
      scoped `button { }` compiles to `button.svelte-hash` (0,1,1) and beats our
      0,1,0 — or a host that wraps its own CSS in a layer. Remedy: scope element
      resets by class or exclude library controls (`button:not([class*="va-"])`).
@@ -1474,11 +1966,11 @@ npm install @valiify/shortapp-ui tailwindcss
 CSS-only — there is no Tailwind plugin to register, and no `tailwind.config.js`.
 **Two supported entry points**, and the difference is load-bearing:
 
-| Entry                             | You get                                              | You do NOT get          |
-| --------------------------------- | ---------------------------------------------------- | ----------------------- |
+| Entry                             | You get                                                            | You do NOT get                         |
+| --------------------------------- | ------------------------------------------------------------------ | -------------------------------------- |
 | `@valiify/shortapp-ui/styles.css` | component classes + tokens + the `va:` utility layer, **no reset** | nothing — this entry is self-contained |
-| `@valiify/shortapp-ui` (prebuilt) | component classes + tokens as CSS custom properties  | token-derived utilities |
-| `@valiify/shortapp-ui/source`     | the above **plus** token-generated utility classes   | —                       |
+| `@valiify/shortapp-ui` (prebuilt) | component classes + tokens as CSS custom properties                | token-derived utilities                |
+| `@valiify/shortapp-ui/source`     | the above **plus** token-generated utility classes                 | —                                      |
 
 > ### ⚠️ The three entries are ALTERNATIVES, never companions
 >
@@ -1544,11 +2036,11 @@ drop into an app on Tailwind v3 + daisyUI 4.
 >
 > Measured on a bare HTML page loading only `dist/shortapp-ui.css`:
 >
-> | | bundle alone | + `./reset.css` | designed |
-> | --- | --- | --- | --- |
-> | `.va-owner-container` height | **124.5px** | 92.5px | 92.5px |
-> | `va:w-[343px] va:p-4` | **375px** | 343px | 343px |
-> | `body` margin / font | 8px / Times | 0 / Inter | 0 / Inter |
+> |                              | bundle alone | + `./reset.css` | designed  |
+> | ---------------------------- | ------------ | --------------- | --------- |
+> | `.va-owner-container` height | **124.5px**  | 92.5px          | 92.5px    |
+> | `va:w-[343px] va:p-4`        | **375px**    | 343px           | 343px     |
+> | `body` margin / font         | 8px / Times  | 0 / Inter       | 0 / Inter |
 >
 > Every fixed dimension here is authored border-box — `.va-btn-secondary`'s 48px
 > closes as `13+13+20+1+1 border-box` — so under the browser default each renders
@@ -1563,7 +2055,7 @@ drop into an app on Tailwind v3 + daisyUI 4.
 > wrong without it. Import it FIRST, and skip it inside an app that already
 > resets (daisyUI, Bootstrap, a house reset) — harmless there, just redundant.
 > **It is subject to the cascade like any host reset**: in 1.0.0 its `button {
-> color: inherit }` beat the layered `.va-btn-primary`. `verify:reset` asserts it
+color: inherit }` beat the layered `.va-btn-primary`. `verify:reset` asserts it
 > overrides nothing the bundle declares on any documented element.
 
 `.` and `./index.css` are unchanged — still the preflight-bearing `dist/index.css`.
@@ -1577,7 +2069,7 @@ declares a peer dependency, so nothing enforces that but this sentence.
 
 /* self-contained — no Tailwind in the host, no reset shipped.
    Import ONE of the three entries, never two. */
-@import "@valiify/shortapp-ui/reset.css";   /* only when standalone; must be first */
+@import "@valiify/shortapp-ui/reset.css"; /* only when standalone; must be first */
 @import "@valiify/shortapp-ui/styles.css";
 
 /* source — consumer's Tailwind processes our @theme */
