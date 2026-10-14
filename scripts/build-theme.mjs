@@ -325,14 +325,24 @@ for (const [group, label] of GROUP_ORDER) {
 const radiusEntries = Object.entries(tokens.radius ?? {});
 if (radiusEntries.length) {
   p("  /*");
-  p("   * Radii — this file's Figma scale IS Tailwind's t-shirt naming, and its");
+  p(
+    "   * Radii — this file's Figma scale IS Tailwind's t-shirt naming, and its",
+  );
   p("   * xs/sm/md/lg values are byte-identical to Tailwind v4's defaults");
   p("   * (2/4/6/8px), so emitting them verbatim is a no-op there. xl and 2xl");
-  p("   * DELIBERATELY override Tailwind (10px vs 12, 12px vs 16) so rounded-xl");
-  p("   * and rounded-2xl mean this design system's corners — the opposite call");
-  p("   * from the dashboard library, where the Figma scale diverged everywhere");
+  p(
+    "   * DELIBERATELY override Tailwind (10px vs 12, 12px vs 16) so rounded-xl",
+  );
+  p(
+    "   * and rounded-2xl mean this design system's corners — the opposite call",
+  );
+  p(
+    "   * from the dashboard library, where the Figma scale diverged everywhere",
+  );
   p("   * and role names were safer. Radius/none and Radius/full are skipped:");
-  p("   * rounded-none and rounded-full already mean exactly 0 and fully-round.");
+  p(
+    "   * rounded-none and rounded-full already mean exactly 0 and fully-round.",
+  );
   p("   */");
   for (const [figmaName, v] of radiusEntries) {
     const variant = figmaName.split("/")[1];
@@ -439,12 +449,51 @@ for (const [figmaName, varName] of Object.entries(SHADOW_NAMES)) {
 }
 p();
 
+const heightEntries = Object.entries(tokens.height ?? {});
+if (heightEntries.length) {
+  p("  /*");
+  p(
+    "   * Control heights — Figma Height/* variables (added 2026-10-14; the file",
+  );
+  p(
+    "   * binds them to component frames). Set with `height: var(--height-*)`,",
+  );
+  p(
+    "   * vertical padding 0, content centered — NEVER derive a control's height",
+  );
+  p("   * from padding + line-height (16/24 input text + padding math renders");
+  p(
+    "   * 52px in the browser where the frame says 48). No Tailwind namespace,",
+  );
+  p("   * so used as h-[var(--height-lg)] / height: var(--height-lg).");
+  p("   */");
+  for (const [figmaName, v] of heightEntries) {
+    const variant = figmaName.split("/")[1].toLowerCase();
+    p(`  --height-${variant}: ${v}px; /* ${figmaName} */`);
+  }
+  p();
+  p("  /*");
+  p("   * Tap-target minimums — LIBRARY CONSTANTS, not Figma variables (the");
+  p('   * component descriptions state the rule in prose: "Tap area: minimum');
+  p('   * 24×24px, 44×44px on touch"). 24 is WCAG 2.5.8; 44 applies under');
+  p(
+    "   * @media (pointer: coarse). Hug-content controls extend their hit area",
+  );
+  p("   * with a centred ::after overlay sized max(100%, var(--target-min)).");
+  p("   */");
+  p("  --target-min: 24px;");
+  p("  --target-touch: 44px;");
+  p();
+}
+
 const ring = tokens.focusRing;
 if (ring) {
   p("  /*");
-  p("   * Keyboard focus ring — Figma's \"Primary Ring\" effect: a spread-only");
+  p('   * Keyboard focus ring — Figma\'s "Primary Ring" effect: a spread-only');
   p("   * drop shadow (offset 0/0, blur 0) sitting OUTSIDE the element. Apply");
-  p("   * with the .focus-ring utility (an outline at offset 0, which occupies");
+  p(
+    "   * with the .focus-ring utility (an outline at offset 0, which occupies",
+  );
   p("   * the same geometry). The radius is inherited from the component.");
   p("   */");
   p(`  --ring-focus-width: ${ring.width}px;`);
@@ -488,9 +537,13 @@ if (labelStyles.length) {
   p("/**");
   p(" * Uppercase type utilities.");
   p(" *");
-  p(" * Emitted only for styles whose extraction records textTransform, because");
+  p(
+    " * Emitted only for styles whose extraction records textTransform, because",
+  );
   p(" * Tailwind's --text-* composite cannot carry text-transform or");
-  p(" * font-family. These bundle the whole style so the casing — and the mono");
+  p(
+    " * font-family. These bundle the whole style so the casing — and the mono",
+  );
   p(" * family, where it applies — cannot be forgotten. Prefer them over the");
   p(" * bare text-* token for those styles.");
   p(" */");
@@ -510,11 +563,17 @@ function typeUtilities(prefix) {
   const out = [];
   const q = (x) => (prefix ? `${prefix}:${x}` : x);
   out.push("/**");
-  out.push(" * Uppercase type utilities. GENERATED — see scripts/build-theme.mjs.");
+  out.push(
+    " * Uppercase type utilities. GENERATED — see scripts/build-theme.mjs.",
+  );
   if (prefix) {
     out.push(" *");
-    out.push(` * The ${prefix}: spelling, for the prebuilt bundle's prefixed utilities pass.`);
-    out.push(" * @apply resolves at compile time, so under a prefix every payload needs it too.");
+    out.push(
+      ` * The ${prefix}: spelling, for the prebuilt bundle's prefixed utilities pass.`,
+    );
+    out.push(
+      " * @apply resolves at compile time, so under a prefix every payload needs it too.",
+    );
   }
   out.push(" */");
   for (const { key, figmaName, t } of labelStyles) {
@@ -545,7 +604,8 @@ if (drift.length) {
 // The @theme block is everything before the first @utility; split there.
 const full = L.join("\n");
 const cut = full.indexOf("/**\n * Uppercase type utilities.");
-const tokensOnly = cut === -1 ? full : full.slice(0, cut).replace(/\s+$/, "") + "\n";
+const tokensOnly =
+  cut === -1 ? full : full.slice(0, cut).replace(/\s+$/, "") + "\n";
 
 writeFileSync(OUT_TOKENS, tokensOnly);
 writeFileSync(OUT_TYPE, typeUtilities(null) + "\n");

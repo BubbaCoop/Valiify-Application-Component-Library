@@ -4,6 +4,18 @@
  * The va: spelling, for the prebuilt bundle's prefixed utilities pass.
  * @apply resolves at compile time, so under a prefix every payload needs it too.
  */
+@utility type-data-key {
+  @apply va:text-data-key va:uppercase; /* Labels, links & UI/Data Key */
+}
+
+@utility type-lockup-wordmark {
+  @apply va:text-lockup-wordmark va:uppercase; /* Labels, links & UI/Lockup and wordmark */
+}
+
+@utility type-lockup-tagline {
+  @apply va:text-lockup-tagline va:uppercase; /* Labels, links & UI/Lockup & Tagline */
+}
+
 @utility type-eyebrow {
   @apply va:text-eyebrow va:uppercase; /* Labels, links & UI/Eyebrow */
 }
@@ -14,5 +26,9 @@
 
 @utility type-button-label {
   @apply va:text-button-label va:uppercase; /* Labels, links & UI/Button Label */
+}
+
+@utility type-tag-pill {
+  @apply va:text-tag-pill va:uppercase; /* Labels, links & UI/Tag & Pill */
 }
 

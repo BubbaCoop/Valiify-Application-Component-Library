@@ -48,7 +48,8 @@
       "Primary/Primary and Primary/Text are distinct variables with the identical value #a6192e. Both extracted.",
       "Radius/xl (10px) and Radius/2xl (12px) deliberately override Tailwind v4's defaults (12px/16px) in the emitted theme; xs/sm/md/lg are byte-identical to Tailwind's so those are no-ops. Radius/none and Radius/full are not emitted (native rounded-none / rounded-full already match).",
       "All 77 variables carry scope ALL_SCOPES \u2014 no scoping discipline in the file yet; harmless for CSS emission."
-    ]
+    ],
+    "lastVerified": "2026-10-15b: BG/Skeleton variable added (#e4e7eb \u2014 59 colors); skeleton bones rebound to it; checkbox bone 20x20 r3, avatar bone 24x24 (controls matched)."
   },
   "color": {
     "Primary/Primary": "#a6192e",
@@ -78,6 +79,7 @@
     "BG/Page": "#fdf8f5",
     "BG/Card": "#f1f0ee",
     "BG/Contrast": "#1a1a1a",
+    "BG/Skeleton": "#e4e7eb",
     "Stroke/Border": "#1a1a1a2b",
     "Stroke/Divider": "#1a1a1a1c",
     "Stroke/Hover": "#1a1a1a8f",
@@ -263,7 +265,8 @@
       "size": 9,
       "weight": 600,
       "lineHeight": 12,
-      "letterSpacingPercent": 8
+      "letterSpacingPercent": 8,
+      "textTransform": true
     },
     "Labels, links & UI/Time stamp": {
       "family": "Inter",
@@ -279,7 +282,8 @@
       "size": 15,
       "weight": 600,
       "lineHeight": 17,
-      "letterSpacingPercent": 10
+      "letterSpacingPercent": 10,
+      "textTransform": true
     },
     "Labels, links & UI/Lockup & Tagline": {
       "family": "Inter",
@@ -287,7 +291,8 @@
       "size": 9,
       "weight": 500,
       "lineHeight": 11,
-      "letterSpacingPercent": 16
+      "letterSpacingPercent": 16,
+      "textTransform": true
     },
     "Labels, links & UI/Eyebrow": {
       "family": "Inter",
@@ -330,7 +335,8 @@
       "size": 11,
       "weight": 600,
       "lineHeight": 16,
-      "letterSpacingPercent": 5
+      "letterSpacingPercent": 5,
+      "textTransform": true
     }
   },
   "effect": {
@@ -353,5 +359,11 @@
     "width": 3,
     "color": "#a6192e38",
     "colorFigmaToken": "Primary/Ring"
+  },
+  "height": {
+    "Height/SM": 32,
+    "Height/MD": 40,
+    "Height/LG": 48,
+    "Height/XL": 56
   }
 }

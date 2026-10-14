@@ -33,3 +33,27 @@
   outline: var(--ring-focus-width) solid var(--ring-focus-color);
   outline-offset: 0px;
 }
+
+/**
+ * Control focus ring — Figma "Focus Ring" effect style (added 2026-10-14):
+ * two spread-only drop shadows, spread 2 in BG/Paper under spread 4 in
+ * Primary/Primary — i.e. a 2px paper gap, then a 2px SOLID crimson ring.
+ * An outline at offset 2 occupies the same geometry; the gap shows whatever
+ * the control sits on (identical to Figma's paper gap on Paper surfaces).
+ *
+ * This is the ring for CONTROLS (buttons, checkbox, radio, switch, choice
+ * cards, tabs) on :focus-visible. FIELDS keep the original `focus-ring`
+ * (the 3px translucent Primary Ring paired with a Primary border) — the two
+ * rings coexist by design. List options take NEITHER: keyboard highlight
+ * uses the hover state while focus stays on the trigger
+ * (aria-activedescendant).
+ *
+ * Figma authors the ring inconsistently per variant (some bind the effect
+ * style, some draw a 2px stroke with no gap, three tab variants paint
+ * nothing) — the engineering handoff's recipe below is the contract;
+ * designer list.
+ */
+@utility focus-ring-control {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
