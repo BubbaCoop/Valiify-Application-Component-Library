@@ -1,0 +1,96 @@
+/**
+ * OtpCell Component
+ *
+ * One digit box of the OTP (one-time code) entry. Extracted from Figma
+ * OTP / Digit cell (824:4856) — 4 variants on a single State axis
+ * {Empty, Filled, Focused, Error}, all 56×56. Figma description verbatim:
+ * "OTP-specific digit cell derived from the established Plain Text Field
+ * input surfaces, border states, typography styles, and color tokens.
+ * Independent geometry allows larger OTP cells without changing ordinary
+ * fields."
+ *
+ * Applied DIRECTLY to a native <input> — one input per digit:
+ *
+ *   <input class="va-otp-cell" type="text" inputmode="numeric"
+ *          pattern="[0-9]" maxlength="1" autocomplete="one-time-code"
+ *          aria-label="Digit 1 of 6" />
+ *
+ * | state     | border (real 1px)   | digit ink      | extra               |
+ * | rest      | Stroke/Border       | Text/Primary   | —                   |
+ * | :focus    | Primary/Primary     | unchanged      | 3px Primary Ring    |
+ * | error     | Warning/Base        | unchanged      | — (no ring)         |
+ *
+ * THE BORDER IS A REAL 1px BORDER — pixel-measured at exactly 1.00px inside
+ * the box in every state, so the Radio/Checkbox inset-shadow trick is
+ * deliberately NOT used. Height AND width are pinned (size-14, border-box
+ * absorbs the border); never min-height.
+ *
+ * Radius is 4px AUTHORED (two independent reads; same rounded-sm as
+ * TextField/TextArea, and the set description derives the cell from those
+ * surfaces). A pixel missing-area fit read ≈5.4 — within inside-stroke /
+ * antialias error on a small box; authored wins (the Switch-knob
+ * precedent). Skeleton's 6px "input" shape is a separate open family
+ * question, not resolved here.
+ *
+ * Empty vs Filled: the Figma masters are byte-identical (0/3136 px — the
+ * digit prop defaults to a space; designer list). Empty's authored ink is
+ * Text/Hint, which only ever paints a placeholder — shipped on
+ * ::placeholder; the real state split (Empty/Filled) is simply whether the
+ * input has a value.
+ *
+ * THE FOCUSED "DIGIT" IS A FAKE CARET: Figma draws a literal "|" text glyph
+ * in Primary/Primary — there is no caret layer and no real focused-digit
+ * ink change intended. Shipped as caret-color: Primary with the digit ink
+ * constant (a labeled reading; designer list). :focus, not :focus-visible —
+ * the Figma Focus state is the caret state (TextField precedent).
+ *
+ * ERROR binds the WARNING ramp (amber — designer decision D4, the field
+ * family convention; no Error/* token appears). Driven by
+ * aria-invalid="true" on the input. Error+focus is undrawn; the family
+ * compound ships (amber border stays, crimson ring still fires) — the
+ * error rule sorts AFTER the focus rule and that order is load-bearing.
+ *
+ * Digit type is Metric/Small (text-metric-small, 20/26/500) — an existing
+ * token; the first form control to use the Metric family.
+ *
+ * Not modelled, not invented: hover, disabled (cursor only — the family
+ * gap), pressed. Auto-advance / backspace / paste-distribution are
+ * consumer JS; the library ships none.
+ */
+
+@layer components {
+  .va-otp-cell {
+    /* Height/XL token-bound in Figma (56) — width pinned to match. */
+    @apply h-[var(--height-xl)] w-[var(--height-xl)] shrink-0 appearance-none rounded-sm border border-stroke-border bg-surface-paper m-0 p-0 text-center;
+    @apply text-metric-small text-content-primary;
+    caret-color: var(--color-primary);
+    transition:
+      border-color 150ms,
+      outline-color 150ms;
+  }
+
+  /* Empty-state ink (Text/Hint) exists only as placeholder paint — Figma's
+     empty cell is blank; a consumer-supplied placeholder inherits the
+     family's waived contrast defect (KNOWN_ISSUES). */
+  .va-otp-cell::placeholder {
+    @apply text-content-hint;
+    opacity: 1;
+  }
+
+  /* Figma's Focus state is the caret state — :focus, not :focus-visible. */
+  .va-otp-cell:focus {
+    @apply focus-ring border-primary outline-none;
+  }
+
+  /* Error — AFTER the focus rule on purpose: error+focus keeps the amber
+     border while the crimson ring still fires (family compound). */
+  .va-otp-cell[aria-invalid="true"] {
+    @apply border-warning;
+  }
+
+  /* Disabled (913:886, drawn with the 2026-10 rework): the field-family
+     recipe — App Page fill, Divider border, Tertiary digit. */
+  .va-otp-cell:disabled {
+    @apply cursor-not-allowed border-stroke-divider bg-surface-app-page text-content-tertiary;
+  }
+}

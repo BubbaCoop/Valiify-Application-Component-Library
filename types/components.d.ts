@@ -26,7 +26,14 @@ export type SwitchClass = "va-switch";
 export type ButtonClass = "va-btn";
 
 // ListItem component classes
-export type ListItemClass = "va-list-option";
+export type ListItemClass =
+  | "va-list-option"
+  | "va-list-option-sm"
+  | "va-list-option-md"
+  | "va-list-option-lg"
+  | "va-list-option-text"
+  | "va-list-option-check"
+  | "va-list-option-critical";
 
 // DropdownList component classes
 export type DropdownListClass = "va-dropdown-list";
@@ -127,7 +134,8 @@ export type ModalClass =
   | "va-modal-backdrop";
 
 // Tooltip component classes
-export type TooltipClass = "va-tooltip" | "va-tooltip-title" | "va-tooltip-body";
+export type TooltipClass =
+  "va-tooltip" | "va-tooltip-title" | "va-tooltip-body";
 
 // Toast component classes
 export type ToastClass =
@@ -142,7 +150,8 @@ export type ToastClass =
   | "va-toast-simple";
 
 // StatusTracker component classes
-export type StatusTrackerClass = "va-status-tracker" | "va-status-tracker-active";
+export type StatusTrackerClass =
+  "va-status-tracker" | "va-status-tracker-active";
 
 // Action component classes
 export type ActionClass =
@@ -163,7 +172,76 @@ export type UtilityButtonClass =
   | "va-utility-button-filled"
   | "va-utility-button-rounded"
   | "va-utility-button-text"
+  | "va-utility-button-link"
   | "va-utility-button-md";
 
+// OtpCell component classes
+export type OtpCellClass = "va-otp-cell";
+
+// OtpField component classes
+export type OtpFieldClass =
+  | "va-otp-field"
+  | "va-otp-field-title"
+  | "va-otp-field-cells"
+  | "va-otp-field-hint";
+
+// Address component classes
+export type AddressClass =
+  | "va-address"
+  | "va-address-title-row"
+  | "va-address-title"
+  | "va-address-group"
+  | "va-address-row"
+  | "va-address-input"
+  | "va-address-input-city"
+  | "va-address-input-state"
+  | "va-address-optional"
+  | "va-address-hint";
+
+// Upload component classes
+export type UploadClass =
+  | "va-upload"
+  | "va-upload-input"
+  | "va-upload-left"
+  | "va-upload-icon"
+  | "va-upload-prompt"
+  | "va-upload-browse"
+  | "va-upload-meta"
+  | "va-upload-filename"
+  | "va-upload-active"
+  | "va-upload-complete";
+
 // Union of all component classes
-export type ValiifyComponentClass = never | RadioClass | IconButtonClass | CheckboxClass | SwitchClass | ButtonClass | ListItemClass | DropdownListClass | TextSelectorClass | SelectCardClass | AvatarClass | BadgeClass | BoxActionClass | TabsClass | HeaderClass | RadioFieldClass | SkeletonClass | OwnerClass | OwnerContainerClass | TextFieldClass | DropdownFieldClass | TextAreaClass | ModalClass | TooltipClass | ToastClass | StatusTrackerClass | ActionClass | UtilityButtonClass;
+export type ValiifyComponentClass =
+  | never
+  | RadioClass
+  | IconButtonClass
+  | CheckboxClass
+  | SwitchClass
+  | ButtonClass
+  | ListItemClass
+  | DropdownListClass
+  | TextSelectorClass
+  | SelectCardClass
+  | AvatarClass
+  | BadgeClass
+  | BoxActionClass
+  | TabsClass
+  | HeaderClass
+  | RadioFieldClass
+  | SkeletonClass
+  | OwnerClass
+  | OwnerContainerClass
+  | TextFieldClass
+  | DropdownFieldClass
+  | TextAreaClass
+  | ModalClass
+  | TooltipClass
+  | ToastClass
+  | StatusTrackerClass
+  | ActionClass
+  | UtilityButtonClass
+  | OtpCellClass
+  | OtpFieldClass
+  | AddressClass
+  | UploadClass;

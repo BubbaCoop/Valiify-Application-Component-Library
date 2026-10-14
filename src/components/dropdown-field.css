@@ -64,7 +64,12 @@
  * ChevronLeft placeholder), and a hint below in NORMAL FLOW (Figma's
  * bottomContent geometry is broken — the RadioField defect verbatim).
  *
- * Not modelled, not invented: disabled, empty+error, hover+open variants.
+ * Disabled (865:4512, added 2026-10-13 — the family gap closed): trigger
+ * BG/App Page + Stroke/Divider, value ink Tertiary, chevron constant;
+ * drawn empty+rest only.
+ *
+ * Not modelled, not invented: empty+error, hover+open, disabled+error/
+ * filled variants.
  */
 
 @layer components {
@@ -102,7 +107,8 @@
   /* --- Trigger (48px pinned) ---------------------------------------------- */
 
   .va-dropdown-field-trigger {
-    @apply m-0 flex h-12 w-full min-w-0 appearance-none items-center gap-2 px-3;
+    /* Height/LG token (48) — pinned, never padding math. */
+    @apply m-0 flex h-[var(--height-lg)] w-full min-w-0 appearance-none items-center gap-2 px-3;
     @apply cursor-pointer rounded-sm border border-stroke-border bg-surface-paper text-left;
     transition: border-color 150ms;
   }
@@ -127,7 +133,9 @@
 
   /* --- States (order load-bearing — see header) --------------------------- */
 
-  .va-dropdown-field-trigger:hover:not(:focus-visible):not([aria-expanded="true"]):not([aria-invalid="true"]) {
+  .va-dropdown-field-trigger:hover:not(:focus-visible):not(
+      [aria-expanded="true"]
+    ):not([aria-invalid="true"]):not(:disabled) {
     @apply border-stroke-hover;
   }
 
@@ -147,13 +155,28 @@
     @apply border-warning;
   }
 
+  /* Disabled (865:4512, added 2026-10-13 — the family gap closed): fill
+     BG/App Page + border Stroke/Divider, value ink Tertiary (including the
+     placeholder span — this rule out-specifies it); the chevron stays
+     Neutral/Base, constant in every state, disabled included (verified in
+     the variant's variable map). Drawn empty+rest only — disabled+error is
+     undrawn, so this rule sorts LAST and the disabled look wins. A native
+     disabled button takes no focus or click. */
+  .va-dropdown-field-trigger:disabled {
+    @apply cursor-not-allowed border-stroke-divider bg-surface-app-page;
+  }
+  .va-dropdown-field-trigger:disabled .va-dropdown-field-value {
+    @apply text-content-tertiary;
+  }
+
   /* --- Hint (normal-flow correction, family pattern) ----------------------- */
 
   .va-dropdown-field-hint {
     @apply m-0 pt-1.25 text-help-caption text-content-secondary;
   }
 
-  .va-dropdown-field:has(.va-dropdown-field-trigger[aria-invalid="true"]) .va-dropdown-field-hint {
+  .va-dropdown-field:has(.va-dropdown-field-trigger[aria-invalid="true"])
+    .va-dropdown-field-hint {
     /* The hint row IS the error row across all three field components (D3). */
     @apply text-warning-text;
   }

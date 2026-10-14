@@ -121,8 +121,32 @@
 
   /* --- Shared states ------------------------------------------------------ */
 
+  /* Control focus ring (2026-10): 2px gap + 2px solid Primary. */
   .va-icon-button:focus-visible {
-    @apply focus-ring;
+    @apply focus-ring-control;
+  }
+
+  /* Tap-target overlay — the Figma description's contract verbatim: "Tap
+     area: minimum 24×24px, 44×44px on touch. The visual size hugs its
+     content… Extend the tap area in code (a ::before overlay on the va-
+     class), not with layout height or padding." Applies to every size. */
+  .va-icon-button {
+    @apply relative;
+  }
+  .va-icon-button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--target-min));
+    height: max(100%, var(--target-min));
+    transform: translate(-50%, -50%);
+  }
+  @media (pointer: coarse) {
+    .va-icon-button::after {
+      width: max(100%, var(--target-touch));
+      height: max(100%, var(--target-touch));
+    }
   }
 
   /* Figma models no disabled variant; nothing visual is invented. */

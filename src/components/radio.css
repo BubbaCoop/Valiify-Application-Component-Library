@@ -25,9 +25,11 @@
  *
  * Not modelled in Figma (reproduced, not invented):
  *   - no checked+hover / checked+pressed — both tint rules exclude :checked
- *   - no disabled variant — :disabled gets cursor-not-allowed and nothing
- *     visual; a designer decision is needed
- *   - no focus variant in the component set — :focus-visible uses the
+ *   - DISABLED IS NOW DRAWN (913:569/571, added with the 2026-10 go-live
+ *     rework — this reverses the 10-13 exclusion): unchecked ring swaps to
+ *     Stroke/Divider (same 1.5px); checked ring AND dot go Primary/Disabled
+ *   - FOCUS IS NOW DRAWN (914:699/701): the "Focus Ring" effect (2px gap +
+ *     2px solid Primary) — shipped as focus-ring-control; the
  *     library-wide focus-ring utility, backed by Figma's "Primary Ring"
  *     effect (3px Primary/Ring halo, extracted with the token set)
  */
@@ -72,11 +74,39 @@
   }
 
   .va-radio:focus-visible {
-    @apply focus-ring;
+    @apply focus-ring-control;
   }
 
-  /* Figma models no disabled variant; nothing visual is invented here. */
+  /* Disabled (913:569/571, drawn 2026-10): the ring greys to Stroke/Divider;
+     a checked radio's ring and dot both go Primary/Disabled (30%). Width
+     stays 1.5px in both — unlike Checkbox, nothing thins. */
   .va-radio:disabled {
     @apply cursor-not-allowed;
+    box-shadow: inset 0 0 0 1.5px var(--color-stroke-divider);
+  }
+  .va-radio:checked:disabled {
+    box-shadow: inset 0 0 0 1.5px var(--color-primary-disabled);
+  }
+  .va-radio:checked:disabled::before {
+    @apply bg-primary-disabled;
+  }
+
+  /* Tap-target overlay (handoff contract: ≥24px, ≥44px on touch) — ::after,
+     the dot owns ::before. Paired with a label, wrap the control in the
+     <label> so the whole row is the target (markup recipe). */
+  .va-radio::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--target-min));
+    height: max(100%, var(--target-min));
+    transform: translate(-50%, -50%);
+  }
+  @media (pointer: coarse) {
+    .va-radio::after {
+      width: max(100%, var(--target-touch));
+      height: max(100%, var(--target-touch));
+    }
   }
 }

@@ -46,7 +46,9 @@ export const Short: Story = {
 /** Body-only — the title is an optional slot. */
 export const BodyOnly: Story = {
   render: () =>
-    tip({ body: "Your Social Security number is encrypted and used only for identity verification." }),
+    tip({
+      body: "Your Social Security number is encrypted and used only for identity verification.",
+    }),
 };
 
 /** Composed with a trigger via aria-describedby (positioning is the

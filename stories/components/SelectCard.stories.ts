@@ -4,7 +4,12 @@
  */
 import type { Meta, StoryObj } from "@storybook/html";
 
-const radioCard = (checked = false, name = "sc", title = "Family Connection", desc = "A relative is already a member") => `
+const radioCard = (
+  checked = false,
+  name = "sc",
+  title = "Family Connection",
+  desc = "A relative is already a member",
+) => `
   <label class="va-select-card" style="max-width: 415px;">
     <input type="radio" name="${name}" class="va-radio" ${checked ? "checked" : ""} />
     <span class="va-select-card-text">
@@ -13,7 +18,10 @@ const radioCard = (checked = false, name = "sc", title = "Family Connection", de
     </span>
   </label>`;
 
-const chevronCard = (title = "Family Connection", desc = "A relative is already a member") => `
+const chevronCard = (
+  title = "Family Connection",
+  desc = "A relative is already a member",
+) => `
   <button class="va-select-card" style="max-width: 415px;">
     <span class="va-select-card-text" style="text-align: left;">
       <span class="va-select-card-title">${title}</span>

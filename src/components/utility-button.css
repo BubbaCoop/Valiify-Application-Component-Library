@@ -1,62 +1,76 @@
 /**
  * UtilityButton Component
  *
- * The non-inline / special-use button family. Extracted from Figma
- * Button / Utility (24:4382) — 18 variants on a PARTIAL Size {MD, SM} ×
- * Type {Empty, Filled, Rounded, Text} × Hover × Pressed matrix (MD exists
- * only for Empty and Text; the Text "MD" is byte-identical to SM — 0/1376
- * pixel diff, an unwired axis).
+ * The non-inline / special-use button family — the `Appearance=Utility` half
+ * of the unified Figma **Button** set (1:218; 59 variants after the 2026-10
+ * go-live rework: State {Default, Hover, Pressed, Disabled, Focus, Loading}).
+ * The Figma styles were renamed in the merge; the shipped classes keep their
+ * original names (class names are public API):
  *
- * SIBLING OF, NOT A SKIN ON, Button / Standard (1:218): a deliberately
- * different label convention — Field Label 13/500 natural case (Text type:
- * Content 13/400), never the Standard set's uppercase Button Label.
+ *   Figma Utility/Secondary  →  .va-utility-button-empty
+ *   Figma Utility/Primary    →  .va-utility-button-filled
+ *   Figma Utility/Rounded    →  .va-utility-button-rounded
+ *   Figma Utility/Text       →  .va-utility-button-text
+ *   Figma Utility/Link       →  .va-utility-button-link
  *
- *   <button class="va-utility-button va-utility-button-empty">
- *     <svg aria-hidden="true"><use href="#dollar-sign" /></svg>
- *     Add Funds
- *   </button>
+ * HEIGHTS ARE TOKEN-BOUND (Figma binds Height/* to the frames; description
+ * verbatim: "Rounded SM and Utility SM bind to Height/SM (32). …Utility
+ * Secondary MD bind[s] to Height/LG (48). Text and Link styles hug their
+ * content and take no height step."): SM rows are `var(--height-sm)` = 32
+ * (was 34), `-md` is `var(--height-lg)` = 48 (was 54). Height comes from the
+ * token with ZERO vertical padding and centred content — never from
+ * padding + line-height math.
  *
- * BASE + A TYPE CLASS IS REQUIRED (Figma names no default — the Standard
- * button's rule). SM (34px) is the bare default — the only size all four
- * types share; `.va-utility-button-md` (54px) exists for Empty per Figma
- * (documented, not enforced). MD's authored w-214 is the sample-hug trap
- * (Standard's 239 precedent) — width is the caller's.
+ * | type      | box                                    | rest → hover → pressed |
+ * | -empty    | GHOST + 1px Stroke/Divider border, 4px | ink Text/Primary constant; fill none → Action/Hover → Action/Pressed; border constant |
+ * | -filled   | solid, 4px, 1px Stroke/Divider ring    | fill Primary → Primary/Hover → Primary/Focus; white ink never fades |
+ * | -rounded  | ghost pill, no border ever             | fill none → Action/Hover → Action/Pressed; ink Secondary → Primary |
+ * | -text     | no box, 16px hug row, NO underline     | ink Secondary → Primary (hover = pressed) |
+ * | -link     | bare 24px inline row, underlined       | ink Primary → Primary/Hover → Primary/Focus → Tertiary |
  *
- * | type      | box                                   | rest → hover → pressed |
- * | -empty    | Paper + 1px Stroke/Divider border, 4px | ink Secondary → Primary (hover = pressed ink); fill Paper → Action/Hover → Action/Pressed |
- * | -filled   | solid, 4px, no border                  | fill Primary → Primary/Hover → Primary/Focus; white ink never fades |
- * | -rounded  | ghost pill (no border ever)            | fill none → Action/Hover → Action/Pressed; ink Secondary → Primary |
- * | -text     | no box, 16px row, ALWAYS underlined    | ink Tertiary → Primary (hover = pressed, byte-identical variants) |
+ * DISABLED (unified 2026-10-15 to match the Standard treatment — the earlier
+ * per-style patchwork was cleaned up in Figma, re-verified direct): no fill,
+ * border Stroke/Divider, label AND icon Text/Tertiary — for Empty, Rounded,
+ * Text and Link alike. Only -filled differs: fill Primary/Disabled (30%),
+ * ring stays, white ink never fades.
  *
- * THE EMPTY BORDER IS REST-ONLY — pixel-proven: at hover/pressed the Paper
- * fill AND the border both drop, and the Action wash composites directly
- * over the page (the wash hexes solve over white, not Paper; the hover/
- * pressed variants' Stroke/Divider binding is a dedup ghost). Shipped as
- * border-color: transparent at hover/pressed so the border-box geometry
- * never shifts. Designer list.
+ * LOADING (drawn for Utility Primary SM + Secondary SM, 914:683/689; the CSS
+ * is generic so Standard gets it from the same attribute): set
+ * `aria-busy="true"` — the trailing icon hides, a 16px 270°-arc spinner in
+ * currentColor takes its slot (inside an 18px box so hug width NEVER changes
+ * — Figma's 90-vs-92 sample is the 16px glyph hugging; the handoff pins
+ * width stability), the label stays, and pointer events are blocked. The
+ * frame keeps its REST paints (read direct: loading binds the rest
+ * fill/border/ink). Spin rate is a library choice (Figma exports a static
+ * arc); reduced-motion stops the rotation and keeps the arc.
  *
- * TEXT TYPE'S REST INK: the Figma node stacks a bound Text/Secondary under
- * a raw #6f7276 override that wins — and #6f7276 IS Text/Tertiary's value
- * (also bound on the node). Shipped as text-content-tertiary; the
- * stacked-ink authoring is on the designer list. Hover and pressed are
- * byte-identical (Text/Primary) — one rule, the Micro-button pattern.
+ * FOCUS: every style has a drawn Focus variant binding the new "Focus Ring"
+ * effect (2px BG/Paper gap + 2px solid Primary/Primary) — shipped as the
+ * `focus-ring-control` utility (outline 2 / offset 2) on :focus-visible.
+ * Figma's per-variant authoring is inconsistent (some draw a gapless 2px
+ * stroke instead) — the effect style is the contract; designer list.
+ *
+ * TAP TARGETS (-text and -link hug tiny rows): per the component-description
+ * contract ("Tap area: minimum 24×24px, 44×44px on touch… a ::before overlay
+ * on the va- class… not layout height or padding"), a centred ::after
+ * overlay extends the hit area to ≥24px (≥44px under pointer: coarse)
+ * without moving layout. (::after, because the spinner precedent and future
+ * pseudo-uses keep ::before free; the overlay is part of the button's hit
+ * box, so clicks on it activate the control.)
+ *
+ * Icons: uniform swappable left/right slots (trailing on by default), plain
+ * svg children painted by currentColor. The 2026-10 exports author a painted
+ * 1px stroke at every size — shipped as stroke-width 1.333 on the 24-unit
+ * sprite at 18px (= 1px painted) and 1.5 at 16px (= 1px). Other components
+ * keep their own authored weights.
  *
  * `Primary/Focus` is again Figma's literal name for a PRESSED fill — wired
  * to :active, never :focus-visible (Button/Checkbox precedent).
- *
- * Icon slots: plain svg children (18px; 16px in Text), painted by the
- * button's currentColor so they ride the ink ramps. Figma's trailing glyph
- * layer is named "AttachMoneyRounded" (the naming-lies family) and hidden
- * by default in the box types; the Text type's trailing chevron defaults ON.
- *
- * Not modelled, not invented: disabled/inactive (unlike Standard — cursor
- * only), focus (library focus-ring), MD Filled/Rounded, hover+pressed
- * compounds.
  */
 
 @layer components {
   .va-utility-button {
-    @apply inline-flex h-[34px] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-sm px-3;
+    @apply inline-flex h-[var(--height-sm)] shrink-0 cursor-pointer items-center justify-center gap-2 rounded-sm px-3;
     @apply m-0 border border-transparent bg-transparent p-0 px-3;
     @apply text-field-label text-content-secondary;
     transition:
@@ -65,38 +79,47 @@
       border-color 150ms;
   }
 
-  /* Icon slots — painted by the button, riding the ink ramp. */
+  /* Icon slots — painted by the button, riding the ink ramp. stroke-width
+     1.333 on the 24-unit sprite paints exactly 1px at this 18px size (the
+     2026-10 exports' authored weight). */
   .va-utility-button svg {
     @apply size-4.5 shrink-0; /* 18px */
     fill: none;
     stroke: currentColor;
-    stroke-width: 2;
+    stroke-width: 1.333;
     stroke-linecap: round;
     stroke-linejoin: round;
   }
 
-  /* --- Size (MD exists for Empty in Figma; Text's Size axis is unwired) --- */
+  /* --- Size (MD = Height/LG, drawn for Empty; Text's Size axis is unwired) -- */
 
   .va-utility-button-md {
-    @apply h-[54px] px-4;
+    @apply h-[var(--height-lg)] px-4;
   }
 
-  /* --- Empty: bordered Paper box; border is REST-ONLY (pixel-proven) ------- */
+  /* --- Empty (Figma Utility/Secondary): ghost box, constant Divider border,
+     constant Text/Primary ink — only the fill moves ------------------------- */
 
   .va-utility-button-empty {
-    @apply border-stroke-divider bg-surface-paper;
+    @apply border-stroke-divider text-content-primary;
   }
   .va-utility-button-empty:hover:not(:disabled) {
-    @apply border-transparent bg-action-hover text-content-primary;
+    @apply bg-action-hover;
   }
   .va-utility-button-empty:active:not(:disabled) {
-    @apply border-transparent bg-action-pressed text-content-primary;
+    @apply bg-action-pressed;
+  }
+  /* Disabled (unified 2026-10-15): ghost stays, Divider border stays, ink
+     Text/Tertiary — the Standard treatment. */
+  .va-utility-button-empty:disabled {
+    @apply text-content-tertiary;
   }
 
-  /* --- Filled: the Primary ramp; white ink never fades ---------------------- */
+  /* --- Filled (Figma Utility/Primary): the Primary ramp; white ink never
+     fades; constant Stroke/Divider ring (near-invisible — authored) -------- */
 
   .va-utility-button-filled {
-    @apply bg-primary text-content-contrast;
+    @apply border-stroke-divider bg-primary text-content-contrast;
   }
   .va-utility-button-filled:hover:not(:disabled) {
     @apply bg-primary-hover;
@@ -104,6 +127,10 @@
   /* Primary/Focus = Figma's literal name for the pressed fill. */
   .va-utility-button-filled:active:not(:disabled) {
     @apply bg-primary-focus;
+  }
+  /* Disabled (861:8205): translucent Primary/Disabled, ring stays. */
+  .va-utility-button-filled:disabled {
+    @apply bg-primary-disabled;
   }
 
   /* --- Rounded: ghost pill, no border in any state --------------------------- */
@@ -117,29 +144,128 @@
   .va-utility-button-rounded:active:not(:disabled) {
     @apply bg-action-pressed text-content-primary;
   }
+  .va-utility-button-rounded:disabled {
+    @apply text-content-tertiary;
+  }
 
-  /* --- Text: bare underlined row (16px); hover = pressed ---------------------- */
+  /* --- Text: bare 16px hug row (no underline — Link owns the underline);
+     hover = pressed; disabled drops to Tertiary (unified 2026-10-15) ------- */
 
   .va-utility-button-text {
-    @apply h-4 gap-1 rounded-none border-0 px-0 underline;
-    @apply text-body-content text-content-tertiary;
-    text-decoration-thickness: from-font;
+    @apply relative h-4 gap-1 rounded-none border-0 px-0;
+    @apply text-body-content text-content-secondary;
   }
   .va-utility-button-text svg {
-    @apply size-4; /* 16px trailing chevron, default-on in Figma */
+    @apply size-4; /* 16px — stroke 1.5/24 paints 1px here */
+    stroke-width: 1.5;
   }
   .va-utility-button-text:hover:not(:disabled),
   .va-utility-button-text:active:not(:disabled) {
     @apply text-content-primary;
   }
+  .va-utility-button-text:disabled {
+    @apply text-content-tertiary;
+  }
+
+  /* --- Link: inline underlined text button. The drawn state ramp (847:575–
+     581): Primary → Primary/Hover → Primary/Focus → Tertiary; the underline
+     never drops (the "disabled" text style that dropped it was deleted). --- */
+
+  .va-utility-button-link {
+    @apply relative h-6 gap-0 rounded-none border-0 px-0 underline;
+    /* "Body & Supporting/Input" 16/400/24 — the real binding since the
+       duplicate "Buttons / Inline link" style was deleted (2026-10-14). */
+    @apply text-input text-primary;
+    text-decoration-thickness: from-font;
+  }
+  .va-utility-button-link:hover:not(:disabled) {
+    @apply text-primary-hover;
+  }
+  .va-utility-button-link:active:not(:disabled) {
+    @apply text-primary-focus;
+  }
+  .va-utility-button-link:disabled {
+    @apply text-content-tertiary;
+  }
+
+  /* --- Tap-target overlay for the hug-content styles (handoff contract:
+     ≥24px, ≥44px on touch; a centred overlay, never layout) ---------------- */
+
+  .va-utility-button-text::after,
+  .va-utility-button-link::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--target-min));
+    height: max(100%, var(--target-min));
+    transform: translate(-50%, -50%);
+  }
+  @media (pointer: coarse) {
+    .va-utility-button-text::after,
+    .va-utility-button-link::after {
+      width: max(100%, var(--target-touch));
+      height: max(100%, var(--target-touch));
+    }
+  }
+
+  /* --- Loading (aria-busy) — drawn for Primary/Secondary SM; generic here.
+     Rest paints stay; the trailing icon hides; a 16px 270° arc spins in an
+     18px slot so hug width never changes. ---------------------------------- */
+
+  .va-utility-button[aria-busy="true"] {
+    @apply pointer-events-none;
+  }
+  .va-utility-button[aria-busy="true"] svg {
+    @apply hidden;
+  }
+  .va-utility-button[aria-busy="true"]::after {
+    content: "";
+    position: static;
+    transform: none;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-inline: 1px; /* 16px arc in the 18px icon slot — width stability */
+    /* static-ok(hardcoded-radius): fully-round spinner (see button.css). */
+    border-radius: 9999px;
+    /* 270° arc, gap 12→3 o'clock, 1.6px ring — measured from the export.
+       static-ok(hardcoded-color): the mask's #000 is alpha, not paint. */
+    background: conic-gradient(
+      from 90deg,
+      currentColor 270deg,
+      transparent 270deg
+    );
+    /* The #000 below is MASK ALPHA (which pixels of the currentColor arc are
+       visible), not a painted color. prettier-ignore keeps each declaration on
+       one line so the static-ok pragmas sit directly above their findings. */
+    /* prettier-ignore */
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 1.5px)); /* static-ok(hardcoded-color): mask alpha, not paint */
+    /* prettier-ignore */
+    mask: radial-gradient(farthest-side, transparent calc(100% - 1.6px), #000 calc(100% - 1.5px)); /* static-ok(hardcoded-color): mask alpha, not paint */
+    animation: va-utility-button-spin 800ms linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .va-utility-button[aria-busy="true"]::after {
+      animation: none;
+    }
+  }
 
   /* --- Shared -------------------------------------------------------------- */
 
+  /* The control focus ring (Figma "Focus Ring" effect: 2px gap + 2px solid
+     Primary) — fields keep the old 3px translucent ring; controls get this. */
   .va-utility-button:focus-visible {
-    @apply focus-ring;
+    @apply focus-ring-control;
   }
 
   .va-utility-button:disabled {
     @apply cursor-not-allowed;
+  }
+
+  @keyframes va-utility-button-spin {
+    to {
+      rotate: 360deg;
+    }
   }
 }

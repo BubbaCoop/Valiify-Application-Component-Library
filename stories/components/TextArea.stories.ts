@@ -15,7 +15,10 @@ interface TextAreaArgs {
 }
 
 let uid = 0;
-const field = ({ label, placeholder, value, hint, invalid }: Partial<TextAreaArgs>) => {
+const field = (
+  { label, placeholder, value, hint, invalid }: Partial<TextAreaArgs>,
+  disabled = false,
+) => {
   const id = `ta-${uid++}`;
   return `
   <div class="va-text-area">
@@ -25,6 +28,7 @@ const field = ({ label, placeholder, value, hint, invalid }: Partial<TextAreaArg
     <textarea id="${id}" class="va-text-area-input"
       ${placeholder ? `placeholder="${placeholder}"` : ""}
       ${invalid ? `aria-invalid="true"` : ""}
+      ${disabled ? "disabled" : ""}
       ${hint ? `aria-describedby="${id}-hint"` : ""}>${value ?? ""}</textarea>
     ${hint ? `<p id="${id}-hint" class="va-text-area-hint">${hint}</p>` : ""}
   </div>`;
@@ -38,7 +42,10 @@ const meta: Meta<TextAreaArgs> = {
     placeholder: { control: "text" },
     value: { control: "text" },
     hint: { control: "text" },
-    invalid: { control: "boolean", description: "aria-invalid drives the (amber) error border and hint ink" },
+    invalid: {
+      control: "boolean",
+      description: "aria-invalid drives the (amber) error border and hint ink",
+    },
   },
   args: {
     label: "Notes",
@@ -70,6 +77,7 @@ export const AllStates: Story = {
       ${field({ label: "Notes", value: "Applying jointly with my spouse; we bank with ACU already and want to move our savings over too." })}
       ${field({ label: "Notes", placeholder: "Field", hint: "Optional — anything that helps us process your application." })}
       ${field({ label: "Notes", placeholder: "Field", invalid: true, hint: "Tell us a little more before you continue." })}
+      ${field({ label: "Notes", placeholder: "Field" }, true)}
     </div>
   `,
 };

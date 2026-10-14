@@ -16,7 +16,17 @@ interface DropdownFieldArgs {
 }
 
 let uid = 0;
-const field = ({ label, value, placeholder, expanded, invalid, hint }: Partial<DropdownFieldArgs>) => {
+const field = (
+  {
+    label,
+    value,
+    placeholder,
+    expanded,
+    invalid,
+    hint,
+  }: Partial<DropdownFieldArgs>,
+  disabled = false,
+) => {
   const id = `df-${uid++}`;
   const isPlaceholder = !value;
   return `
@@ -28,6 +38,7 @@ const field = ({ label, value, placeholder, expanded, invalid, hint }: Partial<D
       aria-haspopup="listbox" aria-expanded="${expanded ? "true" : "false"}"
       aria-labelledby="${isPlaceholder ? `${id}-label` : `${id}-label ${id}-value`}"
       ${invalid ? `aria-invalid="true"` : ""}
+      ${disabled ? "disabled" : ""}
       ${hint ? `aria-describedby="${id}-hint"` : ""}>
       <span id="${id}-value" class="va-dropdown-field-value${isPlaceholder ? " va-dropdown-field-value-placeholder" : ""}"${isPlaceholder ? ` aria-hidden="true"` : ""}>${value || placeholder || "Select"}</span>
       <svg class="va-dropdown-field-chevron" aria-hidden="true"><use href="#chevron-down" /></svg>
@@ -41,10 +52,19 @@ const meta: Meta<DropdownFieldArgs> = {
   tags: ["autodocs"],
   argTypes: {
     label: { control: "text" },
-    value: { control: "text", description: "Selected option — empty renders the placeholder ink" },
+    value: {
+      control: "text",
+      description: "Selected option — empty renders the placeholder ink",
+    },
     placeholder: { control: "text" },
-    expanded: { control: "boolean", description: "aria-expanded — Figma's Focus axis (open state)" },
-    invalid: { control: "boolean", description: "aria-invalid — the (amber) error border" },
+    expanded: {
+      control: "boolean",
+      description: "aria-expanded — Figma's Focus axis (open state)",
+    },
+    invalid: {
+      control: "boolean",
+      description: "aria-invalid — the (amber) error border",
+    },
     hint: { control: "text" },
   },
   args: {
@@ -65,7 +85,9 @@ type Story = StoryObj<DropdownFieldArgs>;
  * (the library ships no JS; border, ring and chevron flip are pure CSS). */
 export const Interactive: Story = {
   play: async ({ canvasElement }) => {
-    const trigger = canvasElement.querySelector<HTMLButtonElement>(".va-dropdown-field-trigger");
+    const trigger = canvasElement.querySelector<HTMLButtonElement>(
+      ".va-dropdown-field-trigger",
+    );
     trigger?.addEventListener("click", () => {
       const open = trigger.getAttribute("aria-expanded") === "true";
       trigger.setAttribute("aria-expanded", String(!open));
@@ -82,6 +104,7 @@ export const AllStates: Story = {
       ${field({ label: "Account type", value: "Personal checking", expanded: true })}
       ${field({ label: "Account type", value: "Business savings", invalid: true, hint: "This account type is unavailable." })}
       ${field({ label: "Account type", value: "Business savings", invalid: true, expanded: true })}
+      ${field({ label: "Account type", placeholder: "Select an account type" }, true)}
     </div>
   `,
 };

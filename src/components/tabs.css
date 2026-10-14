@@ -25,7 +25,8 @@
  *
  * NO UNDERLINE EXISTS — every active cue is fill/ring/ink (pixel-verified).
  *
- * Shared geometry: 34px hug (7+7+20), 12/7 padding, 8px gap, 4px radius,
+ * Shared geometry: 32px (Height/SM token-bound since the 2026-10 rework —
+ * was a 34px hug), 12px x-padding, 8px gap, 4px radius,
  * 16px icon slot (caller sprite glyph, painted by currentColor). Active
  * steps the type Labels/Default → Labels/Strong (400→500) — the ~1px hug
  * reflow that causes is Figma's own (designer list).
@@ -37,8 +38,9 @@
  * .va-tabs (the row) is UNSOURCED SCAFFOLDING — no tablist frame exists in
  * Figma yet; it ships as a labeled structural extension.
  *
- * Not modelled, not invented: disabled, pressed; Application active+hover
- * (hover excludes the selected state by name).
+ * Focus is DRAWN since 2026-10 (focus-ring-control). Not modelled, not
+ * invented: disabled, pressed; Application active+hover (hover excludes the
+ * selected state by name).
  */
 
 @layer components {
@@ -48,8 +50,10 @@
   }
 
   .va-tab {
-    @apply inline-flex cursor-pointer items-center gap-2 rounded-sm px-3 py-1.75;
-    @apply m-0 border-0 bg-transparent;
+    /* Height/SM (32) pinned — zero y-padding, centred content (the 2026-10
+       height contract). */
+    @apply inline-flex h-[var(--height-sm)] cursor-pointer items-center gap-2 rounded-sm px-3;
+    @apply m-0 border-0 bg-transparent p-0 px-3;
     @apply text-label text-content-secondary;
     transition:
       color 150ms,
@@ -76,8 +80,12 @@
     @apply text-label-strong text-content-primary;
   }
 
+  /* Focus is a drawn axis since 2026-10 (914:7xx) — the "Focus Ring" effect
+     (2px gap + 2px solid Primary). Figma's per-variant authoring is
+     inconsistent (three of four variants paint nothing); the effect style is
+     the contract. */
   .va-tab:focus-visible {
-    @apply focus-ring;
+    @apply focus-ring-control;
   }
 
   /* --- Portal: ghost until active ------------------------------------------ */

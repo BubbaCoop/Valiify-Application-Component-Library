@@ -2,7 +2,10 @@
  * Checkbox Component
  *
  * Binary selection control. Extracted from Figma Checkbox (1:424) — 8 variants
- * across Active × Hover × Pressed × Disabled, all 18×18.
+ * across Active × Hover × Pressed × Disabled, all 20×20 (RESIZED 18→20 on
+ * 2026-10-13, every variant consistently — the control now matches Radio's
+ * 20×20; the hover/pressed variants were rebuilt as new nodes 527:* with the
+ * same token story).
  *
  *   <span class="va-checkbox-control">
  *     <input type="checkbox" class="va-checkbox-input" />
@@ -11,20 +14,23 @@
  *
  * The wrapper exists because the checkmark is the sprite's #check glyph — a
  * pseudo-element cannot render <use>, so the input and glyph need a shared
- * 18px positioning context. (Same reasoning as the dashboard's archived
+ * 20px positioning context. (Same reasoning as the dashboard's archived
  * checkbox; Radio needs no wrapper because its dot is a plain ::before circle.)
  *
- * Geometry: 18×18 box, radius 3px (a RAW value in Figma — the file's Radius
- * scale is 2/4/6/8 and a fitted-model pixel measurement confirmed ~3.0; on the
- * designer list). Check glyph 16×16 at 1px inset.
+ * Geometry: 20×20 box, radius STILL a raw 3px after the resize (the file's
+ * Radius scale is 2/4/6/8; on the designer list). Check glyph stays 16×16 —
+ * the resize grew the inset from 1px to 2px (m-auto centring absorbs it).
  *
  * State system — two parallel ramps, and unlike Radio BOTH branches have
  * hover/pressed drawn in Figma:
  *
  *   unchecked   ring 1.5px inset Stroke/Border; fill Paper → Action/Hover →
- *               Action/Pressed; disabled = ring thins to 1px AND swaps to
- *               Stroke/Divider (two simultaneous changes — both authored,
- *               confirmed by pixel measurement)
+ *               Action/Pressed (since the 2026-10 rebuild the hover/pressed
+ *               variants DROP BG/Paper and the wash sits on the page — which
+ *               is what this CSS always did, bg replacing bg); disabled =
+ *               ring thins to 1px AND swaps to Stroke/Divider (two
+ *               simultaneous changes — both authored, re-verified after the
+ *               resize)
  *   checked     no ring at all (Figma draws none); fill Primary →
  *               Primary/Hover → Primary/Focus (pressed!) → Primary/Disabled
  *
@@ -43,14 +49,17 @@
  *
  * Not modelled in Figma, not invented: disabled+hover, disabled+pressed,
  * indeterminate/mixed (`:indeterminate` renders as unchecked — needs a design
- * decision), focus. The check glyph's white is also unbound in Figma; it
- * matches Text/Contrast exactly and ships as that token (designer to confirm).
+ * decision), focus. The check glyph's old unbound white was RESOLVED in the
+ * 2026-10 rebuild: the glyph is now a filled vector BOUND to BG/Paper
+ * (#fffdfb) — shipped as that token. (The Figma vector is the check outlined
+ * as a fill; the sprite's stroked #check at stroke-width 2 renders the same
+ * shape ≈1.3px — kept for sprite-system consistency.)
  */
 
 @layer components {
   .va-checkbox-control {
-    /* Shared 18px positioning context for the input and the sprite glyph. */
-    @apply relative inline-flex size-4.5 shrink-0 items-center justify-center;
+    /* Shared 20px positioning context for the input and the sprite glyph. */
+    @apply relative inline-flex size-5 shrink-0 items-center justify-center;
   }
 
   .va-checkbox-input {
@@ -105,18 +114,39 @@
   }
 
   .va-checkbox-input:focus-visible {
-    @apply focus-ring;
+    @apply focus-ring-control;
+  }
+
+  /* Tap-target overlay (handoff contract: ≥24px, ≥44px on touch) — the
+     appearance-none input renders pseudos; ::after is free (the check glyph
+     is a sibling svg). Paired with a label, the label row is the target. */
+  .va-checkbox-input::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--target-min));
+    height: max(100%, var(--target-min));
+    transform: translate(-50%, -50%);
+  }
+  @media (pointer: coarse) {
+    .va-checkbox-input::after {
+      width: max(100%, var(--target-touch));
+      height: max(100%, var(--target-touch));
+    }
   }
 
   /* --- Check glyph -------------------------------------------------------- */
 
   .va-checkbox-check {
     @apply pointer-events-none absolute inset-0 m-auto size-4 opacity-0;
-    /* White is unbound in Figma; Text/Contrast matches exactly. */
-    @apply text-content-contrast;
+    /* BOUND to BG/Paper since the 2026-10 rebuild (closed the old
+       unbound-white question) — nearly white, deliberately the Paper token. */
+    @apply text-surface-paper;
     /* The sprite's symbols carry no paint attributes — supply the Lucide
        defaults here. stroke-width 2 on the 24-unit viewBox renders 1.33px at
-       this 16px size (measured ≈1.23px — within AA measurement noise). */
+       this 16px size (Figma's outlined fill reads ≈1px — same glyph family,
+       sprite convention kept). */
     fill: none;
     stroke: currentColor;
     stroke-width: 2;

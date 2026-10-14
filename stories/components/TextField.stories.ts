@@ -16,7 +16,12 @@ interface TextFieldArgs {
 let uid = 0;
 const field = (
   { label, placeholder, value, invalid, hint }: Partial<TextFieldArgs>,
-  extra: { leadingIcon?: string; trailingIcon?: string; help?: boolean } = {},
+  extra: {
+    leadingIcon?: string;
+    trailingIcon?: string;
+    help?: boolean;
+    disabled?: boolean;
+  } = {},
 ) => {
   const id = `tf-${uid++}`;
   const hintId = `${id}-hint`;
@@ -32,6 +37,7 @@ const field = (
         ${placeholder ? `placeholder="${placeholder}"` : ""}
         ${value ? `value="${value}"` : ""}
         ${invalid ? `aria-invalid="true"` : ""}
+        ${extra.disabled ? "disabled" : ""}
         ${hint ? `aria-describedby="${hintId}"` : ""} />
       ${extra.trailingIcon ? `<svg class="va-text-field-icon" aria-hidden="true"><use href="#${extra.trailingIcon}" /></svg>` : ""}
     </div>
@@ -46,7 +52,10 @@ const meta: Meta<TextFieldArgs> = {
     label: { control: "text" },
     placeholder: { control: "text" },
     value: { control: "text" },
-    invalid: { control: "boolean", description: "aria-invalid drives the (amber) error border" },
+    invalid: {
+      control: "boolean",
+      description: "aria-invalid drives the (amber) error border",
+    },
     hint: { control: "text" },
   },
   args: {
@@ -64,13 +73,15 @@ type Story = StoryObj<TextFieldArgs>;
 
 export const Interactive: Story = {};
 
-/** Rest, filled, and error — hover/focus are live (mouse in, click in). */
+/** Rest, filled, error, disabled — hover/focus are live (mouse in, click in).
+ *  Disabled is APPENDED so existing index-based assertions keep their nth. */
 export const AllStates: Story = {
   render: () => `
     <div style="display: flex; flex-direction: column; gap: 24px; max-width: 413px;">
       ${field({ label: "First name", placeholder: "Field" })}
       ${field({ label: "First name", value: "John" })}
       ${field({ label: "Email", value: "not-an-email", invalid: true, hint: "Enter a valid email address." })}
+      ${field({ label: "Member ID", placeholder: "Field" }, { disabled: true })}
     </div>
   `,
 };

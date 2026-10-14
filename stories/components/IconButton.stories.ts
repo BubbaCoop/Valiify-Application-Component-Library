@@ -98,7 +98,16 @@ export const IconOnlyVsState: Story = {
 export const CommonIcons: Story = {
   render: () => `
     <div style="display: flex; gap: 16px; align-items: center;">
-      ${["x", "settings", "search", "chevron-left", "chevron-right", "eye", "trash-2", "pencil"]
+      ${[
+        "x",
+        "settings",
+        "search",
+        "chevron-left",
+        "chevron-right",
+        "eye",
+        "trash-2",
+        "pencil",
+      ]
         .map((icon) => btn({ icon, type: "state", label: icon }))
         .join("")}
     </div>

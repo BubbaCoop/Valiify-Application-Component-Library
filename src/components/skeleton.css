@@ -22,13 +22,21 @@
  *
  * | radius       | shapes                                  |
  * | ------------ | --------------------------------------- |
- * | rounded-sm 4 | text, heading, checkbox                 |
- * | rounded-md 6 | button, input, textarea, tab, dropdown  |
+ * | rounded-sm 4 | text, heading, input, textarea, dropdown |
+ * | raw 3       | checkbox (matches the control's off-scale radius)  |
+ * | rounded-md 6 | button, tab                             |
+ *
+ * RADII REDECIDED 2026-10-14 ("inputs are 4px everywhere"): the FIELD shapes
+ * (input, textarea, dropdown) moved to 4px to match the real components;
+ * button and tab stay 6px per the written spec. The redrawn Figma set
+ * (525:4650) still authors 6 on the field bones — the user's decision wins;
+ * designer list.
  * | rounded-lg 8 | rectangle, card                         |
  * | rounded-xl 10| badge, switch                           |
  * | rounded-full | circle, avatar, radio                   |
  *
- * FILL IS RAW #f1f1f4 — the written spec names a "Surface/Neutral" variable
+ * FILL IS RAW #e4e7eb (re-read 2026-10-14; was #f1f1f4) — the written spec
+ * names a "Surface/Neutral" variable
  * that does NOT exist in this file's collection (verified by full Plugin API
  * enumeration; the name matches the dashboard-era palette). Shipped as the
  * authored literal via --skeleton-fill for overridability; when the designer
@@ -62,8 +70,10 @@
 
 @layer components {
   .va-skeleton {
-    /* static-ok(hardcoded-color): the written spec's "Surface/Neutral" variable does not exist in the file (designer list); tokenize when it lands */
-    --skeleton-fill: #f1f1f4;
+    /* TOKENIZED 2026-10-15: the bones bind the new BG/Skeleton variable
+       (#e4e7eb) — the long-promised fill token finally landed. Kept behind
+       --skeleton-fill for per-instance overridability. */
+    --skeleton-fill: var(--color-surface-skeleton);
     @apply block;
     background-color: var(--skeleton-fill);
     animation: skeleton-pulse 2s ease-in-out infinite;
@@ -78,15 +88,21 @@
   /* --- Shapes (radius) ------------------------------------------------------ */
 
   .va-skeleton-text,
-  .va-skeleton-heading,
-  .va-skeleton-checkbox {
+  .va-skeleton-heading {
     @apply rounded-sm;
   }
-  .va-skeleton-button,
+  .va-skeleton-checkbox {
+    /* Raw 3px — matches the real Checkbox control (its documented off-scale
+       radius); the bone adopted it 2026-10-15. */
+    @apply rounded-[3px];
+  }
   .va-skeleton-input,
   .va-skeleton-textarea,
-  .va-skeleton-tab,
   .va-skeleton-dropdown {
+    @apply rounded-sm; /* 4px — matches the real fields (2026-10-14 decision) */
+  }
+  .va-skeleton-button,
+  .va-skeleton-tab {
     @apply rounded-md;
   }
   .va-skeleton-rectangle,
@@ -105,67 +121,168 @@
 
   /* --- Dimensions: shape × size matrix (written-spec defaults) ------------- */
 
-  .va-skeleton-text.va-skeleton-sm      { @apply h-3 w-30; }      /* 120×12 */
-  .va-skeleton-text.va-skeleton-md      { @apply h-4 w-50; }      /* 200×16 */
-  .va-skeleton-text.va-skeleton-lg      { @apply h-5 w-80; }      /* 320×20 */
+  .va-skeleton-text.va-skeleton-sm {
+    @apply h-3 w-30;
+  } /* 120×12 */
+  .va-skeleton-text.va-skeleton-md {
+    @apply h-4 w-50;
+  } /* 200×16 */
+  .va-skeleton-text.va-skeleton-lg {
+    @apply h-5 w-80;
+  } /* 320×20 */
 
-  .va-skeleton-heading.va-skeleton-sm   { @apply h-5 w-40; }      /* 160×20 */
-  .va-skeleton-heading.va-skeleton-md   { @apply h-6 w-60; }      /* 240×24 */
-  .va-skeleton-heading.va-skeleton-lg   { @apply h-8 w-90; }      /* 360×32 */
+  .va-skeleton-heading.va-skeleton-sm {
+    @apply h-5 w-40;
+  } /* 160×20 */
+  .va-skeleton-heading.va-skeleton-md {
+    @apply h-6 w-60;
+  } /* 240×24 */
+  .va-skeleton-heading.va-skeleton-lg {
+    @apply h-8 w-90;
+  } /* 360×32 */
 
-  .va-skeleton-circle.va-skeleton-sm    { @apply size-8; }        /* 32 */
-  .va-skeleton-circle.va-skeleton-md    { @apply size-10; }       /* 40 */
-  .va-skeleton-circle.va-skeleton-lg    { @apply size-14; }       /* 56 */
+  .va-skeleton-circle.va-skeleton-sm {
+    @apply size-8;
+  } /* 32 */
+  .va-skeleton-circle.va-skeleton-md {
+    @apply size-10;
+  } /* 40 */
+  .va-skeleton-circle.va-skeleton-lg {
+    @apply size-14;
+  } /* 56 */
 
-  .va-skeleton-rectangle.va-skeleton-sm { @apply h-20 w-30; }     /* 120×80 */
-  .va-skeleton-rectangle.va-skeleton-md { @apply h-30 w-50; }     /* 200×120 */
-  .va-skeleton-rectangle.va-skeleton-lg { @apply h-45 w-80; }     /* 320×180 */
+  .va-skeleton-rectangle.va-skeleton-sm {
+    @apply h-20 w-30;
+  } /* 120×80 */
+  .va-skeleton-rectangle.va-skeleton-md {
+    @apply h-30 w-50;
+  } /* 200×120 */
+  .va-skeleton-rectangle.va-skeleton-lg {
+    @apply h-45 w-80;
+  } /* 320×180 */
 
-  .va-skeleton-button.va-skeleton-sm    { @apply h-8 w-16; }      /* 64×32 */
-  .va-skeleton-button.va-skeleton-md    { @apply h-9 w-24; }      /* 96×36 */
-  .va-skeleton-button.va-skeleton-lg    { @apply h-10 w-32; }     /* 128×40 */
+  /* Real button heights since the 2026-10 rework: SM controls are 32,
+     MD/LG are 48 (the redrawn set's bone is 120×48). */
+  .va-skeleton-button.va-skeleton-sm {
+    @apply h-8 w-16;
+  } /* 64×32 */
+  .va-skeleton-button.va-skeleton-md {
+    @apply h-12 w-30;
+  } /* 120×48 */
+  .va-skeleton-button.va-skeleton-lg {
+    @apply h-12 w-32;
+  } /* 128×48 */
 
-  .va-skeleton-input.va-skeleton-sm     { @apply h-12 w-70; }     /* 280×48 */
-  .va-skeleton-input.va-skeleton-md     { @apply h-15 w-82.5; }   /* 330×60 */
-  .va-skeleton-input.va-skeleton-lg     { @apply h-18 w-105; }    /* 420×72 */
+  /* The field bone is the 48px box; the redrawn set's full Input shape is a
+     73px COMPOSITE (16px label bar + 9px gap + 48px field) — compose it:
+     a .va-skeleton-text w-20 label + this bone (handoff §8). */
+  .va-skeleton-input.va-skeleton-sm {
+    @apply h-12 w-70;
+  } /* 280×48 */
+  .va-skeleton-input.va-skeleton-md {
+    @apply h-12 w-82.5;
+  } /* 330×48 */
+  .va-skeleton-input.va-skeleton-lg {
+    @apply h-12 w-105;
+  } /* 420×48 */
 
-  .va-skeleton-textarea.va-skeleton-sm  { @apply h-20 w-70; }     /* 280×80 */
-  .va-skeleton-textarea.va-skeleton-md  { @apply h-25 w-82.5; }   /* 330×100 */
-  .va-skeleton-textarea.va-skeleton-lg  { @apply h-32 w-105; }    /* 420×128 */
+  .va-skeleton-textarea.va-skeleton-sm {
+    @apply h-20 w-70;
+  } /* 280×80 */
+  .va-skeleton-textarea.va-skeleton-md {
+    @apply h-25 w-82.5;
+  } /* 330×100 */
+  .va-skeleton-textarea.va-skeleton-lg {
+    @apply h-32 w-105;
+  } /* 420×128 */
 
-  .va-skeleton-card.va-skeleton-sm      { @apply h-35 w-70; }     /* 280×140 */
-  .va-skeleton-card.va-skeleton-md      { @apply h-39.5 w-82.5; } /* 330×158 */
-  .va-skeleton-card.va-skeleton-lg      { @apply h-50 w-105; }    /* 420×200 */
+  .va-skeleton-card.va-skeleton-sm {
+    @apply h-35 w-70;
+  } /* 280×140 */
+  .va-skeleton-card.va-skeleton-md {
+    @apply h-39.5 w-82.5;
+  } /* 330×158 */
+  .va-skeleton-card.va-skeleton-lg {
+    @apply h-50 w-105;
+  } /* 420×200 */
 
-  .va-skeleton-switch.va-skeleton-sm    { @apply h-4 w-7; }       /* 28×16 */
-  .va-skeleton-switch.va-skeleton-md    { @apply h-5 w-9; }       /* 36×20 */
-  .va-skeleton-switch.va-skeleton-lg    { @apply h-6 w-11; }      /* 44×24 */
+  .va-skeleton-switch.va-skeleton-sm {
+    @apply h-4 w-7;
+  } /* 28×16 */
+  .va-skeleton-switch.va-skeleton-md {
+    @apply h-5 w-9;
+  } /* 36×20 */
+  .va-skeleton-switch.va-skeleton-lg {
+    @apply h-6 w-11;
+  } /* 44×24 */
 
-  .va-skeleton-checkbox.va-skeleton-sm  { @apply size-3.5; }      /* 14 */
-  .va-skeleton-checkbox.va-skeleton-md  { @apply size-4.5; }      /* 18 */
-  .va-skeleton-checkbox.va-skeleton-lg  { @apply size-5.5; }      /* 22 */
+  .va-skeleton-checkbox.va-skeleton-sm {
+    @apply size-3.5;
+  } /* 14 */
+  .va-skeleton-checkbox.va-skeleton-md {
+    @apply size-5;
+  } /* 20 — matches the real control (2026-10-15) */
+  .va-skeleton-checkbox.va-skeleton-lg {
+    @apply size-5.5;
+  } /* 22 */
 
-  .va-skeleton-badge.va-skeleton-sm     { @apply h-4 w-15; }      /* 60×16 */
-  .va-skeleton-badge.va-skeleton-md     { @apply h-5 w-20; }      /* 80×20 */
-  .va-skeleton-badge.va-skeleton-lg     { @apply h-6 w-25; }      /* 100×24 */
+  .va-skeleton-badge.va-skeleton-sm {
+    @apply h-4 w-15;
+  } /* 60×16 */
+  .va-skeleton-badge.va-skeleton-md {
+    @apply h-5 w-20;
+  } /* 80×20 */
+  .va-skeleton-badge.va-skeleton-lg {
+    @apply h-6 w-25;
+  } /* 100×24 */
 
-  .va-skeleton-listitem.va-skeleton-sm  { @apply h-7 w-70; }      /* 280×28 */
-  .va-skeleton-listitem.va-skeleton-md  { @apply h-8 w-82.5; }    /* 330×32 */
-  .va-skeleton-listitem.va-skeleton-lg  { @apply h-10 w-105; }    /* 420×40 */
+  .va-skeleton-listitem.va-skeleton-sm {
+    @apply h-7 w-70;
+  } /* 280×28 */
+  .va-skeleton-listitem.va-skeleton-md {
+    @apply h-8 w-82.5;
+  } /* 330×32 */
+  .va-skeleton-listitem.va-skeleton-lg {
+    @apply h-10 w-105;
+  } /* 420×40 */
 
-  .va-skeleton-tab.va-skeleton-sm       { @apply h-7 w-20; }      /* 80×28 */
-  .va-skeleton-tab.va-skeleton-md       { @apply h-8 w-25; }      /* 100×32 */
-  .va-skeleton-tab.va-skeleton-lg       { @apply h-9 w-30; }      /* 120×36 */
+  .va-skeleton-tab.va-skeleton-sm {
+    @apply h-7 w-20;
+  } /* 80×28 */
+  .va-skeleton-tab.va-skeleton-md {
+    @apply h-8 w-25;
+  } /* 100×32 */
+  .va-skeleton-tab.va-skeleton-lg {
+    @apply h-9 w-30;
+  } /* 120×36 */
 
-  .va-skeleton-avatar.va-skeleton-sm    { @apply size-8; }        /* 32 */
-  .va-skeleton-avatar.va-skeleton-md    { @apply size-10; }       /* 40 */
-  .va-skeleton-avatar.va-skeleton-lg    { @apply size-14; }       /* 56 */
+  .va-skeleton-avatar.va-skeleton-sm {
+    @apply size-5;
+  } /* 20 — the real Avatar SM */
+  .va-skeleton-avatar.va-skeleton-md {
+    @apply size-6;
+  } /* 24 — the real Avatar MD (bone matched 2026-10-15) */
+  .va-skeleton-avatar.va-skeleton-lg {
+    @apply size-8;
+  } /* 32 — stand-in above the real range */
 
-  .va-skeleton-dropdown.va-skeleton-sm  { @apply h-12 w-70; }     /* 280×48 */
-  .va-skeleton-dropdown.va-skeleton-md  { @apply h-15 w-82.5; }   /* 330×60 */
-  .va-skeleton-dropdown.va-skeleton-lg  { @apply h-18 w-105; }    /* 420×72 */
+  .va-skeleton-dropdown.va-skeleton-sm {
+    @apply h-12 w-70;
+  } /* 280×48 */
+  .va-skeleton-dropdown.va-skeleton-md {
+    @apply h-12 w-82.5;
+  } /* 330×48 */
+  .va-skeleton-dropdown.va-skeleton-lg {
+    @apply h-12 w-105;
+  } /* 420×48 */
 
-  .va-skeleton-radio.va-skeleton-sm     { @apply size-4; }        /* 16 */
-  .va-skeleton-radio.va-skeleton-md     { @apply size-5; }        /* 20 */
-  .va-skeleton-radio.va-skeleton-lg     { @apply size-6; }        /* 24 */
+  .va-skeleton-radio.va-skeleton-sm {
+    @apply size-4;
+  } /* 16 */
+  .va-skeleton-radio.va-skeleton-md {
+    @apply size-5;
+  } /* 20 */
+  .va-skeleton-radio.va-skeleton-lg {
+    @apply size-6;
+  } /* 24 */
 }

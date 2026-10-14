@@ -79,7 +79,8 @@ export const InAForm: Story = {
 
 /** Keyboard focus uses the library-wide focus-ring. Tab to see it. */
 export const Focus: Story = {
-  render: () => `<div style="display:flex;gap:24px;">${box()}${box(true)}</div>`,
+  render: () =>
+    `<div style="display:flex;gap:24px;">${box()}${box(true)}</div>`,
 };
 
 /**

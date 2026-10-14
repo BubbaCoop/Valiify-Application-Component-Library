@@ -152,10 +152,18 @@
   .va-modal-backdrop {
     @apply fixed inset-0 z-50 flex items-center justify-center;
     /* UNSOURCED wash: Text/Primary at 45% — designer to confirm. */
-    background-color: color-mix(in oklab, var(--color-content-primary) 45%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-content-primary) 45%,
+      transparent
+    );
   }
 
   dialog.va-modal::backdrop {
-    background-color: color-mix(in oklab, var(--color-content-primary) 45%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-content-primary) 45%,
+      transparent
+    );
   }
 }

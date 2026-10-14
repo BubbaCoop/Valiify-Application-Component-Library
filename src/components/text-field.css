@@ -60,8 +60,12 @@
  * (designer, 2026-09-16 — D3); the hint row is the error row across all three
  * field components.
  *
- * Not modelled, not invented: disabled (none exists — flagged as a priority
- * gap for real forms), empty+error, hover+focus variants.
+ * Disabled (865:5431, added 2026-10-13 — the long-flagged family gap is
+ * closed): box BG/App Page + Stroke/Divider, value/placeholder ink Tertiary,
+ * title/hint unchanged. Drawn empty+rest only.
+ *
+ * Not modelled, not invented: empty+error, hover+focus, disabled+error/
+ * filled variants.
  */
 
 @layer components {
@@ -93,7 +97,10 @@
   /* The bordered box — 48px pinned via height (never min-height), the 1px
      border absorbed by border-box (Secondary-button closure). */
   .va-text-field-box {
-    @apply flex h-12 w-full items-center gap-2 rounded-sm border p-3;
+    /* Height/LG token (48) — zero effective y-padding influence: the height
+       is pinned, never derived from padding + line-height (16/24 input text
+       + padding math would render 52). */
+    @apply flex h-[var(--height-lg)] w-full items-center gap-2 rounded-sm border p-3;
     @apply border-stroke-border bg-surface-paper;
     transition: border-color 150ms;
   }
@@ -127,7 +134,9 @@
   /* Hover excludes focus by name too — the :not() chain out-specifies the
      focus rule, so without this guard a hovered+focused box would paint the
      hover border (Figma draws no hover+focus; focus wins, library decision). */
-  .va-text-field-box:hover:not(:has(.va-text-field-input:focus)):not(:has(.va-text-field-input[aria-invalid="true"])) {
+  .va-text-field-box:hover:not(:has(.va-text-field-input:focus)):not(
+      :has(.va-text-field-input[aria-invalid="true"])
+    ):not(:has(.va-text-field-input:disabled)) {
     @apply border-stroke-hover;
   }
 
@@ -139,8 +148,24 @@
     @apply border-warning;
   }
 
+  /* Disabled (865:5431, added 2026-10-13 — the family gap closed): box fill
+     BG/App Page + border Stroke/Divider, value/placeholder ink Tertiary;
+     title and hint unchanged. Drawn empty+rest only — disabled+error is
+     undrawn, so this rule sorts LAST and the disabled look wins. A disabled
+     input takes no focus natively; hover is excluded by name above. */
+  .va-text-field-box:has(.va-text-field-input:disabled) {
+    @apply border-stroke-divider bg-surface-app-page;
+  }
+  .va-text-field-input:disabled {
+    @apply cursor-not-allowed text-content-tertiary;
+  }
+  .va-text-field-input:disabled::placeholder {
+    @apply text-content-tertiary;
+  }
+
   /* The hint row IS the error row across all three field components (D3). */
-  .va-text-field:has(.va-text-field-input[aria-invalid="true"]) .va-text-field-hint {
+  .va-text-field:has(.va-text-field-input[aria-invalid="true"])
+    .va-text-field-hint {
     @apply text-warning-text;
   }
 }

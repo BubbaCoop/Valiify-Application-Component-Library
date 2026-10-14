@@ -1,0 +1,121 @@
+/**
+ * Upload Component
+ *
+ * The file drop zone / picker row. Extracted from Figma Upload (778:6949) —
+ * 3 variants, all 499×48: Expanded {no, yes} × Completed {No, yes}
+ * ("Expanded=yes" reads as the drag-over state; the set carries no
+ * description and the casing of the variant values is inconsistent —
+ * designer list).
+ *
+ *   <label class="va-upload">
+ *     <input class="va-upload-input" type="file" />
+ *     <span class="va-upload-left">
+ *       <svg class="va-upload-icon" aria-hidden="true"><use href="#upload" /></svg>
+ *       <span class="va-upload-prompt">
+ *         Drop a file here or <span class="va-upload-browse">choose a file</span>
+ *       </span>
+ *     </span>
+ *     <span class="va-upload-meta">PDF, JPG, PNG · 20 MB</span>
+ *   </label>
+ *
+ *   <!-- Completed: swap the class, glyph, copy and affordance -->
+ *   <div class="va-upload va-upload-complete">
+ *     <span class="va-upload-left">
+ *       <svg class="va-upload-icon" aria-hidden="true"><use href="#file" /></svg>
+ *       <span class="va-upload-filename">certificate-of-formation.pdf</span>
+ *     </span>
+ *     <button class="va-utility-button va-utility-button-text">
+ *       Remove
+ *       <svg aria-hidden="true"><use href="#chevron-right" /></svg>
+ *     </button>
+ *   </div>
+ *
+ * | state      | border (1px, radius 8)     | fill          | copy |
+ * | rest       | DASHED Stroke/Divider      | none          | prompt Secondary + browse-run Info/Base |
+ * | drag-over  | DASHED Stroke/Hover        | Action/Hover  | unchanged (`.va-upload-active`, consumer JS on dragover) |
+ * | completed  | SOLID Stroke/Divider       | BG/App Page   | filename Text/Primary + composed Remove text-button |
+ *
+ * Height binds Height/LG (48) in Figma — pinned, zero y-padding, radius 8
+ * (rounded-lg; the one 8px-radius control). The border stays a real 1px
+ * (the handoff: "Box action and Upload stay 1px") — dashed, which only a
+ * real border can draw.
+ *
+ * The "choose a file" run is a raw #1b4e8b in Figma — the hex IS Info/Base;
+ * shipped as the token (the Utility-Text raw-override precedent; designer
+ * list). Figma's glyph layers are named "ChevronLeft" and draw an upload
+ * tray / a file (the naming-lies family) — ship `#upload` / `#file`. The
+ * drawn Remove affordance is a stale underlined instance of the old Utility
+ * Text style; compose the CURRENT `.va-utility-button-text` (designer list).
+ *
+ * The recommended markup is a <label> wrapping a visually-hidden
+ * `<input type="file">` — the whole row becomes the picker for free;
+ * keyboard focus on the input rings the row (focus-ring-control). Drag
+ * events, file handling and toggling `.va-upload-active` /
+ * `.va-upload-complete` are consumer JS — the library ships none.
+ *
+ * Not modelled, not invented: Expanded=no+Completed=yes, disabled, error,
+ * progress.
+ */
+
+@layer components {
+  .va-upload {
+    @apply flex h-[var(--height-lg)] w-full cursor-pointer items-center justify-between gap-3 rounded-lg px-3;
+    @apply border border-dashed border-stroke-divider bg-transparent;
+    transition:
+      border-color 150ms,
+      background-color 150ms;
+  }
+
+  /* The real file input — visually hidden, keyboard-reachable. */
+  .va-upload-input {
+    @apply absolute h-px w-px overflow-hidden whitespace-nowrap border-0 p-0;
+    clip-path: inset(50%);
+  }
+
+  .va-upload-left {
+    @apply flex min-w-0 items-center gap-3;
+  }
+
+  .va-upload-icon {
+    @apply size-4.5 shrink-0 text-content-secondary;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .va-upload-prompt {
+    @apply min-w-0 truncate text-body-content text-content-secondary;
+  }
+  /* Raw #1b4e8b in Figma = Info/Base exactly; shipped as the token. */
+  .va-upload-browse {
+    @apply text-info;
+  }
+
+  .va-upload-meta {
+    @apply shrink-0 text-body-content text-content-secondary;
+  }
+
+  .va-upload-filename {
+    @apply min-w-0 truncate text-body-content text-content-primary;
+  }
+
+  /* --- Drag-over (Figma "Expanded") — consumer JS toggles the class -------- */
+
+  .va-upload-active {
+    @apply border-stroke-hover bg-action-hover;
+  }
+
+  /* --- Completed ------------------------------------------------------------ */
+
+  .va-upload-complete {
+    @apply cursor-default border-solid border-stroke-divider bg-surface-app-page;
+  }
+
+  /* --- Focus — the hidden input carries it; the row shows the control ring -- */
+
+  .va-upload:has(.va-upload-input:focus-visible) {
+    @apply focus-ring-control;
+  }
+}

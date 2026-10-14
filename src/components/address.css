@@ -1,0 +1,153 @@
+/**
+ * Address Component
+ *
+ * The grouped address entry ("Address Super entry"). Extracted from Figma
+ * 281:4634 — 13 variants on a partial Filled × Hover × Focus × Error ×
+ * Disabled matrix, 518×167–171 samples. NOT a composition of TextField
+ * instances: Figma draws five bespoke cells in three rows inside ONE group
+ * box, and the group box carries every state.
+ *
+ *   <div class="va-address">
+ *     <div class="va-address-title-row">
+ *       <span class="va-address-title">Address</span>
+ *     </div>
+ *     <div class="va-address-group">
+ *       <div class="va-address-row">
+ *         <input class="va-address-input" placeholder="Address..." aria-label="Street address" />
+ *       </div>
+ *       <div class="va-address-row">
+ *         <input class="va-address-input" placeholder="Apt, suite, unit" aria-label="Apartment, suite, or unit" />
+ *         <span class="va-address-optional">Optional</span>
+ *       </div>
+ *       <div class="va-address-row">
+ *         <input class="va-address-input va-address-input-city" placeholder="City" aria-label="City" />
+ *         <input class="va-address-input va-address-input-state" placeholder="State" aria-label="State" />
+ *         <input class="va-address-input" placeholder="00000" inputmode="numeric" aria-label="ZIP code" />
+ *       </div>
+ *     </div>
+ *   </div>
+ *
+ * GEOMETRY — the math closes exactly: title row 25 (20 + 5 pb) + group box
+ * 146 (2px border-box + 3 × Height/LG rows of 48) = 171. Rows pin
+ * Height/LG with zero y-padding (the height contract); internal dividers are
+ * border-bottom/border-right INSIDE the pinned border-boxes. The group's
+ * outer border is 1px Stroke/Divider while the INNER dividers are 1px
+ * Stroke/Border (17% — darker inside than out, verbatim from the file).
+ * City/State are authored fixed (227/133 on the 518 sample); ZIP flexes.
+ * Width is the caller's.
+ *
+ * | state     | group border          | extra |
+ * | rest      | Stroke/Divider        | Paper fill |
+ * | hover     | Stroke/Hover          | (set-level binding; the variant was unreadable — labeled inference, family pattern) |
+ * | focus     | Primary + 3px ring    | the focused ROW gains an inset 2px Primary/Track marker and drops its divider (281:4683, verbatim) |
+ * | error     | Warning/Base          | aria-invalid on any input (D4 amber; no Error/* anywhere) |
+ * | disabled  | Stroke/Divider        | fill BG/App Page, inks Text/Tertiary (the family recipe) |
+ *
+ * FOCUS IS THE FIELD FAMILY'S (Primary border + the 3px translucent Primary
+ * Ring via `focus-ring`) — the group is a field surface, not a control; it
+ * does NOT take focus-ring-control. Driven by :focus-within (any focus —
+ * the Figma Focus axis is the caret state, TextField precedent).
+ *
+ * NO HINT ROW IS DRAWN in any variant — `.va-address-hint` ships as the
+ * family's labeled extension (TextArea precedent, decisions D1/D3): normal
+ * flow, Help & Caption, ink swaps to Warning/Text when any input is
+ * aria-invalid. Title ships Labels/Strong in Text/Secondary — Figma flips
+ * the Focus variants' title to Field Label 13/16 (the 171-vs-167 height
+ * split is exactly that flip); shipped consistent, designer list.
+ *
+ * Error+focus: amber border wins the tie, the crimson ring still fires —
+ * the error rule sorts after the focus rule, order load-bearing (family).
+ * Not modelled, not invented: hover+focus, disabled compounds, per-cell
+ * error. The library ships no JS — autofill wiring, state selection and
+ * aria-invalid are the consumer's.
+ */
+
+@layer components {
+  .va-address {
+    @apply flex min-w-0 flex-col;
+  }
+
+  .va-address-title-row {
+    @apply flex w-full items-center gap-1 pb-[5px];
+  }
+  .va-address-title {
+    @apply text-label-strong text-content-secondary;
+  }
+
+  .va-address-group {
+    @apply flex w-full flex-col overflow-clip rounded-sm;
+    @apply border border-stroke-divider bg-surface-paper;
+    transition: border-color 150ms;
+  }
+
+  /* Rows — Height/LG pinned; inner dividers are the DARKER Stroke/Border. */
+  .va-address-row {
+    @apply flex h-[var(--height-lg)] w-full items-center;
+    @apply border-b border-stroke-border;
+    transition: box-shadow 150ms;
+  }
+  .va-address-row:last-child {
+    @apply border-b-0;
+  }
+
+  .va-address-input {
+    @apply h-full min-w-0 flex-1 appearance-none border-0 bg-transparent px-3 outline-none;
+    @apply text-input text-content-primary;
+  }
+  .va-address-input::placeholder {
+    @apply text-content-hint;
+    opacity: 1;
+  }
+  /* City/State: authored fixed cells with a right divider; ZIP flexes. */
+  .va-address-input-city {
+    @apply w-[227px] flex-none border-r border-stroke-border;
+  }
+  .va-address-input-state {
+    @apply w-[133px] flex-none border-r border-stroke-border;
+  }
+  .va-address-optional {
+    @apply shrink-0 pr-3 text-body-content text-content-tertiary;
+  }
+
+  .va-address-hint {
+    @apply m-0 w-full pt-[5px] text-help-caption text-content-secondary;
+  }
+
+  /* --- States — order load-bearing: hover < focus < error < disabled ------- */
+
+  .va-address-group:hover:not(:focus-within):not(
+      :has([aria-invalid="true"])
+    ):not(:has(:disabled)) {
+    @apply border-stroke-hover;
+  }
+
+  /* Field-family focus: Primary border + the 3px translucent ring on the
+     GROUP; the focused row gains the 2px Primary/Track marker and drops its
+     divider (281:4683, verbatim). */
+  .va-address-group:focus-within {
+    @apply focus-ring border-primary;
+  }
+  .va-address-row:has(.va-address-input:focus) {
+    @apply border-b-transparent;
+    box-shadow: inset 0 0 0 2px var(--color-primary-track);
+  }
+
+  /* Error — AFTER focus: amber border wins the tie, the ring still fires. */
+  .va-address-group:has(.va-address-input[aria-invalid="true"]) {
+    @apply border-warning;
+  }
+  .va-address:has(.va-address-input[aria-invalid="true"]) .va-address-hint {
+    @apply text-warning-text;
+  }
+
+  /* Disabled (913:860) — the family recipe; LAST so it wins all compounds. */
+  .va-address-group:has(.va-address-input:disabled) {
+    @apply border-stroke-divider bg-surface-app-page;
+  }
+  .va-address-input:disabled {
+    @apply cursor-not-allowed text-content-tertiary;
+  }
+  .va-address-input:disabled::placeholder {
+    @apply text-content-tertiary;
+  }
+}

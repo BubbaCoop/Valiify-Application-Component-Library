@@ -4,7 +4,12 @@
  */
 import type { Meta, StoryObj } from "@storybook/html";
 
-const tab = (type: string, label: string, selected = false, icon = "layout-grid") => `
+const tab = (
+  type: string,
+  label: string,
+  selected = false,
+  icon = "layout-grid",
+) => `
   <button class="va-tab va-tab-${type}" role="tab" aria-selected="${selected}">
     <svg aria-hidden="true"><use href="#${icon}" /></svg>
     ${label}

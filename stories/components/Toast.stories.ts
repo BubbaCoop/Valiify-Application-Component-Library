@@ -37,7 +37,8 @@ const meta: Meta<ToastArgs> = {
     type: {
       control: "select",
       options: ["success", "error", "info"],
-      description: "Paints the status icon only — 'error' is amber (Warning) verbatim from Figma",
+      description:
+        "Paints the status icon only — 'error' is amber (Warning) verbatim from Figma",
     },
     title: { control: "text" },
     body: { control: "text" },

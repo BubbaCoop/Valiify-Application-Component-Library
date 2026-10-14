@@ -20,7 +20,10 @@ const meta: Meta<TextSelectorArgs> = {
   title: "Components/TextSelector",
   tags: ["autodocs"],
   argTypes: {
-    label: { control: "text", description: 'Mobile is a label swap: pass "EN"' },
+    label: {
+      control: "text",
+      description: 'Mobile is a label swap: pass "EN"',
+    },
     expanded: {
       control: "boolean",
       description: "aria-expanded — darkens all inks and rotates the chevron",

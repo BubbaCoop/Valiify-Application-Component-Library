@@ -28,7 +28,11 @@
  * Unlike Radio, BOTH branches have hover drawn in Figma, so the checked hover
  * rule is a real painted state, not an exclusion.
  *
- * Not modelled, not invented: Disabled (cursor only), Pressed, Focus (library
+ * Disabled and Focus are DRAWN since the 2026-10 go-live rework (913:573/
+ * 575, 914:703/705 — reversing the 10-13 exclusion): disabled off-track
+ * Stroke/Divider, on-track Primary/Disabled, knob Paper; focus is the
+ * "Focus Ring" effect via focus-ring-control. Not modelled, not invented:
+ * Pressed (library
  * focus-ring). The knob ships shadowless: Figma binds no effect variable and
  * the export's faint spill (~1% in one variant, noise-floor in the rest) is
  * not a spec — on the designer list.
@@ -68,11 +72,36 @@
   }
 
   .va-switch:focus-visible {
-    @apply focus-ring;
+    @apply focus-ring-control;
   }
 
   /* Figma models no disabled variant; nothing visual is invented. */
+  /* Disabled (913:573/575, drawn 2026-10 — reverses the 10-13 exclusion):
+     off track lightens to Stroke/Divider (11%, vs Border 17% at rest); on
+     track goes Primary/Disabled (30%). The knob stays Paper. */
   .va-switch:disabled {
-    @apply cursor-not-allowed;
+    @apply cursor-not-allowed bg-stroke-divider;
+  }
+  .va-switch:checked:disabled {
+    @apply bg-primary-disabled;
+  }
+
+  /* Tap-target overlay (handoff contract: ≥24px, ≥44px on touch) — ::after,
+     the knob owns ::before. Paired with a label, the label row is the
+     target. */
+  .va-switch::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--target-min));
+    height: max(100%, var(--target-min));
+    transform: translate(-50%, -50%);
+  }
+  @media (pointer: coarse) {
+    .va-switch::after {
+      width: max(100%, var(--target-touch));
+      height: max(100%, var(--target-touch));
+    }
   }
 }

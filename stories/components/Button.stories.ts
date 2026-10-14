@@ -45,7 +45,12 @@ const meta: Meta<ButtonArgs> = {
     disabled: { control: "boolean", description: "Figma's Inactive axis" },
     trailingIcon: { control: "boolean" },
   },
-  args: { type: "primary", label: "Button", disabled: false, trailingIcon: true },
+  args: {
+    type: "primary",
+    label: "Button",
+    disabled: false,
+    trailingIcon: true,
+  },
   render: ({ type, label, disabled, trailingIcon }) =>
     btn({ type, label, disabled, trailing: trailingIcon ? "arrow-right" : "" }),
 };
@@ -115,6 +120,26 @@ export const FullWidth: Story = {
  * reproduced as one rule, on the designer list. Hover a micro button:
  * pressing adds no further feedback.
  */
+/**
+ * Loading (aria-busy) — drawn for Primary/Secondary MD: rest paints stay,
+ * the trailing icon yields to a 16px 270° spinner, the label stays, clicks
+ * are blocked. Width does not change between states.
+ */
+export const Loading: Story = {
+  render: () => `
+    <div style="display: flex; gap: 24px;">
+      <button class="va-btn va-btn-primary" aria-busy="true">
+        Continue
+        <svg aria-hidden="true"><use href="#arrow-right" /></svg>
+      </button>
+      <button class="va-btn va-btn-secondary" aria-busy="true">
+        Continue
+        <svg aria-hidden="true"><use href="#arrow-right" /></svg>
+      </button>
+    </div>
+  `,
+};
+
 export const MicroNoOpPair: Story = {
   render: () => `
     <div style="display: flex; gap: 16px; align-items: center;">

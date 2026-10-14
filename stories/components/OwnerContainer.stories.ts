@@ -66,7 +66,10 @@ const meta: Meta<OwnerContainerArgs> = {
       options: ["user", "building"],
       description: "Owner tile glyph — Person uses #user, Company #building",
     },
-    badge: { control: "boolean", description: "Figma's `tag` boolean — shows the Optional badge" },
+    badge: {
+      control: "boolean",
+      description: "Figma's `tag` boolean — shows the Optional badge",
+    },
   },
   args: person,
   render: (args) => row(args),

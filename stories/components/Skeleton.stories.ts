@@ -9,9 +9,22 @@ const sk = (shape: string, size = "md") =>
   `<span class="va-skeleton va-skeleton-${shape} va-skeleton-${size}" aria-hidden="true"></span>`;
 
 const SHAPES = [
-  "text", "heading", "circle", "rectangle", "button", "input", "textarea",
-  "card", "switch", "checkbox", "badge", "listitem", "tab", "avatar",
-  "dropdown", "radio",
+  "text",
+  "heading",
+  "circle",
+  "rectangle",
+  "button",
+  "input",
+  "textarea",
+  "card",
+  "switch",
+  "checkbox",
+  "badge",
+  "listitem",
+  "tab",
+  "avatar",
+  "dropdown",
+  "radio",
 ];
 
 const meta: Meta = {
@@ -44,7 +57,9 @@ export const AllSizes: Story = {
   render: () => `
     <div role="status" aria-busy="true" aria-label="Loading" style="display: flex; flex-direction: column; gap: 16px;">
       ${SHAPES.map(
-        (s) => `<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: end;">
+        (
+          s,
+        ) => `<div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: end;">
         <span style="width: 80px; font-size: 10px; color: #54565b;">${s}</span>
         ${sk(s, "sm")}${sk(s, "md")}${sk(s, "lg")}
       </div>`,

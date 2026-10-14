@@ -13,7 +13,12 @@ interface ActionArgs {
 }
 
 const row = ({ title, description, state, badge }: Partial<ActionArgs>) => {
-  const stateClass = state === "pending" ? " va-action-pending" : state === "done" ? " va-action-done" : "";
+  const stateClass =
+    state === "pending"
+      ? " va-action-pending"
+      : state === "done"
+        ? " va-action-done"
+        : "";
   const trailing =
     state === "pending"
       ? `<span class="va-action-status"><svg aria-hidden="true"><use href="#lock" /></svg>Upcoming</span>`
@@ -39,9 +44,17 @@ const meta: Meta<ActionArgs> = {
     title: { control: "text" },
     description: { control: "text" },
     state: { control: "select", options: ["rest", "pending", "done"] },
-    badge: { control: "text", description: "Figma's badge boolean — the shipped Badge, empty = off" },
+    badge: {
+      control: "text",
+      description: "Figma's badge boolean — the shipped Badge, empty = off",
+    },
   },
-  args: { title: "Identity", description: "Verify who you are", state: "rest", badge: "" },
+  args: {
+    title: "Identity",
+    description: "Verify who you are",
+    state: "rest",
+    badge: "",
+  },
   render: (args) => `<div style="max-width: 720px;">${row(args)}</div>`,
 };
 
@@ -63,5 +76,6 @@ export const AllStates: Story = {
 
 /** The badge boolean on — the shipped Badge, composed. */
 export const WithBadge: Story = {
-  render: () => `<div style="max-width: 720px;">${row({ title: "Identity", description: "Verify who you are", state: "rest", badge: "Joint" })}</div>`,
+  render: () =>
+    `<div style="max-width: 720px;">${row({ title: "Identity", description: "Verify who you are", state: "rest", badge: "Joint" })}</div>`,
 };

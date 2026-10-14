@@ -28,10 +28,12 @@
  *      the design file; designer list).
  *
  * Width is the consumer's — Figma's 154px is the sample hug; the panel spans
- * its trigger (DropdownMenu ancestry). FIGMA NAMING TRAP: the set's
- * "Property 1 = sm/md" is NOT a size axis — it toggles which sample row is
- * selected; both samples use sm rows exclusively. There are no container
- * size classes on purpose (designer list).
+ * its trigger (DropdownMenu ancestry). The set's sm/md axis became a REAL
+ * size axis in the 2026-10 rework (sm panels hold 32px rows, md panels 40px
+ * rows — the rows bind Height/SM and Height/MD). There are STILL no
+ * container size classes on purpose: size lives on the composed
+ * .va-list-option-sm/-md rows, and the panel hugs them. A dropdown-field
+ * panel uses md rows (the handoff contract).
  *
  * The library ships no JavaScript: open/close is the consumer's, via the
  * hidden attribute on a wrapper or conditional rendering.

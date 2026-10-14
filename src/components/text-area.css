@@ -59,7 +59,10 @@
  * .va-text-area-hint below in normal flow (broken bottomContent geometry, the
  * family defect, corrected as in TextField).
  *
- * Not modelled, not invented: disabled, hover+focus.
+ * Disabled (865:5526, added 2026-10-13 — the family gap closed): fill
+ * BG/App Page + border Stroke/Divider, ink Tertiary; drawn empty+rest only.
+ *
+ * Not modelled, not invented: hover+focus, disabled+error/filled variants.
  */
 
 @layer components {
@@ -110,7 +113,9 @@
   /* --- States (focus after hover — source order resolves the undrawn
      hover+focus combo in focus's favour) ----------------------------------- */
 
-  .va-text-area-input:hover:not(:focus):not(:disabled):not([aria-invalid="true"]) {
+  .va-text-area-input:hover:not(:focus):not(:disabled):not(
+      [aria-invalid="true"]
+    ) {
     @apply border-stroke-hover;
   }
 
@@ -127,6 +132,17 @@
     @apply border-warning;
   }
 
+  /* Disabled (865:5526, added 2026-10-13 — the family gap closed): fill
+     BG/App Page + border Stroke/Divider, value/placeholder ink Tertiary;
+     title and hint unchanged. Drawn empty+rest only — disabled+error is
+     undrawn, so this rule sorts LAST and the disabled look wins. */
+  .va-text-area-input:disabled {
+    @apply cursor-not-allowed border-stroke-divider bg-surface-app-page text-content-tertiary;
+  }
+  .va-text-area-input:disabled::placeholder {
+    @apply text-content-tertiary;
+  }
+
   /* --- Hint (normal-flow correction, family pattern) ----------------------- */
 
   .va-text-area-hint {
@@ -136,7 +152,8 @@
   /* The hint row IS the error row across all three field components — one
      element, Text/Secondary as a hint and Warning/Text as an error (designer,
      2026-09-16 — D3). */
-  .va-text-area:has(.va-text-area-input[aria-invalid="true"]) .va-text-area-hint {
+  .va-text-area:has(.va-text-area-input[aria-invalid="true"])
+    .va-text-area-hint {
     @apply text-warning-text;
   }
 }

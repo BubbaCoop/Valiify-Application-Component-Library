@@ -1,0 +1,83 @@
+/**
+ * OtpField Component
+ *
+ * The labeled six-digit OTP entry field, composing OtpCell. Extracted from
+ * Figma OTP field (815:9211) — 4 variants on a single State axis
+ * {Empty, Focused, Filled, Error}, all 376×100. Figma description verbatim:
+ * "Six-digit OTP field with enlarged 56px square cells and a compact
+ * fixed-gap row. The digit row remains compact and left-aligned inside
+ * wider wrappers. Existing typography styles and field color tokens are
+ * retained. Empty, Focused, Filled, Error states; editable label/supporting
+ * text and exposed digit properties."
+ *
+ *   <fieldset class="va-otp-field" aria-describedby="otp-hint">
+ *     <legend class="va-otp-field-title">Verification code</legend>
+ *     <div class="va-otp-field-cells">
+ *       <input class="va-otp-cell" type="text" inputmode="numeric"
+ *              pattern="[0-9]" maxlength="1" autocomplete="one-time-code"
+ *              aria-label="Digit 1 of 6" />
+ *       <!-- ×6 -->
+ *     </div>
+ *     <p id="otp-hint" class="va-otp-field-hint">
+ *       Enter the 6-digit code sent to you.
+ *     </p>
+ *   </fieldset>
+ *
+ * Geometry — the 100px math closes exactly: title row 25 (20 line + 5
+ * padding-bottom) + cells 56 + hint row 19 (5 padding-top + 14 line).
+ * The CELLS ROW HUGS (6×56 + 5×8 gap = 376) and stays left-aligned inside
+ * wider wrappers — Figma authors min-w-[376px] on the column and that
+ * min-width is load-bearing (the error message needs it); width beyond
+ * that is the caller's. Cell count is fixed at six by the design.
+ *
+ * Title: Labels/Strong 14/500 in Text/Secondary, constant in every state —
+ * `-title` NOT `-label` (the .text-field-label collision lesson), and the
+ * legend zeroes its UA inline padding (px-0 — the RadioField 1.3.1 fix).
+ *
+ * Hint: Help & Caption 12/400 in Text/Secondary, present in ALL states
+ * (there is no hidden-hint variant). Error swaps it to Warning/Text — the
+ * field family's amber (decision D4). Error state: the consumer sets
+ * aria-invalid="true" on EVERY cell (Figma draws all six amber — there is
+ * no per-cell error) and swaps the hint copy; the ink swap here derives
+ * from the real input state via :has().
+ *
+ * Focus lives on the CELL, never the field (Figma's Focused variant rings
+ * the next-empty cell). Which cell is focused, auto-advance, backspace,
+ * paste-distribution and setting aria-invalid are consumer JS — the
+ * library ships none.
+ *
+ * Figma's `showLabel` / `showSupportingText` booleans have no CSS — omit
+ * the element instead.
+ *
+ * Not modelled, not invented: hover, disabled (the family gap),
+ * error+focus at field level, partial/per-cell error.
+ */
+
+@layer components {
+  .va-otp-field {
+    /* A real <fieldset>: zero the UA box so the authored geometry holds. */
+    @apply m-0 flex min-w-[376px] flex-col border-0 p-0;
+  }
+
+  .va-otp-field-title {
+    /* <legend> — px-0 kills the UA's 2px inline padding (RadioField fix). */
+    @apply flex w-full items-center px-0 pb-[5px];
+    @apply text-label-strong text-content-secondary;
+  }
+
+  .va-otp-field-cells {
+    /* Hugs 376 (6×56 + 5×8); deliberately NOT w-full — the row stays
+       compact and left-aligned inside wider wrappers (Figma description). */
+    @apply flex gap-2 self-start;
+  }
+
+  .va-otp-field-hint {
+    @apply m-0 w-full pt-[5px];
+    @apply text-help-caption text-content-secondary;
+  }
+
+  /* Error: all six cells carry aria-invalid; the hint rides the same state. */
+  .va-otp-field:has(.va-otp-cell[aria-invalid="true"]) .va-otp-field-hint {
+    @apply text-warning-text;
+  }
+}

@@ -15,7 +15,13 @@ interface ModalArgs {
 }
 
 let uid = 0;
-const card = ({ title, description, notice, noticeLabel, noticeBody }: Partial<ModalArgs>) => {
+const card = ({
+  title,
+  description,
+  notice,
+  noticeLabel,
+  noticeBody,
+}: Partial<ModalArgs>) => {
   const id = `modal-${uid++}`;
   const banner =
     notice && notice !== "none"
@@ -88,7 +94,12 @@ export const Interactive: Story = {};
 export const Destructive: Story = { render: () => card(destructive) };
 
 export const Neutral: Story = {
-  render: () => card({ title: "Confirm Action", description: "Are you sure you want to proceed?", notice: "none" }),
+  render: () =>
+    card({
+      title: "Confirm Action",
+      description: "Are you sure you want to proceed?",
+      notice: "none",
+    }),
 };
 
 export const Success: Story = { render: () => card(success) };
@@ -125,8 +136,11 @@ export const NativeDialog: Story = {
     </dialog>
   `,
   play: async ({ canvasElement }) => {
-    const dialog = canvasElement.querySelector<HTMLDialogElement>("dialog.va-modal");
-    canvasElement.querySelector("[data-open]")?.addEventListener("click", () => dialog?.showModal());
+    const dialog =
+      canvasElement.querySelector<HTMLDialogElement>("dialog.va-modal");
+    canvasElement
+      .querySelector("[data-open]")
+      ?.addEventListener("click", () => dialog?.showModal());
     canvasElement.querySelectorAll("[data-close]").forEach((el) => {
       el.addEventListener("click", () => dialog?.close());
     });

@@ -45,10 +45,11 @@
   .va-select-card {
     @apply flex w-full cursor-pointer items-center gap-3 rounded-md p-4;
     @apply bg-surface-paper;
-    /* The 1px ring is an INSET BOX-SHADOW, not a border: Figma's stroke is
-       inside-aligned (the 76px frame contains it), while a border adds 2px
-       under border-box on this content-driven card. Caught by the spec. */
-    box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
+    /* The ring is an INSET BOX-SHADOW, not a border — and since the 2026-10
+       rework it is an authored 0.5px in EVERY state (half-coverage confirmed
+       by pixel measurement; Chrome would floor a 0.5px border to 1px, and a
+       border would also add height to this content-driven card). */
+    box-shadow: inset 0 0 0 0.5px var(--color-stroke-divider);
     transition:
       box-shadow 150ms,
       background-color 150ms;
@@ -80,26 +81,28 @@
   /* --- Transient states (excluded from the selected card by name) --------- */
 
   .va-select-card:hover:not(:has(.va-radio:checked)) {
-    box-shadow: inset 0 0 0 1px var(--color-stroke-hover);
+    box-shadow: inset 0 0 0 0.5px var(--color-stroke-hover);
   }
 
   /* Chevron-variant pressed: fill wash; ring token UNCHANGED (it only
      reads darker because Stroke/Divider composites over the tint). */
   .va-select-card:active:not(:has(.va-radio:checked)) {
     @apply bg-action-pressed;
-    box-shadow: inset 0 0 0 1px var(--color-stroke-divider);
+    box-shadow: inset 0 0 0 0.5px var(--color-stroke-divider);
   }
 
   /* --- Selected (radio variant) — persistent, from the real input state --- */
 
   .va-select-card:has(.va-radio:checked) {
     @apply bg-primary-bg;
-    box-shadow: inset 0 0 0 1px var(--color-primary);
+    box-shadow: inset 0 0 0 0.5px var(--color-primary);
   }
 
+  /* Focus is a drawn axis since 2026-10 (914:707/712) — the "Focus Ring"
+     effect (2px gap + 2px solid Primary). */
   .va-select-card:focus-visible,
   .va-select-card:has(.va-radio:focus-visible) {
-    @apply focus-ring;
+    @apply focus-ring-control;
   }
 
   .va-select-card:disabled,

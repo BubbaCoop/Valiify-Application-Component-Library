@@ -1,77 +1,83 @@
 /**
  * ListItem Component
  *
- * One row in a dropdown/selection list. Extracted from Figma List Item
- * (1:463) — 24 variants: Size {sm, md, lg} × Selected × Hover × LastItem.
+ * One row in a dropdown/selection list. Extracted from the REBUILT Figma
+ * List Item set (786:6869; the old 1:463 set is gone) — 36 variants:
+ * Size {sm, md, LG} × Selected × Hover × LastItem × Critical {False, True}.
  *
  *   <button class="va-list-option va-list-option-sm" role="option" aria-selected="true">
  *     <span class="va-list-option-text">English</span>
  *     <svg class="va-list-option-check" aria-hidden="true"><use href="#check" /></svg>
  *   </button>
  *
- * A SIZE CLASS IS REQUIRED — Figma's samples only ever show sm, so no default
- * is baked in (the Tabs lesson: explicit beats clever).
+ * A SIZE CLASS IS REQUIRED — no default is baked in (the Tabs lesson).
  *
- * | size | type token                | height (unselected / selected) |
- * | ---- | ------------------------- | ------------------------------ |
- * | -sm  | Help & Caption 12/400/14  | 30 / **34**                    |
- * | -md  | Labels Default 14/400/20  | 36 / 36                        |
- * | -lg  | Input 16/400/24           | 40 / 40                        |
+ * | size | type token                | height (every state)        |
+ * | ---- | ------------------------- | --------------------------- |
+ * | -sm  | Help & Caption 12/400/14  | 32 (Height/SM, token-bound) |
+ * | -md  | Labels Default 14/400/20  | 40 (Height/MD)              |
+ * | -lg  | Input 16/400/24           | 48 (Height/LG)              |
  *
- * Heights are content-driven (12/8 padding + line box) — the sm selected row
- * grows to 34 because the fixed 18px check icon exceeds sm's 14px line box.
- * That is Figma's own emergent hug behaviour, reproduced not corrected
- * (designer list), and it falls out of this CSS with no hardcoded heights.
+ * HEIGHTS ARE PINNED via the Height tokens (the 2026-10 rework bound them in
+ * Figma) — rows never change height between states. The old emergent
+ * "sm selected grows 30→34" hug is GONE: the fixed 32 absorbs the 18px check.
  *
- * THE GAP-COLLAPSE TRICK: gap-2.5 (10px) is declared unconditionally; the
- * check icon is display:none until [aria-selected="true"], and a display:none
- * flex child contributes no gap — so "gap 0 unselected / 10px selected"
- * needs no conditional class. The check is ALWAYS in the markup (a
- * pseudo-element cannot render <use> — the Checkbox trap), visibility is
- * CSS's; this also keeps the height hug automatic. Deliberate divergence
- * from the dashboard MenuItem, where callers added the check conditionally.
+ * THE GAP-COLLAPSE TRICK (unchanged): gap-2.5 is unconditional; the check is
+ * display:none until selected and a display:none flex child contributes no
+ * gap. The check is ALWAYS in the markup (a pseudo-element cannot render
+ * <use>); in Figma it is literally absent from unselected variants, present
+ * 18×18 at every size.
  *
- * Selection swaps the row's INK to Primary (text and check inherit together
- * via currentColor); no background. Hover adds Action/Hover — on selected
- * rows too (a real Figma variant, no exclusion). The divider is structural
- * (:not(:last-child)) and an INSET BOX-SHADOW — Figma's inside-aligned stroke
- * lives within the 30/36/40 frame heights; a border would add 1px.
+ * Selection swaps the row's INK to Primary (text + check inherit via
+ * currentColor); no background. Hover paints an Action/Hover wash — on
+ * selected AND critical rows too (real variants). The divider is structural
+ * (:not(:last-child)) and an INSET BOX-SHADOW living within the pinned
+ * heights.
+ *
+ * CRITICAL (`.va-list-option-critical`, the new destructive-row axis): the
+ * ink swaps to Error/Base — **the Error ramp's first consumer in the whole
+ * file**. Nothing else changes (no icon, no fill at rest; the hover wash
+ * still applies). Figma draws NO critical+selected — the class is not meant
+ * to combine with aria-selected (not modelled, not invented).
+ *
+ * FOCUS: deliberately NO focus-visible ring (removed 2026-10-14, the
+ * engineering-handoff listbox contract) — in a listbox, DOM focus stays on
+ * the trigger and the highlighted option is conveyed via
+ * aria-activedescendant. The keyboard highlight IS the hover state: the
+ * consumer sets `data-active="true"` on the highlighted option and it paints
+ * the same Action/Hover wash.
  *
  * CLASS NAME: `.va-list-option`, NOT `.list-item` — `list-item` is Tailwind's
- * own display utility (display: list-item), which sits in the utilities layer
- * and overrides the component's flex, stacking the row's children. Caught by
- * the visual harness on first run.
+ * own display utility (caught live; the collision stacked the rows).
  *
- * Not modelled, not invented: disabled, pressed (Action/Pressed exists in the
- * file but is never bound here), focus (library focus-ring).
+ * Not modelled, not invented: disabled, pressed, critical+selected.
  */
 
 @layer components {
   .va-list-option {
-    @apply flex w-full cursor-pointer items-center gap-2.5 px-3 py-2;
-    @apply m-0 appearance-none border-0 bg-transparent text-left;
+    @apply flex w-full cursor-pointer items-center gap-2.5 px-3;
+    @apply m-0 appearance-none border-0 bg-transparent p-0 px-3 text-left;
     @apply text-content-primary;
     transition: background-color 150ms;
   }
 
   /* Divider on every row but the last — Figma's LastItem boolean, structural.
-     An inset box-shadow, not border-b: Figma's divider is inside-aligned
-     (the 30/36/40 frame heights CONTAIN it), while a CSS border adds 1px
-     under border-box on an unpinned-height row. Caught by the spec (+1px). */
+     An inset box-shadow: the pinned heights CONTAIN the inside-aligned
+     divider, and a shadow can never move layout. */
   .va-list-option:not(:last-child) {
     box-shadow: inset 0 -1px 0 var(--color-stroke-divider);
   }
 
-  /* --- Sizes (required) --------------------------------------------------- */
+  /* --- Sizes (required) — Height tokens pinned, zero y-padding ------------- */
 
   .va-list-option-sm {
-    @apply text-help-caption;
+    @apply h-[var(--height-sm)] text-help-caption;
   }
   .va-list-option-md {
-    @apply text-label;
+    @apply h-[var(--height-md)] text-label;
   }
   .va-list-option-lg {
-    @apply text-input;
+    @apply h-[var(--height-lg)] text-input;
   }
 
   /* --- Parts ---------------------------------------------------------------- */
@@ -91,7 +97,10 @@
 
   /* --- States ----------------------------------------------------------------- */
 
-  .va-list-option:hover:not(:disabled) {
+  /* Hover — and the aria-activedescendant keyboard highlight, which IS the
+     hover state (data-active, set by the consumer's listbox JS). */
+  .va-list-option:hover:not(:disabled),
+  .va-list-option[data-active="true"] {
     @apply bg-action-hover;
   }
 
@@ -105,9 +114,14 @@
     @apply block;
   }
 
-  .va-list-option:focus-visible {
-    @apply focus-ring;
+  /* Critical (destructive rows): ink to Error/Base — the Error ramp's first
+     consumer. Never combined with selection (undrawn). */
+  .va-list-option-critical {
+    @apply text-error;
   }
+
+  /* NO focus-visible ring on purpose — see the header (listbox contract:
+     focus stays on the trigger; data-active carries the highlight). */
 
   .va-list-option:disabled {
     @apply cursor-not-allowed;
