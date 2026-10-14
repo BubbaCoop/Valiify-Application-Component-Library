@@ -24,12 +24,10 @@
     "src",
     "types",
     "examples",
-    "design-methodology",
     "README.md",
     "GETTING_STARTED.md",
     "TROUBLESHOOTING.md",
-    "CHANGELOG.md",
-    "CLAUDE.md"
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "npm run build:theme && npm run build:icons && npm run build:utility-surface && postcss src/index.css -o dist/index.css && npm run build:styles && npm run build:manifest",
@@ -61,7 +59,8 @@
     "verify:markup": "node scripts/verify-markup.mjs",
     "verify:package": "node scripts/verify-package.mjs",
     "val:check": "val-init --check",
-    "val:init": "val-init"
+    "val:init": "val-init",
+    "postpack": "node scripts/fix-example-deps.mjs --restore"
   },
   "keywords": [
     "tailwind",

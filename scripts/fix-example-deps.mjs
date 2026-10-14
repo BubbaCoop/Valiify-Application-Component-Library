@@ -1,8 +1,14 @@
 import { readFileSync, writeFileSync } from 'fs';
 
+// `--restore` puts the examples back on the local link after a pack: prepack
+// rewrites them to ^<version> so the TARBALL carries the semver, and postpack
+// restores file:../.. so packing/publishing never leaves the tree dirty.
+const restore = process.argv.includes('--restore');
+
 // Read current version from root package.json
 const rootPkg = JSON.parse(readFileSync('package.json', 'utf8'));
 const version = rootPkg.version;
+const target = restore ? 'file:../..' : `^${version}`;
 
 // List of example package.json files to fix
 const examples = [
@@ -12,18 +18,17 @@ const examples = [
   'examples/sveltekit-starter/package.json'
 ];
 
-console.log(`\n🔧 Fixing example dependencies to version ^${version}...\n`);
+console.log(restore ? '\n🔧 Restoring example dependencies to file:../..\n' : `\n🔧 Fixing example dependencies to version ^${version}...\n`);
 
 examples.forEach(path => {
   const content = readFileSync(path, 'utf8');
   const pkg = JSON.parse(content);
 
-  // Replace file:../.. with actual version
   if (pkg.dependencies?.['@valiify/shortapp-ui']) {
-    pkg.dependencies['@valiify/shortapp-ui'] = `^${version}`;
+    pkg.dependencies['@valiify/shortapp-ui'] = target;
     writeFileSync(path, JSON.stringify(pkg, null, 2) + '\n');
-    console.log(`  ✓ ${path} → ^${version}`);
+    console.log(`  ✓ ${path} → ${target}`);
   }
 });
 
-console.log('\n✅ Example dependencies fixed\n');
+console.log(restore ? '\n✅ Example dependencies restored\n' : '\n✅ Example dependencies fixed\n');
