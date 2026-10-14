@@ -18,6 +18,7 @@ treated as a spec for this library.
 
 **Never run `git commit` or `git push`.** Stage changes with `git add` if asked,
 then stop — I write all commit messages and commit myself.
+Never add Co-Authored-By trailers (or any Claude attribution) to commits or PRs.
 
 ## Val agents are generated — do not hand-edit them
 
@@ -2091,26 +2092,28 @@ imports that bundle. Opt in with `@import "@valiify/shortapp-ui/fonts";` as the
 
 ## Development Status
 
-**Current Phase**: Infrastructure setup — migrated from the dashboard library
-**Next Phase**: Short App Figma token extraction, then component build-out
+**Current Phase**: Released — maintenance and Figma-sync. `@valiify/shortapp-ui`
+**1.4.0 is published on npm** (2026-10-15, the go-live pass): 31 components,
+each with a visual spec (741 computed-style assertions), the complete token
+set (59 colors, Height scale, 24 consumed text styles), token-pinned control
+heights, drawn disabled/focus/loading states, and tap-target overlays.
 
-Completed:
+- ✅ Token extraction + theme generation (full Plugin API enumeration;
+  re-run on every designer sync)
+- ✅ 31 components built, verified (visual / a11y / static / bundle / host
+  gates, all in CI) and documented in the Quick Reference above
+- ✅ Published to npm; releases follow Keep-a-Changelog + semver
+  (token and class names are public API)
+- ✅ Storybook deployed to GitHub Pages on every push to main
+- ✅ Visual regression: DECIDED 2026-10-15 — the visual-spec harness
+  (741 checks against Figma-extracted values) IS the regression gate;
+  Chromatic is closed unless designer review ever needs screenshot diffs
 
-- ✅ Infrastructure migrated: build pipeline, verification tooling
-  (visual / a11y / static / layers), component generator, Storybook 10,
-  TypeScript setup, examples
-- ✅ Dashboard content archived to `_dashboard-archive/` for reference
-- ✅ Package renamed to `@valiify/shortapp-ui`
-- ✅ Icon sprite system retained (Lucide, shared with the dashboard library)
-
-Pending:
-
-- ⏳ Extract Short App design tokens from Figma into
-  `tokens/figma-tokens.json`; regenerate the theme
-- ⏳ Build out Short App components (each with a visual spec)
-- ⏳ Chromatic visual regression — deliberately deferred until the full
-  library is complete
-- ⏳ NPM publishing, Storybook deployment
+Ongoing: designer-list items as the file evolves
+([docs/designer-list.md](docs/designer-list.md)), new components as the
+Figma library grows (the extraction pipeline in
+[docs/component-process.md](docs/component-process.md) is the process of
+record).
 
 ## Building a Component
 
@@ -2317,9 +2320,9 @@ Based on the Valiify Short App design system from Figma
 ## Links
 
 - **Repository**: https://github.com/BubbaCoop/Valiify-Application-Component-Library
-- **NPM Package**: TBD (will publish as `@valiify/shortapp-ui`)
+- **NPM Package**: https://www.npmjs.com/package/@valiify/shortapp-ui
 - **Figma**: Updated-Short-App (PA5pr1Q8KLfbjTxdAbFm0V)
-- **Storybook**: TBD (will be deployed)
+- **Storybook**: https://bubbacoop.github.io/Valiify-Application-Component-Library/ (GitHub Pages, deployed from main)
 - **Dashboard library (predecessor)**: https://github.com/BubbaCoop/Valiify-dashboard-ui
 
 ## License

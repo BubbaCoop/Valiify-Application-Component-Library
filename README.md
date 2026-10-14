@@ -7,10 +7,14 @@ CSS-only, framework-agnostic, zero JavaScript dependencies. Components are
 extracted from the Short App Figma component library and verified against it
 with an automated visual harness.
 
-> **Status: 27 components shipped**, extracted from the Short App Figma file
-> and verified against it — 603 computed-style assertions, axe-core clean
-> across every story. The complete design-token set (58 colors, 24 text
-> styles, effects) ships as Tailwind v4 `@theme` tokens.
+> **Status: v1.4.0 on npm — 31 components**, extracted from the Short App
+> Figma file and verified against it: 741 computed-style assertions,
+> axe-core clean across every story, token-pinned control heights
+> (`--height-*`), drawn disabled/focus/loading states, and WCAG 2.5.8
+> tap-target overlays. The complete design-token set (59 colors, 24 text
+> styles, the Height scale, effects) ships as Tailwind v4 `@theme` tokens.
+> Browse every component in the deployed Storybook:
+> https://bubbacoop.github.io/Valiify-Application-Component-Library/
 
 ## ⚠️ Important: Read This First
 

@@ -5,6 +5,31 @@ All notable changes to `@valiify/shortapp-ui` are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Token names are public API — renaming or removing one is a breaking change.
 
+## [1.4.1] - 2026-10-15
+
+### Changed
+
+- **Tarball slimmed**: `CLAUDE.md` and `design-methodology/` no longer ship
+  in the npm package (they are maintainer/pipeline material; README,
+  GETTING_STARTED, TROUBLESHOOTING, CHANGELOG and LICENSE stay). Build inputs
+  are unaffected — both remain in the repo and keep driving the utility
+  surface and the gates.
+- `postpack` now restores the examples' `file:../..` dependency after every
+  pack, so publishing never leaves the working tree dirty
+  (`fix-example-deps.mjs --restore`).
+
+### Added
+
+- Storybook deploys to GitHub Pages on every push to main
+  (`.github/workflows/pages.yml`); the URL is in the README.
+
+### Docs
+
+- Development Status rewritten for the released/maintenance phase (1.4.0 on
+  npm, 31 components); the stale "NPM Package: TBD" and pending
+  extraction/build-out items are gone. Chromatic recorded as DECIDED-closed:
+  the 741-check visual-spec harness is the regression gate.
+
 ## [1.4.0] - 2026-10-15
 
 ### Docs

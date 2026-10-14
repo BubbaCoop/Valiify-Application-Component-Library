@@ -9,6 +9,16 @@ source.
 
 _Last updated 2026-10-15 (follow-up syncs: Height/XS deleted, utility disabled unified, Eyebrow bound on Micro, Data Key cased, Skeleton fully closed incl. its rewritten set description — 31 components)._
 
+## Process decisions (recorded here so they stop resurfacing)
+
+- **Visual regression (2026-10-15):** the visual-spec harness — 741
+  computed-style assertions against Figma-extracted values — IS the
+  regression gate. **Chromatic is closed**, not deferred; the inert
+  secret-gated CI step remains as the opt-in if designer screenshot review
+  is ever wanted.
+- **Error vs amber (2026-10-15):** red `Error/*` = destructive actions
+  (ListItem Critical); amber `Warning/*` = consumer-facing field errors (D4).
+
 ## Systemic — one Figma fix resolves several components
 
 1. **The Error ramp is defined but applied nowhere — RESOLVED FOR FIELDS
