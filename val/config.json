@@ -34,8 +34,11 @@
     "fonts": [
       "@fontsource/inter"
     ],
-    "systemNote": "the Short App type system is INTER-ONLY (all 24 text styles; there is no mono register in this design system)",
-    "dataRule": "tabular-nums (the Short App system is Inter-only; no mono register exists \u2014 if the Figma appears to show a mono face, flag it as a design question rather than importing a font the token set doesn't define)"
+    "systemNote": "the Short App type system is Inter + JetBrains Mono: components consume Inter only (24 text styles); the two Metric/Mono styles are real JetBrains Mono but nothing binds them yet",
+    "dataRule": "tabular-nums in components (no component binds a mono style yet; the Metric/Mono styles exist for metric displays \u2014 if a Figma frame binds one, use font-mono with the matching metric size rather than flagging it)"
+  },
+  "sizing": {
+    "heightRule": "a CONTROL frame at 32/40/48/56 maps to the Height token \u2014 height: var(--height-sm|md|lg|xl) with ZERO vertical padding \u2014 never a raw h-* step and never padding + line-height math; hug-content controls (icon button, text selector, micro/text/link buttons, radio, checkbox, switch) take no height token (their tap area extends via the built-in overlay, --target-min 24 / --target-touch 44); the old 34/44/54/12 control heights are retired"
   },
   "audience": "applicant-facing (the Short App application flow \u2014 fields, cards, actions) or portal/reviewer-facing (the Portal Specific set: StatusTracker, Action, UtilityButton). This selects which component families apply.",
   "pipelines": {
@@ -155,7 +158,7 @@
           },
           {
             "trigger": "\u00a713-open-item",
-            "when": "loading state, conditional-reveal indent value, progress-bar track colour, roles-matrix label type, owner-row height on mobile"
+            "when": "conditional-reveal indent value, progress-bar track colour, roles-matrix label type, owner-row height on mobile"
           },
           {
             "trigger": "brief-missing-field",
