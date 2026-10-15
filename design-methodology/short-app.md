@@ -5,7 +5,16 @@
 
 ## 0. Conventions
 
-**Sources.** 37 Figma frames across the `Consumer`, `Business` and `Auto Loan` pages, plus 40 PNG exports used only for whole-page composition judgments. `Portal V2` is a separate document; `Credit Card` is empty. Every value is expressed in the library's vocabulary — `src/themes/valiify.css` (58 colours, 6 radii, 24 text styles, 2 effects), `src/utilities/index.css`, `src/components/*.css` (28 components) and `CLAUDE.md`. Where a frame and the library disagree, the library value is the rule and the frame is to be updated in Figma.
+**Sources.** 37 Figma frames across the `Consumer`, `Business` and `Auto Loan` pages, plus 40 PNG exports used only for whole-page composition judgments. `Portal V2` is a separate document; `Credit Card` is empty. Every value is expressed in the library's vocabulary — `src/themes/valiify.css` (59 colours, 6 radii, 24 consumed text styles, 3 effects — updated 2026-10-15 for @valiify/shortapp-ui 1.4.1), `src/utilities/index.css`, `src/components/*.css` (31 components) and `CLAUDE.md`. Where a frame and the library disagree, the library value is the rule and the frame is to be updated in Figma.
+
+> **Coverage gap (recorded 2026-10-15, deliberate):** this methodology has no
+> entries for the 1.4.x additions — Address, Upload, OtpField/OtpCell, the
+> Utility Link button, ListItem Critical — because methodology entries are
+> EVIDENCE-BASED and wait for the first real Figma screen that uses them.
+> Until a frame audit adds them here, `/design` pages cannot compose these
+> components (class-audit sanctions from this document); `/val` can — the
+> component registry already knows them. When such a frame lands, audit it
+> and add the entries; do not write them from the component specs alone.
 
 **Value notation.** Utility first, with token and hex in parentheses on first mention in a section — `va:bg-surface-app-page` (`--color-surface-app-page`: #fafaf9) — then utility alone. Components are named by class: `.va-select-card`, `.va-box-action va-box-action-checkbox`. Spacing has no tokens by design; Tailwind's scale is the token (4px → `1`, 8px → `2`, 16px → `4`, 48px → `12`). Off-scale whole pixels take arbitrary values (`va:w-[343px]`); half-pixels always do (`va:h-[92.5px]`). A value with no token is written raw and marked `[raw]`. This document does not invent tokens.
 
